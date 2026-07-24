@@ -248,7 +248,7 @@
     display: none; /* toggled to "flex" in JS (updateLockedPanelVisibility) when a body is locked */
     flex-direction: column;
     min-width: 230px;
-    max-width: 280px;
+    max-width: 640px;
     /* A flight's statusNote plus the rocket/spacecraft/lander thumbnail
        gallery can make this panel much taller than a plain body's -- cap
        it like the legend panel so it can't run off the bottom of the
@@ -260,6 +260,15 @@
        calc() matches the legend panel's convention (16px top/bottom margins). */
     max-height: calc(100vh - 32px);
     z-index: 40;
+    /* User-resizable: long "Why it matters"/"Notes" text or the asset
+       gallery can make the default width/height cramped. resize needs its
+       own overflow value (not the default visible) to render the drag
+       handle -- the actual scrolling still happens in #locked-panel-body
+       below, not here, so this stays hidden rather than auto to avoid a
+       second, redundant scrollbar on the outer flex container. */
+    resize: both;
+    overflow: hidden;
+    min-height: 120px;
   }
   #locked-panel-header {
     display: flex; align-items: center; justify-content: space-between;
@@ -294,6 +303,35 @@
   .lp-row:last-child { border-bottom: none; }
   .lp-key { color: var(--text-dim); white-space: nowrap; }
   .lp-val { text-align: right; }
+
+  /* Full-width block for prose text ("Why it matters", "Notes", "Missions
+     here") -- the two-column .lp-row layout above works well for short
+     key/value pairs (a date, a number) but wastes the entire key column's
+     width on every wrapped line once the value is a multi-sentence
+     paragraph, since the label only occupies the first line. A heading
+     above a full-width paragraph uses the panel's whole width for text
+     instead of squeezing it into whatever's left after the label. */
+  .lp-section {
+    margin-top: 8px; padding-top: 8px;
+    border-top: 1px solid rgba(120,150,200,0.15);
+  }
+  .lp-section-heading {
+    font-size: 10px; font-weight: 700; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .lp-section-body {
+    font-size: 12px; line-height: 1.5;
+  }
+  .lp-mission-links {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .lp-mission-link {
+    font-size: 12px; color: var(--accent); cursor: pointer;
+    text-decoration: underline; text-underline-offset: 2px;
+    width: fit-content;
+  }
+  .lp-mission-link:hover { color: var(--text-primary); }
 
   /* Rocket/spacecraft/lander thumbnail gallery in the flight locked panel --
      each tile links out to its source (NASA/ESA/agency page where known,

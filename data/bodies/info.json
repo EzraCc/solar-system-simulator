@@ -89,96 +89,6 @@
       }
     }
   },
-  "67P/Churyumov–Gerasimenko": {
-    "significance": "A Jupiter-family comet with a distinctive bilobate \"rubber duck\" nucleus roughly 4.3 by 4.1 by 1.6 km, formed either from a contact binary of two separately accreted bodies or by erosion of a single larger object. The nucleus has an extremely low bulk density of about 0.53 g/cm3 and porosity around 70-80%, making it one of the least dense solid bodies known, and a very low albedo (~0.06) that renders its surface darker than coal. It is composed of water and carbon dioxide ices mixed with a refractory, carbon-rich dust mantle, with a measured dust-to-ice mass ratio greater than 1, indicating the nucleus is more rock/dust than ice by mass. In-situ analysis detected the amino acid glycine, phosphorus, and molecular oxygen in its coma, findings relevant to theories of cometary delivery of prebiotic material to early Earth.",
-    "assets": {
-      "image": {
-        "title": "67P/Churyumov–Gerasimenko (true color)",
-        "infoUrl": "https://en.wikipedia.org/wiki/67P%2FChuryumov%E2%80%93Gerasimenko",
-        "localImage": "images/bodies/67p.jpg"
-      }
-    }
-  },
-  "101955 Bennu": {
-    "significance": "A carbonaceous (B-type) near-Earth asteroid roughly 490 m across with a rubble-pile internal structure and very low bulk density (~1.19 g/cm3), implying macroporosity near 50%. Its shape is a spinning-top with a pronounced equatorial ridge, a form common among small fast-rotating rubble piles, and its surface proved unexpectedly rough and boulder-strewn rather than covered in fine regolith. Returned samples contain hydrated clay minerals, magnesium-sodium phosphates, carbonates, and organic compounds, including evidence of ancient brine evaporation, indicating the parent body once hosted liquid water. Bennu is also one of the most potentially hazardous known asteroids, with a cumulative impact probability with Earth of roughly 1-in-1,750 in the year 2182, making it a benchmark object for planetary defense risk assessment.",
-    "assets": {
-      "image": {
-        "title": "101955 Bennu (OSIRIS-REx mosaic)",
-        "infoUrl": "https://en.wikipedia.org/wiki/101955_Bennu",
-        "localImage": "images/bodies/bennu.png"
-      }
-    }
-  },
-  "162173 Ryugu": {
-    "significance": "A carbonaceous (Cg-type) near-Earth asteroid about 1 km across with a diamond/spinning-top shape and one of the lowest albedos of any solar system body (~0.02), reflecting only about 2% of incident sunlight. It is a low-density (~1.19 g/cm3), high-porosity rubble pile, consistent with formation from re-accreted debris after a parent-body disruption, and rotates with a 7.6-hour period on a retrograde axis. Returned samples contain the RNA nucleobase uracil, more than 20 amino acids, and other prebiotic organic compounds alongside hydrated phyllosilicates and carbonates, directly demonstrating aqueous alteration on the parent body. Ryugu's orbit crosses those of both Earth and Mars, classifying it as a potentially hazardous asteroid.",
-    "assets": {
-      "image": {
-        "title": "162173 Ryugu (Hayabusa2)",
-        "infoUrl": "https://en.wikipedia.org/wiki/162173_Ryugu",
-        "localImage": "images/bodies/ryugu.png"
-      }
-    }
-  },
-  "65803 Didymos": {
-    "significance": "A binary near-Earth asteroid system: the primary, Didymos, is an S-type stony body about 780 m in diameter that rotates in just 2.26 hours, near the theoretical spin-barrier limit beyond which a rubble-pile asteroid would fly apart, and its oblate, equatorially-ridged shape suggests it has shed material from its equator as a result. The secondary, Dimorphos, is a roughly 151 m moonlet believed to have formed from material shed by the primary, orbiting Didymos at a distance of about 1.2 km. The system is one of only a small number of known binary near-Earth asteroids, providing a natural laboratory for studying the formation and dynamics of asteroid moons via rotational mass-shedding (YORP spin-up). Both bodies are silicate-rich with an estimated bulk density around 2.7 g/cm3, well above typical carbonaceous rubble piles.",
-    "assets": {
-      "image": {
-        "title": "Didymos and Dimorphos (DART, high resolution)",
-        "infoUrl": "https://en.wikipedia.org/wiki/65803_Didymos",
-        "localImage": "images/bodies/didymos.png"
-      }
-    }
-  },
-  "25143 Itokawa": {
-    "significance": "A small S-type (stony) near-Earth asteroid with a distinctive peanut/sea-otter shape roughly 535 x 294 x 209 m, consisting of two lobes (\"Head\" and \"Body\") that most likely represent two smaller bodies that gently merged. It has a low bulk density of about 1.9-1.95 g/cm3 against a grain density near 3.4 g/cm3, implying an internal macroporosity of roughly 40% and confirming it is a gravitationally-bound rubble pile rather than a monolithic rock. Its surface is unusually bimodal: rugged, boulder-covered \"rough terrain\" dominates most of the body, while smooth, gravitationally-low regions such as the Muses Sea are blanketed in fine regolith gravel, with almost no impact craters visible anywhere due to the shallow, mobile regolith and small size. Itokawa's returned surface grains confirmed that ordinary chondrite meteorites originate from S-type asteroids like it.",
-    "assets": {
-      "image": {
-        "title": "25143 Itokawa (close-up)",
-        "infoUrl": "https://en.wikipedia.org/wiki/25143_Itokawa",
-        "localImage": "images/bodies/itokawa.jpg"
-      }
-    }
-  },
-  "4 Vesta": {
-    "significance": "The second-most-massive body in the asteroid belt and one of the few asteroids known to be fully differentiated, with an iron-nickel core, an olivine mantle, and a basaltic crust, making it effectively a surviving protoplanet from the solar system's formation. Its southern hemisphere is dominated by the Rheasilvia impact basin, about 505 km across (roughly 90% of Vesta's own diameter), with a central peak rising some 20-22 km, one of the tallest mountains in the solar system. Debris from Rheasilvia and the earlier Veneneia basin is the source of the howardite-eucrite-diogenite (HED) meteorite clan, which accounts for roughly 5% of all meteorites recovered on Earth, giving Vesta a direct sample-based mineralogical link to Earth's meteorite collections unmatched by any other asteroid. Vesta's dry, basaltic, differentiated surface distinguishes it sharply from the volatile-rich, undifferentiated composition of most other main-belt bodies.",
-    "assets": {
-      "image": {
-        "title": "4 Vesta (Dawn, natural color)",
-        "infoUrl": "https://en.wikipedia.org/wiki/4_Vesta",
-        "localImage": "images/bodies/vesta.jpg"
-      }
-    }
-  },
-  "1 Ceres": {
-    "significance": "The only dwarf planet located in the inner solar system, and the largest object in the asteroid belt, with a diameter of about 940-950 km and roughly a third of the entire belt's total mass. Ceres is a differentiated body with a rocky core beneath an icy-rocky crust, and evidence points to a remnant layer of subsurface brine; its low bulk density (~2.16 g/cm3) is consistent with water ice making up a substantial fraction of its mass. The bright deposits in Occator Crater, composed chiefly of sodium carbonate along with ammonium chloride, are geologically young cryovolcanic salt deposits left by brine that reached the surface within the last few million years, indicating Ceres has been geologically active in the recent past. Its surface also carries ammoniated clays and carbonates atypical of the dry inner asteroid belt, together with detections of organic compounds.",
-    "assets": {
-      "image": {
-        "title": "1 Ceres (Dawn, Haulani Crater)",
-        "infoUrl": "https://en.wikipedia.org/wiki/Ceres_(dwarf_planet)",
-        "localImage": "images/bodies/ceres.jpg"
-      }
-    }
-  },
-  "9P/Tempel 1": {
-    "significance": "Tempel 1 is a Jupiter-family comet discovered in 1867 by Wilhelm Tempel, orbiting the Sun roughly every 5.6 years. Its nucleus is elongated and bilobed, roughly 7.6 km by 4.9 km, with an extremely low bulk density of around 400-600 kg/m3 and porosity estimated at 70-75%, making it one of the most structurally fragile bodies studied at close range. High-resolution imaging revealed a surface of smooth, flow-like terrain alongside impact craters and layered terraces, with near-surface water ice exposed in a few localized patches beneath a fine-grained, devolatilized outer crust. This combination of high porosity and layered structure supports the \"rubble pile\" picture of cometary nuclei as loosely bound aggregates rather than solid ice bodies.",
-    "assets": {
-      "image": {
-        "title": "9P/Tempel 1 (Deep Impact/Stardust-NExT composite)",
-        "infoUrl": "https://science.nasa.gov/photojournal/tempel-1-composite-map",
-        "localImage": "images/bodies/tempel1.jpg"
-      }
-    }
-  },
-  "16 Psyche": {
-    "significance": "16 Psyche is the largest M-type (metallic) asteroid in the main belt, with a mean diameter of about 226 km and a mass representing close to 1% of the total mass of the asteroid belt. Radar and thermal observations indicate an unusually high metal content -- modeled at roughly 30-60% Fe-Ni metal by volume -- and its radar albedo of 0.42 is among the highest measured for any asteroid. The leading hypothesis holds that Psyche is the exposed iron-nickel core of a shattered protoplanetesimal that lost its rocky mantle and crust in one or more early collisions, though some spectral and density modeling instead favors a differentiated body with localized metal-rich patches rather than a pure core. Its irregular, slightly ellipsoidal shape and heterogeneous surface composition make it a rare natural laboratory for studying planetary interiors that are otherwise inaccessible. No spacecraft has visited Psyche yet -- NASA's Psyche mission is en route, with arrival expected in 2029.",
-    "assets": {
-      "image": {
-        "title": "16 Psyche (ESO/LAM HARISSA survey)",
-        "infoUrl": "https://commons.wikimedia.org/wiki/File:Psyche_asteroid_eso.jpg",
-        "localImage": "images/bodies/psyche.jpg"
-      }
-    }
-  },
   "Pluto and Charon": {
     "significance": "Pluto and Charon form the solar system's only known binary dwarf-planet system: because Charon (1,212 km diameter) is roughly half Pluto's size (2,377 km diameter) and about an eighth its mass, their mutual barycenter lies outside Pluto's own ~1,188 km radius, so the two bodies orbit a point in open space between them rather than Charon simply orbiting Pluto. Pluto's surface is dominated by Sputnik Planitia, a 1,000 x 1,300 km basin filled with a kilometers-thick sheet of convecting nitrogen ice whose cellular surface pattern refreshes every ~500,000 years; its thin nitrogen atmosphere contains over 20 distinct haze layers that give Pluto's sky a blue tint. Charon, by contrast, is an ice-rock body scarred by an equatorial belt of canyons and fault systems stretching over 1,000 km, evidence of an ancient subsurface ocean that froze and expanded. Charon's north pole bears a large reddish-dark cap called Mordor Macula, roughly 475 km across, colored by tholins produced when methane escaping Pluto's atmosphere freezes onto Charon's cold pole and is altered by ultraviolet radiation.",
     "assets": {
@@ -186,96 +96,6 @@
         "title": "Pluto and Charon (New Horizons)",
         "infoUrl": "https://science.nasa.gov/image-detail/pluto-and-charon-1920x640/",
         "localImage": "images/bodies/pluto_charon.jpg"
-      }
-    }
-  },
-  "4179 Toutatis": {
-    "significance": "4179 Toutatis is an elongated, bilobed near-Earth asteroid of the Apollo group, measuring roughly 4.75 x 2.4 x 1.95 km, classified as a potentially hazardous asteroid due to its Earth-crossing orbit. It is a rare example of a chaotic, non-principal-axis rotator (\"tumbler\"): it has no single fixed rotation period, instead spinning about its long axis every 5.4 days while that axis itself precesses with a period of 7.4 days, unlike the simple single-axis spin of most asteroids. Close-range imaging resolved individual boulders, a large basin at its bigger lobe, and rubble-strewn regolith, supporting the interpretation that Toutatis is a gravitationally bound rubble pile rather than a single coherent rock. Discovered in 1989 by French astronomer Christian Pollas, it makes periodic close approaches to Earth's orbit that have made it one of the most closely studied near-Earth objects via radar.",
-    "assets": {
-      "image": {
-        "title": "4179 Toutatis (close-up)",
-        "infoUrl": "https://commons.wikimedia.org/wiki/File:Asteroid_4179_Toutatis_close-up.jpg",
-        "localImage": "images/bodies/toutatis.jpg"
-      }
-    }
-  },
-  "469219 Kamoʻoalewa": {
-    "significance": "469219 Kamo'oalewa is a tiny near-Earth asteroid, on the order of a few tens of meters across, that occupies a quasi-satellite orbit around Earth -- a 1:1 mean-motion resonance that makes it appear to loop around Earth without being gravitationally bound. It is the most dynamically stable of Earth's known quasi-satellites, with models indicating it has occupied this configuration for centuries and could remain there for roughly a million years, and it is also a remarkably fast rotator, completing one spin in about 28 minutes. Telescopic spectra obtained before 2025 showed an unusually reddened signature closely matching space-weathered lunar samples returned by Chang'e-5, leading to the hypothesis that Kamo'oalewa is a fragment ejected from the Moon rather than an ordinary asteroid; newer data show a less-reddened spectrum more typical of ordinary silicate asteroids, complicating that lunar-origin picture. Its small size, fast spin, and unusual orbit make it an exceptionally difficult object to characterize from Earth.",
-    "assets": {
-      "image": {
-        "title": "469219 Kamo'oalewa (first close-up, Tianwen-2)",
-        "infoUrl": "https://en.wikipedia.org/wiki/File:First_look_at_Kamo%CA%BBoalewa_from_Tianwen-2.jpg",
-        "localImage": "images/bodies/kamooalewa.jpg"
-      }
-    }
-  },
-  "617 Patroclus": {
-    "significance": "617 Patroclus is a binary Jupiter Trojan asteroid orbiting near Jupiter's trailing (L5) Lagrange point, and in 2001 it became the first Trojan asteroid discovered to be a binary. Its two components, Patroclus (roughly 113 km) and Menoetius (roughly 104 km), are nearly equal in size and orbit a common barycenter separated by about 695 km with an orbital period of 103 hours, an unusually \"twin\" configuration among binary asteroids. Both components are dark, low-albedo D-type bodies with an estimated bulk density of only about 0.8 g/cm3 -- lower than water ice -- implying a highly porous interior and a substantial fraction of ice beneath a carbon-rich, organic-tholin surface crust. This composition supports the idea that Patroclus-Menoetius originated among icy planetesimals of the outer solar system and was later captured into Jupiter's Trojan swarm.",
-    "assets": {
-      "image": {
-        "title": "617 Patroclus (Hubble)",
-        "infoUrl": "https://commons.wikimedia.org/wiki/File:617_Patroclus_Hubble.jpg",
-        "localImage": "images/bodies/patroclus.jpg"
-      }
-    }
-  },
-  "152830 Dinkinesh": {
-    "significance": "Dinkinesh is a small S-type (silicate/metal-rich) main-belt asteroid roughly 720-900 m in mean diameter, making it the smallest asteroid yet visited by a spacecraft at the time of Lucy's 2023 flyby. Its most distinctive feature is an unexpected satellite, later named Selam, which Lucy revealed to be a contact binary -- two near-equal lobes (about 210 m and 230 m across) touching each other, orbiting Dinkinesh at ~3.1 km with a ~52.7-hour period while tidally locked. This marked the first confirmed contact-binary satellite ever observed orbiting another asteroid. Dinkinesh itself shows an unusual equatorial ridge and trough, likely produced by rotational mass-shedding (YORP spin-up) followed by partial reaccretion of the shed material -- the same event that may have supplied the material from which Selam accreted.",
-    "assets": {
-      "image": {
-        "title": "152830 Dinkinesh and its satellite Selam (Lucy)",
-        "infoUrl": "https://www.nasa.gov/image-article/nasas-lucy-spacecraft-discovers-2nd-asteroid-during-dinkinesh-flyby/",
-        "localImage": "images/bodies/dinkinesh.png"
-      }
-    }
-  },
-  "52246 Donaldjohanson": {
-    "significance": "Donaldjohanson is a carbonaceous (C-type) main-belt asteroid with a strikingly elongated, bilobed \"peanut\" shape, roughly 8 km long and 3.5 km at its widest, connected by a thin, smooth neck. Lucy's April 2025 flyby revealed a light-gray surface pocked with smooth-edged craters, concentrated more heavily on the larger lobe, pointing to a complex, layered geologic history. Rather than rotating cleanly, the asteroid tumbles chaotically, a state attributed to a spin-down resonance from an initially faster rotation rate. It is a fragment of a much larger parent body destroyed in a collision roughly 155 million years ago and is considered a likely member of the Erigone collisional asteroid family.",
-    "assets": {
-      "image": {
-        "title": "52246 Donaldjohanson (Lucy)",
-        "infoUrl": "https://science.nasa.gov/blogs/lucy/2025/07/02/nasas-lucy-mission-provides-full-view-of-asteroid-donaldjohanson/",
-        "localImage": "images/bodies/donaldjohanson.png"
-      }
-    }
-  },
-  "3548 Eurybates": {
-    "significance": "Eurybates is a dark, carbonaceous Jupiter Trojan roughly 64-72 km in diameter with a very low albedo (~0.05-0.06) and a measured density of only about 1.1 g/cm3, comparable to icy Kuiper Belt objects. It is the largest remnant of a catastrophic collision and is the parent body of the Eurybates family, the only confirmed collisional family known among the Jupiter Trojans, comprising over 200 fragments on similar orbits. As a Trojan, it is trapped in Jupiter's leading (L4) Lagrange point, a dynamically stable reservoir thought to preserve some of the most primitive, least-altered material remaining from the outer solar system's formation. Eurybates hosts a tiny satellite, Queta (~1.2 km diameter), discovered via Hubble imaging in 2018, orbiting at roughly 2,350 km with an 82-day period. Eurybates has not yet been visited -- Lucy's flyby is scheduled for August 2027; the image here is a lightcurve-derived shape model, not a photograph.",
-    "assets": {
-      "image": {
-        "title": "3548 Eurybates (lightcurve shape model, 2023)",
-        "infoUrl": "https://commons.wikimedia.org/wiki/File:3548_Eurybates_lightcurve_shape_model_2023.jpg",
-        "localImage": "images/bodies/eurybates.jpg"
-      }
-    }
-  },
-  "15094 Polymele": {
-    "significance": "Polymele is a P-type Jupiter Trojan, one of the darkest and reddest classes of asteroid, with a diameter estimated at up to 21 km and an elongated (\"flat\") shape inferred from stellar occultation measurements. In March 2022, Lucy's science team discovered it has its own satellite -- informally nicknamed \"Shaun\" -- roughly 5.5 km across and orbiting about 200 km from the primary, found via a rare predicted stellar-occultation campaign involving dozens of professional and amateur observer teams. As an L4 Trojan, Polymele is presumed to be a compositionally primitive body captured early in solar system history. Polymele has not yet been visited -- Lucy's flyby is scheduled for September 2027; the image here is from the occultation campaign that discovered its moon, not a photograph of the body itself.",
-    "assets": {
-      "image": {
-        "title": "Polymele occultation campaign (satellite discovery)",
-        "infoUrl": "https://commons.wikimedia.org/wiki/File:Polymele_occultation_satellite_discovery.png",
-        "localImage": "images/bodies/polymele.png"
-      }
-    }
-  },
-  "11351 Leucus": {
-    "significance": "Leucus is a mid-sized D-type Jupiter Trojan with a strongly elongated, non-ellipsoidal shape, measuring roughly 60.8 x 39.2 x 27.8 km (mean diameter ~41 km) based on lightcurve and occultation modeling. Its most distinctive trait is an extraordinarily slow rotation period of about 445.7 hours (~18.6 Earth days), among the slowest confirmed rotation rates of any asteroid, which subjects its surface to unusually large day-night temperature swings. Its D-type spectrum -- redder and featureless compared to inner-belt asteroids -- links it compositionally to organic-rich, low-albedo bodies thought to have formed in the outer solar system. Leucus has not yet been visited -- Lucy's flyby is scheduled for April 2028; the image here is a lightcurve-derived shape model, not a photograph.",
-    "assets": {
-      "image": {
-        "title": "11351 Leucus (lightcurve shape model, 2020)",
-        "infoUrl": "https://commons.wikimedia.org/wiki/File:11351_Leucus_lightcurve_shape_model_2020.jpg",
-        "localImage": "images/bodies/leucus.jpg"
-      }
-    }
-  },
-  "21900 Orus": {
-    "significance": "Orus is a large D-type Jupiter Trojan, among the 100 largest known Trojans, with dimensions of roughly 70.7 x 63.0 x 51.4 km (mean diameter ~60.5 km) and a rotation period of about 13.5 hours. Its D-type classification places it among the reddest, lowest-albedo asteroids, spectrally resembling outer-main-belt and Kuiper Belt-like material with minimal aqueous alteration, consistent with formation far from the Sun. As an L4 Trojan orbiting in gravitational lockstep with Jupiter, Orus is considered a well-preserved sample of primordial solar system solids. Orus has not yet been visited -- Lucy's flyby is scheduled for November 2028; the image here is a lightcurve-derived shape model, not a photograph.",
-    "assets": {
-      "image": {
-        "title": "21900 Orus (lightcurve shape model, 2023)",
-        "infoUrl": "https://commons.wikimedia.org/wiki/File:21900_Orus_lightcurve_shape_model_2023.jpg",
-        "localImage": "images/bodies/orus.jpg"
       }
     }
   },
@@ -476,6 +296,186 @@
         "title": "Charon (true color, New Horizons)",
         "infoUrl": "https://en.wikipedia.org/wiki/Charon_(moon)",
         "localImage": "images/bodies/charon.png"
+      }
+    }
+  },
+  "Churyumov–Gerasimenko (67P)": {
+    "significance": "A Jupiter-family comet with a distinctive bilobate \"rubber duck\" nucleus roughly 4.3 by 4.1 by 1.6 km, formed either from a contact binary of two separately accreted bodies or by erosion of a single larger object. The nucleus has an extremely low bulk density of about 0.53 g/cm3 and porosity around 70-80%, making it one of the least dense solid bodies known, and a very low albedo (~0.06) that renders its surface darker than coal. It is composed of water and carbon dioxide ices mixed with a refractory, carbon-rich dust mantle, with a measured dust-to-ice mass ratio greater than 1, indicating the nucleus is more rock/dust than ice by mass. In-situ analysis detected the amino acid glycine, phosphorus, and molecular oxygen in its coma, findings relevant to theories of cometary delivery of prebiotic material to early Earth.",
+    "assets": {
+      "image": {
+        "title": "67P/Churyumov–Gerasimenko (true color)",
+        "infoUrl": "https://en.wikipedia.org/wiki/67P%2FChuryumov%E2%80%93Gerasimenko",
+        "localImage": "images/bodies/67p.jpg"
+      }
+    }
+  },
+  "Bennu (101955)": {
+    "significance": "A carbonaceous (B-type) near-Earth asteroid roughly 490 m across with a rubble-pile internal structure and very low bulk density (~1.19 g/cm3), implying macroporosity near 50%. Its shape is a spinning-top with a pronounced equatorial ridge, a form common among small fast-rotating rubble piles, and its surface proved unexpectedly rough and boulder-strewn rather than covered in fine regolith. Returned samples contain hydrated clay minerals, magnesium-sodium phosphates, carbonates, and organic compounds, including evidence of ancient brine evaporation, indicating the parent body once hosted liquid water. Bennu is also one of the most potentially hazardous known asteroids, with a cumulative impact probability with Earth of roughly 1-in-1,750 in the year 2182, making it a benchmark object for planetary defense risk assessment.",
+    "assets": {
+      "image": {
+        "title": "101955 Bennu (OSIRIS-REx mosaic)",
+        "infoUrl": "https://en.wikipedia.org/wiki/101955_Bennu",
+        "localImage": "images/bodies/bennu.png"
+      }
+    }
+  },
+  "Ryugu (162173)": {
+    "significance": "A carbonaceous (Cg-type) near-Earth asteroid about 1 km across with a diamond/spinning-top shape and one of the lowest albedos of any solar system body (~0.02), reflecting only about 2% of incident sunlight. It is a low-density (~1.19 g/cm3), high-porosity rubble pile, consistent with formation from re-accreted debris after a parent-body disruption, and rotates with a 7.6-hour period on a retrograde axis. Returned samples contain the RNA nucleobase uracil, more than 20 amino acids, and other prebiotic organic compounds alongside hydrated phyllosilicates and carbonates, directly demonstrating aqueous alteration on the parent body. Ryugu's orbit crosses those of both Earth and Mars, classifying it as a potentially hazardous asteroid.",
+    "assets": {
+      "image": {
+        "title": "162173 Ryugu (Hayabusa2)",
+        "infoUrl": "https://en.wikipedia.org/wiki/162173_Ryugu",
+        "localImage": "images/bodies/ryugu.png"
+      }
+    }
+  },
+  "Didymos (65803)": {
+    "significance": "A binary near-Earth asteroid system: the primary, Didymos, is an S-type stony body about 780 m in diameter that rotates in just 2.26 hours, near the theoretical spin-barrier limit beyond which a rubble-pile asteroid would fly apart, and its oblate, equatorially-ridged shape suggests it has shed material from its equator as a result. The secondary, Dimorphos, is a roughly 151 m moonlet believed to have formed from material shed by the primary, orbiting Didymos at a distance of about 1.2 km. The system is one of only a small number of known binary near-Earth asteroids, providing a natural laboratory for studying the formation and dynamics of asteroid moons via rotational mass-shedding (YORP spin-up). Both bodies are silicate-rich with an estimated bulk density around 2.7 g/cm3, well above typical carbonaceous rubble piles.",
+    "assets": {
+      "image": {
+        "title": "Didymos and Dimorphos (DART, high resolution)",
+        "infoUrl": "https://en.wikipedia.org/wiki/65803_Didymos",
+        "localImage": "images/bodies/didymos.png"
+      }
+    }
+  },
+  "Itokawa (25143)": {
+    "significance": "A small S-type (stony) near-Earth asteroid with a distinctive peanut/sea-otter shape roughly 535 x 294 x 209 m, consisting of two lobes (\"Head\" and \"Body\") that most likely represent two smaller bodies that gently merged. It has a low bulk density of about 1.9-1.95 g/cm3 against a grain density near 3.4 g/cm3, implying an internal macroporosity of roughly 40% and confirming it is a gravitationally-bound rubble pile rather than a monolithic rock. Its surface is unusually bimodal: rugged, boulder-covered \"rough terrain\" dominates most of the body, while smooth, gravitationally-low regions such as the Muses Sea are blanketed in fine regolith gravel, with almost no impact craters visible anywhere due to the shallow, mobile regolith and small size. Itokawa's returned surface grains confirmed that ordinary chondrite meteorites originate from S-type asteroids like it.",
+    "assets": {
+      "image": {
+        "title": "25143 Itokawa (close-up)",
+        "infoUrl": "https://en.wikipedia.org/wiki/25143_Itokawa",
+        "localImage": "images/bodies/itokawa.jpg"
+      }
+    }
+  },
+  "Vesta (4)": {
+    "significance": "The second-most-massive body in the asteroid belt and one of the few asteroids known to be fully differentiated, with an iron-nickel core, an olivine mantle, and a basaltic crust, making it effectively a surviving protoplanet from the solar system's formation. Its southern hemisphere is dominated by the Rheasilvia impact basin, about 505 km across (roughly 90% of Vesta's own diameter), with a central peak rising some 20-22 km, one of the tallest mountains in the solar system. Debris from Rheasilvia and the earlier Veneneia basin is the source of the howardite-eucrite-diogenite (HED) meteorite clan, which accounts for roughly 5% of all meteorites recovered on Earth, giving Vesta a direct sample-based mineralogical link to Earth's meteorite collections unmatched by any other asteroid. Vesta's dry, basaltic, differentiated surface distinguishes it sharply from the volatile-rich, undifferentiated composition of most other main-belt bodies.",
+    "assets": {
+      "image": {
+        "title": "4 Vesta (Dawn, natural color)",
+        "infoUrl": "https://en.wikipedia.org/wiki/4_Vesta",
+        "localImage": "images/bodies/vesta.jpg"
+      }
+    }
+  },
+  "Ceres (1)": {
+    "significance": "The only dwarf planet located in the inner solar system, and the largest object in the asteroid belt, with a diameter of about 940-950 km and roughly a third of the entire belt's total mass. Ceres is a differentiated body with a rocky core beneath an icy-rocky crust, and evidence points to a remnant layer of subsurface brine; its low bulk density (~2.16 g/cm3) is consistent with water ice making up a substantial fraction of its mass. The bright deposits in Occator Crater, composed chiefly of sodium carbonate along with ammonium chloride, are geologically young cryovolcanic salt deposits left by brine that reached the surface within the last few million years, indicating Ceres has been geologically active in the recent past. Its surface also carries ammoniated clays and carbonates atypical of the dry inner asteroid belt, together with detections of organic compounds.",
+    "assets": {
+      "image": {
+        "title": "1 Ceres (Dawn, Haulani Crater)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Ceres_(dwarf_planet)",
+        "localImage": "images/bodies/ceres.jpg"
+      }
+    }
+  },
+  "Tempel 1 (9P)": {
+    "significance": "Tempel 1 is a Jupiter-family comet discovered in 1867 by Wilhelm Tempel, orbiting the Sun roughly every 5.6 years. Its nucleus is elongated and bilobed, roughly 7.6 km by 4.9 km, with an extremely low bulk density of around 400-600 kg/m3 and porosity estimated at 70-75%, making it one of the most structurally fragile bodies studied at close range. High-resolution imaging revealed a surface of smooth, flow-like terrain alongside impact craters and layered terraces, with near-surface water ice exposed in a few localized patches beneath a fine-grained, devolatilized outer crust. This combination of high porosity and layered structure supports the \"rubble pile\" picture of cometary nuclei as loosely bound aggregates rather than solid ice bodies.",
+    "assets": {
+      "image": {
+        "title": "9P/Tempel 1 (Deep Impact/Stardust-NExT composite)",
+        "infoUrl": "https://science.nasa.gov/photojournal/tempel-1-composite-map",
+        "localImage": "images/bodies/tempel1.jpg"
+      }
+    }
+  },
+  "Psyche (16)": {
+    "significance": "16 Psyche is the largest M-type (metallic) asteroid in the main belt, with a mean diameter of about 226 km and a mass representing close to 1% of the total mass of the asteroid belt. Radar and thermal observations indicate an unusually high metal content -- modeled at roughly 30-60% Fe-Ni metal by volume -- and its radar albedo of 0.42 is among the highest measured for any asteroid. The leading hypothesis holds that Psyche is the exposed iron-nickel core of a shattered protoplanetesimal that lost its rocky mantle and crust in one or more early collisions, though some spectral and density modeling instead favors a differentiated body with localized metal-rich patches rather than a pure core. Its irregular, slightly ellipsoidal shape and heterogeneous surface composition make it a rare natural laboratory for studying planetary interiors that are otherwise inaccessible. No spacecraft has visited Psyche yet -- NASA's Psyche mission is en route, with arrival expected in 2029.",
+    "assets": {
+      "image": {
+        "title": "16 Psyche (ESO/LAM HARISSA survey)",
+        "infoUrl": "https://commons.wikimedia.org/wiki/File:Psyche_asteroid_eso.jpg",
+        "localImage": "images/bodies/psyche.jpg"
+      }
+    }
+  },
+  "Toutatis (4179)": {
+    "significance": "4179 Toutatis is an elongated, bilobed near-Earth asteroid of the Apollo group, measuring roughly 4.75 x 2.4 x 1.95 km, classified as a potentially hazardous asteroid due to its Earth-crossing orbit. It is a rare example of a chaotic, non-principal-axis rotator (\"tumbler\"): it has no single fixed rotation period, instead spinning about its long axis every 5.4 days while that axis itself precesses with a period of 7.4 days, unlike the simple single-axis spin of most asteroids. Close-range imaging resolved individual boulders, a large basin at its bigger lobe, and rubble-strewn regolith, supporting the interpretation that Toutatis is a gravitationally bound rubble pile rather than a single coherent rock. Discovered in 1989 by French astronomer Christian Pollas, it makes periodic close approaches to Earth's orbit that have made it one of the most closely studied near-Earth objects via radar.",
+    "assets": {
+      "image": {
+        "title": "4179 Toutatis (close-up)",
+        "infoUrl": "https://commons.wikimedia.org/wiki/File:Asteroid_4179_Toutatis_close-up.jpg",
+        "localImage": "images/bodies/toutatis.jpg"
+      }
+    }
+  },
+  "Kamoʻoalewa (469219)": {
+    "significance": "469219 Kamo'oalewa is a tiny near-Earth asteroid, on the order of a few tens of meters across, that occupies a quasi-satellite orbit around Earth -- a 1:1 mean-motion resonance that makes it appear to loop around Earth without being gravitationally bound. It is the most dynamically stable of Earth's known quasi-satellites, with models indicating it has occupied this configuration for centuries and could remain there for roughly a million years, and it is also a remarkably fast rotator, completing one spin in about 28 minutes. Telescopic spectra obtained before 2025 showed an unusually reddened signature closely matching space-weathered lunar samples returned by Chang'e-5, leading to the hypothesis that Kamo'oalewa is a fragment ejected from the Moon rather than an ordinary asteroid; newer data show a less-reddened spectrum more typical of ordinary silicate asteroids, complicating that lunar-origin picture. Its small size, fast spin, and unusual orbit make it an exceptionally difficult object to characterize from Earth.",
+    "assets": {
+      "image": {
+        "title": "469219 Kamo'oalewa (first close-up, Tianwen-2)",
+        "infoUrl": "https://en.wikipedia.org/wiki/File:First_look_at_Kamo%CA%BBoalewa_from_Tianwen-2.jpg",
+        "localImage": "images/bodies/kamooalewa.jpg"
+      }
+    }
+  },
+  "Dinkinesh (152830)": {
+    "significance": "Dinkinesh is a small S-type (silicate/metal-rich) main-belt asteroid roughly 720-900 m in mean diameter, making it the smallest asteroid yet visited by a spacecraft at the time of Lucy's 2023 flyby. Its most distinctive feature is an unexpected satellite, later named Selam, which Lucy revealed to be a contact binary -- two near-equal lobes (about 210 m and 230 m across) touching each other, orbiting Dinkinesh at ~3.1 km with a ~52.7-hour period while tidally locked. This marked the first confirmed contact-binary satellite ever observed orbiting another asteroid. Dinkinesh itself shows an unusual equatorial ridge and trough, likely produced by rotational mass-shedding (YORP spin-up) followed by partial reaccretion of the shed material -- the same event that may have supplied the material from which Selam accreted.",
+    "assets": {
+      "image": {
+        "title": "152830 Dinkinesh and its satellite Selam (Lucy)",
+        "infoUrl": "https://www.nasa.gov/image-article/nasas-lucy-spacecraft-discovers-2nd-asteroid-during-dinkinesh-flyby/",
+        "localImage": "images/bodies/dinkinesh.png"
+      }
+    }
+  },
+  "Donaldjohanson (52246)": {
+    "significance": "Donaldjohanson is a carbonaceous (C-type) main-belt asteroid with a strikingly elongated, bilobed \"peanut\" shape, roughly 8 km long and 3.5 km at its widest, connected by a thin, smooth neck. Lucy's April 2025 flyby revealed a light-gray surface pocked with smooth-edged craters, concentrated more heavily on the larger lobe, pointing to a complex, layered geologic history. Rather than rotating cleanly, the asteroid tumbles chaotically, a state attributed to a spin-down resonance from an initially faster rotation rate. It is a fragment of a much larger parent body destroyed in a collision roughly 155 million years ago and is considered a likely member of the Erigone collisional asteroid family.",
+    "assets": {
+      "image": {
+        "title": "52246 Donaldjohanson (Lucy)",
+        "infoUrl": "https://science.nasa.gov/blogs/lucy/2025/07/02/nasas-lucy-mission-provides-full-view-of-asteroid-donaldjohanson/",
+        "localImage": "images/bodies/donaldjohanson.png"
+      }
+    }
+  },
+  "Eurybates (3548)": {
+    "significance": "Eurybates is a dark, carbonaceous Jupiter Trojan roughly 64-72 km in diameter with a very low albedo (~0.05-0.06) and a measured density of only about 1.1 g/cm3, comparable to icy Kuiper Belt objects. It is the largest remnant of a catastrophic collision and is the parent body of the Eurybates family, the only confirmed collisional family known among the Jupiter Trojans, comprising over 200 fragments on similar orbits. As a Trojan, it is trapped in Jupiter's leading (L4) Lagrange point, a dynamically stable reservoir thought to preserve some of the most primitive, least-altered material remaining from the outer solar system's formation. Eurybates hosts a tiny satellite, Queta (~1.2 km diameter), discovered via Hubble imaging in 2018, orbiting at roughly 2,350 km with an 82-day period. Eurybates has not yet been visited -- Lucy's flyby is scheduled for August 2027; the image here is a lightcurve-derived shape model, not a photograph.",
+    "assets": {
+      "image": {
+        "title": "3548 Eurybates (lightcurve shape model, 2023)",
+        "infoUrl": "https://commons.wikimedia.org/wiki/File:3548_Eurybates_lightcurve_shape_model_2023.jpg",
+        "localImage": "images/bodies/eurybates.jpg"
+      }
+    }
+  },
+  "Polymele (15094)": {
+    "significance": "Polymele is a P-type Jupiter Trojan, one of the darkest and reddest classes of asteroid, with a diameter estimated at up to 21 km and an elongated (\"flat\") shape inferred from stellar occultation measurements. In March 2022, Lucy's science team discovered it has its own satellite -- informally nicknamed \"Shaun\" -- roughly 5.5 km across and orbiting about 200 km from the primary, found via a rare predicted stellar-occultation campaign involving dozens of professional and amateur observer teams. As an L4 Trojan, Polymele is presumed to be a compositionally primitive body captured early in solar system history. Polymele has not yet been visited -- Lucy's flyby is scheduled for September 2027; the image here is from the occultation campaign that discovered its moon, not a photograph of the body itself.",
+    "assets": {
+      "image": {
+        "title": "Polymele occultation campaign (satellite discovery)",
+        "infoUrl": "https://commons.wikimedia.org/wiki/File:Polymele_occultation_satellite_discovery.png",
+        "localImage": "images/bodies/polymele.png"
+      }
+    }
+  },
+  "Leucus (11351)": {
+    "significance": "Leucus is a mid-sized D-type Jupiter Trojan with a strongly elongated, non-ellipsoidal shape, measuring roughly 60.8 x 39.2 x 27.8 km (mean diameter ~41 km) based on lightcurve and occultation modeling. Its most distinctive trait is an extraordinarily slow rotation period of about 445.7 hours (~18.6 Earth days), among the slowest confirmed rotation rates of any asteroid, which subjects its surface to unusually large day-night temperature swings. Its D-type spectrum -- redder and featureless compared to inner-belt asteroids -- links it compositionally to organic-rich, low-albedo bodies thought to have formed in the outer solar system. Leucus has not yet been visited -- Lucy's flyby is scheduled for April 2028; the image here is a lightcurve-derived shape model, not a photograph.",
+    "assets": {
+      "image": {
+        "title": "11351 Leucus (lightcurve shape model, 2020)",
+        "infoUrl": "https://commons.wikimedia.org/wiki/File:11351_Leucus_lightcurve_shape_model_2020.jpg",
+        "localImage": "images/bodies/leucus.jpg"
+      }
+    }
+  },
+  "Orus (21900)": {
+    "significance": "Orus is a large D-type Jupiter Trojan, among the 100 largest known Trojans, with dimensions of roughly 70.7 x 63.0 x 51.4 km (mean diameter ~60.5 km) and a rotation period of about 13.5 hours. Its D-type classification places it among the reddest, lowest-albedo asteroids, spectrally resembling outer-main-belt and Kuiper Belt-like material with minimal aqueous alteration, consistent with formation far from the Sun. As an L4 Trojan orbiting in gravitational lockstep with Jupiter, Orus is considered a well-preserved sample of primordial solar system solids. Orus has not yet been visited -- Lucy's flyby is scheduled for November 2028; the image here is a lightcurve-derived shape model, not a photograph.",
+    "assets": {
+      "image": {
+        "title": "21900 Orus (lightcurve shape model, 2023)",
+        "infoUrl": "https://commons.wikimedia.org/wiki/File:21900_Orus_lightcurve_shape_model_2023.jpg",
+        "localImage": "images/bodies/orus.jpg"
+      }
+    }
+  },
+  "Patroclus (617)": {
+    "significance": "617 Patroclus is a binary Jupiter Trojan asteroid orbiting near Jupiter's trailing (L5) Lagrange point, and in 2001 it became the first Trojan asteroid discovered to be a binary. Its two components, Patroclus (roughly 113 km) and Menoetius (roughly 104 km), are nearly equal in size and orbit a common barycenter separated by about 695 km with an orbital period of 103 hours, an unusually \"twin\" configuration among binary asteroids. Both components are dark, low-albedo D-type bodies with an estimated bulk density of only about 0.8 g/cm3 -- lower than water ice -- implying a highly porous interior and a substantial fraction of ice beneath a carbon-rich, organic-tholin surface crust. This composition supports the idea that Patroclus-Menoetius originated among icy planetesimals of the outer solar system and was later captured into Jupiter's Trojan swarm.",
+    "assets": {
+      "image": {
+        "title": "617 Patroclus (Hubble)",
+        "infoUrl": "https://commons.wikimedia.org/wiki/File:617_Patroclus_Hubble.jpg",
+        "localImage": "images/bodies/patroclus.jpg"
       }
     }
   }

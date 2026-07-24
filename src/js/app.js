@@ -344,7 +344,7 @@
   ========================================================================= */
   const SMALL_BODIES = {
     '67P': {
-      name: '67P/Churyumov–Gerasimenko', type: 'comet',
+      name: 'Churyumov–Gerasimenko (67P)', type: 'comet',
       elements: { a: 3.462249489765068, e: 0.6409081306555051, iDeg: 7.040294906760007,
                   OmDeg: 50.13557380441372, wDeg: 12.79824973415729, M0Deg: 8.859927418758764,
                   epochDays: 5760.5 },
@@ -352,7 +352,7 @@
       targetOfFlights: ['rosetta'],
     },
     bennu: {
-      name: '101955 Bennu', type: 'asteroid',
+      name: 'Bennu (101955)', type: 'asteroid',
       elements: { a: 1.126391025894812, e: 0.2037450762416414, iDeg: 6.03494377024794,
                   OmDeg: 2.06086619569642, wDeg: 66.22306084084298, M0Deg: 101.703952002457,
                   epochDays: 4017.5 },
@@ -360,7 +360,7 @@
       targetOfFlights: ['osiris_rex'],
     },
     ryugu: {
-      name: '162173 Ryugu', type: 'asteroid',
+      name: 'Ryugu (162173)', type: 'asteroid',
       elements: { a: 1.190918932477906, e: 0.1910730049967184, iDeg: 5.866442495106322,
                   OmDeg: 251.2897124408818, wDeg: 211.6089939475371, M0Deg: 62.34067433781601,
                   epochDays: 9655.5 },
@@ -368,7 +368,7 @@
       targetOfFlights: ['hayabusa2'],
     },
     didymos: {
-      name: '65803 Didymos', type: 'asteroid',
+      name: 'Didymos (65803)', type: 'asteroid',
       elements: { a: 1.642709608529702, e: 0.3831233242624545, iDeg: 3.413876519313629,
                   OmDeg: 72.9858236207145, wDeg: 319.5807001349104, M0Deg: 260.8612886320632,
                   epochDays: 9655.5 },
@@ -376,7 +376,7 @@
       targetOfFlights: ['dart', 'hera'],
     },
     itokawa: {
-      name: '25143 Itokawa', type: 'asteroid',
+      name: 'Itokawa (25143)', type: 'asteroid',
       elements: { a: 1.324052284342771, e: 0.2801776414987972, iDeg: 1.620940810523569,
                   OmDeg: 69.07449749929083, wDeg: 162.8409022415483, M0Deg: 170.653905937934,
                   epochDays: 9655.5 },
@@ -384,7 +384,7 @@
       targetOfFlights: ['hayabusa'],
     },
     vesta: {
-      name: '4 Vesta', type: 'asteroid',
+      name: 'Vesta (4)', type: 'asteroid',
       elements: { a: 2.361365965127599, e: 0.09020374382834395, iDeg: 7.143925545058711,
                   OmDeg: 103.701293265032, wDeg: 151.4686478221564, M0Deg: 81.19015607686903,
                   epochDays: 9655.5 },
@@ -392,7 +392,7 @@
       targetOfFlights: ['dawn'],
     },
     ceres: {
-      name: '1 Ceres', type: 'asteroid',
+      name: 'Ceres (1)', type: 'asteroid',
       elements: { a: 2.765552595034094, e: 0.07969229514816586, iDeg: 10.58802780183462,
                   OmDeg: 80.24862682043221, wDeg: 73.29421453021587, M0Deg: 274.4193463761342,
                   epochDays: 9655.5 },
@@ -400,7 +400,7 @@
       targetOfFlights: ['dawn'],
     },
     tempel1: {
-      name: '9P/Tempel 1', type: 'comet',
+      name: 'Tempel 1 (9P)', type: 'comet',
       elements: { a: 3.146133758958915, e: 0.5097028326964878, iDeg: 10.4734281543904,
                   OmDeg: 68.75357468050096, wDeg: 179.1972753698572, M0Deg: 336.5854438553629,
                   epochDays: 5925.5 },
@@ -408,7 +408,7 @@
       targetOfFlights: ['deep_impact'],
     },
     psyche: {
-      name: '16 Psyche', type: 'asteroid',
+      name: 'Psyche (16)', type: 'asteroid',
       elements: { a: 2.925720466462538, e: 0.1349324738201893, iDeg: 3.098749116151128,
                   OmDeg: 149.9753859305033, wDeg: 230.0326782748359, M0Deg: 79.76939505329617,
                   epochDays: 9655.5 },
@@ -424,7 +424,7 @@
       targetOfFlights: ['new_horizons'],
     },
     toutatis: {
-      name: '4179 Toutatis', type: 'asteroid',
+      name: 'Toutatis (4179)', type: 'asteroid',
       elements: { a: 2.543047155641573, e: 0.6246302247178447, iDeg: 0.4480836624628189,
                   OmDeg: 125.3654799655549, wDeg: 277.8615384113277, M0Deg: 125.5161576467994,
                   epochDays: 9655.5 },
@@ -432,7 +432,7 @@
       targetOfFlights: ['chunge2_toutatis'],
     },
     kamooalewa: {
-      name: '469219 Kamoʻoalewa', type: 'asteroid',
+      name: 'Kamoʻoalewa (469219)', type: 'asteroid',
       elements: { a: 1.000810460069075, e: 0.1022387734111659, iDeg: 7.802609738007058,
                   OmDeg: 65.59324444474426, wDeg: 304.3632084517341, M0Deg: 243.3871507436424,
                   epochDays: 9655.5 },
@@ -440,7 +440,7 @@
       targetOfFlights: ['tianwen2'],
     },
     dinkinesh: {
-      name: '152830 Dinkinesh', type: 'asteroid',
+      name: 'Dinkinesh (152830)', type: 'asteroid',
       elements: { a: 2.191768748791583, e: 0.1126817135846694, iDeg: 2.093117265661373,
                   OmDeg: 21.35270512523402, wDeg: 66.91637126596935, M0Deg: 29.60751779009531,
                   epochDays: 9655.5 },
@@ -448,7 +448,7 @@
       targetOfFlights: ['lucy'],
     },
     donaldjohanson: {
-      name: '52246 Donaldjohanson', type: 'asteroid',
+      name: 'Donaldjohanson (52246)', type: 'asteroid',
       elements: { a: 2.383835831129859, e: 0.1868593763038477, iDeg: 4.425205239728406,
                   OmDeg: 262.7765342454273, wDeg: 212.8821499078564, M0Deg: 147.8525890028124,
                   epochDays: 9655.5 },
@@ -456,7 +456,7 @@
       targetOfFlights: ['lucy'],
     },
     eurybates: {
-      name: '3548 Eurybates', type: 'asteroid',
+      name: 'Eurybates (3548)', type: 'asteroid',
       elements: { a: 5.217371617810976, e: 0.09059867172297777, iDeg: 8.05147293527498,
                   OmDeg: 43.5587275998936, wDeg: 28.69968222483612, M0Deg: 125.7480299363769,
                   epochDays: 9655.5 },
@@ -464,7 +464,7 @@
       targetOfFlights: ['lucy'],
     },
     polymele: {
-      name: '15094 Polymele', type: 'asteroid',
+      name: 'Polymele (15094)', type: 'asteroid',
       elements: { a: 5.191514133435046, e: 0.09592245810512318, iDeg: 12.97735158439746,
                   OmDeg: 50.33105662992578, wDeg: 5.86529887136951, M0Deg: 143.4220008064438,
                   epochDays: 9655.5 },
@@ -472,7 +472,7 @@
       targetOfFlights: ['lucy'],
     },
     leucus: {
-      name: '11351 Leucus', type: 'asteroid',
+      name: 'Leucus (11351)', type: 'asteroid',
       elements: { a: 5.312382832170665, e: 0.06495789797701287, iDeg: 11.54341670108032,
                   OmDeg: 251.0799335752079, wDeg: 162.4048390063255, M0Deg: 139.1721755085774,
                   epochDays: 9655.5 },
@@ -480,7 +480,7 @@
       targetOfFlights: ['lucy'],
     },
     orus: {
-      name: '21900 Orus', type: 'asteroid',
+      name: 'Orus (21900)', type: 'asteroid',
       elements: { a: 5.123374239403683, e: 0.03672540559818106, iDeg: 8.468580378470353,
                   OmDeg: 258.5504431073313, wDeg: 182.7884930129634, M0Deg: 96.92267457127365,
                   epochDays: 9655.5 },
@@ -488,7 +488,7 @@
       targetOfFlights: ['lucy'],
     },
     patroclus: {
-      name: '617 Patroclus', type: 'asteroid',
+      name: 'Patroclus (617)', type: 'asteroid',
       elements: { a: 5.205975165165407, e: 0.1391467941344403, iDeg: 22.06359067056119,
                   OmDeg: 44.34968895523391, wDeg: 308.8377264097742, M0Deg: 58.67543319923984,
                   epochDays: 9655.5 },
@@ -2474,7 +2474,13 @@
 
   function buildSmallBodiesLegend() {
     smallBodiesRows.innerHTML = "";
-    Object.entries(SMALL_BODIES).forEach(([key, body]) => {
+    // Sorted alphabetically by display name -- catalog numbers moved to a
+    // trailing "(N)" specifically so this reads as alphabetical to a human
+    // scanning it (e.g. "Bennu (101955)" sorts under B), rather than the
+    // old "101955 Bennu" convention, which put every numbered body in a
+    // seemingly arbitrary jumble ahead of named ones like "Pluto and Charon".
+    const sorted = Object.entries(SMALL_BODIES).sort((a, b) => a[1].name.localeCompare(b[1].name));
+    sorted.forEach(([key, body]) => {
       const row = document.createElement("div");
       row.className = "row";
       row.style.cursor = "pointer";
@@ -2485,7 +2491,7 @@
       row.innerHTML = `<span class="dot" style="background:${body.meta.color}"></span><span>${body.name}</span>${badgeHtml}`;
       // Locked by its display name, not the SMALL_BODIES key -- same
       // convention every other body (planets, moons) already uses, so the
-      // locked panel title reads "101955 Bennu", not "bennu".
+      // locked panel title reads "Bennu (101955)", not "bennu".
       row.addEventListener("click", () => lockBody(body.name, { toggleIfSame: true }));
       smallBodiesRows.appendChild(row);
       if (key === "pluto") addSatelliteRow(smallBodiesRows, "Charon", "Pluto and Charon", CHARON_META.color);
@@ -2672,11 +2678,16 @@
       return;
     }
     const raw = FLIGHTS_RAW[key];
-    const { launchDays } = getFlightDates(key);
     selectedFlightKey = key;
-    simDate = dateFromDaysSinceJ2000(launchDays - 1); // one day before launch
-    dateInput.value = dateInputValue(simDate);
-    setPaused(true);
+    // Deliberately does NOT touch simDate/pause state: a legend click is
+    // "I want to see info about this mission," not "take me to its
+    // launch." Jumping the date out from under the user broke the normal
+    // flow of comparing multiple currently-visible missions -- click one
+    // to read about it, click another, without the clock lurching around
+    // underneath. isFlightVisible() already keeps the arc/marker on screen
+    // purely because it's selected (see its own "OR selected" clause), so
+    // the trajectory still renders correctly even while the current date
+    // sits outside the mission's actual launch-arrival window.
     // Lock the camera to the spacecraft (raw.name), not the launch planet.
     // worldStates is populated with the spacecraft position each frame
     // (see the selectedFlightKey block below the moons section) so the
@@ -2791,6 +2802,16 @@
     updateLockedPanelVisibility();
   });
 
+  // "Missions here" links (see missionsToHereHtml) are rebuilt into
+  // lockedPanelBody's innerHTML every frame along with everything else in
+  // the panel, so listening on the individual <span> elements would mean
+  // re-attaching every frame -- delegate to the stable container instead,
+  // bound once here, same as every other one-time listener in this block.
+  lockedPanelBody.addEventListener("click", (e) => {
+    const link = e.target.closest(".lp-mission-link");
+    if (link) selectFlight(link.dataset.flightKey);
+  });
+
   // Drag-to-reposition: mousedown on the header (but not the close button)
   // starts a drag; the resulting offset is applied on top of the panel's
   // normal auto-follow position every frame (see drawLockedPanelConnector),
@@ -2877,14 +2898,59 @@
       .filter((k) => assets[k])
       .map((k) => {
         const a = assets[k];
+        // localImage is stored relative to data/ (e.g. "images/rockets/atlas_v.png"
+        // matches the real path data/images/rockets/atlas_v.png on disk) -- but the
+        // <img> src is resolved relative to index.html at the project root, so it
+        // needs the "data/" prefix added here. Never verified in a real browser
+        // until now: every asset across every flight/body JSON file had this same
+        // silent 404, invisible to the headless test harness since it only checks
+        // the rendered HTML string, never actually fetches the image.
         const img = a.localImage
-          ? `<img src="${a.localImage}" alt="${a.title}" loading="lazy">`
+          ? `<img src="data/${a.localImage}" alt="${a.title}" loading="lazy">`
           : `<div class="lp-asset-noimg">${a.title}</div>`;
         const label = k.charAt(0).toUpperCase() + k.slice(1);
         return `<a class="lp-asset" href="${a.infoUrl}" target="_blank" rel="noopener noreferrer" title="${a.title}">${img}<span class="lp-asset-label">${label}</span></a>`;
       });
     if (tiles.length === 0) return "";
     return `<div class="lp-assets">${tiles.join("")}</div>`;
+  }
+
+  // Full-width block (heading + paragraph) for prose content -- see the
+  // .lp-section CSS comment for why this exists separately from addRow's
+  // two-column key/value layout (which wastes its whole key column on
+  // every wrapped line of a long paragraph).
+  function lpSectionHtml(heading, bodyHtml) {
+    return `<div class="lp-section"><div class="lp-section-heading">${heading}</div><div class="lp-section-body">${bodyHtml}</div></div>`;
+  }
+
+  // Flight keys whose actual destination (see flightEndpoints -- the FINAL
+  // leg's target for multi-leg flights, not any intermediate gravity-assist
+  // stop) is this body. Small bodies already carry a curated, authoritative
+  // list (SMALL_BODIES[key].targetOfFlights, also used for visibility
+  // widening) so this reuses that directly rather than re-deriving it;
+  // planets have no such field, so their list is derived fresh from every
+  // flight's real endpoint. Cheap either way (at most 38 flights, no
+  // ephemeris or Lambert calls), so no memoization -- fine to recompute
+  // every frame like the rest of formatLockedPanelContent already does.
+  function getMissionsToBody(bodyName) {
+    for (const key in SMALL_BODIES) {
+      if (SMALL_BODIES[key].name === bodyName) {
+        return SMALL_BODIES[key].targetOfFlights.filter((k) => FLIGHTS_RAW[k]);
+      }
+    }
+    return FLIGHTS_ORDER.filter((key) => flightEndpoints(FLIGHTS_RAW[key]).destinationBody === bodyName);
+  }
+
+  // Clickable list of missions whose destination is this body -- see the
+  // delegated click listener on lockedPanelBody (below) for how these
+  // actually select the flight; empty string (no section at all) if none.
+  function missionsToHereHtml(bodyName) {
+    const keys = getMissionsToBody(bodyName);
+    if (keys.length === 0) return "";
+    const links = keys
+      .map((k) => `<span class="lp-mission-link" data-flight-key="${k}">${FLIGHTS_RAW[k].name}</span>`)
+      .join("");
+    return `<div class="lp-section"><div class="lp-section-heading">Missions here</div><div class="lp-mission-links">${links}</div></div>`;
   }
 
   function formatLockedPanelContent(b) {
@@ -2905,9 +2971,10 @@
       addRow("Rocket", raw.rocket);
       addRow("Payload", raw.payload);
       addRow("Status", raw.status);
-      if (raw.significance) addRow("Why it matters", raw.significance);
-      if (raw.statusNote) addRow("Notes", raw.statusNote);
-      lockedPanelBody.innerHTML = rows + assetGalleryHtml(raw.assets);
+      let sections = "";
+      if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
+      if (raw.statusNote) sections += lpSectionHtml("Notes", raw.statusNote);
+      lockedPanelBody.innerHTML = rows + sections + assetGalleryHtml(raw.assets);
       return;
     }
 
@@ -2916,10 +2983,9 @@
       let rows =
         `<div class="lp-row"><span class="lp-key">Role</span><span class="lp-val">Central body (reference origin)</span></div>` +
         `<div class="lp-row"><span class="lp-key">Radius</span><span class="lp-val">${SUN_RADIUS_KM.toLocaleString()} km</span></div>`;
-      if (info && info.significance) {
-        rows += `<div class="lp-row"><span class="lp-key">Why it matters</span><span class="lp-val">${info.significance}</span></div>`;
-      }
-      lockedPanelBody.innerHTML = rows + (info ? assetGalleryHtml(info.assets) : "");
+      let sections = "";
+      if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
+      lockedPanelBody.innerHTML = rows + sections + (info ? assetGalleryHtml(info.assets) : "");
       return;
     }
 
@@ -2943,11 +3009,15 @@
       addRow("Inclination to ecliptic", `${(b.i / D2R).toFixed(2)}°`);
       addRow(`Orbital period (around ${b.primary})`, `${periodDays.toFixed(4)} d`);
       const satInfo = BODY_INFO[b.name];
-      if (satInfo && satInfo.significance) addRow("Why it matters", satInfo.significance);
-      lockedPanelBody.innerHTML = rows + (satInfo ? assetGalleryHtml(satInfo.assets) : "");
+      let sections = "";
+      if (satInfo && satInfo.significance) sections += lpSectionHtml("Why it matters", satInfo.significance);
+      lockedPanelBody.innerHTML = rows + sections + (satInfo ? assetGalleryHtml(satInfo.assets) : "");
       return;
     }
 
+    // Generic heliocentric body -- covers both planets and small bodies
+    // (identical shape, primary: "Sol"), which is also why both get the
+    // same "Missions here" treatment below.
     const speedKmS = Math.hypot(...b.vel) * AU_KM / SEC_PER_DAY;
     const periodDays = 2 * Math.PI * Math.sqrt((b.a * b.a * b.a) / GM_SUN_AU3_DAY2);
     const periodYears = periodDays / 365.25;
@@ -2961,8 +3031,10 @@
     addRow("Inclination (i)", `${(b.i / D2R).toFixed(2)}°`);
     addRow("Orbital period", `${periodYears.toFixed(2)} yr (${periodDays.toFixed(0)} d)`);
     const info = BODY_INFO[b.name];
-    if (info && info.significance) addRow("Why it matters", info.significance);
-    lockedPanelBody.innerHTML = rows + (info ? assetGalleryHtml(info.assets) : "");
+    let sections = "";
+    if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
+    sections += missionsToHereHtml(b.name);
+    lockedPanelBody.innerHTML = rows + sections + (info ? assetGalleryHtml(info.assets) : "");
   }
 
   function drawLockedPanelConnector() {

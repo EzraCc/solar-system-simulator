@@ -10,3 +10,7 @@ Thumbs.db
 *.swo
 .vscode/
 .idea/
+
+# Screenshots dropped here for visual bug reports -- transient, not project content
+debug/screenshots/*
+!debug/screenshots/.gitkeep
