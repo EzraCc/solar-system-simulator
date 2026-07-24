@@ -2668,9 +2668,6 @@
     } else {
       lockedBodyName = name;
     }
-    // TEMPORARY (2026-07-24): tracing the panel-nav-link bug -- remove
-    // once the two-step close/open fix is confirmed working in-browser.
-    console.log(`[panel-nav] lockBody(${JSON.stringify(name)}, ${JSON.stringify(opts)}) : ${JSON.stringify(prevLocked)} -> ${JSON.stringify(lockedBodyName)}`);
     // Locking onto a body (a planet, moon, or Sol) is a sign attention
     // has moved elsewhere, so any lingering flight selection should clear
     // -- otherwise a flight's arc stays pinned visible indefinitely after
@@ -2692,9 +2689,6 @@
   // spacecraft, WITHOUT touching simDate/pause state -- see the comment
   // further down for why that date-jump was removed.
   function selectFlight(key) {
-    // TEMPORARY (2026-07-24): tracing the panel-nav-link bug -- remove
-    // once the two-step close/open fix is confirmed working in-browser.
-    console.log(`[panel-nav] selectFlight(${JSON.stringify(key)}) called; selectedFlightKey was ${JSON.stringify(selectedFlightKey)}`);
     if (selectedFlightKey === key) {
       // clicking the same flight again deselects it, mirroring lockBody's
       // toggle-on-same-click convention used elsewhere
@@ -2830,33 +2824,28 @@
     updateLockedPanelVisibility();
   });
 
-  // "Missions here" (missionsToHereHtml) and "Destinations" (flightDestinationsHtml)
-  // links are rebuilt into lockedPanelBody's innerHTML every frame along
-  // with everything else in the panel, so listening on the individual
-  // <span> elements would mean re-attaching every frame -- delegate to
-  // the stable container instead, bound once here, same as every other
-  // one-time listener in this block. Explicitly closes the current panel
+  // "Missions here" (missionsToHereHtml) and "Destinations"
+  // (flightDestinationsHtml) links are rebuilt into lockedPanelBody's
+  // innerHTML each time the panel's content is (re)rendered (see
+  // drawLockedPanelConnector -- just once per lock change, not every
+  // frame), so listening on the individual <span> elements would mean
+  // re-attaching on every such rebuild -- delegate to the stable
+  // container instead, bound once here, same as every other one-time
+  // listener in this block. Explicitly closes the current panel
   // (lockBody(null)) before opening the new target as two separate state
   // transitions, rather than switching lockedBodyName directly from one
-  // value to another -- a direct switch was not reliably picking up in
-  // the browser even though it checked out in isolation here.
+  // value to another. This turned out not to be what was actually
+  // breaking the links (the real cause was the panel rebuilding on every
+  // single frame regardless of pause state -- see drawLockedPanelConnector's
+  // comment), but the two-step transition is harmless and left in place.
   lockedPanelBody.addEventListener("click", (e) => {
-    // TEMPORARY (2026-07-24): tracing the panel-nav-link bug -- remove
-    // once the two-step close/open fix is confirmed working in-browser.
-    console.log("[panel-nav] lockedPanelBody click, e.target =", e.target, " tagName/class =", e.target && e.target.tagName, e.target && e.target.className);
     const link = e.target.closest(".lp-mission-link");
-    console.log("[panel-nav] closest('.lp-mission-link') found:", link, link ? link.dataset : null);
-    if (!link) { console.log("[panel-nav] no link found, ignoring click"); return; }
-    console.log("[panel-nav] step 1: lockBody(null)");
+    if (!link) return;
     lockBody(null); // step 1: close whatever's currently open
     if (link.dataset.flightKey) {
-      console.log("[panel-nav] step 2: selectFlight(", link.dataset.flightKey, ")");
       selectFlight(link.dataset.flightKey); // step 2: open the flight (selectFlight itself locks its body)
     } else if (link.dataset.bodyName) {
-      console.log("[panel-nav] step 2: lockBody(", link.dataset.bodyName, ")");
       lockBody(link.dataset.bodyName, { toggleIfSame: false }); // step 2: open the body
-    } else {
-      console.log("[panel-nav] link had neither flightKey nor bodyName in dataset -- this is a bug");
     }
   });
 
