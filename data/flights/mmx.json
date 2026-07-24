@@ -1,0 +1,25 @@
+{
+  "key": "mmx",
+  "name": "MMX (Martian Moons eXploration)",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2026-10-15",
+  "arrival": "2027-08-01",
+  "rocket": "H3",
+  "payload": "MMX spacecraft (~4,000 kg, including the IDEFIX rover and an Earth-return capsule)",
+  "status": "En Route",
+  "significance": "MMX aims to settle a long-standing debate over Phobos and Deimos's origin -- whether Mars's two small moons are captured asteroids or debris flung into orbit by an ancient giant impact on Mars -- by returning the first-ever sample from either moon. It carries the DLR/CNES rover IDEFIX, which will land on Phobos ahead of the main spacecraft to scout terrain in Phobos's extremely low gravity, and it will also make close flybys of Deimos. The mission's own trajectory design keeps it in the Mars system for roughly three years (2027-2030) before returning a Phobos surface sample to Earth in 2031, making MMX the first sample-return mission from the Martian system.",
+  "statusNote": "Modeled here as a direct Earth-to-Mars transfer only -- the outbound cruise, which is real, well-constrained two-body orbital mechanics regardless of the exact launch slip. Real Mars transfers in this launch window are the most predictable kind of trajectory this simulator handles: unlike MMX's multi-year Phobos-system operations and Earth-return leg (2027-2030 in orbit around Mars/Phobos, sample departure ~2030, Earth arrival 2031), which involve areocentric proximity operations this simulator doesn't yet model at the necessary scale (see the geocentric_orbit generalization -- the same architecture used for Mangalyaan/Aditya-L1 -- as the likely path for a future update once Mars-system zoom exists), a direct heliocentric transfer is exactly this simulator's strong suit. NOTE ON DATES: MMX has not launched yet. JAXA's own public statements have named both 'October 2026' and 'November-December 2026' for the launch, reflecting normal pre-launch schedule uncertainty (the mission already slipped from an original 2024 target due to H3 rocket issues); the 2026-10-15 launch date and ~2027-08-01 Mars arrival used here are working placeholders for a real JFY2026 Mars transfer window, not confirmed dates -- update both once MMX actually launches and its real trajectory is public.",
+  "assets": {
+    "spacecraft": {
+      "title": "MMX spacecraft",
+      "infoUrl": "https://en.wikipedia.org/wiki/Martian_Moons_eXploration",
+      "localImage": "images/missions/mmx/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "H3",
+      "infoUrl": "https://en.wikipedia.org/wiki/H3_(rocket)",
+      "localImage": "images/rockets/h3.jpg"
+    }
+  }
+}

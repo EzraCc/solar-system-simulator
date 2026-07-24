@@ -1067,9 +1067,9 @@
         "specific_target": "Phobos (sample return), Deimos (flyby observations)",
         "body_type": "moon"
       },
-      "launch_date": null,
-      "arrival_date": null,
-      "arrival_status": "not_launched",
+      "launch_date": "2026-10-15",
+      "arrival_date": "2027-08-01",
+      "arrival_status": "en_route",
       "arrival_notes": "Spacecraft delivered to Tanegashima 2026-03-31. Launch window targeted 2026-11/2026-12 (one source cites 2026-10). Mars arrival ~1 year after launch. Sample return to Earth ~2031.",
       "mission_type": [
         "orbiter",
@@ -1078,10 +1078,10 @@
         "flyby"
       ],
       "mission_summary": "Phobos sample return and Deimos flyby study.",
-      "trajectory_architecture": "unverified",
-      "trajectory_notes": null,
-      "model_compatibility": "unverified",
-      "model_compatibility_notes": " OUT OF SCOPE (2026-07-23): mission has not launched yet -- no real trajectory exists to encode. Revisit once a launch date is set and firm.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Modeled here as a single direct Earth->Mars Lambert transfer only -- the well-constrained outbound cruise. The multi-year Phobos/Deimos proximity-operations phase (2027-2030) and the Earth-return leg (sample arrival 2031) are not modeled; that phase would need areocentric-scale modeling this simulator does not yet support (Mars-system zoom).",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": " OUT OF SCOPE (2026-07-23): mission has not launched yet -- no real trajectory exists to encode. Revisit once a launch date is set and firm. UPDATE (2026-07-24): now modeled in the simulator as a direct Earth->Mars transfer; see data/flights/mmx.json. Launch/arrival dates are working placeholders pending an actual launch (JAXA has cited both October and November-December 2026) -- update both fields once MMX launches for real.",
       "verification_level": "first_pass"
     },
     {

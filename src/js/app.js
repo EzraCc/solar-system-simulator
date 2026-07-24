@@ -2942,7 +2942,9 @@
       addRow("Eccentricity (e)", b.e.toFixed(4));
       addRow("Inclination to ecliptic", `${(b.i / D2R).toFixed(2)}°`);
       addRow(`Orbital period (around ${b.primary})`, `${periodDays.toFixed(4)} d`);
-      lockedPanelBody.innerHTML = rows;
+      const satInfo = BODY_INFO[b.name];
+      if (satInfo && satInfo.significance) addRow("Why it matters", satInfo.significance);
+      lockedPanelBody.innerHTML = rows + (satInfo ? assetGalleryHtml(satInfo.assets) : "");
       return;
     }
 

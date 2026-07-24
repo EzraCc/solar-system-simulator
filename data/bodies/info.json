@@ -278,5 +278,205 @@
         "localImage": "images/bodies/orus.jpg"
       }
     }
+  },
+  "Moon": {
+    "significance": "Earth's Moon is the solar system's fifth-largest moon, with a diameter of 3,474 km (about 27% of Earth's), and most likely formed roughly 4.51 billion years ago from debris ejected when a Mars-sized protoplanet, Theia, collided with the early Earth, leaving it depleted in volatiles and iron relative to Earth. It is tidally locked, always presenting the same hemisphere to Earth, and its far side has a markedly thicker crust and far less basaltic maria than the familiar near side, a pronounced lunar dichotomy. Its heavily cratered surface preserves roughly 4 billion years of impact history, including the South Pole-Aitken basin, one of the largest and oldest confirmed impact structures in the solar system at about 2,500 km across and up to 8 km deep. Tidal interaction with Earth is gradually slowing Earth's rotation while pushing the Moon about 3.8 cm farther away each year.",
+    "assets": {
+      "image": {
+        "title": "The Moon (Apollo 17)",
+        "infoUrl": "https://images.nasa.gov/details/as17-152-23311",
+        "localImage": "images/bodies/moon.jpg"
+      }
+    }
+  },
+  "Phobos": {
+    "significance": "Phobos is the larger and inner of Mars's two moons, an irregularly shaped, potato-like body measuring about 27 x 22 x 18 km. It orbits closer to its parent planet than any other known moon in the solar system, just 9,376 km above the Martian surface, completing an orbit in 7 hours 39 minutes -- faster than Mars rotates, so it rises in the west and sets in the east twice each Martian day. Its surface is dominated by the roughly 9-km-wide Stickney crater, nearly half the moon's own radius, and is crossed by mysterious parallel grooves that Mars Express imagery showed are not radial to Stickney but centered on Phobos's leading orbital apex, possibly produced by tidal stresses. With a low bulk density of about 1.88 g/cm3 implying substantial internal porosity, Phobos is spiraling inward and is expected to be torn apart by Martian tidal forces into a ring, or to crash into Mars, within the next 30-50 million years.",
+    "assets": {
+      "image": {
+        "title": "Phobos (ESA Mars Express)",
+        "infoUrl": "https://images.nasa.gov/details/PIA10369",
+        "localImage": "images/bodies/phobos.jpg"
+      }
+    }
+  },
+  "Deimos": {
+    "significance": "Deimos is the smaller and outer of Mars's two moons, a lumpy body only about 12.4 km in mean diameter and roughly 16 km along its longest axis. Unlike heavily gouged Phobos, Deimos has a notably smoother appearance because a thick blanket of fine regolith, estimated to be up to 100 meters deep, has filled in and softened most of its craters; only two of its craters, Swift and Voltaire, have been formally named. Its low density and dark, carbon-rich spectral signature resemble those of C- or D-type asteroids, fueling a long-standing hypothesis that both Martian moons are captured small bodies, though co-formation from a circum-Mars debris disk remains an active alternative theory. Orbiting beyond Mars's synchronous radius, Deimos is slowly spiraling outward, the opposite fate of Phobos.",
+    "assets": {
+      "image": {
+        "title": "Deimos (high resolution)",
+        "infoUrl": "https://images.nasa.gov/details/PIA11826",
+        "localImage": "images/bodies/deimos.jpg"
+      }
+    }
+  },
+  "Io": {
+    "significance": "Io, the innermost of Jupiter's four Galilean moons, is the most volcanically active body known in the solar system, with several hundred active volcanic centers driven by intense tidal heating from its eccentric orbit and the Laplace orbital resonance it shares with Europa and Ganymede. Its surface is a mottled patchwork of yellow, orange, red, black, and white deposits of sulfur and sulfur dioxide frost, continuously resurfaced by lava flows fast enough that it has essentially no impact craters. Loki Patera, its largest volcanic depression at about 202 km across, hosts an active, periodically overturning lava lake and alone accounts for roughly 10% of Io's total heat output; some of Io's volcanic plumes rise hundreds of kilometers above the surface, among the tallest eruptions observed anywhere in the solar system. Beneath its thin silicate crust, Io is thought to harbor a partially molten, possibly global magma layer above an iron or iron-sulfide core.",
+    "assets": {
+      "image": {
+        "title": "Io",
+        "infoUrl": "https://images.nasa.gov/details/PIA02308",
+        "localImage": "images/bodies/io.jpg"
+      }
+    }
+  },
+  "Europa": {
+    "significance": "Europa, the smallest of Jupiter's four Galilean moons at roughly the size of Earth's Moon, has one of the youngest and smoothest surfaces of any solid body in the solar system, an icy shell crisscrossed by long linear cracks and ridges with very few impact craters, implying a surface age of only about 40-90 million years. NASA's Juno spacecraft used microwave radiometry during a 2022 flyby to measure the ice shell's thickness directly for the first time, finding it about 29 (plus or minus 10) km thick in the region observed. Beneath that shell lies a global salty liquid-water ocean believed to hold more than twice the water of all of Earth's oceans combined, kept liquid by tidal flexing generated by Europa's eccentric orbit and its Laplace resonance with Io and Ganymede. The combination of a rocky seafloor potentially in contact with liquid water, a sustained internal heat source, and the chemical ingredients delivered from the surface makes Europa one of the solar system's most promising targets in the search for habitable environments beyond Earth.",
+    "assets": {
+      "image": {
+        "title": "Europa",
+        "infoUrl": "https://images.nasa.gov/details/PIA19048",
+        "localImage": "images/bodies/europa.jpg"
+      }
+    }
+  },
+  "Ganymede": {
+    "significance": "Ganymede is the largest moon in the solar system, larger than the planet Mercury (5,268 km diameter), and the only moon known to generate its own internal magnetic field, produced by convection in a liquid iron core. It is differentiated into a metallic core, rocky mantle, and thick ice shell, and is believed to harbor a saline subsurface ocean sandwiched between layers of ice, possibly containing more water than all of Earth's oceans combined. Its surface is a mix of ancient, heavily cratered dark terrain and younger, lighter terrain crosscut by extensive grooves and ridges formed by tectonic activity. Hubble observations have also detected a thin oxygen atmosphere and auroral bands shaped by its magnetic field, making it the only moon known to have both a magnetosphere and aurorae.",
+    "assets": {
+      "image": {
+        "title": "Ganymede (color global)",
+        "infoUrl": "https://science.nasa.gov/photojournal/ganymede-color-global/",
+        "localImage": "images/bodies/ganymede.jpg"
+      }
+    }
+  },
+  "Callisto": {
+    "significance": "Callisto is the most heavily cratered body in the solar system, its ancient icy surface saturated with impact craters and showing almost no evidence of tectonic or volcanic modification since it formed over 4 billion years ago. Roughly Mercury-sized (4,821 km diameter), it is thought to be only partially differentiated, with a mixture of rock and ice extending toward the interior rather than a fully separated core, unlike its sibling Ganymede. Magnetometer data from the Galileo spacecraft suggest Callisto harbors a subsurface layer of salty liquid water beneath its icy crust, implying an induced magnetic field despite the moon's largely inert geologic history. Its most prominent surface feature is the multi-ring impact structure Valhalla, one of the largest impact basins in the solar system, spanning roughly 3,800 km including its outer rings.",
+    "assets": {
+      "image": {
+        "title": "Callisto (Voyager 2)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Callisto_(moon)",
+        "localImage": "images/bodies/callisto.png"
+      }
+    }
+  },
+  "Titan": {
+    "significance": "Titan is the only moon in the solar system with a substantial atmosphere, a dense nitrogen-methane atmosphere roughly 1.5 times the surface pressure of Earth's, complete with methane-based weather, clouds, and rain. It is the only body besides Earth known to have stable liquid on its surface in the form of lakes and seas, but composed of liquid methane and ethane rather than water, concentrated near its poles (including Kraken Mare, the largest known extraterrestrial sea). Titan's surface, obscured from visible light by a thick orange organic haze, features dune fields of hydrocarbon sand, river channels, and impact craters carved by an active methane hydrological cycle analogous to Earth's water cycle. Beneath its icy crust, gravity and rotation data indicate a subsurface liquid-water ocean, and its rich organic chemistry makes it a key target for studying prebiotic processes.",
+    "assets": {
+      "image": {
+        "title": "Titan (true color)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Titan_(moon)",
+        "localImage": "images/bodies/titan.jpg"
+      }
+    }
+  },
+  "Enceladus": {
+    "significance": "Enceladus, only about 504 km in diameter, is one of the most geologically active small bodies in the solar system, ejecting plumes of water vapor and ice grains from fissures near its south pole known as \"tiger stripes.\" These geysers are fed by a global subsurface liquid-water ocean beneath its icy shell, kept liquid by tidal heating from its eccentric orbit around Saturn, and the plume material has been detected to contain simple organic compounds, salts, and silica nanograins indicative of hydrothermal activity on the ocean floor. Much of the plume material escapes the moon's weak gravity and supplies Saturn's diffuse E ring. Enceladus has one of the highest surface albedos of any body in the solar system (reflecting almost 100% of incident sunlight) because its surface is coated in fresh, fine-grained ice from the plume fallout, making it one of the prime astrobiological targets for the search for habitable environments beyond Earth.",
+    "assets": {
+      "image": {
+        "title": "Enceladus (approach, Cassini)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Enceladus",
+        "localImage": "images/bodies/enceladus.jpg"
+      }
+    }
+  },
+  "Tethys": {
+    "significance": "Tethys is one of the lowest-density major moons in the solar system, at roughly 0.97 g/cm3, indicating it is composed almost entirely of water ice with only a trace of rock. Its surface is dominated by the crater Odysseus, about 400 km across (nearly 40% of the moon's own 1,060 km diameter), whose impact basin has since relaxed into a shallow, bowl-shaped dome due to viscous flow of the icy crust over time. Bisecting the moon is Ithaca Chasma, a vast canyon roughly 100 km wide, up to 3-5 km deep, and over 2,000 km long -- running nearly three-quarters of the way around Tethys's circumference -- thought to be either a fracture caused by the Odysseus impact or a relic of the moon's global freezing and expansion. Cassini imagery also revealed Tethys shares its orbit with two small Trojan moons, Telesto and Calypso, librating near its leading and trailing Lagrange points.",
+    "assets": {
+      "image": {
+        "title": "Tethys (Cassini global view)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Tethys_(moon)",
+        "localImage": "images/bodies/tethys.jpg"
+      }
+    }
+  },
+  "Dione": {
+    "significance": "Dione has a density of about 1.48 g/cm3, implying roughly equal parts water ice and silicate rock, with a rocky core comprising a substantial fraction of its mass. Its trailing hemisphere is crossed by bright, linear features once called \"wispy terrain,\" which Cassini close-up imagery in 2005 resolved into networks of tectonic fracture cliffs -- some several hundred meters high -- where subsidence and faulting exposed clean, highly reflective water ice against darker surrounding material. Cassini's ion and neutral mass spectrometer detected a faint, transient molecular-oxygen exosphere at Dione, making it one of only a few icy moons found to have any atmosphere at all, however tenuous. The moon's heavily cratered leading hemisphere contrasts with the more tectonically resurfaced, fractured trailing side, indicating a complex geologic history of stress and resurfacing after formation.",
+    "assets": {
+      "image": {
+        "title": "Dione (natural light)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Dione_(moon)",
+        "localImage": "images/bodies/dione.jpg"
+      }
+    }
+  },
+  "Rhea": {
+    "significance": "Rhea is Saturn's second-largest moon and the smallest body in the solar system confirmed to be in hydrostatic equilibrium, with a diameter of about 1,528 km and a density of roughly 1.24 g/cm3 suggesting a mix of ice and about a third rock by mass. In 2008, Cassini's Magnetospheric Imaging Instrument detected sharp, symmetric drops in energetic electrons on either side of Rhea, initially interpreted as evidence for a tenuous debris ring system -- which would have made Rhea the first moon known to host rings of its own -- though subsequent deep imaging searches by Cassini's cameras in 2010 found no particulate material and effectively ruled the rings out. Cassini did confirm a genuine, extremely tenuous exosphere of oxygen and carbon dioxide at Rhea, produced by radiolysis of surface water ice under bombardment from Saturn's magnetosphere. Rhea's surface is heavily cratered and shows a subtle dichotomy between its leading and trailing hemispheres, with wispy fracture terrain reminiscent of, but less developed than, that seen on Dione.",
+    "assets": {
+      "image": {
+        "title": "Rhea (full globe, Cassini)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Rhea_(moon)",
+        "localImage": "images/bodies/rhea.jpg"
+      }
+    }
+  },
+  "Iapetus": {
+    "significance": "Iapetus displays the most extreme albedo dichotomy of any body in the solar system: its leading hemisphere, Cassini Regio, is coal-dark with a reflectivity near 0.03-0.05, while its trailing hemisphere is bright ice with a reflectivity above 0.5, a contrast attributed to a thin coating of dark, reddish dust swept up from outer irregular moons and thermally enhanced by a runaway ice-sublimation feedback. Running almost exactly along the equator of the dark hemisphere is a striking ridge system, discovered in Cassini images in 2004, roughly 1,300 km long, up to 20 km wide, and reaching peaks about 20 km high -- among the tallest mountains found on any icy moon in the solar system. Iapetus is also notably \"walnut-shaped,\" a triaxial, oblate body with an equatorial bulge that appears frozen in from a much faster ancient rotation period, despite its current 79-day tidally locked spin. With a density of about 1.09 g/cm3, Iapetus is composed overwhelmingly of water ice with only a small rocky fraction.",
+    "assets": {
+      "image": {
+        "title": "Iapetus (trailing hemisphere, natural color)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Iapetus_(moon)",
+        "localImage": "images/bodies/iapetus.jpg"
+      }
+    }
+  },
+  "Miranda": {
+    "significance": "Miranda is the smallest of Uranus's five major moons at just 471 km in diameter, yet it displays the most chaotic and varied terrain of any body imaged in the solar system. Its surface is dominated by three enormous ovoid features called coronae (Arden, Elsinore, and Inverness), concentric bands of ridges and grooves whose sharp boundaries with older cratered terrain suggest partial melting, diapiric upwelling, or reassembly after a catastrophic impact disruption. Miranda hosts Verona Rupes, the tallest known scarp/cliff face in the solar system at roughly 20 km high; given the moon's extremely low surface gravity (about 0.008 g), an object dropped from its rim would fall for close to ten minutes before impact. The abrupt juxtaposition of ancient, heavily cratered plains against young, geologically resurfaced terrain remains only partially explained and makes Miranda a key test case for theories of tidal heating in small icy satellites.",
+    "assets": {
+      "image": {
+        "title": "Miranda (Voyager 2 mosaic)",
+        "infoUrl": "https://images.nasa.gov/details/PIA00043",
+        "localImage": "images/bodies/miranda.jpg"
+      }
+    }
+  },
+  "Ariel": {
+    "significance": "Ariel is the brightest of Uranus's major moons, with the highest albedo among the five, reflecting a surface rich in relatively pure water ice. It displays the youngest, least-cratered surface of the Uranian satellites, crosscut by an extensive network of fault-bounded valleys (chasmata) that indicate significant past extensional tectonics. Smooth deposits on some valley floors are interpreted as effusive cryovolcanic flows, likely ammonia-water or methane-clathrate \"lavas\" that partially resurfaced the moon after its formation. Ariel's composition is roughly an even split of water ice and silicate rock, and its trailing hemisphere shows spectral evidence of carbon dioxide frost, a rarity among the icy Uranian moons.",
+    "assets": {
+      "image": {
+        "title": "Ariel (Voyager 2)",
+        "infoUrl": "https://images.nasa.gov/details/PIA00041",
+        "localImage": "images/bodies/ariel.jpg"
+      }
+    }
+  },
+  "Umbriel": {
+    "significance": "Umbriel is the darkest of Uranus's major moons, with a geometric albedo of only about 0.26, roughly half that of Ariel, and shows almost no evidence of the resurfacing that brightened its neighbors. Its surface is ancient and saturated with impact craters, making it effectively a \"fossil\" record of the early bombardment history of the Uranian system with minimal subsequent geologic modification. The most striking feature is the crater Wunda, whose floor holds an unexplained bright ring of high-albedo material, one of the more puzzling isolated bright spots found on any icy satellite. Umbriel is thought to be differentiated into a rocky core beneath an icy mantle, and faint canyon-like features hint that some internally driven activity did occur very early in its history before the surface effectively froze in place.",
+    "assets": {
+      "image": {
+        "title": "Umbriel (southern hemisphere, Voyager 2)",
+        "infoUrl": "https://images.nasa.gov/details/PIA00040",
+        "localImage": "images/bodies/umbriel.jpg"
+      }
+    }
+  },
+  "Titania": {
+    "significance": "Titania is the largest moon of Uranus, at 1,578 km in diameter, and the eighth-largest moon in the solar system. Its surface is cut by Messina Chasmata, a system of fault-bounded canyons (grabens) roughly 1,492 km long and up to several kilometers deep, formed when the moon's icy crust cracked as its interior expanded, likely during a late-stage freezing of a subsurface liquid layer. Composed of roughly equal parts water ice and rock, Titania is thought to be internally differentiated into a rocky core and icy mantle, and its moderately cratered terrain, less saturated than Umbriel's or Oberon's, indicates a degree of past resurfacing. Because its orbit lies entirely within Uranus's magnetosphere, Titania's surface is also continuously exposed to trapped charged particles that can alter and darken exposed ices over time.",
+    "assets": {
+      "image": {
+        "title": "Titania (Voyager 2)",
+        "infoUrl": "https://images.nasa.gov/details/PIA00039",
+        "localImage": "images/bodies/titania.jpg"
+      }
+    }
+  },
+  "Oberon": {
+    "significance": "Oberon is the outermost of Uranus's five major moons and the second-largest, with a diameter of about 1,523 km, and its orbit lies partly outside Uranus's magnetosphere. Its surface is the most heavily cratered of the large Uranian moons, preserving an ancient record of impacts with comparatively little sign of subsequent resurfacing. The largest confirmed crater, Hamlet, spans 206 km and has a dark floor rimmed by bright rays of icy ejecta, while the canyon system Mommur Chasma extends roughly 537 km across the moon. Dark reddish material pooled on some crater floors is of uncertain origin, variously attributed to impact excavation of buried non-ice material or to localized cryovolcanic effusion, making Oberon's surface chemistry a point of ongoing scientific interest.",
+    "assets": {
+      "image": {
+        "title": "Oberon (Voyager 2)",
+        "infoUrl": "https://images.nasa.gov/details/PIA00034",
+        "localImage": "images/bodies/oberon.jpg"
+      }
+    }
+  },
+  "Triton": {
+    "significance": "Triton is Neptune's largest moon and the only large moon in the solar system with a retrograde orbit, circling its planet opposite to Neptune's rotation, which indicates it did not form alongside Neptune but was gravitationally captured, likely a former dwarf planet from the Kuiper Belt. Its surface, roughly 55% frozen nitrogen with water ice and frozen carbon dioxide making up the remainder, is one of the youngest and most geologically active in the solar system, showing few impact craters. Voyager 2's 1989 flyby revealed active nitrogen geysers erupting several kilometers above the surface, driven by subsurface solid-state greenhouse heating of nitrogen ice rather than internal volcanism, making Triton one of only a handful of bodies with confirmed active plume activity. Because its retrograde orbit is decaying under tidal forces, Triton is expected to be torn apart by Neptune's gravity within a few hundred million to a few billion years, likely forming a ring system.",
+    "assets": {
+      "image": {
+        "title": "Triton (true color, Voyager 2)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Triton_(moon)",
+        "localImage": "images/bodies/triton.png"
+      }
+    }
+  },
+  "Charon": {
+    "significance": "Charon is Pluto's largest moon and, at roughly half Pluto's diameter, is massive enough relative to its primary that the two bodies orbit a common barycenter located outside Pluto itself, forming what is often described as a binary system. Its surface is dominated by Serenity Chasma, an enormous belt of canyons and fault-bounded troughs extending over 1,600 kilometers, with individual chasms reaching 7-9 kilometers deep, evidence of a global tensional fracturing event likely caused by the freezing and expansion of a subsurface liquid water ocean early in its history. The moon's most visually distinctive feature is Mordor Macula, a dark reddish-brown polar cap at its north pole formed from methane gas that escapes Pluto's thin atmosphere, becomes gravitationally captured by Charon, freezes onto its extremely cold pole during a decades-long polar night, and is chemically converted by ultraviolet radiation into complex reddish organic compounds called tholins. Unlike Pluto, Charon shows no evidence of current geologic or atmospheric activity, but its ancient, heavily fractured terrain preserves a record of past cryovolcanism, including a smooth region called Vulcan Planitia thought to have been resurfaced by cryovolcanic flows of water-ice slush.",
+    "assets": {
+      "image": {
+        "title": "Charon (true color, New Horizons)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Charon_(moon)",
+        "localImage": "images/bodies/charon.png"
+      }
+    }
   }
 }
