@@ -2828,14 +2828,25 @@
     updateLockedPanelVisibility();
   });
 
-  // "Missions here" links (see missionsToHereHtml) are rebuilt into
-  // lockedPanelBody's innerHTML every frame along with everything else in
-  // the panel, so listening on the individual <span> elements would mean
-  // re-attaching every frame -- delegate to the stable container instead,
-  // bound once here, same as every other one-time listener in this block.
+  // "Missions here" (missionsToHereHtml) and "Went to" (bodiesVisitedHtml)
+  // links are rebuilt into lockedPanelBody's innerHTML every frame along
+  // with everything else in the panel, so listening on the individual
+  // <span> elements would mean re-attaching every frame -- delegate to
+  // the stable container instead, bound once here, same as every other
+  // one-time listener in this block. Explicitly closes the current panel
+  // (lockBody(null)) before opening the new target as two separate state
+  // transitions, rather than switching lockedBodyName directly from one
+  // value to another -- a direct switch was not reliably picking up in
+  // the browser even though it checked out in isolation here.
   lockedPanelBody.addEventListener("click", (e) => {
     const link = e.target.closest(".lp-mission-link");
-    if (link) selectFlight(link.dataset.flightKey);
+    if (!link) return;
+    lockBody(null); // step 1: close whatever's currently open
+    if (link.dataset.flightKey) {
+      selectFlight(link.dataset.flightKey); // step 2: open the flight (selectFlight itself locks its body)
+    } else if (link.dataset.bodyName) {
+      lockBody(link.dataset.bodyName, { toggleIfSame: false }); // step 2: open the body
+    }
   });
 
   // Drag-to-reposition: mousedown on the header (but not the close button)
@@ -2979,6 +2990,46 @@
     return `<div class="lp-section"><div class="lp-section-heading">Missions here</div><div class="lp-mission-links">${links}</div></div>`;
   }
 
+  // The reverse of getMissionsToBody: every planet/small body a given
+  // flight's legs actually touch (launch/arrival/gravity-assist stops),
+  // in chronological order (a Set preserves insertion order, and legs are
+  // walked in their real sequence) -- Lagrange-point loiters and
+  // geocentric_orbit legs are deliberately skipped, since neither has a
+  // lockable panel to link to (a loiter's primaryBody/a geocentric leg's
+  // surrounding lambert legs already cover the real body either way).
+  function getBodiesVisitedByFlight(key) {
+    const raw = FLIGHTS_RAW[key];
+    const rawKeys = new Set();
+    if (isMultiLeg(raw)) {
+      raw.legs.forEach((leg) => {
+        if (leg.type === 'lambert') { rawKeys.add(leg.fromBody); rawKeys.add(leg.toBody); }
+        else if (leg.type === 'gravity_assist') { rawKeys.add(leg.body); }
+      });
+    } else {
+      rawKeys.add(raw.launchBody);
+      rawKeys.add(raw.destinationBody);
+    }
+    const names = [];
+    rawKeys.forEach((k) => {
+      if (PLANET_ORDER.includes(k)) names.push(k);
+      else if (SMALL_BODIES[k]) names.push(SMALL_BODIES[k].name);
+    });
+    return names;
+  }
+
+  // Clickable list of bodies this flight actually visited -- same
+  // .lp-mission-link styling as missionsToHereHtml's links, distinguished
+  // by data-body-name (lock a body) vs data-flight-key (select a flight)
+  // in the shared delegated click listener below.
+  function bodiesVisitedHtml(flightKey) {
+    const names = getBodiesVisitedByFlight(flightKey);
+    if (names.length === 0) return "";
+    const links = names
+      .map((n) => `<span class="lp-mission-link" data-body-name="${n}">${n}</span>`)
+      .join("");
+    return `<div class="lp-section"><div class="lp-section-heading">Went to</div><div class="lp-mission-links">${links}</div></div>`;
+  }
+
   function formatLockedPanelContent(b) {
     if (b.isFlight) {
       const raw = FLIGHTS_RAW[b.flightKey];
@@ -2999,6 +3050,7 @@
       addRow("Status", raw.status);
       let sections = "";
       if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
+      sections += bodiesVisitedHtml(b.flightKey);
       if (raw.statusNote) sections += lpSectionHtml("Notes", raw.statusNote);
       lockedPanelBody.innerHTML = rows + sections + assetGalleryHtml(raw.assets);
       return;
