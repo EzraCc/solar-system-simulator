@@ -289,6 +289,13 @@
     min-height: 0; /* required for a flex child to actually shrink/scroll instead of overflowing its container */
     scrollbar-width: thin;
     scrollbar-color: rgba(120, 150, 200, 0.35) transparent;
+    /* Without this, whatever renders last (usually the asset image
+       gallery) sits flush against the panel's bottom edge with zero
+       breathing room -- reads as content getting cut off rather than a
+       deliberate end, especially once the panel is user-resizable and the
+       bottom edge is wherever the user dragged it to, not just wherever
+       the content happened to end. */
+    padding-bottom: 12px;
   }
   #locked-panel-body::-webkit-scrollbar { width: 6px; }
   #locked-panel-body::-webkit-scrollbar-track { background: transparent; }
