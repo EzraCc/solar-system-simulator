@@ -2089,13 +2089,13 @@
   let selectedFlightKey = null;
   let renderedBodies = []; // populated each frame: {name, sx, sy, screenR, pos, vel, ...}
 
-  // User-dragged offset from the locked panel's default auto-follow
-  // position (see drawLockedPanelConnector) -- lets the panel be dragged
-  // anywhere while it keeps following its body/flight from that offset,
-  // rather than snapping back every frame. Reset to (0,0) whenever
-  // lockBody() switches to a genuinely different body, so a newly opened
-  // panel always starts at the default spot next to the body.
-  let lockedPanelDragOffset = { x: 0, y: 0 };
+  // Absolute screen position of the locked panel -- set once when a new
+  // body/flight is locked (see drawLockedPanelConnector's edge-detection),
+  // and otherwise only ever changed by the user dragging the header (see
+  // those mousedown/mousemove/mouseup handlers). null while nothing is
+  // locked. Deliberately NOT re-derived from the tracked body's on-screen
+  // position every frame -- see drawLockedPanelConnector's top comment.
+  let lockedPanelPos = null;
 
   const MAX_PITCH = Math.PI / 2 - 0.02;
   const MIN_PITCH = -(Math.PI / 2 - 0.02);
@@ -2671,7 +2671,6 @@
     // TEMPORARY (2026-07-24): tracing the panel-nav-link bug -- remove
     // once the two-step close/open fix is confirmed working in-browser.
     console.log(`[panel-nav] lockBody(${JSON.stringify(name)}, ${JSON.stringify(opts)}) : ${JSON.stringify(prevLocked)} -> ${JSON.stringify(lockedBodyName)}`);
-    if (lockedBodyName !== prevLocked) lockedPanelDragOffset = { x: 0, y: 0 };
     // Locking onto a body (a planet, moon, or Sol) is a sign attention
     // has moved elsewhere, so any lingering flight selection should clear
     // -- otherwise a flight's arc stays pinned visible indefinitely after
@@ -2862,29 +2861,34 @@
   });
 
   // Drag-to-reposition: mousedown on the header (but not the close button)
-  // starts a drag; the resulting offset is applied on top of the panel's
-  // normal auto-follow position every frame (see drawLockedPanelConnector),
-  // so a dragged panel keeps tracking its body/flight from wherever it was
-  // moved to instead of resetting each frame. mousemove/mouseup are on
-  // window, not the header, so the drag doesn't break if the cursor
-  // outruns the (small) header element mid-drag.
-  let lockedPanelDrag = null; // { startMouseX, startMouseY, startOffsetX, startOffsetY } while dragging
+  // starts a drag; mousemove writes directly to lockedPanelPos and the
+  // DOM style right here, event-driven, since the frame loop no longer
+  // touches the panel's position at all once it's been placed (see
+  // drawLockedPanelConnector). mousemove/mouseup are on window, not the
+  // header, so the drag doesn't break if the cursor outruns the (small)
+  // header element mid-drag.
+  let lockedPanelDrag = null; // { startMouseX, startMouseY, startX, startY } while dragging
   lockedPanelHeader.style.cursor = "grab";
   lockedPanelHeader.addEventListener("mousedown", (e) => {
     if (e.target === lockedPanelClose) return;
+    if (!lockedPanelPos) return; // nothing locked yet, nothing to drag
     e.preventDefault();
     lockedPanelDrag = {
       startMouseX: e.clientX, startMouseY: e.clientY,
-      startOffsetX: lockedPanelDragOffset.x, startOffsetY: lockedPanelDragOffset.y
+      startX: lockedPanelPos.x, startY: lockedPanelPos.y
     };
     lockedPanelHeader.style.cursor = "grabbing";
   });
   window.addEventListener("mousemove", (e) => {
     if (!lockedPanelDrag) return;
-    lockedPanelDragOffset = {
-      x: lockedPanelDrag.startOffsetX + (e.clientX - lockedPanelDrag.startMouseX),
-      y: lockedPanelDrag.startOffsetY + (e.clientY - lockedPanelDrag.startMouseY)
-    };
+    const panelRect = lockedPanel.getBoundingClientRect();
+    let px = lockedPanelDrag.startX + (e.clientX - lockedPanelDrag.startMouseX);
+    let py = lockedPanelDrag.startY + (e.clientY - lockedPanelDrag.startMouseY);
+    px = Math.max(8, Math.min(px, viewW - panelRect.width - 8));
+    py = Math.max(8, Math.min(py, viewH - panelRect.height - 8));
+    lockedPanelPos = { x: px, y: py };
+    lockedPanel.style.left = px + "px";
+    lockedPanel.style.top = py + "px";
   });
   window.addEventListener("mouseup", () => {
     if (!lockedPanelDrag) return;
@@ -3131,47 +3135,54 @@
     lockedPanelBody.innerHTML = rows + sections + (info ? assetGalleryHtml(info.assets) : "");
   }
 
-  // TEMPORARY (2026-07-24): tracing the panel-nav-link bug -- remove once
-  // the two-step close/open fix is confirmed working in-browser. Throttled
-  // to log only on CHANGE (not every frame at 60fps) so the console stays
-  // readable; state is "lockedBodyName + whether a matching renderedBodies
-  // entry was found this frame", so a genuine stuck-not-found case still
-  // shows up (its lockedBodyName is new even if "not found" repeats).
-  let _lastPanelNavTraceKey = null;
+  // The locked panel is event-based, not per-frame: formatLockedPanelContent
+  // fully replaces lockedPanelBody's innerHTML, and this used to run EVERY
+  // frame unconditionally (60/sec) regardless of pause state, along with
+  // recomputing the panel's position to keep following the tracked body's
+  // on-screen motion. Two real, confirmed problems, not just wasted work:
+  // (1) destroying and recreating the "Missions here"/"Destinations" link
+  // elements 60 times a second meant a real mouse click's mousedown and
+  // mouseup could land on two DIFFERENT DOM nodes, silently dropping the
+  // click -- the actual cause of "no events firing for the links"; (2) a
+  // panel that keeps sliding around to track a moving body is genuinely
+  // hard to read. Fix: both the content AND the position are set exactly
+  // ONCE, at the moment a NEW body/flight is locked (detected below via
+  // lockedBodyName changing since the last frame) -- never touched again
+  // by the frame loop afterward. The panel only moves again if the user
+  // drags it (see the header mousedown/mousemove/mouseup handlers, which
+  // now own lockedPanelPos directly). The connector line + highlight ring
+  // on the CANVAS still track the body's real current position every
+  // frame regardless -- that's a cheap canvas draw, not a DOM node, so it
+  // can't cause the click-interference problem, and it's useful to still
+  // see at a glance where the (possibly still-moving) body actually is
+  // relative to the now-stationary panel.
+  let _lastLockedBodyForPanel = null;
   function drawLockedPanelConnector() {
     if (!lockedBodyName) {
-      if (_lastPanelNavTraceKey !== null) {
-        console.log("[panel-nav] drawLockedPanelConnector: lockedBodyName is null, panel closed");
-        _lastPanelNavTraceKey = null;
-      }
+      _lastLockedBodyForPanel = null;
+      lockedPanelPos = null;
       return;
     }
     const b = renderedBodies.find((x) => x.name === lockedBodyName);
-    const traceKey = lockedBodyName + "|" + (b ? "found" : "NOT-FOUND");
-    if (traceKey !== _lastPanelNavTraceKey) {
-      console.log(`[panel-nav] drawLockedPanelConnector: lockedBodyName=${JSON.stringify(lockedBodyName)} renderedBodies has match: ${!!b} (renderedBodies names: ${renderedBodies.map(x=>x.name).join(", ")})`);
-      _lastPanelNavTraceKey = traceKey;
-    }
     if (!b) return;
-    lockedPanelTitle.textContent = b.name;
-    formatLockedPanelContent(b);
 
-    // Position the panel near the tracked body, clamped to viewport, with a
-    // small fixed offset so it doesn't sit directly on top of the body --
-    // plus whatever offset the user has dragged it to (see
-    // lockedPanelDragOffset), so a dragged panel keeps following the body
-    // from that offset rather than resetting to the default spot every frame.
-    const panelRect = lockedPanel.getBoundingClientRect();
-    let px = b.sx + 20 + lockedPanelDragOffset.x;
-    let py = b.sy - panelRect.height / 2 + lockedPanelDragOffset.y;
-    px = Math.max(8, Math.min(px, viewW - panelRect.width - 8));
-    py = Math.max(8, Math.min(py, viewH - panelRect.height - 8));
-    lockedPanel.style.left = px + "px";
-    lockedPanel.style.top = py + "px";
+    if (lockedBodyName !== _lastLockedBodyForPanel) {
+      lockedPanelTitle.textContent = b.name;
+      formatLockedPanelContent(b);
+      const panelRect = lockedPanel.getBoundingClientRect();
+      let px = b.sx + 20;
+      let py = b.sy - panelRect.height / 2;
+      px = Math.max(8, Math.min(px, viewW - panelRect.width - 8));
+      py = Math.max(8, Math.min(py, viewH - panelRect.height - 8));
+      lockedPanelPos = { x: px, y: py };
+      lockedPanel.style.left = px + "px";
+      lockedPanel.style.top = py + "px";
+      _lastLockedBodyForPanel = lockedBodyName;
+    }
 
     // Draw a thin connector line + highlight ring around the tracked body
-    // so it's unambiguous which body the panel refers to even after the
-    // camera has rotated and the body has moved across the screen.
+    // so it's unambiguous which body the (now-stationary) panel refers to
+    // even after the camera has rotated or the body has moved on.
     ctx.save();
     ctx.strokeStyle = "rgba(120,180,255,0.7)";
     ctx.lineWidth = 1.5;
@@ -3181,9 +3192,10 @@
 
     const lineStartX = b.sx + (b.screenR + 6);
     const lineStartY = b.sy;
+    const panelRect = lockedPanel.getBoundingClientRect(); // current rect, possibly moved by a drag
     ctx.beginPath();
     ctx.moveTo(lineStartX, lineStartY);
-    ctx.lineTo(px, py + panelRect.height / 2);
+    ctx.lineTo(lockedPanelPos.x, lockedPanelPos.y + panelRect.height / 2);
     ctx.stroke();
     ctx.restore();
   }
