@@ -2472,8 +2472,14 @@
     dwarf_planet: { label: "DP", title: "Dwarf planet" },
   };
 
+  // key -> row element, so the per-frame visibility highlight (see
+  // updateSmallBodiesLegendActiveState) can toggle a class on the existing
+  // rows without rebuilding the whole legend every frame -- same pattern
+  // as flightLegendRowEls.
+  let smallBodyLegendRowEls = {};
   function buildSmallBodiesLegend() {
     smallBodiesRows.innerHTML = "";
+    smallBodyLegendRowEls = {};
     // Sorted alphabetically by display name -- catalog numbers moved to a
     // trailing "(N)" specifically so this reads as alphabetical to a human
     // scanning it (e.g. "Bennu (101955)" sorts under B), rather than the
@@ -2494,10 +2500,30 @@
       // locked panel title reads "Bennu (101955)", not "bennu".
       row.addEventListener("click", () => lockBody(body.name, { toggleIfSame: true }));
       smallBodiesRows.appendChild(row);
+      smallBodyLegendRowEls[key] = row;
       if (key === "pluto") addSatelliteRow(smallBodiesRows, "Charon", "Pluto and Charon", CHARON_META.color);
     });
   }
   buildSmallBodiesLegend();
+
+  // Lighten a small body's row while it's actually visible in the scene
+  // right now (see isSmallBodyVisible -- selected directly, or its
+  // targeting mission is selected/in-transit within the padded window),
+  // mirroring updateFlightsLegendActiveState's "in-transit" highlight for
+  // flights. Unlike flights, most small bodies sit hidden most of the
+  // time (see isSmallBodyVisible's own comment), so this is the legend's
+  // only way to show "this one happens to be visible right now" versus
+  // the majority that aren't -- reuses the same .in-transit CSS class
+  // (same "lighter" treatment) since the visual meaning -- "the thing
+  // this row refers to is live in the scene right now" -- is the same
+  // idea in both legends, even though the underlying condition differs.
+  function updateSmallBodiesLegendActiveState(daysSinceEpoch) {
+    for (const key in SMALL_BODIES) {
+      const row = smallBodyLegendRowEls[key];
+      if (!row) continue;
+      row.classList.toggle("in-transit", isSmallBodyVisible(key, daysSinceEpoch));
+    }
+  }
 
   // Generic collapsible layer-group toggle: clicking a group's header
   // flips its "collapsed" class, which the CSS transition (max-height +
@@ -3244,6 +3270,7 @@
 
     const daysSinceEpoch = daysSinceJ2000(simDate);
     updateFlightsLegendActiveState(daysSinceEpoch);
+    updateSmallBodiesLegendActiveState(daysSinceEpoch);
 
     // ---- Pass 1: compute world positions for every body, BEFORE any
     // screen projection. This has to happen first so that, if a body is
