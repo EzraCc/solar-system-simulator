@@ -1781,18 +1781,6 @@
     return getBodyPositionAtDays(rawLegs[mostRecentArrival.index].toBody, t);
   }
 
-  // Index (into raw.legs) of the lambert leg actually being flown at time t,
-  // or undefined if t falls on a gravity-assist instant or in a loiter --
-  // used so an unselected-but-in-transit multi-leg flight only draws the
-  // one arc it's currently on, not every leg it has ever flown.
-  function currentLambertLegIndex(flightKey, t) {
-    const boundaries = getLegBoundaries(flightKey);
-    for (const b of boundaries) {
-      if (b.type === 'lambert' && t >= b.dDays && t <= b.aDays) return b.index;
-    }
-    return undefined;
-  }
-
   // Draw a flight arc by sampling position at evenly-spaced time steps.
   // Used for patched-conic segments that may span multiple revolutions —
   // drawFlightArc's eccentric-anomaly sweep assumes a single revolution and
@@ -1814,18 +1802,15 @@
   // opacity for later legs and a bright "bend marker" dot at each junction.
   // For flights with gravity assists, patched-conic segments are drawn via
   // time-step sampling (drawFlightArcByTime) so multi-revolution arcs render
-  // correctly; the first Lambert leg still uses drawFlightArc.
-  // onlyLegIndex: if given, restrict rendering to that single lambert leg
-  // (used for an unselected-but-in-transit flight -- see the call site's
-  // comment for why showing every historical leg unconditionally is wrong).
-  // Omit it to draw the full multi-leg path.
-  function drawMultiLegArcs(flightKey, onlyLegIndex) {
+  // correctly; the first Lambert leg still uses drawFlightArc. Always draws
+  // the full path (every leg), regardless of selection state -- see the
+  // call site's comment for why.
+  function drawMultiLegArcs(flightKey) {
     const raw   = FLIGHTS_RAW[flightKey];
     const hasGA = raw.legs.some(l => l.type === 'gravity_assist');
     const lambertEntries = raw.legs
       .map((leg, i) => ({ leg, i }))
-      .filter(({ leg }) => leg.type === 'lambert')
-      .filter(({ i }) => onlyLegIndex === undefined || i === onlyLegIndex);
+      .filter(({ leg }) => leg.type === 'lambert');
 
     lambertEntries.forEach(({ leg, i }, seqIndex) => {
       ctx.globalAlpha = Math.max(0.4, 1.0 - seqIndex * 0.15);
@@ -3525,28 +3510,24 @@
     // the same way a moon's orbit disappears once you stop focusing on
     // its planet.
     //
-    // For a multi-leg flight this rule applies per-LEG, not per-flight:
-    // isFlightVisible/isMultiLeg only know about the flight's overall
-    // launch-to-arrival window, so an unselected flight still years away
-    // from arrival (e.g. BepiColombo, mid-cruise) would otherwise have
-    // drawMultiLegArcs render its *entire* history -- every already-flown
-    // leg back to 2018 -- every single frame, which is exactly the
-    // "permanent historical record" this comment says not to do. Only
-    // draw every leg when the flight is explicitly selected (the user
-    // asked to inspect its full path); otherwise draw just the one leg
-    // actually being flown right now, same as a single-leg flight only
-    // ever shows its one arc.
+    // For a multi-leg flight, once it's visible at all, the FULL path
+    // (every leg) is drawn every time -- previously this only happened
+    // while the flight was explicitly selected, falling back to just the
+    // single leg currently being flown otherwise, specifically to avoid
+    // a still-mid-cruise flight (e.g. BepiColombo) rendering its entire
+    // already-flown history every frame. In practice that made long
+    // multi-leg tours (Lucy's 13 legs especially) look like they were
+    // rendering "in chunks" -- only ever one disconnected arc segment
+    // visible at a time as the current leg changed -- which reads as
+    // broken even though it was deliberate. Full path is more useful
+    // than it is cluttered in practice at this flight count; revisit
+    // this tradeoff if it stops being true at much higher flight counts.
     ctx.lineWidth = 1.5;
     FLIGHTS_ORDER.forEach((key) => {
       if (!isFlightVisible(key, daysSinceEpoch)) return;
       ctx.strokeStyle = "#7fd99c";
       if (isMultiLeg(FLIGHTS_RAW[key])) {
-        if (selectedFlightKey === key) {
-          drawMultiLegArcs(key);
-        } else {
-          const onlyLegIndex = currentLambertLegIndex(key, daysSinceEpoch);
-          if (onlyLegIndex !== undefined) drawMultiLegArcs(key, onlyLegIndex);
-        }
+        drawMultiLegArcs(key);
       } else {
         drawFlightArc(getSolvedFlight(key));
       }
