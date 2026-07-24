@@ -2668,6 +2668,9 @@
     } else {
       lockedBodyName = name;
     }
+    // TEMPORARY (2026-07-24): tracing the panel-nav-link bug -- remove
+    // once the two-step close/open fix is confirmed working in-browser.
+    console.log(`[panel-nav] lockBody(${JSON.stringify(name)}, ${JSON.stringify(opts)}) : ${JSON.stringify(prevLocked)} -> ${JSON.stringify(lockedBodyName)}`);
     if (lockedBodyName !== prevLocked) lockedPanelDragOffset = { x: 0, y: 0 };
     // Locking onto a body (a planet, moon, or Sol) is a sign attention
     // has moved elsewhere, so any lingering flight selection should clear
@@ -2686,13 +2689,13 @@
     buildLegend(); // re-render so the accordion (moon rows) reflects the new focus
   }
 
-  // Clicking a flight: jump the simulated date to just before launch (one
-  // day prior, so the launch body is shown in its pre-launch state rather
-  // than landing exactly on the launch moment itself), pause (so that
-  // date isn't immediately animated away on the next frame -- frame()
-  // only advances simDate while unpaused), and focus/lock the camera on
-  // the body the flight launches from.
+  // Clicking a flight selects it and focuses the camera on the
+  // spacecraft, WITHOUT touching simDate/pause state -- see the comment
+  // further down for why that date-jump was removed.
   function selectFlight(key) {
+    // TEMPORARY (2026-07-24): tracing the panel-nav-link bug -- remove
+    // once the two-step close/open fix is confirmed working in-browser.
+    console.log(`[panel-nav] selectFlight(${JSON.stringify(key)}) called; selectedFlightKey was ${JSON.stringify(selectedFlightKey)}`);
     if (selectedFlightKey === key) {
       // clicking the same flight again deselects it, mirroring lockBody's
       // toggle-on-same-click convention used elsewhere
@@ -2828,7 +2831,7 @@
     updateLockedPanelVisibility();
   });
 
-  // "Missions here" (missionsToHereHtml) and "Went to" (bodiesVisitedHtml)
+  // "Missions here" (missionsToHereHtml) and "Destinations" (flightDestinationsHtml)
   // links are rebuilt into lockedPanelBody's innerHTML every frame along
   // with everything else in the panel, so listening on the individual
   // <span> elements would mean re-attaching every frame -- delegate to
@@ -2839,13 +2842,22 @@
   // value to another -- a direct switch was not reliably picking up in
   // the browser even though it checked out in isolation here.
   lockedPanelBody.addEventListener("click", (e) => {
+    // TEMPORARY (2026-07-24): tracing the panel-nav-link bug -- remove
+    // once the two-step close/open fix is confirmed working in-browser.
+    console.log("[panel-nav] lockedPanelBody click, e.target =", e.target, " tagName/class =", e.target && e.target.tagName, e.target && e.target.className);
     const link = e.target.closest(".lp-mission-link");
-    if (!link) return;
+    console.log("[panel-nav] closest('.lp-mission-link') found:", link, link ? link.dataset : null);
+    if (!link) { console.log("[panel-nav] no link found, ignoring click"); return; }
+    console.log("[panel-nav] step 1: lockBody(null)");
     lockBody(null); // step 1: close whatever's currently open
     if (link.dataset.flightKey) {
+      console.log("[panel-nav] step 2: selectFlight(", link.dataset.flightKey, ")");
       selectFlight(link.dataset.flightKey); // step 2: open the flight (selectFlight itself locks its body)
     } else if (link.dataset.bodyName) {
+      console.log("[panel-nav] step 2: lockBody(", link.dataset.bodyName, ")");
       lockBody(link.dataset.bodyName, { toggleIfSame: false }); // step 2: open the body
+    } else {
+      console.log("[panel-nav] link had neither flightKey nor bodyName in dataset -- this is a bug");
     }
   });
 
@@ -2997,7 +3009,11 @@
   // geocentric_orbit legs are deliberately skipped, since neither has a
   // lockable panel to link to (a loiter's primaryBody/a geocentric leg's
   // surrounding lambert legs already cover the real body either way).
-  function getBodiesVisitedByFlight(key) {
+  // Named "destinations", not "visited" -- deliberately tense-neutral,
+  // since this list is the same for a mission that's already arrived and
+  // one still en route (e.g. MMX, JUICE): both cases are "where this
+  // flight's trajectory goes", not "where it has already been".
+  function getFlightDestinations(key) {
     const raw = FLIGHTS_RAW[key];
     const rawKeys = new Set();
     if (isMultiLeg(raw)) {
@@ -3017,17 +3033,17 @@
     return names;
   }
 
-  // Clickable list of bodies this flight actually visited -- same
-  // .lp-mission-link styling as missionsToHereHtml's links, distinguished
-  // by data-body-name (lock a body) vs data-flight-key (select a flight)
-  // in the shared delegated click listener below.
-  function bodiesVisitedHtml(flightKey) {
-    const names = getBodiesVisitedByFlight(flightKey);
+  // Clickable list of this flight's destinations -- same .lp-mission-link
+  // styling as missionsToHereHtml's links, distinguished by data-body-name
+  // (lock a body) vs data-flight-key (select a flight) in the shared
+  // delegated click listener below.
+  function flightDestinationsHtml(flightKey) {
+    const names = getFlightDestinations(flightKey);
     if (names.length === 0) return "";
     const links = names
       .map((n) => `<span class="lp-mission-link" data-body-name="${n}">${n}</span>`)
       .join("");
-    return `<div class="lp-section"><div class="lp-section-heading">Went to</div><div class="lp-mission-links">${links}</div></div>`;
+    return `<div class="lp-section"><div class="lp-section-heading">Destinations</div><div class="lp-mission-links">${links}</div></div>`;
   }
 
   function formatLockedPanelContent(b) {
@@ -3050,7 +3066,7 @@
       addRow("Status", raw.status);
       let sections = "";
       if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
-      sections += bodiesVisitedHtml(b.flightKey);
+      sections += flightDestinationsHtml(b.flightKey);
       if (raw.statusNote) sections += lpSectionHtml("Notes", raw.statusNote);
       lockedPanelBody.innerHTML = rows + sections + assetGalleryHtml(raw.assets);
       return;
@@ -3115,9 +3131,27 @@
     lockedPanelBody.innerHTML = rows + sections + (info ? assetGalleryHtml(info.assets) : "");
   }
 
+  // TEMPORARY (2026-07-24): tracing the panel-nav-link bug -- remove once
+  // the two-step close/open fix is confirmed working in-browser. Throttled
+  // to log only on CHANGE (not every frame at 60fps) so the console stays
+  // readable; state is "lockedBodyName + whether a matching renderedBodies
+  // entry was found this frame", so a genuine stuck-not-found case still
+  // shows up (its lockedBodyName is new even if "not found" repeats).
+  let _lastPanelNavTraceKey = null;
   function drawLockedPanelConnector() {
-    if (!lockedBodyName) return;
+    if (!lockedBodyName) {
+      if (_lastPanelNavTraceKey !== null) {
+        console.log("[panel-nav] drawLockedPanelConnector: lockedBodyName is null, panel closed");
+        _lastPanelNavTraceKey = null;
+      }
+      return;
+    }
     const b = renderedBodies.find((x) => x.name === lockedBodyName);
+    const traceKey = lockedBodyName + "|" + (b ? "found" : "NOT-FOUND");
+    if (traceKey !== _lastPanelNavTraceKey) {
+      console.log(`[panel-nav] drawLockedPanelConnector: lockedBodyName=${JSON.stringify(lockedBodyName)} renderedBodies has match: ${!!b} (renderedBodies names: ${renderedBodies.map(x=>x.name).join(", ")})`);
+      _lastPanelNavTraceKey = traceKey;
+    }
     if (!b) return;
     lockedPanelTitle.textContent = b.name;
     formatLockedPanelContent(b);
