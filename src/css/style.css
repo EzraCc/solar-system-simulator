@@ -340,6 +340,20 @@
   }
   .lp-mission-link:hover { color: var(--text-primary); }
 
+  .lp-jump-row { margin-top: 8px; }
+  .lp-jump-btn {
+    background: #16203a;
+    color: var(--text-primary);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    width: 100%;
+  }
+  .lp-jump-btn:hover { background: #1f2c4d; }
+
   /* Rocket/spacecraft/lander thumbnail gallery in the flight locked panel --
      each tile links out to its source (NASA/ESA/agency page where known,
      Wikipedia otherwise) so a click takes the user to the real reference. */

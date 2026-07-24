@@ -2824,6 +2824,11 @@
   // single frame regardless of pause state -- see drawLockedPanelConnector's
   // comment), but the two-step transition is harmless and left in place.
   lockedPanelBody.addEventListener("click", (e) => {
+    const jumpBtn = e.target.closest(".lp-jump-btn");
+    if (jumpBtn) {
+      jumpToLaunch(jumpBtn.dataset.jumpToLaunch);
+      return;
+    }
     const link = e.target.closest(".lp-mission-link");
     if (!link) return;
     lockBody(null); // step 1: close whatever's currently open
@@ -2833,6 +2838,25 @@
       lockBody(link.dataset.bodyName, { toggleIfSame: false }); // step 2: open the body
     }
   });
+
+  // Explicit, opt-in date jump -- see the "Jump to launch" button's comment
+  // in formatLockedPanelContent for why this is separate from selectFlight.
+  // Lands one day before launch (not exactly on it) so pressing Play
+  // immediately afterward shows the actual liftoff happen, rather than
+  // starting the clock already mid-launch-day.
+  function jumpToLaunch(key) {
+    const raw = FLIGHTS_RAW[key];
+    if (!raw) return;
+    const { launchDays } = getFlightDates(key);
+    simDate = dateFromDaysSinceJ2000(launchDays - 1);
+    dateInput.value = dateInputValue(simDate);
+    setPaused(true);
+    if (selectedFlightKey !== key) {
+      selectedFlightKey = key;
+      buildFlightsLegend();
+    }
+    if (!isMultiLeg(raw)) getSolvedFlight(key);
+  }
 
   // Drag-to-reposition: mousedown on the header (but not the close button)
   // starts a drag; mousemove writes directly to lockedPanelPos and the
@@ -3042,11 +3066,21 @@
       addRow("Rocket", raw.rocket);
       addRow("Payload", raw.payload);
       addRow("Status", raw.status);
+      // "Jump to launch" is a deliberate, explicit action distinct from
+      // selectFlight()'s own no-date-jump behavior above -- selecting a
+      // mission from a legend/link is "tell me about this," which must
+      // NOT move the clock out from under someone comparing several
+      // currently-visible missions (see selectFlight's comment). But once
+      // someone is reading a specific flight's panel and decides they
+      // actually want to watch it happen, there was no way to get there
+      // short of manually typing a date. This button closes that gap
+      // without reintroducing the automatic jump-on-select.
+      const jumpBtn = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-jump-to-launch="${b.flightKey}">Jump to launch date</button></div>`;
       let sections = "";
       if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
       sections += flightDestinationsHtml(b.flightKey);
       if (raw.statusNote) sections += lpSectionHtml("Notes", raw.statusNote);
-      lockedPanelBody.innerHTML = rows + sections + assetGalleryHtml(raw.assets);
+      lockedPanelBody.innerHTML = rows + jumpBtn + sections + assetGalleryHtml(raw.assets);
       return;
     }
 
