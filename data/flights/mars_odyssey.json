@@ -1,0 +1,25 @@
+{
+  "key": "mars_odyssey",
+  "name": "Mars Odyssey",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2001-04-07",
+  "arrival": "2001-10-24",
+  "rocket": "Delta II 7925",
+  "payload": "Mars Odyssey orbiter (758 kg)",
+  "status": "Success",
+  "significance": "Launched in the wake of the 1999 failures of Mars Climate Orbiter and Mars Polar Lander, Odyssey was designed to globally map the elemental and mineral composition of the Martian surface and characterize the radiation environment relevant to future human exploration. It was the first Mars orbiter to carry a gamma-ray and neutron spectrometer suite for planet-wide elemental mapping and the first spacecraft to systematically measure the radiation hazard astronauts would face en route to and at Mars. Its hydrogen-distribution maps revealed vast reservoirs of water ice buried just beneath the surface in the polar and mid-latitude regions, a finding later confirmed by the Phoenix lander's direct sampling. Odyssey also became the primary communications relay for subsequent landers and rovers and remains, decades later, the longest continuously operating spacecraft ever sent to another planet.",
+  "statusNote": null,
+  "assets": {
+    "spacecraft": {
+      "title": "2001 Mars Odyssey",
+      "infoUrl": "https://en.wikipedia.org/wiki/2001_Mars_Odyssey",
+      "localImage": "images/missions/mars_odyssey/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.png"
+    }
+  }
+}

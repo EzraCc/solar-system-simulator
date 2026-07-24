@@ -1,0 +1,43 @@
+{
+  "key": "new_horizons",
+  "name": "New Horizons",
+  "rocket": "Atlas V 551 + Star 48B",
+  "payload": "New Horizons spacecraft (478 kg)",
+  "status": "Success",
+  "significance": "New Horizons was launched to complete the initial reconnaissance of the solar system's classical planets by finally visiting Pluto, which no spacecraft had reached since its 1930 discovery, and to characterize the newly recognized Kuiper Belt, a population of icy bodies left over from planet formation. It was the first mission designed from the outset to explore a dwarf planet and the Kuiper Belt, and in 2019 it conducted the first-ever close flyby of a small Kuiper Belt object, Arrokoth, the most distant body ever explored up close. At Pluto in 2015 it revealed an unexpectedly active world with nitrogen-ice glaciers, water-ice mountains up to 3,500 meters tall, a multilayered hazy atmosphere, and evidence of a subsurface ocean on its large moon Charon, overturning assumptions that small, cold, distant bodies must be geologically dead. At Arrokoth it found a flat, reddish, two-lobed \"contact binary\" that formed from a gentle, low-speed merger rather than violent collisions, supporting a \"gentle accretion\" theory of how planetesimals originally formed.",
+  "statusNote": "First spacecraft to Pluto; Kuiper Belt exploration. Single Jupiter gravity assist (2007-02-28, closest approach 2.3 million km -- a wide, gentle pass by planetary-flyby standards, but still deep inside Jupiter's gravitational influence at ~32 Jupiter radii) shortened the trip by roughly 3 years versus a direct trajectory. This was also the fastest launch ever at the time (Atlas V 551 plus a Star 48B solid third stage; real launch C3 was 157.75 km^2/s^2, this simulator's Earth->Jupiter Lambert leg now reproduces that to within 1%, and the resulting pre-Jupiter heliocentric orbit is itself barely hyperbolic, e~1.04, matching the historical record -- New Horizons had enough energy to leave the solar system even before the Jupiter assist). Pluto flyby 2015-07-14; extended mission continued to Kuiper Belt object Arrokoth, flyby 2019-01-01 -- not modeled here, this entry ends at the primary Pluto encounter. NOTE: this is the first flight in this simulator whose post-flyby heliocentric orbit is genuinely hyperbolic (e~1.27-1.4 depending on fit, correctly escaping the Sun -- New Horizons left the solar system faster than any prior spacecraft), which needed real hyperbolic-orbit propagation support added to the simulator (solveKeplerHyperbolic and hyperbolic branches in computeFlightPosition/computeFlightVelocity/stateVectorToElements, alongside the existing elliptical machinery). Diagnosing this leg's fit also surfaced and fixed a real bug in solveLambertUniversal itself (its root-bracketing bisection used a fixed z in [-50,50] window that, for this leg's extreme energy, silently fell in the geometrically invalid y(z)<0 region and mis-converged to the wrong solution branch past the z=(2*pi)^2 pole, with no error thrown -- see the fix and its comment in app.js). After the fix, a single patched-conic Jupiter flyby still can't reach anywhere near Pluto's real 2015-07-14 position (miss ~29 AU, exceeding the ~28.8 AU chord) -- a genuine finding, not a bug: New Horizons' 8+ year Jupiter-to-Pluto cruise included real trajectory-correction maneuvers this simulator doesn't model, and a wide/gentle single flyby was never going to precisely re-aim it across that much time and distance on its own. getGAChain's existing miss-too-large guard correctly detects this and falls back to a direct Lambert solve for this leg instead, which (now bug-fixed) lands exactly on Pluto's real recorded position by construction -- so the rendered trajectory is fully accurate, just not derived from the patched-conic flyby physics for this one leg.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Jupiter",
+      "departDate": "2006-01-19",
+      "arrivalDate": "2007-02-28"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Jupiter",
+      "date": "2007-02-28",
+      "periapsisKm": 2300000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Jupiter",
+      "toBody": "pluto",
+      "departDate": "2007-02-28",
+      "arrivalDate": "2015-07-14"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "New Horizons",
+      "infoUrl": "https://en.wikipedia.org/wiki/New_Horizons",
+      "localImage": "images/missions/new_horizons/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "key": "perseverance",
+  "name": "Perseverance (Mars 2020)",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2020-07-30",
+  "arrival": "2021-02-18",
+  "rocket": "Atlas V 541",
+  "payload": "Perseverance rover (1,025 kg) + Ingenuity helicopter (1.8 kg)",
+  "status": "Success",
+  "significance": "Perseverance was launched to search for biosignatures of ancient microbial life and to begin sample-return exploration, targeting Jezero Crater, believed to hold an ancient river delta and lakebed. It is the first mission to collect and cache rock and soil samples intended for eventual return to Earth, and it carried Ingenuity, which made the first powered, controlled flight of an aircraft on another planet. The rover found that Jezero's crater floor is made of igneous, not purely sedimentary, rock, overturning the simple \"ancient lakebed\" hypothesis, while also confirming a genuine delta and lake system and detecting organic molecules in multiple samples. Ingenuity vastly exceeded its planned five flights, completing 72 flights over nearly three years and proving aerial scouting is viable for planetary exploration.",
+  "statusNote": null,
+  "assets": {
+    "spacecraft": {
+      "title": "Perseverance (rover)",
+      "infoUrl": "https://science.nasa.gov/mission/mars-2020-perseverance/",
+      "localImage": "images/missions/perseverance/spacecraft.gif"
+    },
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}

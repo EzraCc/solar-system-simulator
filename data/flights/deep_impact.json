@@ -1,0 +1,30 @@
+{
+  "key": "deep_impact",
+  "name": "Deep Impact",
+  "rocket": "Delta II 7925",
+  "payload": "Flyby spacecraft (601 kg) + impactor (372 kg)",
+  "status": "Success",
+  "significance": "Deep Impact was launched to probe beneath a comet's crust, since prior flyby missions had only imaged comet surfaces and could not determine what lay underneath or test models of comet interior structure. It was the first mission to deliberately strike a solar system body (comet Tempel 1) with an impactor and observe the resulting excavation from a companion flyby craft, exposing pristine subsurface material for the first time. The impact revealed Tempel 1's interior to be extremely porous, roughly 75 percent empty space, with a weak, fluffy structure held together loosely by gravity rather than dense ice, and ejecta showed abundant organic compounds and fine silicate dust. These findings supported comets as porous, primitive aggregates from the early solar nebula and strengthened the case that comet impacts could have delivered water and organic material to the early Earth.",
+  "statusNote": "Comet nucleus composition study via impact. Direct Earth-to-Tempel-1 transfer, 6-month cruise, no planetary flyby gravity assists -- trajectory corrected only with onboard thrusters, architecturally a single Lambert arc. The 372 kg impactor separated and struck Tempel 1 on 2005-07-04 at ~10.2 km/s; the flyby spacecraft survived, observed the resulting debris plume, and was later extended as EPOXI for a Hartley 2 flyby (2010) -- not modeled here, this entry ends at the Tempel 1 encounter.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "tempel1",
+      "departDate": "2005-01-12",
+      "arrivalDate": "2005-07-04"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Deep Impact (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Deep_Impact_(spacecraft)",
+      "localImage": "images/missions/deep_impact/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.png"
+    }
+  }
+}

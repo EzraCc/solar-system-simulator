@@ -1,0 +1,43 @@
+{
+  "key": "hayabusa",
+  "name": "Hayabusa",
+  "rocket": "M-V",
+  "payload": "Hayabusa sample-return spacecraft (~510 kg)",
+  "status": "Success",
+  "significance": "Hayabusa was launched to test whether material could be collected from an asteroid's surface and returned to Earth, and to directly verify the long-suspected but unconfirmed link between asteroid types and meteorite classes found on Earth. It was the first mission ever to land on an asteroid (25143 Itokawa) and return a sample from it, pioneering sampling, autonomous proximity navigation, and ion-engine interplanetary techniques despite serious in-flight failures that nearly ended the mission. The roughly 1,500 dust grains recovered in 2010 confirmed that S-type asteroids like Itokawa are the parent bodies of the common LL-chondrite meteorites, resolving a long-standing debate. Analysis also showed the grains had only resided on Itokawa's surface for a short geological time and revealed how space weathering alters asteroid surfaces, directly calibrating telescopic observations of asteroids against ground-truth samples.",
+  "statusNote": "First asteroid sample return mission. Single Earth gravity-assist flyby (2004-05-19, altitude 3,725 km) -- the first-ever powered planetary flyby, with ion engines firing during the slingshot itself. Continuous ion-engine thrust throughout the cruise (not ballistic coasting) means the post-flyby leg here, like BepiColombo/PSP's tightest legs, is anchored to Itokawa's real recorded position/date rather than a patched-conic fit. A 2003 solar flare damaged the solar cells, reducing ion-engine efficiency and delaying Itokawa arrival from an originally planned June to September 2005. Sample return capsule landed in Australia 2010-06-13 after a dramatic series of onboard failures (reaction wheels, fuel leak, and a temporary loss of contact) nearly ended the mission early.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2003-05-09",
+      "arrivalDate": "2004-05-19"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2004-05-19",
+      "periapsisKm": 3725
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "itokawa",
+      "departDate": "2004-05-19",
+      "arrivalDate": "2005-09-12"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Hayabusa",
+      "infoUrl": "https://en.wikipedia.org/wiki/Hayabusa",
+      "localImage": "images/missions/hayabusa/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "M-V",
+      "infoUrl": "https://en.wikipedia.org/wiki/M-V",
+      "localImage": "images/rockets/m_v.jpeg"
+    }
+  }
+}

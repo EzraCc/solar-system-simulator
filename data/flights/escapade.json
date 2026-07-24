@@ -1,0 +1,55 @@
+{
+  "key": "escapade",
+  "name": "ESCAPADE",
+  "rocket": "New Glenn",
+  "payload": "Blue + Gold smallsats (~600 kg combined)",
+  "status": "En Route",
+  "significance": "ESCAPADE was conceived to explain how Mars, which once had a thicker atmosphere and surface liquid water, lost most of that atmosphere to space, a process attributed to erosion by the solar wind acting on a planet that lacks a global magnetic field like Earth's. It is the first mission to send two identical spacecraft into complementary Mars orbits simultaneously, enabling the first true multipoint, 3D measurements of the planet's hybrid magnetosphere, ionosphere, and upper atmosphere at the same time from different locations, something earlier single-spacecraft missions like MAVEN could not do. Each of the twin probes, nicknamed Blue and Gold, carries a magnetometer, electrostatic analyzers, and a Langmuir probe to jointly track how solar wind particles and magnetic fields strip ions and neutral gas from the Martian atmosphere. Having launched in November 2025 on a low-cost trajectory with arrival at Mars expected in 2027, the mission has not yet reached its target, and its central findings on the rate and drivers of atmospheric escape, key to reconstructing Mars's climate history, remain forthcoming.",
+  "statusNote": "NASA SIMPLEx mission to study Mars magnetosphere. Unique trajectory: Earth L2 loiter (~11 months) then Earth gravity assist to Mars. Currently in L2 loiter phase as of launch.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth_L2",
+      "departDate": "2025-11-13",
+      "arrivalDate": "2025-12-20"
+    },
+    {
+      "type": "loiter",
+      "location": "Earth_L2",
+      "departure": "2026-11-01"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth_L2",
+      "toBody": "Earth",
+      "departDate": "2026-11-01",
+      "arrivalDate": "2026-11-15"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2026-11-15",
+      "periapsisKm": 1000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Mars",
+      "departDate": "2026-11-15",
+      "arrivalDate": "2027-09-15"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "ESCAPADE",
+      "infoUrl": "https://en.wikipedia.org/wiki/ESCAPADE",
+      "localImage": "images/missions/escapade/spacecraft.png"
+    },
+    "rocket": {
+      "title": "New Glenn",
+      "infoUrl": "https://en.wikipedia.org/wiki/New_Glenn",
+      "localImage": "images/rockets/new_glenn.jpg"
+    }
+  }
+}

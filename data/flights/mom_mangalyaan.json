@@ -1,0 +1,107 @@
+{
+  "key": "mom_mangalyaan",
+  "name": "Mars Orbiter Mission (Mangalyaan)",
+  "rocket": "PSLV-C25 (XL)",
+  "payload": "MOM orbiter (1,340 kg; ~852 kg propellant at launch)",
+  "status": "Success",
+  "significance": "The Mars Orbiter Mission was launched primarily to prove India could independently design, launch, and operate an interplanetary spacecraft, with secondary goals of studying Mars' surface, atmosphere, and mineralogy. It made India the first Asian nation and ISRO the first space agency worldwide to reach Mars orbit on a first attempt, achieved at unusually low cost. Its five instruments returned surface and moon imagery, tracked seasonal dust and atmospheric changes, studied escape of atmospheric species such as argon, and its methane sensor found no significant methane in the Martian atmosphere. MOM's lasting significance is chiefly technological and programmatic -- validating deep-space navigation and orbit-insertion capability -- rather than a single landmark scientific discovery.",
+  "statusNote": "India's first interplanetary mission. PSLV was underpowered for direct escape injection, so the spacecraft spent ~26 days in a sequence of six progressively apogee-raising Earth-parking orbits (Oberth-effect perigee burns with the 440N liquid apogee motor) before trans-Mars injection (TMI), rather than departing Earth directly -- modeled here as six discrete geocentric_orbit legs, one per burn, using each burn's published resulting perigee/apogee. Burn TIMES (not just dates) are computed, not independently sourced: each segment's own orbital period is derived from its real perigee/apogee, and its end time is set to the nearest whole number of that period after its start, so the spacecraft is actually back at perigee -- where the real burn happens -- at each handoff, rather than at an arbitrary point mid-orbit. This lands TMI at 2013-12-01T03:15 UTC, ~8 hours from the published ~2013-11-30T19:19 UTC figure, well within the day-level precision of the secondary sources this was compiled from (which also disagree on the exact burn count/dates around a documented premature-engine-shutdown anomaly that required a supplementary firing). Inclination/RAAN/argument-of-periapsis are not individually published per burn -- approximated as a representative ~19 deg PSLV-GTO-class inclination, held constant (perigee burns don't change the orbital plane). At the simulator's current AU-scale zoom, this entire ~26-day, ~200,000km-wide phase sits within about 0.0013 AU of Earth -- correct real physics, but not yet visually distinct from Earth itself; that's expected to change once planet zoom-in views exist. Contact lost 2022-04; declared dead 2022-10 after battery failure ended communication.",
+  "legs": [
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 247,
+      "apoapsisKm": 23550,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2013-11-05T00:00:00Z",
+      "arrivalDate": "2013-11-06T03:18:22Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 247,
+      "apoapsisKm": 24388,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2013-11-06T03:18:22Z",
+      "arrivalDate": "2013-11-07T00:29:39Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 247,
+      "apoapsisKm": 28724,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2013-11-07T00:29:39Z",
+      "arrivalDate": "2013-11-08T01:28:27Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 247,
+      "apoapsisKm": 40186,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2013-11-08T01:28:27Z",
+      "arrivalDate": "2013-11-11T01:22:55Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 247,
+      "apoapsisKm": 45475,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2013-11-11T01:22:55Z",
+      "arrivalDate": "2013-11-13T22:27:51Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 247,
+      "apoapsisKm": 118642,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2013-11-13T22:27:51Z",
+      "arrivalDate": "2013-11-15T21:08:27Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 600,
+      "apoapsisKm": 192874,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2013-11-15T21:08:27Z",
+      "arrivalDate": "2013-12-01T03:14:49Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Mars",
+      "departDate": "2013-12-01T03:14:49Z",
+      "arrivalDate": "2014-09-24"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Mars Orbiter Mission",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_Orbiter_Mission",
+      "localImage": "images/missions/mom_mangalyaan/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Polar Satellite Launch Vehicle",
+      "infoUrl": "https://en.wikipedia.org/wiki/Polar_Satellite_Launch_Vehicle",
+      "localImage": "images/rockets/polar_satellite_launch_vehicle.png"
+    }
+  }
+}

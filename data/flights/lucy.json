@@ -1,0 +1,111 @@
+{
+  "key": "lucy",
+  "name": "Lucy",
+  "rocket": "Atlas V 401",
+  "payload": "Lucy spacecraft (~1,550 kg wet mass)",
+  "status": "En Route",
+  "significance": "Lucy was launched to explore the Jupiter Trojan asteroids, swarms of small bodies trapped in Jupiter's leading and trailing Lagrange points that are thought to be unaltered leftovers from the outer solar system's formation, preserving a chemical and physical record found nowhere else. It is the first mission to visit Jupiter Trojans, and its trajectory is designed to fly by more distinct small bodies (eight, across two swarms) than any previous mission. En route, a 2023 flyby of main-belt asteroid Dinkinesh unexpectedly revealed it to be orbited by a small moon, Selam, which is itself a contact binary -- the first contact-binary satellite ever found orbiting another asteroid. A 2025 flyby of Donaldjohanson showed it to be an elongated contact binary about 8 km long with a sharply pinched neck, tumbling in a non-principal-axis rotation, and bearing spectral evidence of iron-rich clays indicating past exposure to liquid water. Lucy's main Trojan encounters begin in 2027 and are expected to test whether these bodies formed near Jupiter or migrated inward from the outer solar system.",
+  "statusNote": "First mission to the Jupiter Trojan asteroids -- a 12-year tour visiting seven distinct small bodies (one of them a binary) using three Earth gravity assists rather than a single destination. Real mission design, not simplified here: launched into a ~1-year loop back to Earth (first Earth gravity assist 2022-10-16, ~352 km altitude), continued on to an incidental-but-real flyby of tiny near-Earth asteroid Dinkinesh (2023-11-01, discovered mid-mission to be a contact-binary satellite pair -- not modeled separately, same precedent as Didymos/Dimorphos), then back to Earth for a second gravity assist (2024-12-12, ~360 km altitude) that retargeted the spacecraft out to the L4 Trojan swarm and on to main-belt asteroid Donaldjohanson (flyby 2025-04-20, a bonus science target on the way out). The four L4 Trojan encounters follow: Eurybates 2027-08-12, its small moon Queta not modeled separately; Polymele 2027-09-15, likewise not separately modeling its small moon; Leucus 2028-04-18; Orus 2028-11-11. A third Earth gravity assist (2030-12-26, ~355 km altitude -- estimated, since this flyby hasn't happened yet as of this writing) then redirects the spacecraft to the L5 swarm for the binary pair Patroclus/Menoetius (2033-03-03), modeled as a single point at Patroclus (the larger body) for the same reason Didymos/Dimorphos and Eurybates/Queta aren't split into separate targets. None of the flybys use real gravity assists at the asteroids themselves (their masses are far too small to matter) -- only the three Earth passes actually bend the trajectory; the asteroid-to-asteroid legs are plain Lambert arcs anchored to each real recorded encounter date, the same pattern already used for Dawn's Vesta/Ceres sequence. This is also this simulator's largest single-flight leg count (13) and its widest-flung small-body targets (Trojans orbit at Jupiter's ~5.2 AU) -- worth flagging for anyone extending the Lambert solver again: building this flight surfaced a second real bug in solveLambertUniversal beyond the pole-crossing one found during New Horizons. The 34-day Eurybates->Polymele hop (two slow-moving, closely-spaced Trojans) has a valid-but-unsolved z window narrower than the solver's scan grid spacing, so the coarse scan stepped clean over it and reported 'could not bracket a root' for a leg that has a perfectly good solution. Fixed by refining the scan at every invalid->valid domain-boundary crossing (bisecting on validity itself, not TOF) before comparing signs -- see the boundary-refinement comment in app.js. All 13 legs, including this one, now solve and land exactly on their real recorded target position.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2021-10-16",
+      "arrivalDate": "2022-10-16"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2022-10-16",
+      "periapsisKm": 352
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "dinkinesh",
+      "departDate": "2022-10-16",
+      "arrivalDate": "2023-11-01"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "dinkinesh",
+      "toBody": "Earth",
+      "departDate": "2023-11-01",
+      "arrivalDate": "2024-12-12"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2024-12-12",
+      "periapsisKm": 360
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "donaldjohanson",
+      "departDate": "2024-12-12",
+      "arrivalDate": "2025-04-20"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "donaldjohanson",
+      "toBody": "eurybates",
+      "departDate": "2025-04-20",
+      "arrivalDate": "2027-08-12"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "eurybates",
+      "toBody": "polymele",
+      "departDate": "2027-08-12",
+      "arrivalDate": "2027-09-15"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "polymele",
+      "toBody": "leucus",
+      "departDate": "2027-09-15",
+      "arrivalDate": "2028-04-18"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "leucus",
+      "toBody": "orus",
+      "departDate": "2028-04-18",
+      "arrivalDate": "2028-11-11"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "orus",
+      "toBody": "Earth",
+      "departDate": "2028-11-11",
+      "arrivalDate": "2030-12-26"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2030-12-26",
+      "periapsisKm": 355
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "patroclus",
+      "departDate": "2030-12-26",
+      "arrivalDate": "2033-03-03"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Lucy",
+      "infoUrl": "https://en.wikipedia.org/wiki/Lucy_(spacecraft)",
+      "localImage": "images/missions/lucy/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "key": "dawn",
+  "name": "Dawn",
+  "rocket": "Delta II 7925H",
+  "payload": "Dawn orbiter (~1,240 kg wet mass)",
+  "status": "Success",
+  "significance": "Dawn was launched to compare two of the largest, most different surviving protoplanets in the asteroid belt, Vesta and Ceres, to understand how planetary building blocks diverged depending on when and where they formed. Enabled by an ion propulsion system efficient enough to enter and later escape orbit around one body to reach another, it became the first spacecraft to orbit two extraterrestrial bodies beyond the Earth-Moon system in a single mission. At Vesta, Dawn found a differentiated, layered interior with a metallic core and a giant southern impact basin, confirming Vesta as the source of the HED meteorites. At Ceres, it discovered bright salt deposits (notably in Occator crater) left by briny fluid that reached the surface from a subsurface reservoir, along with ammoniated clays and evidence of past or present liquid water, showing Ceres to be a volatile-rich, ocean-world-like dwarf planet distinct from rocky Vesta.",
+  "statusNote": "First spacecraft to orbit two extraterrestrial bodies in sequence. Single Mars gravity-assist flyby (2009-02-17, closest approach 549 km, ~2.6 km/s contribution). Continuous ion-drive propulsion throughout (not ballistic coasting), same caveat as Hayabusa/Hayabusa2/BepiColombo -- each leg here is anchored to its real recorded encounter position/date rather than a patched-conic fit. Orbited Vesta 2011-07-16 to 2012-09-05 (~14 months), then ion-thrusted on to Ceres, arriving 2015-03-06 -- two distinct target orbits in sequence with no single 'final destination', modeled as two lambert legs with the Vesta-stay gap between them (computeMultiLegPosition's between-legs fallback correctly holds position at Vesta, tracking its real ongoing motion, rather than jumping straight to Ceres). Mission ended 2018-10 at Ceres after hydrazine (attitude-control fuel, not the ion propellant) was exhausted; spacecraft remains in a stable orbit there.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Mars",
+      "departDate": "2007-09-27",
+      "arrivalDate": "2009-02-17"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mars",
+      "date": "2009-02-17",
+      "periapsisKm": 549
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mars",
+      "toBody": "vesta",
+      "departDate": "2009-02-17",
+      "arrivalDate": "2011-07-16"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "vesta",
+      "toBody": "ceres",
+      "departDate": "2012-09-05",
+      "arrivalDate": "2015-03-06"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Dawn (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Dawn_(spacecraft)",
+      "localImage": "images/missions/dawn/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.png"
+    }
+  }
+}

@@ -1,0 +1,325 @@
+  :root {
+    --bg: #05070d;
+    --panel-bg: rgba(12, 16, 28, 0.88);
+    --panel-border: rgba(120, 150, 200, 0.25);
+    --text-primary: #e8edf7;
+    --text-dim: #8b96ad;
+    --accent: #5ab0ff;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-primary);
+    overflow: hidden;
+  }
+  #canvas-wrap { position: fixed; inset: 0; }
+  canvas { display: block; width: 100%; height: 100%; }
+
+  .panel {
+    position: fixed;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    backdrop-filter: blur(6px);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* Date + time/speed controls live together at bottom-right, stacked by
+     the flex wrapper rather than each independently positioned -- avoids
+     hardcoding a stack offset that would silently drift if either panel's
+     content (and so height) changes, and keeps the date picker out of the
+     left column the legend panel occupies, so a long (scrolling) legend
+     can never grow into it. */
+  #bottom-right-controls {
+    position: fixed;
+    right: 16px; bottom: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    align-items: flex-end;
+  }
+  #date-panel {
+    /* .panel defaults to position:fixed, which would pull this out of
+       #bottom-right-controls' flex flow entirely (fixed-position elements
+       ignore their parent's layout) -- override back to a normal flow
+       child so the wrapper actually stacks it with #time-panel. */
+    position: static;
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  #date-panel input[type="date"] {
+    background: #0e1320;
+    color: var(--text-primary);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-family: inherit;
+    font-size: 13px;
+    opacity: 0.6;
+    cursor: default;
+  }
+  #date-panel input[type="date"].editable {
+    opacity: 1;
+    border-color: #4a6fd4;
+    cursor: text;
+  }
+  #date-panel button {
+    background: #16203a;
+    color: var(--text-primary);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  #date-panel button:hover { background: #1f2c4d; }
+  #date-panel .label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  #time-panel {
+    position: static; /* see #date-panel comment -- same reason */
+    display: flex; flex-direction: column; gap: 8px; min-width: 220px;
+  }
+  #time-panel .row { display: flex; align-items: center; gap: 8px; }
+  #time-panel .label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+  #speed-slider { flex: 1; }
+  #speed-readout { font-size: 12px; min-width: 84px; text-align: right; color: var(--accent); }
+  #playpause {
+    background: #16203a; color: var(--text-primary); border: 1px solid var(--panel-border);
+    border-radius: 6px; padding: 6px 12px; cursor: pointer; font-family: inherit; font-size: 13px;
+  }
+  #playpause:hover { background: #1f2c4d; }
+
+  #legend-panel {
+    left: 16px; top: 16px;
+    max-width: 230px;
+    /* Three accordion groups (Planets, Flights, Asteroids & Comets) can
+       add up to well past viewport height even with most sections
+       collapsed -- Flights alone is 30+ rows. Cap the panel itself at the
+       viewport height (minus its own top offset and a matching bottom
+       margin) and let IT scroll, rather than letting content run off the
+       bottom of the screen. */
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120, 150, 200, 0.35) transparent;
+  }
+  #legend-panel::-webkit-scrollbar { width: 6px; }
+  #legend-panel::-webkit-scrollbar-track { background: transparent; }
+  #legend-panel::-webkit-scrollbar-thumb {
+    background: rgba(120, 150, 200, 0.35); border-radius: 3px;
+  }
+  #legend-panel::-webkit-scrollbar-thumb:hover { background: rgba(120, 150, 200, 0.55); }
+  #legend-panel .layer-group { margin-bottom: 4px; }
+  #legend-panel .layer-group:last-child { margin-bottom: 0; }
+  #legend-panel .layer-header {
+    font-weight: 600; font-size: 13px;
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer; padding: 4px 0; user-select: none;
+  }
+  #legend-panel .layer-header .chevron {
+    display: inline-block; width: 8px; height: 8px;
+    border-right: 2px solid var(--text-primary); border-bottom: 2px solid var(--text-primary);
+    transform: rotate(45deg); transition: transform 0.18s ease;
+    flex-shrink: 0;
+  }
+  #legend-panel .layer-group.collapsed .chevron { transform: rotate(-45deg); }
+  #legend-panel .layer-body {
+    overflow: hidden;
+    /* Just a large-enough target for the collapse/expand transition, not a
+       real content cap -- the outer #legend-panel now owns the actual
+       scrolling, so this only needs to comfortably clear the longest
+       realistic list (Flights, 30+ rows and growing) without clipping it. */
+    max-height: 2000px;
+    transition: max-height 0.2s ease, opacity 0.2s ease;
+    opacity: 1;
+  }
+  #legend-panel .layer-group.collapsed .layer-body {
+    max-height: 0;
+    opacity: 0;
+  }
+  /* Moon rows are appended to the legend for every planet, but should only
+     be visible while that planet (or the moon itself) is the locked/
+     focused body -- buildLegend() already toggles .expanded on this
+     wrapper to reflect that (see isSatelliteVisible); this is the missing
+     other half that actually hides it otherwise. */
+  #legend-panel .satellite-accordion {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.2s ease, opacity 0.2s ease;
+  }
+  #legend-panel .satellite-accordion.expanded {
+    max-height: 40px;
+    opacity: 1;
+  }
+  #legend-panel .empty-note { font-size: 11px; color: var(--text-dim); font-style: italic; padding: 2px 0 4px; }
+  #legend-panel .title { font-weight: 600; margin-bottom: 6px; font-size: 13px; }
+  /* Compact per-row type indicator (e.g. "DP" for dwarf planet) -- flags a
+     body that doesn't fit the group's default type without spending a
+     whole sub-heading on it; full meaning lives in the title attribute
+     (native browser tooltip on hover), not in the badge text itself. */
+  #legend-panel .body-type-badge {
+    font-size: 8px; font-weight: 700; color: var(--text-dim);
+    border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 3px;
+    padding: 0px 3px; margin-left: 2px; letter-spacing: 0.02em;
+    cursor: help;
+  }
+  #legend-panel .row { display: flex; align-items: center; gap: 8px; margin: 3px 0; font-size: 12px; color: var(--text-dim); }
+  /* A flight actually in transit right now, at the current simulated date
+     -- lighter than the default dim row color so it's visibly "the thing
+     that's flying" at a glance, independent of selection. */
+  #legend-panel .row.in-transit { color: var(--text-primary); }
+  #legend-panel .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  #scale-toggle-panel {
+    right: 16px; top: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  #scale-toggle-panel label {
+    display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;
+  }
+  .switch {
+    width: 36px; height: 20px; background: #243152; border-radius: 10px; position: relative;
+    transition: background 0.2s; flex-shrink: 0;
+  }
+  .switch.on { background: var(--accent); }
+  .switch::after {
+    content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+    background: #fff; border-radius: 50%; transition: left 0.2s;
+  }
+  .switch.on::after { left: 18px; }
+
+  #size-compare-panel {
+    right: 16px; top: 64px;
+    max-width: 320px;
+    display: none;
+  }
+  #size-compare-panel.visible { display: block; }
+  #size-compare-panel .title { font-weight: 600; margin-bottom: 8px; font-size: 13px; }
+  #size-row { display: flex; align-items: flex-end; gap: 6px; height: 90px; overflow-x: auto; padding-top: 4px; }
+  .size-item { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .size-circle { border-radius: 50%; flex-shrink: 0; }
+  .size-label { font-size: 9px; color: var(--text-dim); margin-top: 3px; white-space: nowrap; }
+
+  #hover-tip {
+    position: fixed;
+    pointer-events: none;
+    background: rgba(8, 11, 20, 0.95);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--text-primary);
+    display: none;
+    z-index: 50;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  #zoom-hint {
+    position: fixed;
+    bottom: 16px; left: 50%; transform: translateX(-50%);
+    color: var(--text-dim); font-size: 11px;
+    pointer-events: none;
+  }
+
+  #camera-controls {
+    position: fixed;
+    bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px;
+    padding: 8px 10px;
+  }
+  #camera-controls button {
+    background: #16203a; color: var(--text-primary); border: 1px solid var(--panel-border);
+    border-radius: 6px; padding: 6px 12px; cursor: pointer; font-family: inherit; font-size: 12px;
+  }
+  #camera-controls button:hover { background: #1f2c4d; }
+  #stop-tracking-btn {
+    display: none; /* shown only while a body is locked */
+  }
+  #stop-tracking-btn.visible { display: inline-block; }
+
+  #locked-panel {
+    position: fixed;
+    display: none; /* toggled to "flex" in JS (updateLockedPanelVisibility) when a body is locked */
+    flex-direction: column;
+    min-width: 230px;
+    max-width: 280px;
+    /* A flight's statusNote plus the rocket/spacecraft/lander thumbnail
+       gallery can make this panel much taller than a plain body's -- cap
+       it like the legend panel so it can't run off the bottom of the
+       screen (the JS position-clamp in drawLockedPanelConnector already
+       keeps it on-screen horizontally/by-top-edge, but doesn't shrink it,
+       so an uncapped panel could still extend past the viewport's bottom
+       edge regardless of where it's anchored). Header stays put; only the
+       body below scrolls -- see #locked-panel-body.
+       calc() matches the legend panel's convention (16px top/bottom margins). */
+    max-height: calc(100vh - 32px);
+    z-index: 40;
+  }
+  #locked-panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; /* stays visible even if the body below scrolls */
+    margin-bottom: 8px;
+    user-select: none; /* dragging the header shouldn't select the title text */
+  }
+  #locked-panel-title {
+    font-weight: 600; font-size: 14px;
+  }
+  #locked-panel-close {
+    background: transparent; border: none; color: var(--text-dim);
+    cursor: pointer; font-size: 16px; line-height: 1; padding: 0 4px;
+  }
+  #locked-panel-close:hover { color: var(--text-primary); }
+  #locked-panel-body {
+    overflow-y: auto;
+    min-height: 0; /* required for a flex child to actually shrink/scroll instead of overflowing its container */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120, 150, 200, 0.35) transparent;
+  }
+  #locked-panel-body::-webkit-scrollbar { width: 6px; }
+  #locked-panel-body::-webkit-scrollbar-track { background: transparent; }
+  #locked-panel-body::-webkit-scrollbar-thumb {
+    background: rgba(120, 150, 200, 0.35); border-radius: 3px;
+  }
+  #locked-panel-body::-webkit-scrollbar-thumb:hover { background: rgba(120, 150, 200, 0.55); }
+  .lp-row {
+    display: flex; justify-content: space-between; gap: 10px;
+    font-size: 12px; padding: 2px 0; border-bottom: 1px solid rgba(120,150,200,0.1);
+  }
+  .lp-row:last-child { border-bottom: none; }
+  .lp-key { color: var(--text-dim); white-space: nowrap; }
+  .lp-val { text-align: right; }
+
+  /* Rocket/spacecraft/lander thumbnail gallery in the flight locked panel --
+     each tile links out to its source (NASA/ESA/agency page where known,
+     Wikipedia otherwise) so a click takes the user to the real reference. */
+  .lp-assets {
+    display: flex; gap: 6px; margin-top: 8px; padding-top: 8px;
+    border-top: 1px solid rgba(120,150,200,0.15);
+  }
+  .lp-asset {
+    flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center;
+    text-decoration: none; color: var(--text-dim); gap: 3px;
+  }
+  .lp-asset img {
+    width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 4px;
+    border: 1px solid rgba(120,150,200,0.25);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .lp-asset:hover img { border-color: var(--accent); transform: scale(1.03); }
+  .lp-asset-noimg {
+    width: 100%; aspect-ratio: 1 / 1; border-radius: 4px;
+    border: 1px dashed rgba(120,150,200,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: var(--text-dim); text-align: center;
+  }
+  .lp-asset-label {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  }
+  .lp-asset:hover .lp-asset-label { color: var(--text-primary); }

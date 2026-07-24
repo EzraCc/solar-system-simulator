@@ -1,0 +1,25 @@
+{
+  "key": "mro",
+  "name": "Mars Reconnaissance Orbiter",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2005-08-12",
+  "arrival": "2006-03-10",
+  "rocket": "Atlas V 401",
+  "payload": "MRO orbiter (2,180 kg)",
+  "status": "Success",
+  "significance": "MRO was launched to conduct high-resolution reconnaissance of Mars, refining the picture of the planet's water history built by Odyssey and Mars Express and scouting safe, scientifically compelling landing sites for later missions such as Phoenix, Curiosity, and Perseverance. It carried HiRISE, the most powerful camera ever sent to another planet, capable of resolving objects roughly a meter across, and returned more science data than every other interplanetary mission combined at the time, enabling repeat imaging that tracks surface changes over months and years. Its ground-penetrating radar discovered massive buried ice deposits at mid-latitudes, including one reservoir comparable in volume to Lake Superior, while its imagery revealed thousands of gullies and recurring slope lineae hinting at possible present-day briny flows. MRO also directly observed active surface processes in near-real time, including avalanches, dust devils, and freshly formed impact craters.",
+  "statusNote": null,
+  "assets": {
+    "spacecraft": {
+      "title": "Mars Reconnaissance Orbiter",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_Reconnaissance_Orbiter",
+      "localImage": "images/missions/mro/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}

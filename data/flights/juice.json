@@ -1,0 +1,82 @@
+{
+  "key": "juice",
+  "name": "JUICE (Jupiter Icy Moons Explorer)",
+  "rocket": "Ariane 5 ECA+",
+  "payload": "JUICE orbiter (5,963 kg wet mass / 2,420 kg dry)",
+  "status": "En Route",
+  "significance": "JUICE was launched to follow up on Galileo-era magnetometer evidence that Ganymede, Callisto, and Europa each conceal saltwater oceans beneath their icy shells, addressing ESA's Cosmic Vision questions about the conditions needed for planet formation and habitability around gas giants rather than just rocky planets. It is the first mission designed to orbit a moon in the outer solar system (Ganymede, planned for 2034), and the first to carry a full geophysical payload, including ice-penetrating radar, a laser altimeter, and magnetometers, built specifically to characterize a moon's internal ocean, ice-shell thickness, and interior structure rather than just image its surface. Ganymede is also the only moon known to generate its own magnetic field, and JUICE is the first spacecraft equipped to study in detail how that field interacts with Jupiter's much larger magnetosphere. As the mission is still en route to Jupiter (arrival expected 2031), its findings so far are limited to instrument calibration during flybys, with the core discoveries about ocean depth, salinity, and habitability of the three moons still to come.",
+  "statusNote": "ESA mission (partners NASA, JAXA, Israel Space Agency) to study Ganymede, Europa, and Callisto as candidate habitable icy-ocean worlds. Real trajectory used a world-first lunar-Earth double flyby (Moon 2024-08-19, Earth 2024-08-20, ~1.5 days apart) -- this simulator has no lunar gravity-assist physics, so that pair is modeled as a single Earth flyby at the real Earth-encounter date/altitude; the next leg still targets Venus's real recorded 2025-08-31 position, so the simplification doesn't propagate error forward. The 2026-09-29 and 2029-01-18 Earth flyby altitudes are not yet officially published (as of this data's compilation, 2026-07); ~5,000 km is a placeholder in line with the two already-flown Earth flybys, not a confirmed figure. Trajectory modeled through Jupiter orbit insertion (2031-07-20) only -- the following 3+ year Jovian-system tour (Europa/Callisto flybys) and eventual Ganymede orbit insertion (~end of 2034) are a separate multi-target tour phase, not a single transfer arc, and are not modeled here (same reasoning as Lucy's Trojan tour).",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2023-04-14",
+      "arrivalDate": "2024-08-20"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2024-08-20",
+      "periapsisKm": 6807
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "2024-08-20",
+      "arrivalDate": "2025-08-31"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2025-08-31",
+      "periapsisKm": 5088
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Earth",
+      "departDate": "2025-08-31",
+      "arrivalDate": "2026-09-29"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2026-09-29",
+      "periapsisKm": 5000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2026-09-29",
+      "arrivalDate": "2029-01-18"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2029-01-18",
+      "periapsisKm": 5000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Jupiter",
+      "departDate": "2029-01-18",
+      "arrivalDate": "2031-07-20"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Jupiter Icy Moons Explorer",
+      "infoUrl": "https://www.esa.int/Science_Exploration/Space_Science/Juice",
+      "localImage": "images/missions/juice/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Ariane 5",
+      "infoUrl": "https://en.wikipedia.org/wiki/Ariane_5",
+      "localImage": "images/rockets/ariane_5.jpg"
+    }
+  }
+}

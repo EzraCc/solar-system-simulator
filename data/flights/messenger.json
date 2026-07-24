@@ -1,0 +1,108 @@
+{
+  "key": "messenger",
+  "name": "MESSENGER",
+  "rocket": "Delta II 7925H",
+  "payload": "MESSENGER orbiter (1,107.9 kg)",
+  "status": "Success",
+  "significance": "MESSENGER was launched to conduct the first sustained, close-up study of Mercury, a planet visited only briefly by three flybys of Mariner 10 in the mid-1970s, in order to understand why Mercury is so dense, how its magnetic field and thin atmosphere are sustained, and what its geologic history reveals about the formation of rocky planets. In 2011 it became the first spacecraft ever to orbit Mercury, carrying a far more capable instrument suite than Mariner 10, including X-ray, gamma-ray, and neutron spectrometers that performed the first geochemical mapping of the planet's surface composition. Over four years in orbit it found that Mercury's magnetic field is offset far to the north of the planet's center, mapped a global surface enriched in unexpectedly high sulfur, magnesium, and calcium suggesting a chemically reduced origin, and confirmed that permanently shadowed polar craters hold substantial deposits of water ice, despite Mercury's proximity to the Sun. It also revealed widespread evidence of past volcanic activity and a contracting, still-shrinking planetary crust, reshaping models of Mercury's thermal and geologic evolution.",
+  "statusNote": "NASA's first spacecraft to orbit Mercury. 6 gravity assists across 3 bodies (1 Earth, 2 Venus, 3 Mercury) over 6.5 years before Mercury orbit insertion -- same architecture class as BepiColombo, just with a shorter flyby chain. Mission ended 2015-04-30 (planned impact into Mercury's surface after fuel depletion).",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2004-08-03",
+      "arrivalDate": "2005-08-02"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2005-08-02",
+      "periapsisKm": 2348
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "2005-08-02",
+      "arrivalDate": "2006-10-24"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2006-10-24",
+      "periapsisKm": 2987
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2006-10-24",
+      "arrivalDate": "2007-06-05"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2007-06-05",
+      "periapsisKm": 338
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Mercury",
+      "departDate": "2007-06-05",
+      "arrivalDate": "2008-01-14"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "2008-01-14",
+      "periapsisKm": 200
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": "Mercury",
+      "departDate": "2008-01-14",
+      "arrivalDate": "2008-10-06"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "2008-10-06",
+      "periapsisKm": 199.5
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": "Mercury",
+      "departDate": "2008-10-06",
+      "arrivalDate": "2009-09-29"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "2009-09-29",
+      "periapsisKm": 227.8
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": "Mercury",
+      "departDate": "2009-09-29",
+      "arrivalDate": "2011-03-18"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "MESSENGER",
+      "infoUrl": "https://en.wikipedia.org/wiki/MESSENGER",
+      "localImage": "images/missions/messenger/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.png"
+    }
+  }
+}

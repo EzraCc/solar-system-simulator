@@ -1,0 +1,26 @@
+{
+  "key": "akatsuki",
+  "name": "Akatsuki (Venus Climate Orbiter)",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "2010-05-20",
+  "arrival": "2010-12-07",
+  "rocket": "H-IIA 202",
+  "payload": "Akatsuki orbiter (640 kg, incl. 320 kg propellant, 34 kg science instruments)",
+  "status": "Orbit insertion failed",
+  "significance": "Akatsuki was launched to answer a puzzle unsolved since the Venera and Pioneer Venus missions: why Venus's thick atmosphere rotates roughly 60 times faster than the solid planet itself, a phenomenon called super-rotation, and how a world similar in size to Earth developed a runaway greenhouse instead of a temperate climate. It was JAXA's first attempt to place a spacecraft in orbit around another planet, designed to use a suite of cameras at different wavelengths (ultraviolet, infrared, and visible) simultaneously to build the first continuous 3D map of Venusian cloud motion, lightning, and airglow at multiple altitudes at once. Its 2010 orbit-insertion burn failed due to a stuck valve that damaged the main engine, but engineers kept the probe alive in solar orbit and successfully re-inserted it using only small attitude-control thrusters in December 2015, the first recovery of its kind. Once in orbit, Akatsuki discovered a stationary, bow-shaped gravity wave spanning nearly pole-to-pole in the atmosphere and an equatorial jet stream, and its long-term cloud-tracking data showed that diurnal thermal tides driven by day-night solar heating are the primary mechanism sustaining super-rotation.",
+  "statusNote": "Cruise arrived at Venus on schedule, but the orbit-insertion burn failed due to a propulsion malfunction; the spacecraft instead entered its own solar orbit. JAXA recovered the mission via an improvised trajectory, successfully entering Venus orbit on Dec. 7, 2015 -- five years later, and not modeled here.",
+  "_designNote": "First inner-orbit case (Earth -> Venus, transferring INWARD to a smaller orbit rather than outward to Mars). Geometrically distinct from both Mars missions: the actual Earth/Venus positions at this launch/arrival pair produce a Type-II transfer (>180deg heliocentric sweep), confirmed by the solver from real geometry rather than assumed -- unlike Curiosity and Perseverance, which both came out Type-I. 'arrival' here is the date Akatsuki actually reached Venus's vicinity on schedule; the cruise itself was not delayed. What failed was the SEPARATE orbit-insertion burn that same day, which is outside this simulator's modeled scope (launch -> arrival only, not capture).",
+  "assets": {
+    "spacecraft": {
+      "title": "Akatsuki (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Akatsuki_(spacecraft)",
+      "localImage": "images/missions/akatsuki/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "H-IIA",
+      "infoUrl": "https://en.wikipedia.org/wiki/H-IIA",
+      "localImage": "images/rockets/h_iia.jpg"
+    }
+  }
+}

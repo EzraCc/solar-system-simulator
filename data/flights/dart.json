@@ -1,0 +1,30 @@
+{
+  "key": "dart",
+  "name": "DART (Double Asteroid Redirection Test)",
+  "rocket": "Falcon 9",
+  "payload": "DART impactor (610 kg at impact)",
+  "status": "Success",
+  "significance": "DART was launched to provide the first real-world test of whether deliberately crashing a spacecraft into an asteroid could measurably change its orbit, a foundational question for planetary defense against a future hazardous impactor. It was the first mission in history to intentionally alter the motion of a celestial body, targeting the small moonlet Dimorphos in the Didymos binary system as a proxy for the size of asteroid most likely to threaten Earth. The kinetic impact on 26 September 2022 shortened Dimorphos's 11.9-hour orbital period by about 33 minutes, far exceeding the 73-second threshold considered a success, because ejecta recoil amplified the momentum transfer by a factor of roughly three to four beyond the spacecraft's own momentum. Follow-up analysis showed Dimorphos to be a weak, cohesionless rubble pile that was measurably reshaped and had its orbit altered by the collision, validating kinetic impact as a viable planetary defense technique.",
+  "statusNote": "First full-scale planetary-defense kinetic-impact test. Direct Earth-to-Didymos transfer, no flyby waypoints -- the simplest architecture in this catalog's asteroid-mission batch. Deliberately impacted Dimorphos (Didymos's small moon, not modeled separately -- see SMALL_BODIES comment in app.js) on 2022-09-26 at ~6.1 km/s, shortening its orbital period around Didymos by 32 minutes and proving kinetic deflection works. Spacecraft destroyed on impact; the DRACO imager kept transmitting until the moment of collision.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "didymos",
+      "departDate": "2021-11-24",
+      "arrivalDate": "2022-09-26"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Double Asteroid Redirection Test",
+      "infoUrl": "https://en.wikipedia.org/wiki/Double_Asteroid_Redirection_Test",
+      "localImage": "images/missions/dart/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Falcon 9",
+      "infoUrl": "https://en.wikipedia.org/wiki/Falcon_9",
+      "localImage": "images/rockets/falcon_9.png"
+    }
+  }
+}

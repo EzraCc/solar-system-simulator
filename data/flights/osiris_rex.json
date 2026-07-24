@@ -1,0 +1,43 @@
+{
+  "key": "osiris_rex",
+  "name": "OSIRIS-REx",
+  "rocket": "Atlas V 411",
+  "payload": "OSIRIS-REx sample-return spacecraft (~2,110 kg wet mass)",
+  "status": "Success",
+  "significance": "OSIRIS-REx was launched to obtain a pristine, uncontaminated sample of a carbon-rich asteroid to test whether such bodies delivered water and organic molecules to the early Earth, targeting Bennu partly because it is also a potentially hazardous near-Earth object with a small but non-negligible impact probability in the next two centuries. It was the first US mission to return a sample from an asteroid, using a novel \"touch-and-go\" collector (TAGSAM) that grabbed material with a burst of nitrogen gas rather than landing, and it returned the largest asteroid sample ever collected, 121.6 grams, more than double the mission's target. Analysis of the returned material confirmed abundant amino acids, nucleobases, and nitrogen-rich compounds, along with mineralogical evidence of long-lived ancient brine and liquid water on Bennu's parent body, plus phosphate and other minerals (including trona) never before seen in extraterrestrial samples. These findings strengthened the case that carbonaceous asteroids were a significant source of the prebiotic chemical ingredients that seeded early Earth.",
+  "statusNote": "Asteroid sample return; extended mission to a second asteroid. Single Earth gravity-assist flyby (2017-09-22, closest approach 17,237 km above Antarctica) tilted the orbital plane to match Bennu's inclination -- a change that would have required more propellant than the spacecraft carried to achieve with thrusters alone. Bennu sample return to Earth 2023-09-24. Spacecraft renamed OSIRIS-APEX and extended to rendezvous with asteroid Apophis in 2029 -- not modeled here, this entry ends at the primary Bennu rendezvous (2018-12-03).",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2016-09-08",
+      "arrivalDate": "2017-09-22"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2017-09-22",
+      "periapsisKm": 17237
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "bennu",
+      "departDate": "2017-09-22",
+      "arrivalDate": "2018-12-03"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "OSIRIS-REx",
+      "infoUrl": "https://en.wikipedia.org/wiki/OSIRIS-REx",
+      "localImage": "images/missions/osiris_rex/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}

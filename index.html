@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Solar System — Orbital Mechanics Visualizer</title>
+<link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+
+<div id="canvas-wrap">
+  <canvas id="scene"></canvas>
+</div>
+
+<div id="hover-tip"></div>
+
+<div class="panel" id="legend-panel">
+  <div class="layer-group" id="planets-layer-group">
+    <div class="layer-header" id="planets-layer-header">
+      <span class="chevron"></span><span>Planets</span>
+    </div>
+    <div class="layer-body" id="planets-layer-body">
+      <div id="legend-rows"></div>
+    </div>
+  </div>
+  <div class="layer-group" id="flights-layer-group">
+    <div class="layer-header" id="flights-layer-header">
+      <span class="chevron"></span><span>Flights</span>
+    </div>
+    <div class="layer-body" id="flights-layer-body">
+      <div id="flights-rows"></div>
+    </div>
+  </div>
+  <div class="layer-group" id="smallbodies-layer-group">
+    <div class="layer-header" id="smallbodies-layer-header">
+      <span class="chevron"></span><span>Small Bodies</span>
+    </div>
+    <div class="layer-body" id="smallbodies-layer-body">
+      <div id="smallbodies-rows"></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="scale-toggle-panel">
+  <label id="size-toggle-label">
+    <div class="switch" id="size-switch"></div>
+    <span>Compare true sizes</span>
+  </label>
+</div>
+
+<div class="panel" id="size-compare-panel">
+  <div class="title">Relative diameters (to scale)</div>
+  <div id="size-row"></div>
+</div>
+
+<div id="bottom-right-controls">
+  <div class="panel" id="date-panel">
+    <span class="label">Date</span>
+    <input type="date" id="date-input" readonly>
+    <button id="edit-date-btn" title="Pause and edit the date directly">Edit</button>
+    <button id="apply-date" title="Jump to this date">Go to date</button>
+    <button id="cancel-edit-date-btn" title="Cancel editing">✕</button>
+    <button id="reset-today">Today</button>
+  </div>
+
+  <div class="panel" id="time-panel">
+    <div class="row">
+      <span class="label">Speed</span>
+      <span id="speed-readout">1 yr / min</span>
+    </div>
+    <div class="row">
+      <input type="range" id="speed-slider" min="-300" max="300" value="100" step="1">
+    </div>
+    <div class="row">
+      <button id="playpause">Pause</button>
+      <button id="reset-speed">Reset speed</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="locked-panel">
+  <div id="locked-panel-header">
+    <span id="locked-panel-title"></span>
+    <button id="locked-panel-close" title="Stop tracking">&times;</button>
+  </div>
+  <div id="locked-panel-body"></div>
+</div>
+
+<div class="panel" id="camera-controls">
+  <button id="reset-view-btn" title="Restore default rotation, zoom, and pan">Reset view</button>
+  <button id="stop-tracking-btn" title="Stop following the locked body">Stop tracking</button>
+</div>
+
+<div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
+
+<script src="src/js/app.js"></script>
+</body>
+</html>

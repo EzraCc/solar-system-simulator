@@ -1,0 +1,25 @@
+{
+  "key": "opportunity_mer_b",
+  "name": "Opportunity (MER-B)",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2003-07-08",
+  "arrival": "2004-01-25",
+  "rocket": "Delta II 7925H",
+  "payload": "Opportunity rover (185 kg) + lander/cruise stage (1,063 kg total)",
+  "status": "Success",
+  "significance": "Opportunity landed at Meridiani Planum specifically because orbital spectrometers had detected crystalline hematite there, a mineral that often forms in water, making the site a direct test of the water hypothesis. It conducted the first extended rover traverse through a series of Martian craters, reading their exposed sedimentary rock layers like pages of a history book, and went on to become the longest-operating surface mission on Mars, traveling roughly 45 kilometers over almost 15 years. Almost immediately it found the hematite in small spherical concretions nicknamed \"blueberries,\" confirming that Meridiani once experienced repeated wet-and-dry cycling in shallow, acidic water. Later, at Endeavour Crater, it discovered gypsum veins deposited by water flowing through subsurface cracks, providing some of the strongest direct ground-truth evidence of Mars's watery past.",
+  "statusNote": "Rover operated until 2018-06-10 when a global dust storm ended its mission after nearly 15 years.",
+  "assets": {
+    "spacecraft": {
+      "title": "Opportunity (rover)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Opportunity_(rover)",
+      "localImage": "images/missions/opportunity_mer_b/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.png"
+    }
+  }
+}

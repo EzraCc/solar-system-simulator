@@ -1,0 +1,82 @@
+{
+  "key": "rosetta",
+  "name": "Rosetta",
+  "rocket": "Ariane 5G+",
+  "payload": "Rosetta orbiter + Philae lander (~3,000 kg combined)",
+  "status": "Success",
+  "significance": "Rosetta was launched to study a comet continuously through its full range of activity, from cold and dormant to peak outgassing near the Sun, since earlier missions only captured brief flyby snapshots. It became the first spacecraft to enter orbit around a comet nucleus (67P/Churyumov-Gerasimenko) and the first to deploy a lander, Philae, for a soft landing on one, sustaining close-range observation for over two years. Rosetta's ROSINA instrument measured the comet's water to have a deuterium-to-hydrogen ratio roughly three times that of Earth's oceans, undermining the idea that Jupiter-family comets were the main source of Earth's water, and its instruments detected glycine and phosphorus, key ingredients for amino acids and DNA, in the comet's coma. The mission also directly observed the sublimation-driven jets, seasonal activity, and porous, low-density, layered structure of the nucleus, providing the most detailed picture yet of how a comet behaves and is built.",
+  "statusNote": "Comet orbiter and lander; most flyby-dense non-Mercury mission in this catalog. 4 gravity assists (3 Earth: 2005-03-04 at 1,954 km, 2007-11-13 at 5,700 km, 2009-11-13 at 2,481 km; 1 Mars: 2007-02-25 at 250 km, a deliberately very close/risky pass). Also flew close enough to image asteroids Steins (2008-09-05) and Lutetia (2010-07-10) during the already-planned coast between flybys -- incidental imaging passes, not gravity assists (neither asteroid has meaningful mass), so not modeled as separate legs. Entered deep-space hibernation 2011-06-08 partway through the final coast to save power at maximum solar distance, woke 2014-01-20, comet arrival 2014-08-06. Philae lander touchdown 2014-11-12 (bounced into shadow, limited operation). Mission ended with a controlled impact onto the comet 2016-09-30.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2004-03-02",
+      "arrivalDate": "2005-03-04"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2005-03-04",
+      "periapsisKm": 1954
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Mars",
+      "departDate": "2005-03-04",
+      "arrivalDate": "2007-02-25"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mars",
+      "date": "2007-02-25",
+      "periapsisKm": 250
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mars",
+      "toBody": "Earth",
+      "departDate": "2007-02-25",
+      "arrivalDate": "2007-11-13"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2007-11-13",
+      "periapsisKm": 5700
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2007-11-13",
+      "arrivalDate": "2009-11-13"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2009-11-13",
+      "periapsisKm": 2481
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "67P",
+      "departDate": "2009-11-13",
+      "arrivalDate": "2014-08-06"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Rosetta (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Rosetta_(spacecraft)",
+      "localImage": "images/missions/rosetta/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Ariane 5",
+      "infoUrl": "https://en.wikipedia.org/wiki/Ariane_5",
+      "localImage": "images/rockets/ariane_5.jpg"
+    }
+  }
+}

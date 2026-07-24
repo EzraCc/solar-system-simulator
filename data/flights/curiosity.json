@@ -1,0 +1,25 @@
+{
+  "key": "curiosity",
+  "name": "Curiosity (Mars Science Laboratory)",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2011-11-26",
+  "arrival": "2012-08-06",
+  "rocket": "Atlas V 541",
+  "payload": "Curiosity rover (899 kg)",
+  "status": "Success",
+  "significance": "Curiosity was designed to shift Mars exploration from \"following the water\" to directly assessing past habitability, targeting Gale Crater for its thick layered stratigraphy that could record long-term environmental change. As the largest and most capable rover sent to Mars to date, it was the first to carry a full onboard chemistry laboratory (Sample Analysis at Mars) able to detect organic molecules and isotopic ratios, paired with a laser-induced spectrometer for remote rock analysis, and it arrived via the first sky-crane landing system. It found geological evidence that Gale Crater once held a long-lived freshwater lake system with the chemical gradients needed to support microbial life, along with essential bio-elements such as sulfur, nitrogen, and phosphorus. Curiosity also detected complex organic molecules preserved in roughly 3.5-billion-year-old mudstone and documented seasonal fluctuations in atmospheric methane, findings that together established ancient Mars was chemically habitable, though no evidence of life itself has been found; the rover remains active and continues investigating Mount Sharp's higher layers.",
+  "statusNote": null,
+  "assets": {
+    "spacecraft": {
+      "title": "Curiosity (rover)",
+      "infoUrl": "https://science.nasa.gov/mission/msl-curiosity/",
+      "localImage": "images/missions/curiosity/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}

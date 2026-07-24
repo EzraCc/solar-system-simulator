@@ -1,0 +1,85 @@
+{
+  "key": "aditya_l1",
+  "name": "Aditya-L1",
+  "rocket": "PSLV-XL (PSLV-C57)",
+  "payload": "Aditya-L1 solar observatory (1,480.73 kg)",
+  "status": "Success",
+  "significance": "Aditya-L1 was launched as India's first dedicated space-based solar observatory to address open questions about coronal heating, the origin and acceleration of coronal mass ejections (CMEs) and solar flares, and how solar wind and space weather propagate toward Earth. It was ISRO's first mission to a Sun-Earth Lagrange point (L1), positioning it for uninterrupted, eclipse-free viewing of the Sun, and it deployed the Visible Emission Line Coronagraph (VELC), an instrument built to observe the solar corona spectroscopically close to the Sun's surface, a region difficult to study with ordinary visible-light coronagraphs. In July 2024, VELC obtained the mission's first major scientific result, precisely timing the onset of a CME associated with an X1.9-class solar flare and capturing its thermodynamic properties near its source region on the Sun. As an operating observatory, Aditya-L1 continues to build a continuous record of flare and CME onset data intended to improve forecasting of space weather that can affect satellites, power grids, and astronauts.",
+  "statusNote": "ISRO's first dedicated solar observatory, stationed in a halo orbit around Sun-Earth L1. PSLV was underpowered for direct escape injection (same technique as Mangalyaan), so the spacecraft spent ~2.5 weeks in a sequence of four progressively apogee-raising Earth-parking orbits before the Trans-Lagrangian1 Insertion (TL1I) burn began the 110-day cruise to L1 -- modeled here as four discrete geocentric_orbit legs, one per burn, using each burn's ISRO-published resulting perigee/apogee. Burn TIMES (not just dates) are computed, not independently sourced: each segment's own orbital period is derived from its real perigee/apogee, and its end time is set to the nearest whole number of that period after its start, so the spacecraft is actually back at perigee -- where the real burn happens -- at each handoff, rather than at an arbitrary point mid-orbit. This lands TL1I at 2023-09-18T22:15 UTC, under 2 hours from the published 2023-09-19 date, well within the day-level precision of the sources this was compiled from. Inclination/RAAN/argument-of-periapsis are not individually published per burn -- approximated as a representative ~19 deg PSLV-GTO-class inclination, held constant (perigee burns don't change the orbital plane). At the simulator's current AU-scale zoom, this entire ~2.5-week, ~120,000km-wide phase sits within about 0.0008 AU of Earth -- correct real physics, but not yet visually distinct from Earth itself; that's expected to change once planet zoom-in views exist.",
+  "legs": [
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 235,
+      "apoapsisKm": 19500,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2023-09-02T00:00:00Z",
+      "arrivalDate": "2023-09-02T22:52:54Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 245,
+      "apoapsisKm": 22459,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2023-09-02T22:52:54Z",
+      "arrivalDate": "2023-09-04T20:32:21Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 282,
+      "apoapsisKm": 40225,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2023-09-04T20:32:21Z",
+      "arrivalDate": "2023-09-09T20:38:09Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 296,
+      "apoapsisKm": 71767,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2023-09-09T20:38:09Z",
+      "arrivalDate": "2023-09-14T21:19:27Z"
+    },
+    {
+      "type": "geocentric_orbit",
+      "primaryBody": "Earth",
+      "periapsisKm": 256,
+      "apoapsisKm": 121973,
+      "inclinationDeg": 19,
+      "raanDeg": 0,
+      "argPeriapsisDeg": 0,
+      "departDate": "2023-09-14T21:19:27Z",
+      "arrivalDate": "2023-09-18T22:15:12Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth_L1",
+      "departDate": "2023-09-18T22:15:12Z",
+      "arrivalDate": "2024-01-06"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Aditya-L1",
+      "infoUrl": "https://en.wikipedia.org/wiki/Aditya-L1",
+      "localImage": "images/missions/aditya_l1/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Polar Satellite Launch Vehicle",
+      "infoUrl": "https://en.wikipedia.org/wiki/Polar_Satellite_Launch_Vehicle",
+      "localImage": "images/rockets/polar_satellite_launch_vehicle.png"
+    }
+  }
+}

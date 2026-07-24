@@ -1,0 +1,25 @@
+{
+  "key": "insight",
+  "name": "InSight",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2018-05-05",
+  "arrival": "2018-11-26",
+  "rocket": "Atlas V 401",
+  "payload": "InSight lander (694 kg)",
+  "status": "Success",
+  "significance": "InSight was launched to probe Mars' deep interior -- crust, mantle, and core -- because understanding how a rocky planet differentiates and cools is essential to understanding how Earth and other rocky planets formed, a question surface geology alone cannot answer. It was the first mission to place a seismometer on the surface of another planet and to combine it with a dedicated heat-flow probe for direct measurement of marsquakes and interior temperature. Over its mission it detected more than 1,300 marsquakes, revealed that Mars has a surprisingly large, largely molten outer core with a thin, small solid inner core, and mapped crust and mantle layering, showing Mars' crust is thinner and more fractured than models predicted -- findings that reshaped theories of terrestrial planet formation.",
+  "statusNote": "Mission ended 2022-12-21 when dust accumulation on solar panels reduced power below operating threshold.",
+  "assets": {
+    "spacecraft": {
+      "title": "InSight",
+      "infoUrl": "https://en.wikipedia.org/wiki/InSight",
+      "localImage": "images/missions/insight/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}

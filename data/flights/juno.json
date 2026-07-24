@@ -1,0 +1,43 @@
+{
+  "key": "juno",
+  "name": "Juno",
+  "rocket": "Atlas V 551",
+  "payload": "Juno orbiter (3,625 kg)",
+  "status": "Success",
+  "significance": "Juno was launched to determine how Jupiter formed and thereby test competing theories of solar-system formation, since Jupiter's composition and interior structure preserve conditions from the early solar nebula that most other planets have erased. It was the first spacecraft to fly in a polar orbit around Jupiter and to carry microwave radiometers deep enough to probe below the cloud tops, and the first mission to map a giant planet's gravity and magnetic fields with enough precision to probe its interior directly. Juno found that Jupiter's core is not compact but large, \"fuzzy,\" and diluted with heavy elements gradually blended into the surrounding hydrogen, a structure unpredicted by prior models and likely the result of a giant impact early in its history. It also discovered that Jupiter's atmospheric jet streams penetrate roughly 3,000 kilometers deep, detected the first time-varying (\"secular\") magnetic field ever measured on a planet beyond Earth, and revealed a chaotic dynamo region containing an intense magnetic anomaly known as the Great Blue Spot.",
+  "statusNote": "Jupiter interior, atmosphere, and magnetosphere study. Single Earth gravity assist (2013-10-09) following two deep-space maneuvers near aphelion (2012-08-30, 2012-09-14) that precisely targeted the flyby -- not separately modeled here, since this simulator's Lambert-leg endpoints already anchor directly to the real recorded flyby date/position, which is what those maneuvers were aiming for. Mission concluded 2025-09 with a planned deorbit into Jupiter's atmosphere after more than 9 years in Jovian orbit.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2011-08-05",
+      "arrivalDate": "2013-10-09"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2013-10-09",
+      "periapsisKm": 500
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Jupiter",
+      "departDate": "2013-10-09",
+      "arrivalDate": "2016-07-04"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Juno (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Juno_(spacecraft)",
+      "localImage": "images/missions/juno/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}

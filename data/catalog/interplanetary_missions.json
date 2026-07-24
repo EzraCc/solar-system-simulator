@@ -1,0 +1,1148 @@
+{
+  "_meta": {
+    "description": "Catalog of real-world interplanetary missions for cross-referencing against the solar system orbital mechanics visualizer's flight/trajectory model.",
+    "scope": "Orbiters, landers, flybys, and sample-return missions that left Earth-Moon space. Earth-orbit-only missions and lunar-only missions (landers, orbiters) are excluded.",
+    "verification_levels": {
+      "verified": "Cross-checked against multiple primary/authoritative sources (agency sites, NSSDCA, peer-reviewed mission papers) during this research session, including launch date, arrival/milestone dates, and trajectory architecture.",
+      "first_pass": "Compiled quickly from general reference sources (Wikipedia, Planetary Society) for breadth. Dates and destinations should be considered reliable but trajectory architecture, exact arrival dates, and edge cases have NOT been individually verified. Treat as a starting point for later verification passes."
+    },
+    "model_compatibility_values": {
+      "compatible": "Can be represented as a single Lambert-solved heliocentric arc between two of the 8 major planets currently in the model.",
+      "needs_expansion": "Requires functionality not yet built as of this value's original definition: multi-flyby/gravity-assist chains, staged trajectories (e.g. Lagrange-point loiter), multi-target tours, or absent target bodies (specific moons, asteroids, comets). NOTE (2026-07-23): multi-flyby/gravity-assist chains AND Lagrange-point loiters are now both supported by the model (see BepiColombo, PSP, and ESCAPADE, all fully modeled as of this update) -- entries still tagged needs_expansion for those two reasons specifically are stale and just haven't been re-flagged/added yet, not blocked on missing functionality. Absent-target-body and multi-target-tour cases are still genuinely unsupported.",
+      "unverified": "Not yet assessed against the model's architecture; only appears in the first-pass list."
+    },
+    "special_flags": {
+      "lagrange_required": "Set to true on any mission whose trajectory includes a Lagrange-point stop or destination. Originally noted as unrenderable; Lagrange-point loiters (any planet's L1/L2/L4/L5, not just Earth's) are now supported via the model's loiter-leg trajectory type -- see ESCAPADE. Kept as a flag for visibility, not as a blocker."
+    },
+    "current_model_inventory": {
+      "planets": [
+        "Mercury",
+        "Venus",
+        "Earth",
+        "Mars",
+        "Jupiter",
+        "Saturn",
+        "Uranus",
+        "Neptune"
+      ],
+      "moons": [
+        "Moon (Earth)",
+        "Phobos (Mars)",
+        "Deimos (Mars)",
+        "Io, Europa, Ganymede, Callisto (Jupiter)",
+        "Enceladus, Tethys, Dione, Rhea, Titan, Iapetus (Saturn)",
+        "Miranda, Ariel, Umbriel, Titania, Oberon (Uranus)",
+        "Triton (Neptune)"
+      ],
+      "trajectory_features": [
+        "multi-flyby/gravity-assist chains (patched-conic, chained Lambert arcs -- see BepiColombo, PSP)",
+        "Lagrange-point loiters, any planet's L1/L2/L4/L5 (see ESCAPADE)",
+        "geocentric parking/phasing orbits -- a sequence of Earth-centered Kepler ellipses with real perigee/apogee-raising burns between them, for missions whose launch vehicle needed multiple Oberth-effect burns to reach escape velocity rather than direct injection (see Mangalyaan, Aditya-L1). Correct real physics at any zoom; not yet visually distinct from the parent planet at the simulator's current AU-scale zoom (added 2026-07-23).",
+        "hyperbolic heliocentric orbits (e>=1), for flights that genuinely escape the Sun after a gravity assist -- see New Horizons post-Jupiter leg (solveKeplerHyperbolic and hyperbolic branches in computeFlightPosition/computeFlightVelocity/stateVectorToElements). Added 2026-07-23."
+      ],
+      "absent_body_types": [
+        "any small body not in the small_bodies list above -- still the large majority of the solar system's asteroids/comets/dwarf planets"
+      ],
+      "small_bodies": [
+        "67P/Churyumov-Gerasimenko, Bennu, Ryugu, Didymos (Dimorphos not split out), Itokawa, Vesta, Ceres, 9P/Tempel 1, 16 Psyche, 134340 Pluto, 4179 Toutatis, 469219 Kamo'oalewa, 152830 Dinkinesh, 52246 Donaldjohanson, 3548 Eurybates (Queta not split out), 15094 Polymele, 11351 Leucus, 21900 Orus, 617 Patroclus (Menoetius not split out) -- added 2026-07-23, real JPL Small-Body Database orbital elements. Only visible when selected or when a linked flight is selected/in transit (see isSmallBodyVisible)."
+      ]
+    },
+    "last_updated": "2026-07-23",
+    "source_conversation_note": "Batch 1 (10 most recent launches as of 2026-06-18) received full verification. Batch 2 (2026-06-22): all remaining first_pass entries verified against primary sources (JPL press kits, ESA mission pages, NSSDCA, mission-specific papers). 23 of 43 entries are now verified; 20 remain first_pass (all are either not-yet-launched missions with provisional trajectory designs, or lower-priority entries pending further research). Batch 3 (2026-07-23): added PSP (previously missing from this catalog despite being modeled in the simulator). Re-synced model_compatibility_notes against the simulator's actual current state -- the 12-entry 'ready to add' list was stale (all 12 had already been added), the moon/absent-body-type inventory was stale (16 outer moons and Lagrange-point loiters have since been added), and BepiColombo/ESCAPADE's notes still described their trajectory features as unbuilt when both are now fully modeled."
+  },
+  "missions": [
+    {
+      "id": "escapade",
+      "name": "ESCAPADE (Blue & Gold)",
+      "agency": "NASA",
+      "agency_program_notes": "UC Berkeley Space Sciences Laboratory-led, SIMPLEx program; partners include Rocket Lab, Advanced Space, Blue Origin",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2025-11-13",
+      "arrival_date": null,
+      "arrival_status": "not_yet_occurred",
+      "arrival_notes": "Currently loitering at Sun-Earth L2. Earth gravity-assist swing-by planned 2026-11. Mars orbit arrival expected 2027-09.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Twin spacecraft studying Mars's magnetosphere and solar-wind-driven atmospheric stripping.",
+      "trajectory_architecture": "staged_multi_phase",
+      "trajectory_notes": "Earth -> L2 loiter orbit -> Earth gravity-assist flyby -> Mars transfer. Not a single Lambert arc.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Staged trajectory with an Earth gravity-assist after a Lagrange-point loiter period. UPDATE (2026-07-23): both Lagrange-point loiters and gravity-assist chains are now supported by the model; already modeled in the simulator.",
+      "lagrange_required": true,
+      "verification_level": "verified"
+    },
+    {
+      "id": "hera",
+      "name": "Hera",
+      "agency": "ESA",
+      "agency_program_notes": null,
+      "destination": {
+        "primary_body": "Didymos",
+        "specific_target": "Dimorphos",
+        "body_type": "asteroid_binary"
+      },
+      "launch_date": "2024-10-07",
+      "arrival_date": null,
+      "arrival_status": "not_yet_occurred",
+      "arrival_notes": "Sources vary: ESA's most recent update (accelerated schedule) cites 2026-10/2026-11 rendezvous with proximity ops starting 2026-12; other sources round to 'late 2026'.",
+      "mission_type": [
+        "orbiter",
+        "flyby_waypoint"
+      ],
+      "mission_summary": "Planetary-defense follow-up to NASA's DART impact; post-impact survey of the binary asteroid system.",
+      "trajectory_architecture": "flyby_then_target",
+      "trajectory_notes": "Earth -> Mars/Deimos flyby (2025-03-12, confirmed, also imaged Deimos far side) -> Didymos/Dimorphos.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Two reasons: (1) Mars flyby waypoint, not a direct arc; (2) destination is an asteroid binary, an absent body type. Mars is used only as a flyby waypoint here, not the destination. UPDATE (2026-07-23): asteroid/comet target bodies are now supported (data/flights/hera.json); already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "perseverance",
+      "name": "Perseverance (Mars 2020)",
+      "agency": "NASA",
+      "agency_program_notes": null,
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2020-07-30",
+      "arrival_date": "2021-02-18",
+      "arrival_status": "occurred",
+      "arrival_notes": null,
+      "mission_type": [
+        "lander",
+        "rover"
+      ],
+      "mission_summary": "Rover, astrobiology and sample caching at Jezero Crater.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Direct Type-I Hohmann transfer, no flyby waypoint. Re-verified 2026-06-18 after a recheck request; confirmed correct, not an inconsistency with neighboring flyby-chain entries.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "akatsuki",
+      "name": "Akatsuki",
+      "agency": "JAXA",
+      "agency_program_notes": "Also known as Venus Climate Orbiter (VCO) / Planet-C",
+      "destination": {
+        "primary_body": "Venus",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2010-05-20",
+      "arrival_date": "2010-12-07",
+      "arrival_status": "cruise_arrived_insertion_failed",
+      "arrival_notes": "Orbit insertion burn failed on cruise arrival. Successful insertion achieved 2015-12-07 via a 5-year recovery using only the spacecraft's own thrusters and multiple deep-space maneuvers -- NOT a third-body gravity assist.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Venus climate/atmosphere orbiter.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "NSSDCA mission record confirms: Earth phasing orbit -> direct Venus transfer orbit, no third-body flyby. Re-verified 2026-06-18; the failure was in the insertion BURN at arrival, not the cruise trajectory itself, which is a genuinely different mechanism than Hera/Psyche's Mars-flyby-waypoint pattern.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Already modeled in the simulator (cruise leg only). The 2010-2015 recovery trajectory itself is NOT modeled and would need expansion (multi-revolution, not a single arc) if ever desired as a separate flight.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "curiosity",
+      "name": "Curiosity (MSL)",
+      "agency": "NASA",
+      "agency_program_notes": "Mars Science Laboratory",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2011-11-26",
+      "arrival_date": "2012-08-06",
+      "arrival_status": "occurred",
+      "arrival_notes": null,
+      "mission_type": [
+        "lander",
+        "rover"
+      ],
+      "mission_summary": "Rover, astrobiology and geology at Gale Crater.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Direct 254-day Type-I transfer, no flyby. Re-verified 2026-06-18; confirmed correct.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "dart",
+      "name": "DART",
+      "agency": "NASA",
+      "agency_program_notes": "Double Asteroid Redirection Test",
+      "destination": {
+        "primary_body": "Didymos",
+        "specific_target": "Dimorphos",
+        "body_type": "asteroid_binary"
+      },
+      "launch_date": "2021-11-24",
+      "arrival_date": "2022-09-26",
+      "arrival_status": "occurred_impact",
+      "arrival_notes": "Spacecraft intentionally destroyed on impact with Dimorphos.",
+      "mission_type": [
+        "impactor"
+      ],
+      "mission_summary": "First full-scale planetary-defense kinetic-impact test.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Direct transfer, no flyby waypoint -- simpler than Hera's path to the same target system.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Absent target body type (asteroid binary), but architecturally simple (direct transfer, closer to a standard Lambert arc than the flyby-chain cases). UPDATE (2026-07-23): asteroid/comet target bodies are now supported (data/flights/dart.json); already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "psyche",
+      "name": "Psyche",
+      "agency": "NASA",
+      "agency_program_notes": "Discovery Program",
+      "destination": {
+        "primary_body": "16 Psyche",
+        "specific_target": null,
+        "body_type": "asteroid"
+      },
+      "launch_date": "2023-10-13",
+      "arrival_date": null,
+      "arrival_status": "not_yet_occurred",
+      "arrival_notes": "Mars gravity-assist flyby completed 2026-05-15 (4,609 km altitude). Asteroid gravity capture expected late 2029-07; science orbit begins 2029-08.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Orbital study of a metal-rich asteroid believed to be part of a planetesimal's core.",
+      "trajectory_architecture": "flyby_then_target",
+      "trajectory_notes": "Earth -> Mars flyby (completed) -> 16 Psyche.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Flyby waypoint (Mars) plus an absent target body type (asteroid). Mars present as a flyby waypoint only, not the destination. UPDATE (2026-07-23): asteroid/comet target bodies are now supported (data/flights/psyche.json); already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "juice",
+      "name": "JUICE (Jupiter Icy Moons Explorer)",
+      "agency": "ESA",
+      "agency_program_notes": "Partner agencies: NASA, JAXA, Israel Space Agency",
+      "destination": {
+        "primary_body": "Jupiter",
+        "specific_target": "Ganymede",
+        "body_type": "moon"
+      },
+      "launch_date": "2023-04-14",
+      "arrival_date": null,
+      "arrival_status": "not_yet_occurred",
+      "arrival_notes": "Jupiter arrival expected 2031-07. Ganymede orbit insertion expected 2034-12.",
+      "mission_type": [
+        "orbiter",
+        "flyby"
+      ],
+      "mission_summary": "Detailed study of Ganymede, Europa, and Callisto as candidate habitable icy-ocean worlds.",
+      "trajectory_architecture": "multi_flyby_chain",
+      "trajectory_notes": "Flyby chain: Earth-Moon (2024-08, completed) -> Venus (2025-08, completed) -> Earth (2026-09, upcoming) -> Earth (2029-01) -> Jupiter arrival -> Ganymede orbit insertion. Four gravity assists across three distinct bodies before reaching Jupiter.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Deepest flyby case in Batch 1: 4 gravity assists across 3 different bodies. UPDATE (2026-07-23): gravity-assist chains are now supported; already modeled in the simulator (data/flights/juice.json). Modeled through Jupiter orbit insertion (2031-07-20) only -- the real mission's world-first lunar-Earth double flyby is simplified to a single Earth flyby (no lunar-GA physics in this model), and the multi-year post-arrival Jovian tour + eventual Ganymede orbit insertion (~end 2034) is a separate multi-target-tour phase, not modeled (same reasoning as Lucy). See the flight file's own statusNote for details and which flyby altitudes are still unpublished placeholders.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "lucy",
+      "name": "Lucy",
+      "agency": "NASA",
+      "agency_program_notes": "Discovery Program",
+      "destination": {
+        "primary_body": "Jupiter Trojans / main-belt asteroids",
+        "specific_target": "Eurybates, Polymele, Leucus, Orus, Patroclus/Menoetius (Trojans); Dinkinesh, Donaldjohanson (main-belt)",
+        "body_type": "asteroid_multi_target"
+      },
+      "launch_date": "2021-10-16",
+      "arrival_date": null,
+      "arrival_status": "ongoing_multi_target",
+      "arrival_notes": "No single arrival -- a 12-year tour. Dinkinesh flyby 2023-11-01 (completed). Donaldjohanson flyby 2025-04-20 (completed). Eurybates 2027-08-12. Polymele 2027-09. Leucus 2028-04. Orus 2028-11. Third Earth gravity-assist 2030-12-25. Patroclus/Menoetius 2033-03.",
+      "mission_type": [
+        "flyby_multi_target"
+      ],
+      "mission_summary": "First close-up survey of Jupiter's Trojan asteroid swarms, believed to be unprocessed leftovers from solar system formation.",
+      "trajectory_architecture": "multi_flyby_tour",
+      "trajectory_notes": "Three Earth gravity-assists (2022, 2024, 2030) plus seven distinct asteroid/binary-asteroid flyby targets. Structurally a tour, not a transfer -- no single 'arrival'.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Most architecturally demanding case in Batch 1. None of its seven target bodies exist in the model. Groups with JUICE under 'multi-flyby tour missions' but is more extreme (no single final target at all). UPDATE (2026-07-23): already modeled in the simulator; see data/flights/lucy.json -- all 7 targets added to SMALL_BODIES (dinkinesh, donaldjohanson, eurybates, polymele, leucus, orus, patroclus; Menoetius and Queta not split out from their primaries, same precedent as Dimorphos), 3 Earth gravity assists chain correctly, 13 legs total (this simulator's longest single flight). Building this flight also surfaced and fixed two real bugs in solveLambertUniversal itself (a root-bracketing pole-crossing failure, found via New Horizons, and a narrow-valid-window scan-grid miss, found via the Eurybates->Polymele leg) -- both fixes are general, not Lucy-specific workarounds.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "bepicolombo",
+      "name": "BepiColombo",
+      "agency": "ESA/JAXA",
+      "agency_program_notes": "Two orbiters (MPO, Mio) plus Mercury Transfer Module",
+      "destination": {
+        "primary_body": "Mercury",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2018-10-20",
+      "arrival_date": null,
+      "arrival_status": "not_yet_occurred",
+      "arrival_notes": "Mercury orbit insertion expected 2026-11-21 (delayed 11 months from originally planned 2025-12 due to a thruster power issue discovered in 2024). Science operations expected to begin 2027-04.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Mercury surface, interior, and magnetosphere study.",
+      "trajectory_architecture": "multi_flyby_chain",
+      "trajectory_notes": "Most flyby-dense case identified: 9 total gravity assists (1 Earth 2020-04-10, 2 Venus 2020-10-15/2021-08-11, 6 Mercury 2021-10-01 through 2025-01-08).",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "9 flybys across 3 different bodies before reaching the destination planet itself (which IS present in the model). UPDATE (2026-07-23): multi-flyby/gravity-assist chains are now supported by the model's patched-conic solver; already modeled in the simulator (see also the solver's known accuracy limits for this mission's tight Mercury flybys, documented in app.js near computeGADeparture).",
+      "verification_level": "verified"
+    },
+    {
+      "id": "psp",
+      "name": "Parker Solar Probe",
+      "agency": "NASA",
+      "agency_program_notes": "Living with a Star program",
+      "destination": {
+        "primary_body": "Sun",
+        "specific_target": null,
+        "body_type": "star"
+      },
+      "launch_date": "2018-08-12",
+      "arrival_date": "2024-12-24",
+      "arrival_status": "occurred",
+      "arrival_notes": "Closest solar approach in spacecraft history: 6.1 solar radii on 2024-12-24, the mission's final planned perihelion after 7 Venus gravity assists progressively lowering perihelion since launch. Continuing to orbit at that perihelion distance through the extended mission.",
+      "mission_type": [
+        "flyby",
+        "observatory"
+      ],
+      "mission_summary": "Closest-ever approach to the Sun; solar corona and solar wind study via repeated Venus gravity assists.",
+      "trajectory_architecture": "multi_flyby_chain",
+      "trajectory_notes": "7 Venus gravity assists (2018-10-03, 2019-12-26, 2020-07-11, 2021-02-20, 2021-10-16, 2023-08-21, 2024-11-06), each progressively lowering perihelion, from an initial ~35 solar radii down to the final 6.1 solar radii. No planetary destination -- the Sun itself, via repeated close solar passes, is the target, not orbit insertion around a body.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Multi-flyby chain (7 Venus gravity assists) -- same architecture class as BepiColombo. Gravity-assist chains are supported by the model's patched-conic solver; already modeled in the simulator (data/flights/psp.json). The solver's Tier 1 chained-Lambert-arc approach models the cruise/flyby portion well but does not attempt the close solar perihelion passes themselves in detail -- see this mission's own statusNote in psp.json, and the solver's documented accuracy limits near computeGADeparture in app.js (PSP's longest coast segments show the largest residual position error, most likely from unmodeled trajectory-correction burns and solar radiation pressure).",
+      "verification_level": "verified"
+    },
+    {
+      "id": "mom_mangalyaan",
+      "name": "Mars Orbiter Mission (Mangalyaan)",
+      "agency": "ISRO",
+      "agency_program_notes": null,
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2013-11-05",
+      "arrival_date": "2014-09-24",
+      "arrival_status": "occurred",
+      "arrival_notes": "Operated until losing contact in 2022-04; declared dead 2022-10.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "India's first interplanetary mission.",
+      "trajectory_architecture": "geocentric_phasing_then_direct_transfer",
+      "trajectory_notes": "PSLV was underpowered for direct escape injection; spacecraft used 6 perigee burns in Earth orbit (Oberth effect) over ~26 days (apogee raised 23,550km -> 192,874km) to build up escape velocity, then a direct Earth-Mars Hohmann-like interplanetary transfer arc to Mars. No planetary flyby gravity assists during cruise. UPDATE (2026-07-23): the geocentric phasing phase is now modeled too (previously simplified away), using each burn's real published perigee/apogee -- see data/flights/mom_mangalyaan.json.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. UPDATE (2026-07-23): the new geocentric_orbit leg type now models the pre-TMI Earth-parking-orbit phase too, not just the heliocentric cruise. Already modeled in the simulator, full 8-leg chain (6 geocentric_orbit + 1 lambert to Mars).",
+      "verification_level": "verified"
+    },
+    {
+      "id": "aditya_l1",
+      "name": "Aditya-L1",
+      "agency": "ISRO",
+      "agency_program_notes": null,
+      "destination": {
+        "primary_body": "Sun-Earth L1",
+        "specific_target": null,
+        "body_type": "lagrange_point"
+      },
+      "launch_date": "2023-09-02",
+      "arrival_date": "2024-01-06",
+      "arrival_status": "occurred",
+      "arrival_notes": "Halo orbit insertion 2024-01-06 (ISRO chairman statement). Different category than planetary arrivals -- Lagrange-point station-keeping, not a planet/moon/asteroid arrival.",
+      "mission_type": [
+        "observatory"
+      ],
+      "mission_summary": "Solar observatory.",
+      "trajectory_architecture": "staged_multi_phase",
+      "trajectory_notes": "UPDATE (2026-07-23): verified. PSLV-XL placed it in an elliptical Earth orbit (perigee ~235km, apogee ~19,500km); 4 Earth-orbit-raising perigee burns over ~2.5 weeks (same PSLV-underpowered-for-direct-injection technique as Mangalyaan) built up to a final perigee 256km/apogee ~122,000km orbit; Trans-Lagrangian1 Insertion (TL1I) burn 2023-09-19 began the 110-day cruise to L1; halo orbit insertion 2024-01-06.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "UPDATE (2026-07-23): Lagrange-point destinations are now supported (a lambert leg can target e.g. \"Earth_L1\" directly), AND the geocentric_orbit leg type now models the pre-TL1I Earth-parking-orbit phase too. Already modeled in the simulator (data/flights/aditya_l1.json), full 6-leg chain (4 geocentric_orbit + 1 lambert to Earth_L1 + implicit halo-orbit residency).",
+      "lagrange_required": true,
+      "verification_level": "verified"
+    },
+    {
+      "id": "mangalyaan_2",
+      "name": "Mangalyaan-2 / Mars Orbiter Mission 2 / Mars Lander Mission",
+      "agency": "ISRO",
+      "agency_program_notes": null,
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": null,
+      "arrival_date": null,
+      "arrival_status": "not_launched",
+      "arrival_notes": "Target launch window uncertain across sources: 'as early as 2026' vs '2027'.",
+      "mission_type": [
+        "orbiter",
+        "lander"
+      ],
+      "mission_summary": "Follow-up Mars mission with greater scientific payload.",
+      "trajectory_architecture": "unverified",
+      "trajectory_notes": null,
+      "model_compatibility": "unverified",
+      "model_compatibility_notes": " OUT OF SCOPE (2026-07-23): mission has not launched yet -- no real trajectory exists to encode. Revisit once a launch date is set and firm.",
+      "verification_level": "first_pass"
+    },
+    {
+      "id": "shukrayaan",
+      "name": "Venus Orbiter Mission (Shukrayaan)",
+      "agency": "ISRO",
+      "agency_program_notes": null,
+      "destination": {
+        "primary_body": "Venus",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": null,
+      "arrival_date": null,
+      "arrival_status": "not_launched",
+      "arrival_notes": "One source cites 2028-03-29 as planned launch; treat as provisional given typical schedule slippage this far out.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Venus atmosphere, climate, and surface study.",
+      "trajectory_architecture": "unverified",
+      "trajectory_notes": null,
+      "model_compatibility": "unverified",
+      "model_compatibility_notes": " OUT OF SCOPE (2026-07-23): mission has not launched yet -- no real trajectory exists to encode. Revisit once a launch date is set and firm.",
+      "verification_level": "first_pass"
+    },
+    {
+      "id": "hope_mars",
+      "name": "Hope (Al-Amal)",
+      "agency": "UAE (MBRSC)",
+      "agency_program_notes": null,
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2020-07-19",
+      "arrival_date": "2021-02-09",
+      "arrival_status": "occurred",
+      "arrival_notes": "Still operating as of last verification.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Mars atmosphere study.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Direct Earth-Mars transfer, ~200-day cruise. No gravity assists. Part of the 2020 Mars launch window alongside Perseverance and Tianwen-1, all of which used direct transfers.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "genesis",
+      "name": "Genesis",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Sun-Earth L1",
+        "specific_target": null,
+        "body_type": "lagrange_point"
+      },
+      "launch_date": "2001-08-08",
+      "arrival_date": "2001-11-16",
+      "arrival_status": "occurred",
+      "arrival_notes": "Solar wind sample return. Borderline scope inclusion -- not a planetary target. Halo orbit insertion 2001-11-16 (268-second thruster burn).",
+      "mission_type": [
+        "sample_return"
+      ],
+      "mission_summary": "Solar wind sample collection.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "UPDATE (2026-07-23): verified. First mission trajectory designed using modern dynamical-systems theory: a low-energy, near-direct ~3-month transfer from Earth to an L1 halo orbit, notably without the multi-week Earth-orbit-raising phase missions like Aditya-L1/Mangalyaan used.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "UPDATE (2026-07-23): Lagrange-point destinations are now supported. Already modeled in the simulator (data/flights/genesis.json) as a single direct Earth->L1 lambert leg, matching the real trajectory's shape. Return trip and Earth reentry (2004-09-08) are not modeled.",
+      "lagrange_required": true,
+      "verification_level": "verified"
+    },
+    {
+      "id": "mars_odyssey",
+      "name": "Mars Odyssey",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2001-04-07",
+      "arrival_date": "2001-10-24",
+      "arrival_status": "occurred",
+      "arrival_notes": "Still operating; longest-serving Mars spacecraft.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Mars surface/atmosphere study and communications relay.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Type I direct transfer (< 180\u00b0 around Sun), 200-day cruise. No gravity assists. Four trajectory correction maneuvers only. Confirmed from JPL launch and arrival press kits.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "spirit_mer_a",
+      "name": "Spirit (MER-A)",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2003-06-10",
+      "arrival_date": "2004-01-04",
+      "arrival_status": "occurred",
+      "arrival_notes": null,
+      "mission_type": [
+        "lander",
+        "rover"
+      ],
+      "mission_summary": "Mars Exploration Rover, geology at Gusev Crater.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Type I direct transfer, 209-day cruise. No gravity assists. Launched near minimum-energy point of 2003 Earth-Mars window.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "opportunity_mer_b",
+      "name": "Opportunity (MER-B)",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2003-07-08",
+      "arrival_date": "2004-01-25",
+      "arrival_status": "occurred",
+      "arrival_notes": null,
+      "mission_type": [
+        "lander",
+        "rover"
+      ],
+      "mission_summary": "Mars Exploration Rover, geology at Meridiani Planum.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Type I direct transfer, 201-day cruise. No gravity assists. Launched 28 days after Spirit in the same 2003 window; required more energy (Delta II 7925H Heavy variant).",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "mars_express",
+      "name": "Mars Express",
+      "agency": "ESA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2003-06-02",
+      "arrival_date": "2003-12-25",
+      "arrival_status": "occurred",
+      "arrival_notes": "Still operating. Carried Beagle 2 lander, which was lost on arrival.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Mars surface/subsurface water search; ESA's first planetary mission.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Direct Earth-Mars transfer using the 2003 opposition minimum-energy window. Soyuz-FG/Fregat inserted directly into Mars transfer orbit. Single trajectory-correction maneuver in September 2003. No gravity assists.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "hayabusa",
+      "name": "Hayabusa",
+      "agency": "JAXA",
+      "destination": {
+        "primary_body": "25143 Itokawa",
+        "specific_target": null,
+        "body_type": "asteroid"
+      },
+      "launch_date": "2003-05-09",
+      "arrival_date": "2005-09-12",
+      "arrival_status": "occurred",
+      "arrival_notes": "Sample return to Earth 2010-06.",
+      "mission_type": [
+        "sample_return"
+      ],
+      "mission_summary": "First asteroid sample return mission.",
+      "trajectory_architecture": "flyby_then_target",
+      "trajectory_notes": "Earth-Itokawa with a single Earth gravity-assist flyby on 2004-05-19 (altitude 3,725 km). First ever powered planetary flyby (ion engines firing during the slingshot). A 2003 solar flare damaged solar cells, reducing ion engine efficiency and delaying Itokawa arrival from June to September 2005.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Two reasons: Earth flyby gravity assist required, and absent target body type (asteroid). UPDATE (2026-07-23): asteroid/comet target bodies are now supported (data/flights/hayabusa.json); already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "rosetta",
+      "name": "Rosetta",
+      "agency": "ESA",
+      "destination": {
+        "primary_body": "67P/Churyumov-Gerasimenko",
+        "specific_target": null,
+        "body_type": "comet"
+      },
+      "launch_date": "2004-03-02",
+      "arrival_date": "2014-08-06",
+      "arrival_status": "occurred",
+      "arrival_notes": "Philae lander touchdown 2014-11. Mission ended 2016-09-30.",
+      "mission_type": [
+        "orbiter",
+        "lander",
+        "flyby_waypoint"
+      ],
+      "mission_summary": "Comet orbiter and lander; most flyby-dense non-Mercury mission in catalog.",
+      "trajectory_architecture": "multi_flyby_chain",
+      "trajectory_notes": "3 Earth flybys (2005-03-04, 2007-11-13, 2009-11-13), 1 Mars flyby (2007-02-25), 2 asteroid flybys (Steins 2008-09-05, Lutetia 2010-07-10), then entered deep-space hibernation 2011-06-08, woke 2014-01-20, comet arrival 2014-08-06. 10+ years, 6 flyby events.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Multi-flyby chain (3 Earth + 1 Mars) plus absent target body types (comet and asteroids en route). Most complex trajectory in the catalog after BepiColombo. UPDATE (2026-07-23): asteroid/comet target bodies are now supported (data/flights/rosetta.json); already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "messenger",
+      "name": "MESSENGER",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Mercury",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2004-08-03",
+      "arrival_date": "2011-03-18",
+      "arrival_status": "occurred",
+      "arrival_notes": "First spacecraft to orbit Mercury. Mission ended 2015-04-30 (impact).",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Mercury surface/composition/magnetic field study.",
+      "trajectory_architecture": "multi_flyby_chain",
+      "trajectory_notes": "1 Earth flyby (2005-08-02, altitude 1,459 mi), 2 Venus flybys (2006-10-24 at 1,856 mi; 2007-06-05 at 210 mi), 3 Mercury flybys (2008-01-14, 2008-10-06, 2009-09-29), Mercury orbit insertion 2011-03-18. 6 gravity assists across 3 bodies over 6.5 years.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "6 gravity assists across 3 bodies (Earth, Venus, Mercury) required before orbit insertion. UPDATE (2026-07-23): multi-flyby chains are now supported; already modeled in the simulator (data/flights/messenger.json), same architecture class as BepiColombo.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "deep_impact",
+      "name": "Deep Impact / EPOXI",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Tempel 1",
+        "specific_target": null,
+        "body_type": "comet"
+      },
+      "launch_date": "2005-01-12",
+      "arrival_date": "2005-07-04",
+      "arrival_status": "occurred_impact",
+      "arrival_notes": "Impactor mission; flyby spacecraft survived and was extended as EPOXI for Hartley 2 flyby (2010) and attempted Boethin flyby (cancelled).",
+      "mission_type": [
+        "impactor",
+        "flyby"
+      ],
+      "mission_summary": "Comet nucleus composition study via impact.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Direct Earth-to-comet transfer, 6-month cruise. No planetary flyby gravity assists; trajectory corrected only with onboard thrusters. Architecturally a single Lambert arc.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Direct transfer architecture (model-compatible pattern) but absent target body type (comet). If comets were added to the model, this could be represented as a single Lambert arc. UPDATE (2026-07-23): asteroid/comet target bodies are now supported (data/flights/deep_impact.json); already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "mro",
+      "name": "Mars Reconnaissance Orbiter",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2005-08-12",
+      "arrival_date": "2006-03-10",
+      "arrival_status": "occurred",
+      "arrival_notes": "Still operating.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "High-resolution Mars surface imaging, communications relay.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Direct Earth-Mars transfer, 7.5-month cruise with trajectory-correction maneuvers only. No gravity assists. Atlas V insertion directly into Mars transfer orbit.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "new_horizons",
+      "name": "New Horizons",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Pluto",
+        "specific_target": "Kuiper Belt objects (extended mission)",
+        "body_type": "dwarf_planet"
+      },
+      "launch_date": "2006-01-19",
+      "arrival_date": "2015-07-14",
+      "arrival_status": "occurred_flyby",
+      "arrival_notes": "Pluto flyby. Extended mission: Arrokoth flyby 2019-01-01.",
+      "mission_type": [
+        "flyby"
+      ],
+      "mission_summary": "First spacecraft to Pluto; Kuiper Belt exploration.",
+      "trajectory_architecture": "flyby_then_target",
+      "trajectory_notes": "Jupiter gravity-assist flyby 2007-02-28 (closest approach 2.3M km, speed boost 4 km/s, trip shortened by ~3 years). Without the Jupiter assist, a direct trajectory would have required 5-6 additional years. Pluto flyby 2015-07-14.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Two reasons: Jupiter flyby gravity assist required, and absent target body type (dwarf planet Pluto). Jupiter is in the model but is a flyby waypoint, not the destination. UPDATE (2026-07-23): already modeled in the simulator; see data/flights/new_horizons.json -- required adding real hyperbolic-orbit propagation support to the simulator (its post-Jupiter heliocentric orbit is genuinely hyperbolic, e~1.27), not just new data.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "phoenix",
+      "name": "Phoenix",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2007-08-04",
+      "arrival_date": "2008-05-25",
+      "arrival_status": "occurred",
+      "arrival_notes": null,
+      "mission_type": [
+        "lander"
+      ],
+      "mission_summary": "Mars polar water-ice study.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Type II direct transfer (> 180\u00b0 around Sun), 295-day cruise. No gravity assists. Type II was chosen to reach the polar landing site geometry. Trajectory precision was high enough that the first correction burn was only 18 m/s.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer (Type II); both bodies in model. The Lambert solver's long-way flag handles Type II arcs. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "dawn",
+      "name": "Dawn",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Vesta",
+        "specific_target": "Ceres (second target)",
+        "body_type": "asteroid_multi_target"
+      },
+      "launch_date": "2007-09-27",
+      "arrival_date": "2011-07-16",
+      "arrival_status": "occurred_multi_target",
+      "arrival_notes": "Vesta orbit 2011-07 to 2012-09. Ion-drive transfer to Ceres, arrival 2015-03. Mission ended 2018-10 (fuel exhaustion).",
+      "mission_type": [
+        "orbiter_multi_target"
+      ],
+      "mission_summary": "First spacecraft to orbit two extraterrestrial bodies in sequence.",
+      "trajectory_architecture": "flyby_then_multi_target",
+      "trajectory_notes": "Mars gravity-assist flyby 2009-02-17 (closest approach 549 km, DV contribution 2.6 km/s). Ion-drive propulsion throughout; not a traditional inert ballistic trajectory. After Mars flyby: ion thrust to Vesta (arrival 2011-07-16), then ion thrust to Ceres (arrival 2015-03-06). Two distinct asteroid/dwarf-planet orbits in sequence with no single 'arrival'.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Three reasons: Mars flyby waypoint, both target bodies absent (asteroid Vesta, dwarf planet Ceres), and multi-target architecture with no single destination. UPDATE (2026-07-23): asteroid/comet target bodies are now supported (data/flights/dawn.json); already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "phobos_grunt",
+      "name": "Fobos-Grunt (Phobos-Grunt)",
+      "agency": "Roscosmos",
+      "destination": {
+        "primary_body": "Phobos",
+        "specific_target": null,
+        "body_type": "moon"
+      },
+      "launch_date": "2011-11-09",
+      "arrival_date": null,
+      "arrival_status": "failed_never_left_earth_orbit",
+      "arrival_notes": "Failed to perform trans-Mars injection burn; stranded in low Earth orbit; reentered 2012-01-15. Never reached interplanetary space. Carried China's Yinghuo-1 (China's first interplanetary probe attempt), also lost.",
+      "mission_type": [
+        "sample_return_attempt"
+      ],
+      "mission_summary": "Intended Phobos sample return; Russia's only solo interplanetary attempt since 2000.",
+      "trajectory_architecture": "n/a_failed",
+      "trajectory_notes": null,
+      "model_compatibility": "n/a",
+      "model_compatibility_notes": "Mission never left Earth orbit; not relevant to model expansion. OUT OF SCOPE (2026-07-23): mission never left Earth orbit (stranded after launch, re-entered) -- no interplanetary trajectory exists to encode. Will remain out of scope permanently unless a future entry models the failed parking-orbit phase specifically.",
+      "verification_level": "first_pass"
+    },
+    {
+      "id": "juno",
+      "name": "Juno",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Jupiter",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2011-08-05",
+      "arrival_date": "2016-07-04",
+      "arrival_status": "occurred",
+      "arrival_notes": "UPDATE (2026-07-23): no longer operating -- mission concluded 2025-09 with a planned deorbit into Jupiter's atmosphere (originally scheduled to end 2018, extended twice).",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Jupiter interior/atmosphere/magnetosphere study.",
+      "trajectory_architecture": "flyby_then_target",
+      "trajectory_notes": "Single Earth gravity-assist flyby on 2013-10-09 (altitude ~500 km, speed boost ~7.3 km/s). Two deep-space maneuvers (2012-08-30 and 2012-09-14) near aphelion targeted the flyby. Boost put spacecraft on final Jupiter trajectory; arrival 2016-07-04.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Earth flyby gravity assist required. UPDATE (2026-07-23): flyby-chain architecture is now supported; already modeled in the simulator (data/flights/juno.json).",
+      "verification_level": "verified"
+    },
+    {
+      "id": "maven",
+      "name": "MAVEN",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2013-11-18",
+      "arrival_date": "2014-09-22",
+      "arrival_status": "occurred",
+      "arrival_notes": "Still operating.",
+      "mission_type": [
+        "orbiter"
+      ],
+      "mission_summary": "Mars upper atmosphere and atmospheric-loss study.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Hohmann/direct Earth-Mars transfer, 308-day cruise. No gravity assists. Trajectory described explicitly as a minimum-propellant Hohmann transfer by the mission team.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "hayabusa2",
+      "name": "Hayabusa2",
+      "agency": "JAXA",
+      "destination": {
+        "primary_body": "162173 Ryugu",
+        "specific_target": null,
+        "body_type": "asteroid"
+      },
+      "launch_date": "2014-12-03",
+      "arrival_date": "2018-06-27",
+      "arrival_status": "occurred",
+      "arrival_notes": "Sample return to Earth 2020-12. Extended mission ongoing (OSIRIS-APEX analog); Torifune flyby expected 2026-07-25.",
+      "mission_type": [
+        "sample_return",
+        "flyby_extended"
+      ],
+      "mission_summary": "Asteroid sample return and ongoing extended-mission flybys.",
+      "trajectory_architecture": "flyby_then_target",
+      "trajectory_notes": "Earth-Ryugu with a single Earth gravity-assist flyby on 2015-12-03 (altitude 3,090 km, speed boost 1.6 km/s). Ion engine propulsion combined with the gravity assist to efficiently reach Ryugu with a compact spacecraft.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Two reasons: Earth flyby gravity assist required, and absent target body type (asteroid). UPDATE (2026-07-23): asteroid/comet target bodies are now supported (data/flights/hayabusa2.json); already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "exomars_tgo",
+      "name": "ExoMars Trace Gas Orbiter + Schiaparelli",
+      "agency": "ESA/Roscosmos",
+      "agency_program_notes": "Joint mission; Roscosmos provided launch vehicle (Proton) and some instruments",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2016-03-14",
+      "arrival_date": "2016-10-19",
+      "arrival_status": "occurred_partial",
+      "arrival_notes": "TGO orbit insertion successful, still operating. Schiaparelli lander crashed on landing attempt.",
+      "mission_type": [
+        "orbiter",
+        "lander"
+      ],
+      "mission_summary": "Mars atmospheric trace-gas (methane) search; lander EDL technology test.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Direct Earth-Mars transfer, ~7-month cruise. Proton-M/Briz-M inserted directly into Mars transfer trajectory. No gravity assists; one major mid-course correction in July 2016.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "osiris_rex",
+      "name": "OSIRIS-REx / OSIRIS-APEx",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "101955 Bennu",
+        "specific_target": "99942 Apophis (extended mission)",
+        "body_type": "asteroid_multi_target"
+      },
+      "launch_date": "2016-09-08",
+      "arrival_date": "2018-12-03",
+      "arrival_status": "occurred_multi_target",
+      "arrival_notes": "Bennu sample return to Earth 2023-09. Spacecraft renamed OSIRIS-APEX, extended to rendezvous with Apophis (2029).",
+      "mission_type": [
+        "sample_return",
+        "flyby_extended"
+      ],
+      "mission_summary": "Asteroid sample return; extended mission to a second asteroid.",
+      "trajectory_architecture": "flyby_then_target",
+      "trajectory_notes": "Earth-Bennu with a single Earth gravity-assist flyby on 2017-09-22 (closest approach 17,237 km above Antarctica). Flyby tilted the orbital plane to match Bennu's inclination -- a change that would have required more fuel than the spacecraft carried to achieve with thrusters alone.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Two reasons: Earth flyby gravity assist required, and absent target body type (asteroid). UPDATE (2026-07-23): asteroid/comet target bodies are now supported (data/flights/osiris_rex.json); already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "insight",
+      "name": "InSight",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2018-05-05",
+      "arrival_date": "2018-11-26",
+      "arrival_status": "occurred",
+      "arrival_notes": "Mission ended 2022 (dust accumulation on solar panels).",
+      "mission_type": [
+        "lander"
+      ],
+      "mission_summary": "Mars seismology and interior structure study.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Type I direct transfer, 205-day cruise. No gravity assists. Six scheduled trajectory-correction maneuvers. First correction burn only 10 days after launch.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "chunge2_toutatis",
+      "name": "Chang'e 2 (extended mission asteroid flyby)",
+      "agency": "CNSA",
+      "agency_program_notes": "Originally a lunar probe; extended mission left Earth-Moon space",
+      "destination": {
+        "primary_body": "4179 Toutatis",
+        "specific_target": null,
+        "body_type": "asteroid"
+      },
+      "launch_date": null,
+      "arrival_date": "2012-12-13",
+      "arrival_status": "occurred_flyby",
+      "arrival_notes": "China's first probe to leave Earth-Moon space. Original Chang'e 2 launch was 2010-10-01 (lunar mission). Extended mission trajectory originated from Sun-Earth L2, not Earth, so no single launch date applies to this entry.",
+      "mission_type": [
+        "flyby"
+      ],
+      "mission_summary": "Asteroid flyby during extended lunar-probe mission.",
+      "trajectory_architecture": "staged_multi_phase",
+      "trajectory_notes": "Multi-phase: (1) lunar mission from 2010-10-01; (2) departed lunar orbit for Sun-Earth L2 2011-06-08, arrived L2 2011-08-25; (3) departed L2 2012-04-15 for Toutatis; (4) Toutatis flyby 2012-12-13 at only 770 m closest approach. Four trajectory correction maneuvers during the asteroid leg. No single Earth-origin interplanetary arc.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Three reasons: multi-phase trajectory (lunar \u2192 L2 \u2192 asteroid), Lagrange-point intermediate stop, and absent target body type (asteroid). The 'launch date' for this entry is undefined since the interplanetary leg originated from L2. UPDATE (2026-07-23): already modeled in the simulator; see data/flights/chunge2_toutatis.json -- modeled from its 2011 departure toward Sun-Earth L2 onward (the preceding lunar-orbit phase is a different regime this simulator doesn't model), reusing the Lagrange-point loiter type built for ESCAPADE.",
+      "lagrange_required": true,
+      "verification_level": "verified"
+    },
+    {
+      "id": "tianwen1",
+      "name": "Tianwen-1",
+      "agency": "CNSA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": "2020-07-23",
+      "arrival_date": "2021-02-10",
+      "arrival_status": "occurred",
+      "arrival_notes": "Lander/rover (Zhurong) landed 2021-05-14. China's first independent interplanetary mission.",
+      "mission_type": [
+        "orbiter",
+        "lander",
+        "rover"
+      ],
+      "mission_summary": "Mars orbiter, lander, and rover in a single first attempt.",
+      "trajectory_architecture": "direct_transfer",
+      "trajectory_notes": "Direct Earth-Mars Hohmann transfer. Part of the 2020 Mars launch window alongside Perseverance and Hope, all three of which used direct transfers. Four trajectory correction maneuvers plus one orbital-inclination adjustment burn.",
+      "model_compatibility": "compatible",
+      "model_compatibility_notes": "Direct Earth-Mars transfer; both bodies in model. Already modeled in the simulator.",
+      "verification_level": "verified"
+    },
+    {
+      "id": "europa_clipper",
+      "name": "Europa Clipper",
+      "agency": "NASA",
+      "destination": {
+        "primary_body": "Jupiter",
+        "specific_target": "Europa",
+        "body_type": "moon"
+      },
+      "launch_date": "2024-10-14",
+      "arrival_date": null,
+      "arrival_status": "not_yet_occurred",
+      "arrival_notes": "Jupiter orbit insertion April 2030. Will conduct ~50 Europa flybys from Jupiter orbit rather than orbiting Europa directly.",
+      "mission_type": [
+        "orbiter_flyby"
+      ],
+      "mission_summary": "Detailed reconnaissance of Europa's habitability potential.",
+      "trajectory_architecture": "multi_flyby_chain",
+      "trajectory_notes": "Mars flyby 2025-03-01 (altitude ~884 km; slows spacecraft and adjusts heliocentric orbit). Earth flyby 2026-12-03 to 2026-12-07 (altitude ~3,140-3,450 km; boosts toward Jupiter). Jupiter orbit insertion April 2030. Total journey ~5.5 years.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Two reasons, both now resolved: multi-flyby chain (Mars + Earth) required -- now supported by the model. Primary destination is Europa (previously an absent body type: Jovian moon) -- Europa is now modeled, along with 15 other outer moons, though this flight doesn't target it directly (see below). Already modeled in the simulator (data/flights/europa_clipper.json), through Jupiter orbit insertion (2030-04-11) only -- the subsequent ~50-flyby Europa tour has no single arrival event and isn't modeled (same reasoning as JUICE's post-arrival tour, or Lucy).",
+      "verification_level": "verified"
+    },
+    {
+      "id": "tianwen2",
+      "name": "Tianwen-2",
+      "agency": "CNSA",
+      "destination": {
+        "primary_body": "469219 Kamoooalewa",
+        "specific_target": "311P/PanSTARRS (second target)",
+        "body_type": "asteroid_comet_multi_target"
+      },
+      "launch_date": "2025-05-28",
+      "arrival_date": null,
+      "arrival_status": "not_yet_occurred",
+      "arrival_notes": "Kamooalewa rendezvous expected 2026-06 (imminent). Sample return to Earth 2027. Comet 311P/PanSTARRS arrival 2035-01, via an Earth-flyby gravity assist after sample drop-off.",
+      "mission_type": [
+        "sample_return",
+        "flyby_multi_target"
+      ],
+      "mission_summary": "Near-Earth asteroid sample return, then onward to a main-belt comet.",
+      "trajectory_architecture": "multi_target_with_earth_flyby",
+      "trajectory_notes": "Earth flyby gravity assist between the asteroid and comet legs.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Multi-target tour with an Earth gravity assist; absent target bodies (near-Earth asteroid, main-belt comet). UPDATE (2026-07-23): already modeled in the simulator; see data/flights/tianwen2.json -- modeled through the now-confirmed Kamo'oalewa rendezvous (2026-06-07) only; the 311P/PanSTARRS comet extension (arrival not expected until 2035) is not modeled, same precedent as OSIRIS-REx/Apophis.",
+      "verification_level": "first_pass"
+    },
+    {
+      "id": "tianwen3",
+      "name": "Tianwen-3",
+      "agency": "CNSA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": "sample return",
+        "body_type": "planet"
+      },
+      "launch_date": null,
+      "arrival_date": null,
+      "arrival_status": "not_launched",
+      "arrival_notes": "Planned launch ~2028, two-launch architecture (lander/ascender + orbiter/return module). Sample return to Earth ~2031.",
+      "mission_type": [
+        "sample_return"
+      ],
+      "mission_summary": "First Mars sample-return mission.",
+      "trajectory_architecture": "unverified",
+      "trajectory_notes": null,
+      "model_compatibility": "unverified",
+      "model_compatibility_notes": " OUT OF SCOPE (2026-07-23): mission has not launched yet -- no real trajectory exists to encode. Revisit once a launch date is set and firm.",
+      "verification_level": "first_pass"
+    },
+    {
+      "id": "tianwen4",
+      "name": "Tianwen-4",
+      "agency": "CNSA",
+      "destination": {
+        "primary_body": "Jupiter",
+        "specific_target": "Callisto, plus a Uranus flyby probe",
+        "body_type": "moon_plus_planet_flyby"
+      },
+      "launch_date": null,
+      "arrival_date": null,
+      "arrival_status": "not_launched",
+      "arrival_notes": "Planned launch ~2029, using a Venus flyby and two Earth flybys; Jupiter system arrival ~2035; Callisto orbit insertion as late as 2038 per some mission profiles.",
+      "mission_type": [
+        "orbiter",
+        "flyby"
+      ],
+      "mission_summary": "Jupiter/Callisto system study, with an attached Uranus flyby probe.",
+      "trajectory_architecture": "unverified",
+      "trajectory_notes": "Multiple gravity assists (Venus + 2x Earth) planned per current mission design; needs full mechanics verification once design is finalized.",
+      "model_compatibility": "needs_expansion",
+      "model_compatibility_notes": "Known to plan Venus + Earth flyby chain -- now supported by the model. Destination Callisto is also now modeled (added along with 15 other outer moons). Uranus probe leg still adds an absent body (no target moon/ring modeled at Uranus beyond the planet itself, and this entry's trajectory design is still provisional pending launch). OUT OF SCOPE (2026-07-23): mission has not launched yet -- no real trajectory exists to encode. Revisit once a launch date is set and firm.",
+      "verification_level": "first_pass"
+    },
+    {
+      "id": "mmx",
+      "name": "MMX (Martian Moons eXploration)",
+      "agency": "JAXA",
+      "agency_program_notes": "Partners: NASA, CNES, DLR, ESA",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": "Phobos (sample return), Deimos (flyby observations)",
+        "body_type": "moon"
+      },
+      "launch_date": null,
+      "arrival_date": null,
+      "arrival_status": "not_launched",
+      "arrival_notes": "Spacecraft delivered to Tanegashima 2026-03-31. Launch window targeted 2026-11/2026-12 (one source cites 2026-10). Mars arrival ~1 year after launch. Sample return to Earth ~2031.",
+      "mission_type": [
+        "orbiter",
+        "lander",
+        "sample_return",
+        "flyby"
+      ],
+      "mission_summary": "Phobos sample return and Deimos flyby study.",
+      "trajectory_architecture": "unverified",
+      "trajectory_notes": null,
+      "model_compatibility": "unverified",
+      "model_compatibility_notes": " OUT OF SCOPE (2026-07-23): mission has not launched yet -- no real trajectory exists to encode. Revisit once a launch date is set and firm.",
+      "verification_level": "first_pass"
+    },
+    {
+      "id": "exomars_rosalind_franklin",
+      "name": "ExoMars Rosalind Franklin rover",
+      "agency": "ESA",
+      "agency_program_notes": "Originally joint with Roscosmos; partnership ended 2022 following the invasion of Ukraine. NASA now providing launch.",
+      "destination": {
+        "primary_body": "Mars",
+        "specific_target": null,
+        "body_type": "planet"
+      },
+      "launch_date": null,
+      "arrival_date": null,
+      "arrival_status": "not_launched",
+      "arrival_notes": "Delayed indefinitely in 2022; refunded 2024; launch currently planned for late 2028.",
+      "mission_type": [
+        "lander",
+        "rover"
+      ],
+      "mission_summary": "Search for evidence of past/present microscopic life on Mars.",
+      "trajectory_architecture": "unverified",
+      "trajectory_notes": null,
+      "model_compatibility": "unverified",
+      "model_compatibility_notes": " OUT OF SCOPE (2026-07-23): mission has not launched yet -- no real trajectory exists to encode. Revisit once a launch date is set and firm.",
+      "verification_level": "first_pass"
+    }
+  ],
+  "absent_target_bodies_tally": {
+    "note": "UPDATE (2026-07-23): 9 real mission-target asteroids/comets were added this pass (67P, Bennu, Ryugu, Didymos, Itokawa, Vesta, Ceres, Tempel 1, 16 Psyche) -- dart/hera/psyche/hayabusa/hayabusa2/osiris_rex/dawn/rosetta/deep_impact all moved off this list and are now modeled (see each mission's own model_compatibility_notes). Bodies requested by remaining missions but still not present in the model, tallied to help prioritize future additions.",
+    "asteroids_requested_by": [
+      "lucy (x7 distinct targets: Eurybates, Polymele, Leucus, Orus, Patroclus/Menoetius, Dinkinesh, Donaldjohanson)",
+      "tianwen2 (x1: 469219 Kamo'oalewa)",
+      "chunge2_toutatis (4179 Toutatis)"
+    ],
+    "comets_requested_by": [
+      "tianwen2 (311P/PanSTARRS)"
+    ],
+    "moons_requested_by": [
+      "mmx (Phobos sample-level detail, Deimos -- both already present)"
+    ],
+    "moons_requested_by_note": "UPDATE (2026-07-23): Ganymede, Europa, and Callisto (requested by juice, europa_clipper, tianwen4) are no longer absent -- all 16 moons >=450km across Jupiter/Saturn/Uranus/Neptune, plus Earth's Moon/Phobos/Deimos, are now modeled. Those three entries moved off this list; see their individual model_compatibility_notes for what's still actually missing (mainly: the flight data itself hasn't been authored yet).",
+    "lagrange_points_requested_by": [
+      "escapade (transit only)",
+      "aditya_l1",
+      "genesis",
+      "chunge2_toutatis (intermediate stop)"
+    ],
+    "dwarf_planets_requested_by": [
+      "new_horizons (Pluto)",
+      "dawn (Ceres)"
+    ]
+  },
+  "model_compatible_unmodeled": {
+    "note": "UPDATE (2026-07-23): this list was stale -- all 12 previously listed entries have since been added to the simulator (see each mission's model_compatibility_notes, now updated to say 'Already modeled'). Currently empty because every mission flagged model_compatibility=compatible in this catalog has been added; nothing is sitting ready-but-unbuilt.",
+    "ready_to_add": []
+  },
+  "pending_research": [
+    "Full mechanics verification for not-yet-launched missions (Mangalyaan-2, Shukrayaan, Tianwen-3, Tianwen-4, MMX, ExoMars Rosalind Franklin) -- trajectory designs are provisional and not worth verifying until closer to launch.",
+    "Verify Tianwen-2 trajectory details (currently first_pass despite model_compatibility being assessed; launch occurred 2025-05-28 so primary-source data should now exist).",
+    "Check for additional smaller-agency or CubeSat-class interplanetary efforts not yet covered.",
+    "Resolve soft/uncertain dates flagged in arrival_notes (Mangalyaan-2, Shukrayaan, MMX launch window)."
+  ]
+}

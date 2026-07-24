@@ -1,0 +1,43 @@
+{
+  "key": "psyche",
+  "name": "Psyche",
+  "rocket": "Falcon Heavy",
+  "payload": "Psyche orbiter (~2,747 kg wet mass)",
+  "status": "En Route",
+  "significance": "Psyche was launched to investigate a scientific gap that no prior mission could address: since planetary metallic cores are inaccessible everywhere, including on Earth, the metal-rich asteroid 16 Psyche offers a possible directly observable analog to a protoplanet's exposed core, if Psyche is confirmed to be one. It is the first mission to a predominantly metallic body, carrying a magnetometer, gamma-ray/neutron spectrometer, and imagers to map composition, topography, and any remnant magnetic field, an instrument suite never before flown to a metal-dominated target. Ground and space telescope observations conducted before and during the mission's cruise have already revised estimates of Psyche's bulk metal content downward from earlier assumptions, suggesting a more porous, mixed metal-rock body rather than a solid iron-nickel mass. The spacecraft is still en route, with orbital operations at Psyche not beginning until 2029, so the central question, whether Psyche is truly a stripped planetary core or a metal-rich rubble pile formed some other way, remains open.",
+  "statusNote": "Orbital study of a metal-rich asteroid believed to be part of a planetesimal's core. Single Mars gravity-assist flyby, completed 2026-05-15 at 4,609 km altitude; this leg uses the patched-conic roll-angle solver (like BepiColombo/PSP), not a plain endpoint-anchored arc. Asteroid gravity capture expected 2029-07 (science orbit begins 2029-08); this file uses 2029-07-31 as a representative arrival date pending a firmer published one -- combined with the approximate date, the solved trajectory currently lands ~0.3 AU from Psyche's actual position at that date, larger than this simulator's other patched-conic legs. Worth revisiting once ESA/NASA publish a firmer encounter date closer to arrival.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Mars",
+      "departDate": "2023-10-13",
+      "arrivalDate": "2026-05-15"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mars",
+      "date": "2026-05-15",
+      "periapsisKm": 4609
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mars",
+      "toBody": "psyche",
+      "departDate": "2026-05-15",
+      "arrivalDate": "2029-07-31"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Psyche (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Psyche_(spacecraft)",
+      "localImage": "images/missions/psyche/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Falcon Heavy",
+      "infoUrl": "https://en.wikipedia.org/wiki/Falcon_Heavy",
+      "localImage": "images/rockets/falcon_heavy.png"
+    }
+  }
+}

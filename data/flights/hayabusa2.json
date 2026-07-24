@@ -1,0 +1,43 @@
+{
+  "key": "hayabusa2",
+  "name": "Hayabusa2",
+  "rocket": "H-IIA",
+  "payload": "Hayabusa2 sample-return spacecraft (~600 kg)",
+  "status": "Success",
+  "significance": "Hayabusa2 was launched to sample a primitive, carbon-rich C-type asteroid, complementing Hayabusa's earlier S-type sample and testing whether such asteroids preserve organic and water-bearing material from the solar system's birth. It introduced techniques with no true precedent: it was the first mission to deploy hopping rovers (MINERVA-II) and a lander (MASCOT) onto an asteroid, and the first to fire an explosive impactor to blast an artificial crater into an asteroid and then collect shielded subsurface material for return to Earth. The roughly 5.4 grams returned from Ryugu in 2020 contained amino acids, uracil and other nucleobases, and hydrated minerals, along with the most chemically primitive, unheated material yet sampled from any solar system body. These findings strengthened the case that carbonaceous asteroids delivered water and prebiotic organic chemistry to the early Earth, and subsurface samples showed less space-weathering alteration than the surface, confirming how quickly asteroid regolith is altered by exposure.",
+  "statusNote": "Asteroid sample return and ongoing extended-mission flybys. Single Earth gravity-assist flyby (2015-12-03, altitude 3,090 km, speed boost 1.6 km/s), combined with continuous ion-engine thrust (not ballistic coasting) to efficiently reach Ryugu with a compact spacecraft -- like Hayabusa, the post-flyby leg here is anchored to Ryugu's real recorded arrival position/date rather than a patched-conic fit. Sample return to Earth 2020-12-06. Extended mission ongoing under the same spacecraft (next flyby target: asteroid Torifune, expected 2026-07 -- not modeled here, this entry ends at the primary Ryugu rendezvous).",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2014-12-03",
+      "arrivalDate": "2015-12-03"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2015-12-03",
+      "periapsisKm": 3090
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "ryugu",
+      "departDate": "2015-12-03",
+      "arrivalDate": "2018-06-27"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Hayabusa2",
+      "infoUrl": "https://en.wikipedia.org/wiki/Hayabusa2",
+      "localImage": "images/missions/hayabusa2/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "H-IIA",
+      "infoUrl": "https://en.wikipedia.org/wiki/H-IIA",
+      "localImage": "images/rockets/h_iia.jpg"
+    }
+  }
+}

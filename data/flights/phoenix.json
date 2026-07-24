@@ -1,0 +1,25 @@
+{
+  "key": "phoenix",
+  "name": "Phoenix",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2007-08-04",
+  "arrival": "2008-05-25",
+  "rocket": "Delta II 7925",
+  "payload": "Phoenix lander (670 kg)",
+  "status": "Success",
+  "significance": "Phoenix was sent to the Martian arctic specifically to dig into and directly sample the near-surface ice that Odyssey's hydrogen maps had detected, and to assess whether the ice-soil boundary could be habitable. It was the first spacecraft to physically touch, excavate, and chemically analyze water ice on Mars, carrying the first wet-chemistry laboratory to test Martian soil for pH, salinity, and dissolved minerals. Phoenix confirmed the ice was genuine water ice by watching exposed clumps sublimate away over several days, and its instruments detected perchlorate salts in the soil, a discovery that reshaped interpretation of earlier Viking lander results and raised new questions about both habitability and future resource use. It also made the first direct observation of snow falling from Martian clouds, confirming an active water cycle in the polar atmosphere.",
+  "statusNote": "Lander operated for 157 sols; mission ended 2008-11-02 when solar power dropped below operating threshold in Martian autumn.",
+  "assets": {
+    "spacecraft": {
+      "title": "Phoenix (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Phoenix_(spacecraft)",
+      "localImage": "images/missions/phoenix/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.png"
+    }
+  }
+}

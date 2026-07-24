@@ -1,0 +1,56 @@
+{
+  "key": "europa_clipper",
+  "name": "Europa Clipper",
+  "rocket": "Falcon Heavy",
+  "payload": "Europa Clipper orbiter (6,065 kg fully fueled)",
+  "status": "En Route",
+  "significance": "Europa Clipper was launched because Galileo's 1990s flybys detected magnetic-field signatures consistent with a global saltwater ocean beneath Europa's icy crust, raising the question of whether that ocean, warmed by tidal flexing, could support the chemistry needed for life. It is NASA's first mission dedicated specifically to Europa and the largest spacecraft NASA has ever built for a planetary mission, carrying nine instruments to conduct dozens of close flybys rather than orbiting the moon directly, avoiding Jupiter's intense radiation while still mapping over 80% of the surface at high resolution. Its objectives are to confirm the ocean's existence, measure the ice shell's thickness and the ocean's depth and salinity via magnetic and gravity measurements, characterize surface chemistry for potential biosignatures, and search for active water plumes to sample directly. The spacecraft is still travelling to Jupiter, with orbit insertion expected in 2030, so its central discoveries about Europa's habitability remain ahead; a 2024 pre-launch analysis of its imaging system also settled that the moon's radiation exposure would not compromise the mission's instruments as once feared.",
+  "statusNote": "NASA's heaviest-ever planetary mission, studying Europa's habitability potential via ~50 flybys from Jupiter orbit rather than orbiting Europa directly. Trajectory modeled through Jupiter orbit insertion (2030-04-11) only -- the subsequent multi-year Europa flyby tour (~50 individual passes, no single orbit-insertion-at-Europa event) is a multi-target tour phase, not a single transfer arc, and is not modeled here (same reasoning as JUICE's post-arrival Jovian tour, or Lucy's Trojan tour). Earth flyby (2026-12-03) altitude is NASA's published pre-encounter range (~3,140-3,450 km depending on exact trajectory refinement); this file uses the range's midpoint.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Mars",
+      "departDate": "2024-10-14",
+      "arrivalDate": "2025-03-01"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mars",
+      "date": "2025-03-01",
+      "periapsisKm": 884
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mars",
+      "toBody": "Earth",
+      "departDate": "2025-03-01",
+      "arrivalDate": "2026-12-03"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2026-12-03",
+      "periapsisKm": 3300
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Jupiter",
+      "departDate": "2026-12-03",
+      "arrivalDate": "2030-04-11"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Europa Clipper",
+      "infoUrl": "https://science.nasa.gov/mission/europa-clipper/",
+      "localImage": "images/missions/europa_clipper/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Falcon Heavy",
+      "infoUrl": "https://en.wikipedia.org/wiki/Falcon_Heavy",
+      "localImage": "images/rockets/falcon_heavy.png"
+    }
+  }
+}

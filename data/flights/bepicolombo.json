@@ -1,0 +1,147 @@
+{
+  "key": "bepicolombo",
+  "name": "BepiColombo",
+  "rocket": "Ariane 5 ECA",
+  "payload": "Mercury Planetary Orbiter + Mercury Magnetospheric Orbiter (4,100 kg combined)",
+  "status": "En Route",
+  "significance": "BepiColombo was launched to build on NASA's MESSENGER mission with a more comprehensive, dual-spacecraft investigation of Mercury's interior, surface, thin exosphere, and magnetosphere, and to test Einstein's general relativity with higher precision using the planet closest to the Sun's deep gravity well. It is the first mission to send two orbiters simultaneously to Mercury, ESA's Mercury Planetary Orbiter and JAXA's Mercury Magnetospheric Orbiter (Mio), allowing coordinated surface and space-environment measurements that no single spacecraft could obtain, using instruments with higher spatial and spectral resolution than MESSENGER's across visible, infrared, ultraviolet, X-ray, neutron, and gamma-ray wavelengths. The spacecraft is still years from its main science campaign, having only performed flybys during its long cruise, with orbit insertion at Mercury delayed to November 2026 after a thruster anomaly. Once operational, it is expected to clarify open questions MESSENGER could not fully resolve, including the exact composition and origin of Mercury's polar ice deposits, the structure of its oversized iron core, and the source of its unusually offset magnetic field.",
+  "statusNote": "ESA/JAXA joint mission. 9 gravity assists: 1 Earth, 2 Venus, 6 Mercury. Mercury orbit insertion 2026-11-21. Tier 1 visualization uses chained Lambert arcs between flyby bodies.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "2018-10-20",
+      "arrivalDate": "2020-04-10"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2020-04-10",
+      "periapsisKm": 12677
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "2020-04-10",
+      "arrivalDate": "2020-10-15"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2020-10-15",
+      "periapsisKm": 10720
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2020-10-15",
+      "arrivalDate": "2021-08-11"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2021-08-11",
+      "periapsisKm": 552
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Mercury",
+      "departDate": "2021-08-11",
+      "arrivalDate": "2021-10-01"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "2021-10-01",
+      "periapsisKm": 198
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": "Mercury",
+      "departDate": "2021-10-01",
+      "arrivalDate": "2022-06-23"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "2022-06-23",
+      "periapsisKm": 236
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": "Mercury",
+      "departDate": "2022-06-23",
+      "arrivalDate": "2023-06-19"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "2023-06-19",
+      "periapsisKm": 236
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": "Mercury",
+      "departDate": "2023-06-19",
+      "arrivalDate": "2024-09-04"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "2024-09-04",
+      "periapsisKm": 165
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": "Mercury",
+      "departDate": "2024-09-04",
+      "arrivalDate": "2024-12-01"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "2024-12-01",
+      "periapsisKm": 295
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": "Mercury",
+      "departDate": "2024-12-01",
+      "arrivalDate": "2025-01-08"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "2025-01-08",
+      "periapsisKm": 295
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": "Mercury",
+      "departDate": "2025-01-08",
+      "arrivalDate": "2026-11-21"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "BepiColombo",
+      "infoUrl": "https://www.esa.int/Science_Exploration/Space_Science/BepiColombo",
+      "localImage": "images/missions/bepicolombo/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Ariane 5",
+      "infoUrl": "https://en.wikipedia.org/wiki/Ariane_5",
+      "localImage": "images/rockets/ariane_5.jpg"
+    }
+  }
+}

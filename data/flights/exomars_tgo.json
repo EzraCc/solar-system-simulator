@@ -1,0 +1,30 @@
+{
+  "key": "exomars_tgo",
+  "name": "ExoMars Trace Gas Orbiter",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2016-03-14",
+  "arrival": "2016-10-19",
+  "rocket": "Proton-M/Briz-M",
+  "payload": "TGO orbiter (3,732 kg) + Schiaparelli EDM lander (600 kg)",
+  "status": "Partial Success",
+  "significance": "The Trace Gas Orbiter was launched to resolve whether Mars' atmosphere contains methane, a gas that could indicate current biological or geological activity, and to precisely track other trace gases as indicators of ongoing Martian processes. It carries instruments sensitive to parts-per-trillion concentrations, far more precise than any prior Mars mission, and it produced the most detailed global maps yet of subsurface water-ice and hydrated minerals. TGO detected essentially no atmospheric methane, with an upper limit 10 to 100 times lower than earlier ground-based and rover measurements, creating an unresolved \"methane mystery\" over why surface detections don't match orbital data and suggesting an unknown process removes methane from the lower atmosphere before it can spread globally. It also set new strict upper limits on other potential biosignature gases, including ethane, ethylene, and phosphine.",
+  "statusNote": "TGO fully successful, still operating. Schiaparelli lander crashed on descent due to IMU saturation causing premature parachute release.",
+  "assets": {
+    "spacecraft": {
+      "title": "Trace Gas Orbiter",
+      "infoUrl": "https://en.wikipedia.org/wiki/Trace_Gas_Orbiter",
+      "localImage": "images/missions/exomars_tgo/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Proton-M",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-M",
+      "localImage": "images/rockets/proton_m.jpg"
+    },
+    "lander": {
+      "title": "Schiaparelli EDM",
+      "infoUrl": "https://en.wikipedia.org/wiki/Schiaparelli_EDM",
+      "localImage": "images/missions/exomars_tgo/lander.JPG"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "key": "tianwen1",
+  "name": "Tianwen-1",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2020-07-23",
+  "arrival": "2021-02-10",
+  "rocket": "Long March 5",
+  "payload": "Tianwen-1 orbiter + Zhurong lander/rover (~5,000 kg combined)",
+  "status": "Success",
+  "significance": "Tianwen-1 was launched as China's first independent Mars mission, aiming to orbit, land, and rove the planet in a single attempt to study surface geology, subsurface ice, and atmosphere while proving China's deep-space landing technology. It was the first mission by any nation to combine an orbiter, lander, and rover in one launch and succeed on the first try, and its Zhurong rover carried the first magnetometer ever flown on a Mars rover; the landing made China the second country to operate a rover on Mars. Zhurong's ground-penetrating radar detected layered subsurface structures at Utopia Planitia consistent with past water or ice activity, while the orbiter produced a global map of Mars using roughly 940 gigabytes of returned data before the rover unexpectedly lost contact during hibernation in 2022.",
+  "statusNote": "China's first independent interplanetary mission. Zhurong rover landed 2021-05-14; contact lost 2022-05 after entering hibernation.",
+  "assets": {
+    "spacecraft": {
+      "title": "Tianwen-1",
+      "infoUrl": "https://en.wikipedia.org/wiki/Tianwen-1",
+      "localImage": "images/missions/tianwen1/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Long March 5",
+      "infoUrl": "https://en.wikipedia.org/wiki/Long_March_5",
+      "localImage": "images/rockets/long_march_5.jpg"
+    },
+    "lander": {
+      "title": "Zhurong (rover)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Zhurong_(rover)",
+      "localImage": "images/missions/tianwen1/lander.png"
+    }
+  }
+}

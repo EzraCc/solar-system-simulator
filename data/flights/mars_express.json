@@ -1,0 +1,30 @@
+{
+  "key": "mars_express",
+  "name": "Mars Express",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2003-06-02",
+  "arrival": "2003-12-25",
+  "rocket": "Soyuz-FG/Fregat",
+  "payload": "Mars Express orbiter (1,008 kg) + Beagle 2 lander (69 kg)",
+  "status": "Partial Success",
+  "significance": "Mars Express was Europe's first mission to another planet, launched to conduct a comprehensive orbital survey of Mars's surface, subsurface, and atmosphere to resolve questions about the planet's water history and atmospheric evolution. It carried the first radar sounder (MARSIS) flown to probe kilometers beneath the Martian surface and the first high-resolution stereo camera to produce detailed 3D topographic maps of the entire planet. The mission found evidence of a planet-wide ancient groundwater system, including buried ice deposits and interconnected subsurface lakes, detected the first Martian aurorae, identified minerals that form only in liquid water, and reported the controversial detection of atmospheric methane, a possible biological or geological marker. It also returned evidence suggesting Martian volcanism persisted more recently than previously thought and produced close-up imagery of the moon Phobos.",
+  "statusNote": "Orbiter fully successful, still operating. Beagle 2 lander was lost on arrival (cause: partial solar panel deployment prevented communication).",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars Express",
+      "infoUrl": "https://www.esa.int/Science_Exploration/Space_Science/Mars_Express",
+      "localImage": "images/missions/mars_express/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Soyuz-FG",
+      "infoUrl": "https://en.wikipedia.org/wiki/Soyuz-FG",
+      "localImage": "images/rockets/soyuz_fg.jpg"
+    },
+    "lander": {
+      "title": "Beagle 2",
+      "infoUrl": "https://en.wikipedia.org/wiki/Beagle_2",
+      "localImage": "images/missions/mars_express/lander.jpg"
+    }
+  }
+}

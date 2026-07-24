@@ -1,0 +1,114 @@
+{
+  "key": "psp",
+  "name": "Parker Solar Probe",
+  "rocket": "Delta IV Heavy",
+  "payload": "Parker Solar Probe (685 kg)",
+  "status": "Success",
+  "significance": "Parker Solar Probe was launched to solve two long-standing solar physics puzzles that could not be answered from a distance: why the Sun's corona is hundreds of times hotter than its visible surface, and what mechanism accelerates the solar wind to supersonic speeds, questions with direct relevance to protecting Earth's technology from space weather. It is the first spacecraft ever to fly through the Sun's corona, and in 2021 it became the first human-made object to cross the Alfven critical surface, the boundary separating the Sun's atmosphere from interplanetary space, achieving direct in-situ sampling of solar plasma and magnetic fields rather than remote observation. Inside the corona it discovered \"switchbacks,\" abrupt S-shaped kinks in the solar magnetic field linked to bursts of accelerated particles, and traced these structures back to magnetic funnels between convection cells on the Sun's surface, providing the first direct evidence connecting small-scale surface magnetism to solar wind acceleration. Its measurements near the Alfven surface also showed the corona's outer boundary is uneven and shaped by large-scale solar structures like pseudostreamers, refining models of where and how the solar wind is born.",
+  "statusNote": "Closest solar approach in history: 6.1 solar radii (2024-12-24). Seven Venus gravity assists over 6 years progressively lower perihelion. Tier 1 trajectory ends at GA7 (2024-11-06); final perihelion approach requires Tier 2 hyperbolic solver (spec \u00a78) for accurate modeling.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "2018-08-12",
+      "arrivalDate": "2018-10-03"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2018-10-03",
+      "periapsisKm": 2394
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2018-10-03",
+      "arrivalDate": "2019-12-26"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2019-12-26",
+      "periapsisKm": 2983
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2019-12-26",
+      "arrivalDate": "2020-07-11"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2020-07-11",
+      "periapsisKm": 833
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2020-07-11",
+      "arrivalDate": "2021-02-20"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2021-02-20",
+      "periapsisKm": 3234
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2021-02-20",
+      "arrivalDate": "2021-10-16"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2021-10-16",
+      "periapsisKm": 3822
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2021-10-16",
+      "arrivalDate": "2023-08-21"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2023-08-21",
+      "periapsisKm": 13246
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2023-08-21",
+      "arrivalDate": "2024-11-06"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2024-11-06",
+      "periapsisKm": 6100
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Parker Solar Probe",
+      "infoUrl": "https://science.nasa.gov/mission/parker-solar-probe/",
+      "localImage": "images/missions/psp/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Delta IV Heavy",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_IV_Heavy",
+      "localImage": "images/rockets/delta_iv_heavy.png"
+    }
+  }
+}

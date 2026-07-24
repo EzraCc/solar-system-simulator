@@ -1,0 +1,25 @@
+{
+  "key": "spirit_mer_a",
+  "name": "Spirit (MER-A)",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2003-06-10",
+  "arrival": "2004-01-04",
+  "rocket": "Delta II 7925",
+  "payload": "Spirit rover (185 kg) + lander/cruise stage (1,063 kg total)",
+  "status": "Success",
+  "significance": "Spirit was sent to Gusev Crater, a site orbital imagery suggested was an ancient lake basin, to test directly on the ground whether Mars once had persistent liquid water and habitable conditions. It was part of the first mission to land a pair of long-range robotic geologists on Mars, each equipped with a rock abrasion tool to grind into rock surfaces and expose unweathered interiors for analysis, vastly extending the science reach beyond earlier fixed landers. Rather than finding lakebed sediments, Spirit discovered that Gusev's history was dominated by volcanism, including silica- and carbonate-rich deposits at \"Home Plate\" and \"Comanche\" indicative of ancient hot-spring or steam-vent activity in warm, near-neutral-pH water, an environment considered unusually favorable for past microbial life. It operated more than 25 times longer than its planned 90-day mission before becoming permanently stuck in soft soil.",
+  "statusNote": "Rover operated until 2010-03-22 when contact was lost after getting trapped in soft soil.",
+  "assets": {
+    "spacecraft": {
+      "title": "Spirit (rover)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Spirit_(rover)",
+      "localImage": "images/missions/spirit_mer_a/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.png"
+    }
+  }
+}

@@ -1,0 +1,3696 @@
+(function () {
+  "use strict";
+
+  /* =========================================================================
+     PHYSICAL / ORBITAL CONSTANTS
+     Source: J2000.0 mean orbital elements (a, e, i, Omega, varpi, L), from
+     standard planetary ephemeris fits (Standish/JPL DE-derived). Angles in
+     degrees in source data, converted to radians below.
+     a = semi-major axis (AU)
+     e = eccentricity
+     i = inclination to ecliptic (deg)
+     Om = longitude of ascending node (deg)
+     varpi = longitude of perihelion (deg)   [ = Om + argument of perihelion ]
+     L = mean longitude at epoch (deg)        [ = varpi + mean anomaly ]
+     Also includes per-century rates so the simulator can move the epoch
+     elements forward/backward accurately rather than just propagating a
+     fixed Keplerian ellipse (mean orbits do precess slowly).
+  ========================================================================= */
+
+  const AU_KM = 149597870.7;
+  const DAYS_PER_CENTURY = 36525;
+  const J2000_JD = 2451545.0; // 2000-01-01 12:00 TT
+
+  // deg -> rad
+  const D2R = Math.PI / 180;
+
+  // mu_sun in AU^3 / day^2 (so that periods come out in days directly)
+  // GM_sun = 1.32712440018e11 km^3/s^2
+  const GM_SUN_KM3_S2 = 1.32712440018e11;
+  const SEC_PER_DAY = 86400;
+  const GM_SUN_AU3_DAY2 = GM_SUN_KM3_S2 * (SEC_PER_DAY * SEC_PER_DAY) / (AU_KM * AU_KM * AU_KM);
+
+  // Planet GM constants (km³/s²), consolidated here so SOI/Hill computations
+  // in PLANET_META (below) can reference them at declaration time.
+  // Earth and Mars GMs were previously declared in their satellite-mechanics
+  // sections; those duplicate declarations have been removed and the derived
+  // constants (GM_EARTH_MOON_KM3_DAY2, GM_MARS_KM3_DAY2) still work because
+  // these consts are now in scope before those derived values are computed.
+  const GM_MERCURY_KM3_S2 = 2.2032e4;
+  const GM_VENUS_KM3_S2   = 3.24859e5;
+  const GM_EARTH_KM3_S2   = 3.986004418e5;
+  const GM_MARS_KM3_S2    = 4.282837e4;
+  const GM_JUPITER_KM3_S2 = 1.26686534e8;
+  const GM_SATURN_KM3_S2  = 3.7931187e7;
+  const GM_URANUS_KM3_S2  = 5.793951e6;
+  const GM_NEPTUNE_KM3_S2 = 6.836529e6;
+
+  // SOI (Sphere of Influence) and Hill sphere radii in AU.
+  // SOI:  r = a × (GM_planet / GM_sun)^(2/5)   — patched-conic domain boundary
+  // Hill: r = a × (GM_planet / (3 × GM_sun))^(1/3) — L1/L2 offset from planet
+  // Both use GM ratio as the mass ratio proxy (mass ∝ GM in Newtonian mechanics).
+  function computeSOIAU(a_AU, GM_planet) {
+    return a_AU * Math.pow(GM_planet / GM_SUN_KM3_S2, 2 / 5);
+  }
+  function computeHillAU(a_AU, GM_planet) {
+    return a_AU * Math.pow(GM_planet / (3 * GM_SUN_KM3_S2), 1 / 3);
+  }
+
+  // Mean orbital elements at J2000 epoch, plus centennial rates.
+  // a(AU), aDot(AU/Cy), e, eDot(/Cy), i(deg), iDot("/Cy),
+  // Om(deg), OmDot("/Cy), varpi(deg), varpiDot("/Cy), L(deg), LDot("/Cy)
+  const PLANET_ELEMENTS = {
+    Mercury: { a: 0.38709893, aDot: 0.00000066, e: 0.20563069, eDot: 0.00002527,
+               i: 7.00487, iDot: -23.51, Om: 48.33167, OmDot: -446.30, varpi: 77.45645, varpiDot: 573.57,
+               L: 252.25084, LDot: 538101628.29 },
+    Venus:   { a: 0.72333199, aDot: 0.00000092, e: 0.00677323, eDot: -0.00004938,
+               i: 3.39471, iDot: -2.86, Om: 76.68069, OmDot: -996.89, varpi: 131.53298, varpiDot: -108.80,
+               L: 181.97973, LDot: 210664136.06 },
+    Earth:   { a: 1.00000011, aDot: -0.00000005, e: 0.01671022, eDot: -0.00003804,
+               i: 0.00005, iDot: -46.94, Om: -11.26064, OmDot: -18228.25, varpi: 102.94719, varpiDot: 1198.28,
+               L: 100.46435, LDot: 129597740.63 },
+    Mars:    { a: 1.52366231, aDot: -0.00007221, e: 0.09341233, eDot: 0.00011902,
+               i: 1.85061, iDot: -25.47, Om: 49.57854, OmDot: -1020.19, varpi: 336.04084, varpiDot: 1560.78,
+               L: 355.45332, LDot: 68905103.78 },
+    Jupiter: { a: 5.20336301, aDot: 0.00060737, e: 0.04839266, eDot: -0.00012880,
+               i: 1.30530, iDot: -4.15, Om: 100.55615, OmDot: 1217.17, varpi: 14.75385, varpiDot: 839.93,
+               L: 34.40438, LDot: 10925078.35 },
+    Saturn:  { a: 9.53707032, aDot: -0.00301530, e: 0.05415060, eDot: -0.00036762,
+               i: 2.48446, iDot: 6.11, Om: 113.71504, OmDot: -1591.05, varpi: 92.43194, varpiDot: -1948.89,
+               L: 49.94432, LDot: 4401052.95 },
+    Uranus:  { a: 19.19126393, aDot: 0.00152025, e: 0.04716771, eDot: -0.00019150,
+               i: 0.76986, iDot: -2.09, Om: 74.22988, OmDot: -1681.40, varpi: 170.96424, varpiDot: 1312.56,
+               L: 313.23218, LDot: 1542547.79 },
+    Neptune: { a: 30.06896348, aDot: -0.00125196, e: 0.00858587, eDot: 0.00002510,
+               i: 1.76917, iDot: -3.64, Om: 131.72169, OmDot: -151.25, varpi: 44.97135, varpiDot: -844.43,
+               L: 304.88003, LDot: 786449.21 }
+  };
+
+  // Visual / identity data, plus gravitational physics fields.
+  // soiRadiusAU:  Sphere of Influence radius — patched-conic domain boundary.
+  // hillRadiusAU: Hill sphere radius — also the L1/L2 offset from the planet.
+  // gmKm3S2:      Planet GM in km³/s², needed by the hyperbolic flyby solver.
+  // Semi-major axes used here are the J2000 epoch values from PLANET_ELEMENTS.
+  const PLANET_META = {
+    Mercury: { color: "#b3a39a", radiusKm:  2439.7, gmKm3S2: GM_MERCURY_KM3_S2, soiRadiusAU: computeSOIAU( 0.38709893, GM_MERCURY_KM3_S2), hillRadiusAU: computeHillAU( 0.38709893, GM_MERCURY_KM3_S2) },
+    Venus:   { color: "#e8cfa0", radiusKm:  6051.8, gmKm3S2: GM_VENUS_KM3_S2,   soiRadiusAU: computeSOIAU( 0.72333199, GM_VENUS_KM3_S2),   hillRadiusAU: computeHillAU( 0.72333199, GM_VENUS_KM3_S2)   },
+    Earth:   { color: "#5ab0ff", radiusKm:  6371.0, gmKm3S2: GM_EARTH_KM3_S2,   soiRadiusAU: computeSOIAU( 1.00000011, GM_EARTH_KM3_S2),   hillRadiusAU: computeHillAU( 1.00000011, GM_EARTH_KM3_S2)   },
+    Mars:    { color: "#d9694f", radiusKm:  3389.5, gmKm3S2: GM_MARS_KM3_S2,    soiRadiusAU: computeSOIAU( 1.52366231, GM_MARS_KM3_S2),    hillRadiusAU: computeHillAU( 1.52366231, GM_MARS_KM3_S2)    },
+    Jupiter: { color: "#d9b38c", radiusKm: 69911,   gmKm3S2: GM_JUPITER_KM3_S2, soiRadiusAU: computeSOIAU( 5.20336301, GM_JUPITER_KM3_S2), hillRadiusAU: computeHillAU( 5.20336301, GM_JUPITER_KM3_S2) },
+    Saturn:  { color: "#e8d6a3", radiusKm: 58232,   gmKm3S2: GM_SATURN_KM3_S2,  soiRadiusAU: computeSOIAU( 9.53707032, GM_SATURN_KM3_S2),  hillRadiusAU: computeHillAU( 9.53707032, GM_SATURN_KM3_S2)  },
+    Uranus:  { color: "#9fd6e0", radiusKm: 25362,   gmKm3S2: GM_URANUS_KM3_S2,  soiRadiusAU: computeSOIAU(19.19126393, GM_URANUS_KM3_S2),  hillRadiusAU: computeHillAU(19.19126393, GM_URANUS_KM3_S2)  },
+    Neptune: { color: "#5d7fde", radiusKm: 24622,   gmKm3S2: GM_NEPTUNE_KM3_S2, soiRadiusAU: computeSOIAU(30.06896348, GM_NEPTUNE_KM3_S2), hillRadiusAU: computeHillAU(30.06896348, GM_NEPTUNE_KM3_S2) }
+  };
+  const SUN_RADIUS_KM = 695700;
+  const SUN_COLOR = "#ffd27a";
+
+  const PLANET_ORDER = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"];
+
+  /* =========================================================================
+     FLIGHTS: real Earth-to-Mars missions, modeled as Lambert-solved
+     heliocentric transfer trajectories. Scope is deliberately limited to
+     launch -> Mars arrival (the heliocentric cruise segment); the landing
+     sequence (entry, descent, landing) is a separate hyperbolic/atmospheric
+     phase this simulator does not model, per explicit scope.
+
+     "arrival" is always the single INTENDED arrival date -- the date the
+     trajectory was flying toward -- and is what the Lambert solver uses
+     as its end point, regardless of whether the mission actually
+     succeeded. For both Curiosity and Perseverance, checked directly
+     against primary sources: there was no published delta between
+     planned and actual arrival (NASA's own pre-launch press kit for
+     Perseverance stated the landing date "remains the same regardless of
+     the launch date," and both missions landed on exactly the date
+     announced before launch) -- so a single field is accurate here, not
+     a simplification.
+
+     "status" and "statusNote" carry the human-readable outcome
+     separately, since outcome (success / loss of signal / CATO / etc.)
+     is a different axis from "when was it scheduled to arrive" and
+     conflating them into parallel planned/actual date fields breaks down
+     for missions that never reached "actual" at all -- a future failed
+     mission (e.g. one lost during cruise or at Mars orbit insertion)
+     still has a single well-defined intended arrival date for trajectory
+     purposes, but no actual arrival to report; statusNote covers that
+     case with free text rather than forcing a fake second date.
+
+     This same schema now lives in flights/<key>.json, one file per
+     flight, rather than as one inline object -- listed by key in
+     flights/manifest.json. Adding a flight means adding one JSON file
+     and one manifest entry; no JS changes needed. FLIGHTS_RAW is
+     populated asynchronously by loadFlightsRaw() below, called from the
+     bootstrap at the bottom of this file before the rest of init runs.
+  ========================================================================= */
+  const FLIGHTS_RAW = {};
+  let FLIGHTS_ORDER = [];
+
+  // Reference info (image + "why it matters" significance) for planets,
+  // Sol, and small bodies -- keyed by each body's DISPLAY name (b.name in
+  // formatLockedPanelContent: "Mercury", "Sol", "101955 Bennu", "Pluto and
+  // Charon", etc.), not any internal dict key, since that's the only
+  // identifier the locked-panel code already has in hand for every kind of
+  // body it renders. One combined file rather than the flights' per-file
+  // manifest pattern -- this set is small (~30 bodies) and fixed, not
+  // meant to scale the way flights do.
+  const BODY_INFO = {};
+
+  async function loadBodyInfo() {
+    const res = await fetch("data/bodies/info.json");
+    if (!res.ok) throw new Error("Failed to load data/bodies/info.json: " + res.status);
+    Object.assign(BODY_INFO, await res.json());
+  }
+
+  async function loadFlightsRaw() {
+    const manifestRes = await fetch("data/flights/manifest.json");
+    if (!manifestRes.ok) throw new Error("Failed to load data/flights/manifest.json: " + manifestRes.status);
+    const manifest = await manifestRes.json();
+    FLIGHTS_ORDER = manifest.order;
+
+    // Fetch every flight file in parallel rather than sequentially -- at
+    // thousands of flights, awaiting one fetch at a time before starting
+    // the next would make load time scale linearly with flight count for
+    // no reason, since these are independent requests.
+    const entries = await Promise.all(
+      FLIGHTS_ORDER.map(async (key) => {
+        const res = await fetch(`data/flights/${key}.json`);
+        if (!res.ok) throw new Error(`Failed to load data/flights/${key}.json: ${res.status}`);
+        const raw = await res.json();
+        return [key, raw];
+      })
+    );
+    entries.forEach(([key, raw]) => { FLIGHTS_RAW[key] = raw; });
+  }
+
+  /* =========================================================================
+     EARTH'S MOON
+     Unlike the planets, the Moon orbits Earth, not Sol — so it needs its
+     own primary (Earth's GM, not the Sun's) and its own propagation
+     function. Its position in the scene is EarthPosition + thisOffset,
+     not a standalone heliocentric position.
+     A second, important difference from the planets: the Moon's orbital
+     plane precesses fast enough to matter on human timescales (the
+     planets' precession is a slow centennial-rate correction; the Moon's
+     ascending node completes a full backward revolution every 18.61
+     years, and its argument of perigee a full forward revolution every
+     8.85 years — both driven mainly by the Sun's perturbation). These are
+     modeled directly as linear-in-time terms rather than ignored, since
+     over the simulator's typical explored timescale (years to decades)
+     this precession is visually significant, unlike the planets' case.
+     Geocentric, ecliptic-of-J2000 elements (low-precision lunar theory,
+     Meeus-derived reference values at the J2000 epoch).
+  ========================================================================= */
+
+  // GM_EARTH_KM3_S2 declared above (consolidated planet GM block).
+  const GM_MOON_KM3_S2 = 4902.800118; // Moon's own GM -- non-negligible relative to Earth's (~1.2% of Earth's mass), so Kepler's third law for the Earth-Moon pair uses their combined GM, not Earth's alone
+  const GM_EARTH_MOON_KM3_DAY2 = (GM_EARTH_KM3_S2 + GM_MOON_KM3_S2) * SEC_PER_DAY * SEC_PER_DAY; // used for the orbital-period readout in the locked panel (Kepler's third law)
+  // Note: the Moon's own position propagation below uses its empirically
+  // known sidereal period directly (periodSiderealDays) rather than
+  // deriving mean motion from GM -- that known period is more accurate
+  // than a two-body GM-derived figure, since real lunar motion is heavily
+  // perturbed by the Sun in ways a clean two-body GM value can't capture.
+
+  const MOON_ELEMENTS = {
+    aKm: 384399,
+    e: 0.0549,
+    iDeg: 5.145,                          // inclination to the ecliptic (not Earth's equator)
+    periodSiderealDays: 27.321661,
+    nodalPeriodDays: 18.61 * 365.25,      // ascending node regresses (moves backward) over this period
+    apsidalPeriodDays: 8.85 * 365.25,     // argument of perigee progresses (moves forward) over this period
+    OmDeg0: 125.1228,                      // longitude of ascending node at J2000
+    wDeg0: 318.0634,                       // argument of perigee at J2000
+    M0Deg: 115.3654                        // mean anomaly at J2000
+  };
+  const MOON_META = { color: "#c9c9c9", radiusKm: 1737.4 };
+
+  /* =========================================================================
+     MARS'S MOONS: PHOBOS AND DEIMOS
+     Mercury and Venus have no natural satellites (confirmed: MESSENGER's
+     dedicated search around Mercury found none; Venus has only a
+     quasi-satellite, which orbits the Sun on a resonant path rather than
+     actually orbiting Venus, so it isn't a moon and isn't modeled here).
+     Both Martian moons orbit almost exactly in Mars's equatorial plane
+     (inclination to that plane is ~1 degree or less for each), not the
+     ecliptic -- unlike the Moon, whose orbit happens to sit close to the
+     ecliptic already. The ecliptic-frame inclinations used below (26.04
+     and 27.58 degrees) are taken directly from published reference values
+     rather than derived from Mars's pole orientation, since the residual
+     wobble from Mars's true (slowly precessing) pole vs. its mean ~25
+     degree obliquity is far smaller than these moons' rendered pixel size
+     at any zoom level this simulator's canvas supports -- a deliberate,
+     named simplification, not an oversight. Likewise, their ascending
+     nodes are held fixed rather than precessed: the real precession period
+     is months for Phobos, but it precesses around the LOCAL LAPLACE PLANE,
+     to which Phobos's inclination is under 0.05 degrees -- so the actual
+     visual wobble this precession would add is negligible at this scale.
+     Both moons have negligible mass relative to Mars, so (unlike the
+     Earth-Moon pair) no combined-GM correction is needed for their period.
+  ========================================================================= */
+
+  // GM_MARS_KM3_S2 declared above (consolidated planet GM block).
+  const GM_MARS_KM3_DAY2 = GM_MARS_KM3_S2 * SEC_PER_DAY * SEC_PER_DAY;
+
+  const PHOBOS_ELEMENTS = {
+    aKm: 9376,
+    e: 0.0151,
+    iDeg: 26.04,                  // inclination to the ecliptic (see note above)
+    periodSiderealDays: 0.31891023,
+    OmDeg0: 0,                     // ascending node held fixed (see note above)
+    wDeg0: 0,
+    M0Deg: 0
+  };
+  const PHOBOS_META = { color: "#9c8b7a", radiusKm: 11.08 };
+
+  const DEIMOS_ELEMENTS = {
+    aKm: 23463.2,
+    e: 0.00033,
+    iDeg: 27.58,                  // inclination to the ecliptic (see note above)
+    periodSiderealDays: 1.263,
+    OmDeg0: 90,                    // offset from Phobos's so the two don't render coincident at epoch; arbitrary given the fixed-node simplification
+    wDeg0: 0,
+    M0Deg: 0
+  };
+  const DEIMOS_META = { color: "#8a7d70", radiusKm: 6.27 };
+  // GM constants for outer planets in km³/day² — needed for the orbital-period
+  // readout in the locked panel (Kepler's third law, same role as GM_MARS_KM3_DAY2).
+  const GM_JUPITER_KM3_DAY2 = GM_JUPITER_KM3_S2 * SEC_PER_DAY * SEC_PER_DAY;
+  const GM_SATURN_KM3_DAY2  = GM_SATURN_KM3_S2  * SEC_PER_DAY * SEC_PER_DAY;
+  const GM_URANUS_KM3_DAY2  = GM_URANUS_KM3_S2  * SEC_PER_DAY * SEC_PER_DAY;
+  const GM_NEPTUNE_KM3_DAY2 = GM_NEPTUNE_KM3_S2 * SEC_PER_DAY * SEC_PER_DAY;
+  const OUTER_PLANET_GM_DAY2 = {
+    Jupiter: GM_JUPITER_KM3_DAY2,
+    Saturn:  GM_SATURN_KM3_DAY2,
+    Uranus:  GM_URANUS_KM3_DAY2,
+    Neptune: GM_NEPTUNE_KM3_DAY2,
+  };
+
+  // Outer moons with diameter >= 450 km.  Orbital elements in ecliptic J2000
+  // frame.  For moons orbiting close to their planet's equatorial plane, the
+  // ecliptic inclination is approximately the planet's axial tilt:
+  //   Jupiter  3.1°,  Saturn 26.7°,  Uranus 97.8°,  Neptune 28.3°.
+  // Triton: i=130.8° in ecliptic frame (not 157° equatorial -- spec §7).
+  // KNOWN LIMITATION: OmDeg0, wDeg0, M0Deg are approximate, not from JPL Horizons.
+  // Galilean moon phase angles at J2000 will drift from reality (spec §2.4).
+  // Uranian moons share Om ≈ 167° (Uranus ascending node on the ecliptic).
+  const OUTER_MOONS = {
+    Jupiter: [
+      { name: 'Io',       elements: { aKm: 421800,   e: 0.0041,   iDeg: 3.1,  OmDeg0: 100.5, wDeg0:  84.1, M0Deg: 342, periodSiderealDays:  1.7692  }, meta: { color: '#d4a84b', radiusKm: 1821.6 } },
+      { name: 'Europa',   elements: { aKm: 671100,   e: 0.0094,   iDeg: 3.1,  OmDeg0: 100.5, wDeg0: 188.2, M0Deg: 171, periodSiderealDays:  3.5512  }, meta: { color: '#c8b89a', radiusKm: 1560.8 } },
+      { name: 'Ganymede', elements: { aKm: 1070400,  e: 0.0011,   iDeg: 3.1,  OmDeg0: 100.5, wDeg0: 192.4, M0Deg: 340, periodSiderealDays:  7.1546  }, meta: { color: '#9b8e7e', radiusKm: 2634.1 } },
+      { name: 'Callisto', elements: { aKm: 1882700,  e: 0.0074,   iDeg: 3.1,  OmDeg0: 100.5, wDeg0:  52.6, M0Deg: 190, periodSiderealDays: 16.6890  }, meta: { color: '#6b5f52', radiusKm: 2410.3 } },
+    ],
+    Saturn: [
+      { name: 'Enceladus', elements: { aKm: 238020,  e: 0.0047, iDeg: 26.7, OmDeg0: 113.7, wDeg0:  92.3, M0Deg: 197, periodSiderealDays:  1.3702  }, meta: { color: '#eaeaea', radiusKm:  252.1 } },
+      { name: 'Tethys',    elements: { aKm: 294619,  e: 0.0001, iDeg: 27.1, OmDeg0: 113.7, wDeg0:  45.0, M0Deg:  10, periodSiderealDays:  1.8878  }, meta: { color: '#d4d0c8', radiusKm:  536.3 } },
+      { name: 'Dione',     elements: { aKm: 377396,  e: 0.0022, iDeg: 26.7, OmDeg0: 113.7, wDeg0: 284.3, M0Deg: 357, periodSiderealDays:  2.7369  }, meta: { color: '#c8c4b8', radiusKm:  561.7 } },
+      { name: 'Rhea',      elements: { aKm: 527108,  e: 0.0013, iDeg: 26.8, OmDeg0: 113.7, wDeg0: 241.6, M0Deg: 350, periodSiderealDays:  4.5175  }, meta: { color: '#c0bcb0', radiusKm:  764.3 } },
+      { name: 'Titan',     elements: { aKm: 1221870, e: 0.0288, iDeg: 27.5, OmDeg0: 113.7, wDeg0: 185.7, M0Deg: 133, periodSiderealDays: 15.9454  }, meta: { color: '#c8a055', radiusKm: 2574.7 } },
+      { name: 'Iapetus',   elements: { aKm: 3560820, e: 0.0286, iDeg: 19.0, OmDeg0:  75.8, wDeg0: 275.8, M0Deg: 201, periodSiderealDays: 79.3215  }, meta: { color: '#a09080', radiusKm:  735.6 } },
+    ],
+    Uranus: [
+      { name: 'Miranda', elements: { aKm: 129390, e: 0.0013, iDeg: 97.8, OmDeg0: 167.4, wDeg0:  68.3, M0Deg:  45, periodSiderealDays:  1.4135 }, meta: { color: '#b0a898', radiusKm: 235.8 } },
+      { name: 'Ariel',   elements: { aKm: 190900, e: 0.0012, iDeg: 97.8, OmDeg0: 167.4, wDeg0: 115.3, M0Deg: 115, periodSiderealDays:  2.5204 }, meta: { color: '#c0bcb0', radiusKm: 578.9 } },
+      { name: 'Umbriel', elements: { aKm: 266300, e: 0.0039, iDeg: 97.8, OmDeg0: 167.4, wDeg0:  84.7, M0Deg:  84, periodSiderealDays:  4.1442 }, meta: { color: '#706860', radiusKm: 584.7 } },
+      { name: 'Titania', elements: { aKm: 435910, e: 0.0011, iDeg: 97.8, OmDeg0: 167.4, wDeg0: 284.4, M0Deg: 299, periodSiderealDays:  8.7059 }, meta: { color: '#a89888', radiusKm: 788.9 } },
+      { name: 'Oberon',  elements: { aKm: 583520, e: 0.0014, iDeg: 97.8, OmDeg0: 167.4, wDeg0: 104.4, M0Deg: 273, periodSiderealDays: 13.4632 }, meta: { color: '#887870', radiusKm: 761.4 } },
+    ],
+    Neptune: [
+      // Triton: retrograde (i=130.8°), captured KBO. Period is the sidereal period
+      // magnitude; the inclination > 90° encodes the retrograde direction.
+      // i=130.8° is the ecliptic-frame value; 157° is the equatorial-frame value (wrong frame here).
+      { name: 'Triton', elements: { aKm: 354759, e: 0.000016, iDeg: 130.8, OmDeg0: 131.7, wDeg0: 264.8, M0Deg: 352, periodSiderealDays: 5.8769 }, meta: { color: '#b8c8c0', radiusKm: 1353.4 } },
+    ],
+  };
+
+  /* =========================================================================
+     ASTEROIDS & COMETS
+     Real heliocentric osculating elements from JPL's Small-Body Database
+     (ssd-api.jpl.nasa.gov/sbdb.api), one well-determined epoch per body --
+     NOT the planets' centennial-mean-element-plus-rates convention, since
+     these don't have (or need) a multi-century secular fit; a single
+     recent epoch propagated forward/backward a few years with plain
+     two-body Kepler is accurate enough for this simulator's purposes,
+     the same reasoning applied to flight-leg elements. Angles in degrees
+     here (as JPL publishes them); computeSmallBodyState converts.
+
+     Deliberately small starter set: real, well-known mission targets
+     (comet 67P/Rosetta, Bennu/OSIRIS-REx, Ryugu/Hayabusa2, Didymos/
+     DART+Hera, Itokawa/Hayabusa, Vesta+Ceres/Dawn, Tempel 1/Deep Impact,
+     16 Psyche/Psyche) rather than an arbitrary population, so every entry
+     has a real reason to exist. targetOfFlights lists FLIGHTS_RAW keys
+     whose real destination is this body -- isSmallBodyVisible() uses it to
+     widen a body's visibility window around its mission(s); Lucy's 7
+     Trojan/main-belt targets are the obvious next addition but aren't in
+     this starter set yet, so it isn't linked to anything here.
+  ========================================================================= */
+  const SMALL_BODIES = {
+    '67P': {
+      name: '67P/Churyumov–Gerasimenko', type: 'comet',
+      elements: { a: 3.462249489765068, e: 0.6409081306555051, iDeg: 7.040294906760007,
+                  OmDeg: 50.13557380441372, wDeg: 12.79824973415729, M0Deg: 8.859927418758764,
+                  epochDays: 5760.5 },
+      meta: { color: '#9c8f7a', radiusKm: 1.7 },
+      targetOfFlights: ['rosetta'],
+    },
+    bennu: {
+      name: '101955 Bennu', type: 'asteroid',
+      elements: { a: 1.126391025894812, e: 0.2037450762416414, iDeg: 6.03494377024794,
+                  OmDeg: 2.06086619569642, wDeg: 66.22306084084298, M0Deg: 101.703952002457,
+                  epochDays: 4017.5 },
+      meta: { color: '#4a4640', radiusKm: 0.24222 },
+      targetOfFlights: ['osiris_rex'],
+    },
+    ryugu: {
+      name: '162173 Ryugu', type: 'asteroid',
+      elements: { a: 1.190918932477906, e: 0.1910730049967184, iDeg: 5.866442495106322,
+                  OmDeg: 251.2897124408818, wDeg: 211.6089939475371, M0Deg: 62.34067433781601,
+                  epochDays: 9655.5 },
+      meta: { color: '#5c5650', radiusKm: 0.448 },
+      targetOfFlights: ['hayabusa2'],
+    },
+    didymos: {
+      name: '65803 Didymos', type: 'asteroid',
+      elements: { a: 1.642709608529702, e: 0.3831233242624545, iDeg: 3.413876519313629,
+                  OmDeg: 72.9858236207145, wDeg: 319.5807001349104, M0Deg: 260.8612886320632,
+                  epochDays: 9655.5 },
+      meta: { color: '#a89a82', radiusKm: 0.39 },
+      targetOfFlights: ['dart', 'hera'],
+    },
+    itokawa: {
+      name: '25143 Itokawa', type: 'asteroid',
+      elements: { a: 1.324052284342771, e: 0.2801776414987972, iDeg: 1.620940810523569,
+                  OmDeg: 69.07449749929083, wDeg: 162.8409022415483, M0Deg: 170.653905937934,
+                  epochDays: 9655.5 },
+      meta: { color: '#8c7d68', radiusKm: 0.165 },
+      targetOfFlights: ['hayabusa'],
+    },
+    vesta: {
+      name: '4 Vesta', type: 'asteroid',
+      elements: { a: 2.361365965127599, e: 0.09020374382834395, iDeg: 7.143925545058711,
+                  OmDeg: 103.701293265032, wDeg: 151.4686478221564, M0Deg: 81.19015607686903,
+                  epochDays: 9655.5 },
+      meta: { color: '#b0a898', radiusKm: 261.4 },
+      targetOfFlights: ['dawn'],
+    },
+    ceres: {
+      name: '1 Ceres', type: 'asteroid',
+      elements: { a: 2.765552595034094, e: 0.07969229514816586, iDeg: 10.58802780183462,
+                  OmDeg: 80.24862682043221, wDeg: 73.29421453021587, M0Deg: 274.4193463761342,
+                  epochDays: 9655.5 },
+      meta: { color: '#8a8580', radiusKm: 469.7 },
+      targetOfFlights: ['dawn'],
+    },
+    tempel1: {
+      name: '9P/Tempel 1', type: 'comet',
+      elements: { a: 3.146133758958915, e: 0.5097028326964878, iDeg: 10.4734281543904,
+                  OmDeg: 68.75357468050096, wDeg: 179.1972753698572, M0Deg: 336.5854438553629,
+                  epochDays: 5925.5 },
+      meta: { color: '#a8a098', radiusKm: 3.0 },
+      targetOfFlights: ['deep_impact'],
+    },
+    psyche: {
+      name: '16 Psyche', type: 'asteroid',
+      elements: { a: 2.925720466462538, e: 0.1349324738201893, iDeg: 3.098749116151128,
+                  OmDeg: 149.9753859305033, wDeg: 230.0326782748359, M0Deg: 79.76939505329617,
+                  epochDays: 9655.5 },
+      meta: { color: '#8f8f92', radiusKm: 111 },
+      targetOfFlights: ['psyche'],
+    },
+    pluto: {
+      name: 'Pluto and Charon', type: 'dwarf_planet',
+      elements: { a: 39.58862938517124, e: 0.2518378778576892, iDeg: 17.14771140999114,
+                  OmDeg: 110.2923840543057, wDeg: 113.7090015158565, M0Deg: 38.68366347318184,
+                  epochDays: 6043.5 },
+      meta: { color: '#c8b8a0', radiusKm: 1188.3 },
+      targetOfFlights: ['new_horizons'],
+    },
+    toutatis: {
+      name: '4179 Toutatis', type: 'asteroid',
+      elements: { a: 2.543047155641573, e: 0.6246302247178447, iDeg: 0.4480836624628189,
+                  OmDeg: 125.3654799655549, wDeg: 277.8615384113277, M0Deg: 125.5161576467994,
+                  epochDays: 9655.5 },
+      meta: { color: '#8f7f6a', radiusKm: 2.7 },
+      targetOfFlights: ['chunge2_toutatis'],
+    },
+    kamooalewa: {
+      name: '469219 Kamoʻoalewa', type: 'asteroid',
+      elements: { a: 1.000810460069075, e: 0.1022387734111659, iDeg: 7.802609738007058,
+                  OmDeg: 65.59324444474426, wDeg: 304.3632084517341, M0Deg: 243.3871507436424,
+                  epochDays: 9655.5 },
+      meta: { color: '#9a8f80', radiusKm: 0.0286 },
+      targetOfFlights: ['tianwen2'],
+    },
+    dinkinesh: {
+      name: '152830 Dinkinesh', type: 'asteroid',
+      elements: { a: 2.191768748791583, e: 0.1126817135846694, iDeg: 2.093117265661373,
+                  OmDeg: 21.35270512523402, wDeg: 66.91637126596935, M0Deg: 29.60751779009531,
+                  epochDays: 9655.5 },
+      meta: { color: '#9a8f80', radiusKm: 0.36 },
+      targetOfFlights: ['lucy'],
+    },
+    donaldjohanson: {
+      name: '52246 Donaldjohanson', type: 'asteroid',
+      elements: { a: 2.383835831129859, e: 0.1868593763038477, iDeg: 4.425205239728406,
+                  OmDeg: 262.7765342454273, wDeg: 212.8821499078564, M0Deg: 147.8525890028124,
+                  epochDays: 9655.5 },
+      meta: { color: '#8f8478', radiusKm: 1.95 },
+      targetOfFlights: ['lucy'],
+    },
+    eurybates: {
+      name: '3548 Eurybates', type: 'asteroid',
+      elements: { a: 5.217371617810976, e: 0.09059867172297777, iDeg: 8.05147293527498,
+                  OmDeg: 43.5587275998936, wDeg: 28.69968222483612, M0Deg: 125.7480299363769,
+                  epochDays: 9655.5 },
+      meta: { color: '#7a6152', radiusKm: 31.94 },
+      targetOfFlights: ['lucy'],
+    },
+    polymele: {
+      name: '15094 Polymele', type: 'asteroid',
+      elements: { a: 5.191514133435046, e: 0.09592245810512318, iDeg: 12.97735158439746,
+                  OmDeg: 50.33105662992578, wDeg: 5.86529887136951, M0Deg: 143.4220008064438,
+                  epochDays: 9655.5 },
+      meta: { color: '#7d6455', radiusKm: 10.54 },
+      targetOfFlights: ['lucy'],
+    },
+    leucus: {
+      name: '11351 Leucus', type: 'asteroid',
+      elements: { a: 5.312382832170665, e: 0.06495789797701287, iDeg: 11.54341670108032,
+                  OmDeg: 251.0799335752079, wDeg: 162.4048390063255, M0Deg: 139.1721755085774,
+                  epochDays: 9655.5 },
+      meta: { color: '#6f5847', radiusKm: 17.08 },
+      targetOfFlights: ['lucy'],
+    },
+    orus: {
+      name: '21900 Orus', type: 'asteroid',
+      elements: { a: 5.123374239403683, e: 0.03672540559818106, iDeg: 8.468580378470353,
+                  OmDeg: 258.5504431073313, wDeg: 182.7884930129634, M0Deg: 96.92267457127365,
+                  epochDays: 9655.5 },
+      meta: { color: '#75604f', radiusKm: 25.40 },
+      targetOfFlights: ['lucy'],
+    },
+    patroclus: {
+      name: '617 Patroclus', type: 'asteroid',
+      elements: { a: 5.205975165165407, e: 0.1391467941344403, iDeg: 22.06359067056119,
+                  OmDeg: 44.34968895523391, wDeg: 308.8377264097742, M0Deg: 58.67543319923984,
+                  epochDays: 9655.5 },
+      meta: { color: '#6a5646', radiusKm: 70.18 },
+      targetOfFlights: ['lucy'],
+    },
+  };
+
+  // Pluto-Charon: the solar system's only known "double dwarf planet" --
+  // their barycenter sits roughly 2,130 km from Pluto's center, outside
+  // Pluto's own 1,188 km radius (unlike Earth-Moon, where the barycenter is
+  // comfortably inside Earth), so Charon isn't a "moon" of Pluto in quite
+  // the usual sense. Modeled the same way as Earth's Moon or Mars's
+  // Phobos/Deimos regardless: Charon's orbit is computed relative to
+  // Pluto's own already-computed heliocentric position, which quietly
+  // assumes Pluto sits still at that position rather than also wobbling
+  // around the barycenter. That wobble (~2,130 km) against Pluto's
+  // ~5.9-billion-km solar orbit is a relative error of ~4x10^-7 -- utterly
+  // undetectable at this simulator's scale, the same simplification
+  // already accepted for Earth-Moon.
+  // Elements: JPL Horizons osculating elements (COMMAND=901, CENTER=999,
+  // PLU060/DE440 solution, fit through 2023 post-New-Horizons + Gaia
+  // data), ecliptic J2000 frame, epoch JD 2461200.5 -- the same epoch used
+  // for every other SMALL_BODIES entry in this file. The large ~113°
+  // inclination here is not a real tilt of Charon's orbit relative to
+  // Pluto's equator (it's ~0°, i.e. exactly equatorial and mutually
+  // tidally locked) -- it's Pluto's own extreme ~120° axial obliquity
+  // showing up once Charon's orbit is expressed in the ecliptic frame,
+  // the same effect already seen with the Uranian moons' iDeg~97.8°.
+  const GM_PLUTO_CHARON_KM3_S2 = 975.43; // combined system GM (Brozovic & Jacobson 2024) -- Charon is ~12% of Pluto's mass, non-negligible, so Kepler's-third-law period readouts use the combined value, same reasoning as GM_EARTH_MOON_KM3_DAY2
+  const GM_PLUTO_CHARON_KM3_DAY2 = GM_PLUTO_CHARON_KM3_S2 * SEC_PER_DAY * SEC_PER_DAY;
+  const CHARON_ELEMENTS = {
+    aKm: 19595.76, e: 0.00016026, iDeg: 112.8878,
+    OmDeg0: 227.393, wDeg0: 172.3086, M0Deg: 37.3563,
+    periodSiderealDays: 6.387222,
+  };
+  const CHARON_META = { color: '#9c958c', radiusKm: 606 };
+
+  /* =========================================================================
+     ORBITAL MECHANICS: Kepler element propagation + Cartesian conversion
+  ========================================================================= */
+
+  // Days since J2000 epoch for a given JS Date (UTC).
+  function daysSinceJ2000(date) {
+    const msPerDay = 86400000;
+    const jsEpochJD = 2440587.5; // JD at 1970-01-01 00:00 UTC
+    const jd = date.getTime() / msPerDay + jsEpochJD;
+    return jd - J2000_JD;
+  }
+
+  // Inverse of daysSinceJ2000: given a days-since-J2000 value, return the
+  // corresponding JS Date (UTC). Used to convert a flight's launchDays
+  // (computed once at setup) back into a real calendar date for the date
+  // input field and for jumping simDate to "just before launch."
+  function dateFromDaysSinceJ2000(days) {
+    const msPerDay = 86400000;
+    const jsEpochJD = 2440587.5;
+    const jd = days + J2000_JD;
+    return new Date((jd - jsEpochJD) * msPerDay);
+  }
+
+  // Parses a flight-data date field, which is a bare "YYYY-MM-DD" (assumed
+  // midnight UTC -- the convention every existing flight file uses) UNLESS
+  // it already includes a time component (e.g. "YYYY-MM-DDTHH:MM:SSZ"), in
+  // which case it's used as-is. Needed for geocentric_orbit legs: a real
+  // parking-orbit burn happens at a specific perigee passage, not
+  // necessarily at midnight, and getting that timing right (hours, not
+  // days) matters for chaining segments so each one's *own* period lines
+  // its end back up with the next burn -- day-only precision was leaving
+  // multi-hour phase gaps at segment boundaries. Every other leg type/date
+  // field keeps working exactly as before, since a bare date has no "T".
+  function parseFlightDate(s) {
+    return new Date(s.includes('T') ? s : s + 'T00:00:00Z');
+  }
+
+  // Solve Kepler's equation M = E - e sin(E) for eccentric anomaly E, given
+  // mean anomaly M (radians) and eccentricity e. Newton-Raphson.
+  function solveKepler(M, e) {
+    M = ((M % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    let E = e < 0.8 ? M : Math.PI;
+    for (let iter = 0; iter < 50; iter++) {
+      const dE = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+      E -= dE;
+      if (Math.abs(dE) < 1e-12) break;
+    }
+    return E;
+  }
+
+  // Solve the HYPERBOLIC Kepler equation M = e sinh(H) - H for hyperbolic
+  // anomaly H, given mean anomaly M and eccentricity e > 1. Needed once a
+  // flight's own Lambert-solved or GA-derived orbit turns out to be
+  // genuinely hyperbolic relative to the Sun -- e.g. New Horizons after
+  // its Jupiter assist (e~1.03, correctly escaping the solar system) --
+  // which ordinary elliptical solveKepler can't represent (sqrt(1-e)
+  // above goes complex for e>1). Unlike M for an ellipse, hyperbolic M is
+  // unbounded (not periodic), so no 2π wrapping here. Newton-Raphson with
+  // an asymptotic seed for large |M| so it doesn't diverge on a distant
+  // start point (M=H is only a good seed near periapsis).
+  function solveKeplerHyperbolic(M, e) {
+    let H = Math.abs(M) > 1
+      ? Math.sign(M) * Math.log(2 * Math.abs(M) / e + 1.8)
+      : M;
+    for (let iter = 0; iter < 100; iter++) {
+      const dH = (e * Math.sinh(H) - H - M) / (e * Math.cosh(H) - 1);
+      H -= dH;
+      if (Math.abs(dH) < 1e-12) break;
+    }
+    return H;
+  }
+
+  /* =========================================================================
+     LAMBERT SOLVER (for flight trajectories: Curiosity, Perseverance, etc.)
+     Real interplanetary transfers are not a freehand curve between two
+     points -- the heliocentric cruise segment of a real transfer (the
+     part between Earth departure and Mars arrival/capture, deliberately
+     the only part this simulator models, per scope) is a genuine
+     Keplerian ellipse around the Sun, exactly like a planet's orbit. The
+     Lambert problem is: given two position vectors and a time of flight,
+     find the orbit connecting them. This uses the universal-variable
+     formulation (Bate/Mueller/White; Vallado's standard reference
+     approach), which handles elliptic/parabolic/hyperbolic cases with one
+     continuous set of equations via the Stumpff functions C(z)/S(z) --
+     preferred over older method-specific solvers (e.g. p-iteration) which
+     have branch-selection pitfalls. Validated standalone (independent
+     RK4 numerical re-propagation matched the Lambert-derived velocity to
+     within ~13,000 km over a 254-day, 1.5 AU transfer, well under 0.01%)
+     before integration here.
+  ========================================================================= */
+
+  function stumpffC(z) {
+    if (z > 1e-6) {
+      const sz = Math.sqrt(z);
+      return (1 - Math.cos(sz)) / z;
+    } else if (z < -1e-6) {
+      const sz = Math.sqrt(-z);
+      return (Math.cosh(sz) - 1) / (-z);
+    } else {
+      return 1 / 2 - z / 24 + z * z / 720; // series near z=0, avoids 0/0
+    }
+  }
+  function stumpffS(z) {
+    if (z > 1e-6) {
+      const sz = Math.sqrt(z);
+      return (sz - Math.sin(sz)) / (sz * sz * sz);
+    } else if (z < -1e-6) {
+      const sz = Math.sqrt(-z);
+      return (Math.sinh(sz) - sz) / (sz * sz * sz);
+    } else {
+      return 1 / 6 - z / 120 + z * z / 5040;
+    }
+  }
+
+  // r1, r2 in AU; tofDays in days; shortWay true for a <180deg prograde
+  // sweep (what this file calls a Type-I-like transfer), false for
+  // >=180deg. Returns {v1, v2} in AU/day -- the velocity the spacecraft
+  // must have at r1 (and will have at r2) to make the transfer in exactly
+  // tofDays.
+  function solveLambertUniversal(r1, r2, tofDays, shortWay) {
+    function vSub(a, b) { return [a[0]-b[0], a[1]-b[1], a[2]-b[2]]; }
+    function vScale(a, s) { return [a[0]*s, a[1]*s, a[2]*s]; }
+    function vDot(a, b) { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+    function vNorm(a) { return Math.sqrt(vDot(a, a)); }
+
+    const r1mag = vNorm(r1);
+    const r2mag = vNorm(r2);
+    const cosDnu = vDot(r1, r2) / (r1mag * r2mag);
+    const A = (shortWay ? 1 : -1) * Math.sqrt(r1mag * r2mag * (1 + cosDnu));
+    if (A === 0) throw new Error("Lambert solver: degenerate geometry (A=0)");
+
+    function yOfZ(z, C, S) {
+      return r1mag + r2mag + A * (z * S - 1) / Math.sqrt(C);
+    }
+    // y(z) < 0 is not a numerical edge case -- it means z lies outside the
+    // geometry this A (shortWay/longWay choice) can actually reach, and
+    // Math.sqrt(y) below would go complex. tofOfZ returns NaN there so the
+    // caller can treat it as "no information" rather than a valid TOF.
+    function tofOfZ(z) {
+      const C = stumpffC(z), S = stumpffS(z);
+      const y = yOfZ(z, C, S);
+      if (y < 0) return NaN;
+      const chi = Math.sqrt(y / C);
+      return (chi * chi * chi * S + A * Math.sqrt(y)) / Math.sqrt(GM_SUN_AU3_DAY2);
+    }
+    function f(zTry) { return tofOfZ(zTry) - tofDays; }
+
+    // Find a genuine, verified sign-changing bracket by scanning rather than
+    // assuming a fixed [-50, 50] window brackets the root. Two things break
+    // that fixed-window assumption in practice: (1) the low end can fall in
+    // the y(z)<0 invalid region (NaN), which a naive "loVal*hiVal > 0" check
+    // silently misreads as "already bracketed" since NaN comparisons are
+    // always false -- the search then walks the wrong direction and
+    // converges on garbage with no error ever raised; (2) TOF(z) has a pole
+    // at z=(2*pi)^2 (where stumpffC(z) -> 0) separating the 0-revolution
+    // solution branch (z below the pole) from multi-revolution branches
+    // (z above it) -- a wide fixed window can let bisection cross into the
+    // wrong branch. Both failure modes were caught for real (New Horizons'
+    // Earth->Jupiter leg: fixed-window bisection converged to z~50, on the
+    // wrong side of the pole, giving a launch C3 of ~135 km^2/s^2 against
+    // the real recorded 157.75 -- silently, with no thrown error). Fix:
+    // scan the physically valid domain in front of the pole for the actual
+    // (unique, since TOF(z) is monotonic within one branch) sign change,
+    // then bisect only within that verified bracket.
+    const zPole = 4 * Math.PI * Math.PI; // first 0-rev TOF(z) singularity
+    const zScanMin = -8 * zPole; // generously covers realistic solar-system TOFs
+    const zScanMax = zPole - 1e-6;
+    const SCAN_N = 4000;
+    let zLo = null, zHi = null, fLoVal = null, fHiVal = null;
+    let prevZ = zScanMin, prevF = f(zScanMin);
+    for (let k = 1; k <= SCAN_N; k++) {
+      let z = zScanMin + (zScanMax - zScanMin) * (k / SCAN_N);
+      let fz = f(z);
+      // A NaN->finite transition means the y(z)=0 domain boundary lies
+      // somewhere between prevZ (invalid) and z (valid) -- and the valid-
+      // but-still-short-of-target window just past that boundary can be
+      // much narrower than the scan's own grid spacing. Caught for real on
+      // Lucy's Eurybates->Polymele leg (two slow-moving, closely-spaced
+      // Trojans, ~34-day hop): the valid window was ~0.04 wide against
+      // this grid's ~0.09 spacing, so the first finite sample landed
+      // already past the root, with no finite negative sample ever
+      // recorded to bracket against -- "could not bracket a root" even
+      // though a root genuinely exists right at the domain's edge. Fix:
+      // pin the boundary down by bisecting on sign(y(z)) (via finiteness
+      // of f), then re-evaluate f just past it. As y->0+, tofOfZ(z)->0,
+      // so f(z) there reliably approaches -tofDays (negative, since every
+      // real transfer has tofDays>0) -- a trustworthy comparison point
+      // even when the coarse grid alone would step right over it.
+      if (!Number.isFinite(prevF) && Number.isFinite(fz)) {
+        let zInvalid = prevZ, zValid = z;
+        for (let b = 0; b < 60; b++) {
+          const zMidB = (zInvalid + zValid) / 2;
+          if (Number.isFinite(f(zMidB))) zValid = zMidB; else zInvalid = zMidB;
+        }
+        z = zValid;
+        fz = f(z);
+      }
+      if (Number.isFinite(fz) && Number.isFinite(prevF) && prevF * fz < 0) {
+        zLo = prevZ; zHi = z; fLoVal = prevF; fHiVal = fz;
+        break;
+      }
+      if (Number.isFinite(fz)) { prevZ = z; prevF = fz; }
+      else { prevF = fz; } // stay at same prevZ; next finite sample restarts comparison cleanly
+    }
+    if (zLo === null) {
+      throw new Error("Lambert solver: could not bracket a root for z in the valid 0-rev domain");
+    }
+
+    let zMid = (zLo + zHi) / 2;
+    for (let iter = 0; iter < 100; iter++) {
+      zMid = (zLo + zHi) / 2;
+      const fMid = f(zMid);
+      if (Math.abs(fMid) < 1e-9 || (zHi - zLo) < 1e-13) break;
+      if (fLoVal * fMid < 0) { zHi = zMid; fHiVal = fMid; } else { zLo = zMid; fLoVal = fMid; }
+    }
+    const z = zMid;
+    const C = stumpffC(z), S = stumpffS(z);
+    const y = yOfZ(z, C, S);
+
+    const f_ = 1 - y / r1mag;
+    const g_ = A * Math.sqrt(y / GM_SUN_AU3_DAY2);
+    const gdot = 1 - y / r2mag;
+
+    const v1 = vScale(vSub(r2, vScale(r1, f_)), 1 / g_);
+    const v2 = vScale(vSub(vScale(r2, gdot), r1), 1 / g_);
+    return { v1, v2 };
+  }
+
+  // Converts a heliocentric position+velocity (AU, AU/day) into the
+  // classical orbital elements this file already knows how to propagate
+  // forward in time (same representation computeStateVector-family
+  // functions use): a, e, i, Om, w, plus the true/mean anomaly AT THE
+  // GIVEN STATE, so a caller can reconstruct "mean anomaly at epoch" for
+  // later propagation.
+  function stateVectorToElements(r, v) {
+    function vSub(a, b) { return [a[0]-b[0], a[1]-b[1], a[2]-b[2]]; }
+    function vScale(a, s) { return [a[0]*s, a[1]*s, a[2]*s]; }
+    function vDot(a, b) { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+    function vCross(a, b) { return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]; }
+    function vNorm(a) { return Math.sqrt(vDot(a, a)); }
+
+    const rmag = vNorm(r);
+    const vmag = vNorm(v);
+    const h = vCross(r, v);
+    const hmag = vNorm(h);
+    const energy = vmag * vmag / 2 - GM_SUN_AU3_DAY2 / rmag;
+    const a = -GM_SUN_AU3_DAY2 / (2 * energy);
+
+    const eVec = vSub(vScale(vCross(v, h), 1 / GM_SUN_AU3_DAY2), vScale(r, 1 / rmag));
+    const e = vNorm(eVec);
+
+    const i = Math.acos(Math.max(-1, Math.min(1, h[2] / hmag)));
+
+    const nodeLine = [-h[1], h[0], 0]; // cross([0,0,1], h)
+    const nodeMag = vNorm(nodeLine);
+    let Om;
+    if (nodeMag < 1e-12) {
+      Om = 0; // equatorial-ish transfer; node undefined, arbitrary reference
+    } else {
+      Om = Math.atan2(nodeLine[1], nodeLine[0]);
+    }
+
+    let w;
+    if (nodeMag < 1e-12 || e < 1e-12) {
+      w = 0;
+    } else {
+      const cosW = vDot(nodeLine, eVec) / (nodeMag * e);
+      w = Math.acos(Math.max(-1, Math.min(1, cosW)));
+      if (eVec[2] < 0) w = 2 * Math.PI - w;
+    }
+
+    let nu;
+    if (e < 1e-12) {
+      nu = 0;
+    } else {
+      const cosNu = vDot(eVec, r) / (e * rmag);
+      nu = Math.acos(Math.max(-1, Math.min(1, cosNu)));
+      if (e < 1) {
+        // Elliptical: nu is periodic, wrap into [0, 2pi) using the
+        // inbound/outbound sign (r.v < 0 means approaching periapsis).
+        if (vDot(r, v) < 0) nu = 2 * Math.PI - nu;
+      } else {
+        // Hyperbolic: nu is bounded within (-nu_inf, +nu_inf), NOT
+        // periodic -- wrapping it into [0, 2pi) the same way the
+        // elliptical branch does would be physically wrong (there is no
+        // "the other side" to wrap around to). Just carry the sign
+        // through instead: negative while inbound, positive outbound.
+        if (vDot(r, v) < 0) nu = -nu;
+      }
+    }
+
+    // True anomaly -> eccentric/hyperbolic anomaly -> mean anomaly, so the
+    // result can be propagated forward with the same solveKepler (e<1) or
+    // solveKeplerHyperbolic (e>=1) machinery used everywhere else.
+    let M;
+    if (e < 1) {
+      const E = 2 * Math.atan2(Math.sqrt(1 - e) * Math.sin(nu / 2), Math.sqrt(1 + e) * Math.cos(nu / 2));
+      M = E - e * Math.sin(E);
+    } else {
+      // tanh(H/2) = sqrt((e-1)/(e+1)) * tan(nu/2)
+      const H = 2 * Math.atanh(Math.sqrt((e - 1) / (e + 1)) * Math.tan(nu / 2));
+      M = e * Math.sinh(H) - H;
+    }
+
+    return { a, e, i, Om, w, M };
+  }
+
+  // Given mean orbital elements at J2000 and centennial rates, compute the
+  // instantaneous element set at time t (days since J2000), then return
+  // heliocentric position (AU) and velocity (AU/day) in the ecliptic frame.
+  function computeStateVector(elements, daysSinceEpoch) {
+    const T = daysSinceEpoch / DAYS_PER_CENTURY; // Julian centuries since J2000
+
+    const a = elements.a + elements.aDot * T; // AU
+    const e = elements.e + elements.eDot * T;
+    const i = (elements.i + (elements.iDot / 3600) * T) * D2R;
+    const Om = (elements.Om + (elements.OmDot / 3600) * T) * D2R;
+    const varpi = (elements.varpi + (elements.varpiDot / 3600) * T) * D2R;
+    const L = (elements.L + (elements.LDot / 3600) * T) * D2R;
+
+    const w = varpi - Om;       // argument of perihelion
+    const M = L - varpi;        // mean anomaly (rad), will be normalized in solveKepler
+
+    const E = solveKepler(M, e); // eccentric anomaly
+
+    // True anomaly
+    const nu = 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2));
+
+    // Distance from focus
+    const r = a * (1 - e * Math.cos(E));
+
+    // Position in orbital plane (perifocal coords)
+    const xOrb = r * Math.cos(nu);
+    const yOrb = r * Math.sin(nu);
+
+    // Mean motion (rad/day) and speed in perifocal frame via vis-viva-consistent
+    // derivative of Kepler's equation:
+    const n = Math.sqrt(GM_SUN_AU3_DAY2 / (a * a * a)); // rad/day
+    const Edot = n / (1 - e * Math.cos(E));
+    const xOrbDot = -a * Math.sin(E) * Edot;
+    const yOrbDot = a * Math.sqrt(1 - e * e) * Math.cos(E) * Edot;
+
+    // Rotate perifocal -> ecliptic using standard 3-1-3 rotation (w, i, Om)
+    const cosOm = Math.cos(Om), sinOm = Math.sin(Om);
+    const cosW = Math.cos(w), sinW = Math.sin(w);
+    const cosI = Math.cos(i), sinI = Math.sin(i);
+
+    function rotate(x, y) {
+      // Rz(Om) * Rx(i) * Rz(w) applied to (x,y,0)
+      const xw = x * cosW - y * sinW;
+      const yw = x * sinW + y * cosW;
+      const xi = xw;
+      const yi = yw * cosI;
+      const zi = yw * sinI;
+      const X = xi * cosOm - yi * sinOm;
+      const Y = xi * sinOm + yi * cosOm;
+      const Z = zi;
+      return [X, Y, Z];
+    }
+
+    const pos = rotate(xOrb, yOrb);
+    const vel = rotate(xOrbDot, yOrbDot);
+
+    return { pos, vel, a, e, i, Om, w, M, nu, r };
+  }
+
+  // Same shape and math as computeStateVector, for a SMALL_BODIES entry --
+  // asteroids/comets carry a single osculating epoch (see the SMALL_BODIES
+  // comment above) instead of the planets' mean-elements-plus-centennial-
+  // rates, so there's no T/DAYS_PER_CENTURY correction step here. Returns
+  // the identical { pos, vel, a, e, i, Om, w, M, nu, r } shape so a small
+  // body's bodies[] record, and its locked panel, are built exactly the
+  // same way any other heliocentric body's already are.
+  function computeSmallBodyState(elements, t) {
+    const a = elements.a, e = elements.e;
+    const i = elements.iDeg * D2R, Om = elements.OmDeg * D2R, w = elements.wDeg * D2R;
+    const n = Math.sqrt(GM_SUN_AU3_DAY2 / (a * a * a)); // rad/day
+    const M = (elements.M0Deg * D2R) + n * (t - elements.epochDays);
+
+    const E = solveKepler(M, e);
+    const nu = 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2));
+    const r = a * (1 - e * Math.cos(E));
+    const xOrb = r * Math.cos(nu);
+    const yOrb = r * Math.sin(nu);
+
+    const Edot = n / (1 - e * Math.cos(E));
+    const xOrbDot = -a * Math.sin(E) * Edot;
+    const yOrbDot = a * Math.sqrt(1 - e * e) * Math.cos(E) * Edot;
+
+    const cosOm = Math.cos(Om), sinOm = Math.sin(Om);
+    const cosW = Math.cos(w), sinW = Math.sin(w);
+    const cosI = Math.cos(i), sinI = Math.sin(i);
+    function rotate(x, y) {
+      const xw = x * cosW - y * sinW;
+      const yw = x * sinW + y * cosW;
+      const xi = xw;
+      const yi = yw * cosI;
+      const zi = yw * sinI;
+      return [xi * cosOm - yi * sinOm, xi * sinOm + yi * cosOm, zi];
+    }
+    const pos = rotate(xOrb, yOrb);
+    const vel = rotate(xOrbDot, yOrbDot);
+    return { pos, vel, a, e, i, Om, w, M, nu, r };
+  }
+
+  // Schema detection — multi-leg flights carry a `legs` array; simple
+  // direct-transfer flights use the flat launchDate/arrival/launchBody/
+  // destinationBody schema.  Both are supported; the loader branches on this.
+  function isMultiLeg(raw) { return Array.isArray(raw.legs); }
+
+  // launchBody/launchDate/destinationBody/arrival for display purposes
+  // (locked panel), working for either schema. Flat-schema flights carry
+  // these directly; multi-leg flights don't -- their true launch/arrival
+  // are the first lambert leg's fromBody/departDate and the last lambert
+  // leg's toBody/arrivalDate, the same endpoints getFlightDates() above
+  // already uses for the launch/arrival day-count window.
+  function flightEndpoints(raw) {
+    if (!isMultiLeg(raw)) {
+      return {
+        launchBody: raw.launchBody, launchDate: raw.launchDate,
+        destinationBody: raw.destinationBody, arrival: raw.arrival
+      };
+    }
+    const lambertLegs = raw.legs.filter(l => l.type === 'lambert');
+    const first = lambertLegs[0], last = lambertLegs[lambertLegs.length - 1];
+    return {
+      launchBody: first.fromBody, launchDate: first.departDate,
+      destinationBody: last.toBody, arrival: last.arrivalDate
+    };
+  }
+
+  // Cheap per-flight date arithmetic ONLY -- no ephemeris lookups, no
+  // Lambert solve. This is what visibility checks and the legend need,
+  // and it must stay cheap even at thousands of flights, since it runs
+  // for every flight on every frame (via isFlightVisible). Memoized
+  // per key so repeated calls don't even redo the Date parsing.
+  //
+  // Multi-leg schema: overall window is the FIRST leg's departDate --
+  // whatever type it is (a geocentric_orbit parking/raising phase, if
+  // present, always comes before any lambert leg, and uses the same
+  // departDate field name) -- through the last lambert leg's arrivalDate.
+  // Flat schema unchanged.
+  const _flightDatesCache = {};
+  function getFlightDates(key) {
+    if (_flightDatesCache[key]) return _flightDatesCache[key];
+    const raw = FLIGHTS_RAW[key];
+    let launchDays, arrivalDays;
+    if (isMultiLeg(raw)) {
+      const lambertLegs = raw.legs.filter(l => l.type === 'lambert');
+      launchDays  = daysSinceJ2000(parseFlightDate(raw.legs[0].departDate));
+      arrivalDays = daysSinceJ2000(parseFlightDate(lambertLegs[lambertLegs.length - 1].arrivalDate));
+    } else {
+      launchDays  = daysSinceJ2000(parseFlightDate(raw.launchDate));
+      arrivalDays = daysSinceJ2000(parseFlightDate(raw.arrival));
+    }
+    const result = { launchDays, arrivalDays, tofDays: arrivalDays - launchDays };
+    _flightDatesCache[key] = result;
+    return result;
+  }
+
+  // Per-leg solve cache for multi-leg flights (Step 4).
+  // Key format: "${flightKey}:${legIndex}" — analogous to _solvedFlightCache.
+  const _solvedLegCache = {};
+
+  // Pre-computed leg boundary days for multi-leg flights.
+  // Key: flightKey. Value: array of { type, index, dDays, aDays, location? }.
+  // Built once on first call to getLegBoundaries(); subsequent calls are an
+  // O(1) cache hit. Eliminates the per-frame new Date() + daysSinceJ2000()
+  // calls in computeMultiLegPosition, which previously re-parsed every date
+  // string on every animation frame even though the dates never change.
+  const _legBoundaryCache = {};
+
+  function getLegBoundaries(flightKey) {
+    if (_legBoundaryCache[flightKey]) return _legBoundaryCache[flightKey];
+    const legs = FLIGHTS_RAW[flightKey].legs;
+    const boundaries = [];
+    let prevArrival = null;
+    for (let i = 0; i < legs.length; i++) {
+      const leg = legs[i];
+      if (leg.type === 'lambert') {
+        const d = daysSinceJ2000(parseFlightDate(leg.departDate));
+        const a = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+        boundaries.push({ type: 'lambert', index: i, dDays: d, aDays: a });
+        prevArrival = a;
+      } else if (leg.type === 'geocentric_orbit') {
+        const d = daysSinceJ2000(parseFlightDate(leg.departDate));
+        const a = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+        boundaries.push({ type: 'geocentric_orbit', index: i, dDays: d, aDays: a });
+        prevArrival = a;
+      } else if (leg.type === 'loiter') {
+        const dep = daysSinceJ2000(parseFlightDate(leg.departure));
+        boundaries.push({ type: 'loiter', index: i, dDays: prevArrival, aDays: dep, location: leg.location });
+        prevArrival = dep;
+      } else if (leg.type === 'gravity_assist' || leg.type === 'deepspace_maneuver') {
+        const d = daysSinceJ2000(parseFlightDate(leg.date));
+        boundaries.push({ type: leg.type, index: i, dDays: d, aDays: d });
+        prevArrival = d;
+      }
+    }
+    _legBoundaryCache[flightKey] = boundaries;
+    return boundaries;
+  }
+
+  // Solves a flight's real Lambert transfer -- looks up the launch body's
+  // position at the launch date and the destination body's position at
+  // the arrival date (using the SAME ephemeris function planets use, so
+  // this is consistent with wherever Earth/Mars actually are in this
+  // simulator, not a separately-sourced position), solves for the
+  // connecting orbit, then converts that into the classical-element
+  // representation so the flight can be propagated forward in time with
+  // the same solveKepler-based machinery as everything else.
+  //
+  // DELIBERATELY LAZY: this is the expensive part (an iterative Lambert
+  // solve plus two ephemeris evaluations), and at thousands of flights,
+  // running it unconditionally for every flight at load time -- as this
+  // simulator used to do -- would make load time scale with total
+  // flight count even if the user only ever looks at one flight. Instead
+  // this only runs the first time a flight is actually selected (click)
+  // or found in-transit on a frame where its arc/marker needs to be
+  // drawn (see isFlightVisible and the rendering loop) -- i.e. exactly
+  // when the user has either clicked it or "encountered" it through
+  // time manipulation, never before. Memoized via _solvedFlightCache so
+  // a flight that stays visible across many consecutive frames is only
+  // ever solved once, not re-solved every frame.
+  const _solvedFlightCache = {};
+  function getSolvedFlight(key) {
+    if (_solvedFlightCache[key]) return _solvedFlightCache[key];
+
+    const raw = FLIGHTS_RAW[key];
+    // Multi-leg flights delegate to getSolvedLeg() (Step 4).
+    // Guard here so a multi-leg file added before Step 4 is complete
+    // fails loudly rather than silently misusing the flat-schema path.
+    if (isMultiLeg(raw)) {
+      throw new Error(`getSolvedFlight: "${key}" is a multi-leg flight — use getSolvedLeg(key, legIndex) instead`);
+    }
+    const { launchDays, arrivalDays, tofDays } = getFlightDates(key);
+
+    const launchState = computeStateVector(PLANET_ELEMENTS[raw.launchBody], launchDays);
+    const arrivalState = computeStateVector(PLANET_ELEMENTS[raw.destinationBody], arrivalDays);
+
+    const r1 = launchState.pos;
+    const r2 = arrivalState.pos;
+
+    // Determine short-way (<180deg) vs long-way prograde sweep from the
+    // actual geometry, rather than assuming -- confirmed Type-I (<180deg)
+    // for both Curiosity and Perseverance during validation, but this
+    // computes it directly rather than hardcoding that conclusion.
+    const r1mag = Math.hypot(r1[0], r1[1], r1[2]);
+    const r2mag = Math.hypot(r2[0], r2[1], r2[2]);
+    const cosTheta = (r1[0]*r2[0] + r1[1]*r2[1] + r1[2]*r2[2]) / (r1mag * r2mag);
+    const rawAngleDeg = Math.acos(Math.max(-1, Math.min(1, cosTheta))) * 180 / Math.PI;
+    const crossZ = r1[0]*r2[1] - r1[1]*r2[0];
+    const sweepDeg = crossZ < 0 ? 360 - rawAngleDeg : rawAngleDeg;
+    const shortWay = sweepDeg < 180;
+
+    const lambert = solveLambertUniversal(r1, r2, tofDays, shortWay);
+    const elements = stateVectorToElements(r1, lambert.v1);
+
+    const solved = {
+      ...raw,
+      launchDays, arrivalDays, tofDays, sweepDeg,
+      // Orbital elements at the LAUNCH epoch (M is the mean anomaly at
+      // launchDays specifically) -- propagating to any other time needs
+      // M0 adjusted by mean motion from this reference point, same
+      // pattern as every other Kepler-propagated body in this file.
+      elements: { a: elements.a, e: elements.e, i: elements.i, Om: elements.Om, w: elements.w, M0: elements.M, epochDays: launchDays }
+    };
+    _solvedFlightCache[key] = solved;
+    return solved;
+  }
+
+  // Propagates a flight's position forward from its Lambert-derived launch
+  // state to any daysSinceEpoch within (or even slightly beyond) its
+  // actual flight window, using the same Kepler-equation approach as
+  // every planet/moon -- a flight is just a heliocentric Keplerian body
+  // like any other, once its elements are known.
+  function computeFlightPosition(flight, daysSinceEpoch) {
+    const el = flight.elements;
+    let nu, r;
+    if (el.e < 1) {
+      const n = Math.sqrt(GM_SUN_AU3_DAY2 / (el.a * el.a * el.a)); // rad/day
+      const M = el.M0 + n * (daysSinceEpoch - el.epochDays);
+      const E = solveKepler(M, el.e);
+      nu = 2 * Math.atan2(Math.sqrt(1 + el.e) * Math.sin(E / 2), Math.sqrt(1 - el.e) * Math.cos(E / 2));
+      r = el.a * (1 - el.e * Math.cos(E));
+    } else {
+      // Hyperbolic (e>=1, a<0 by convention -- see stateVectorToElements):
+      // same shape of computation, sinh/cosh and solveKeplerHyperbolic
+      // instead of sin/cos and solveKepler. |a|^3 since a itself is
+      // negative here (a*a*a would otherwise flip the sign under sqrt).
+      const n = Math.sqrt(GM_SUN_AU3_DAY2 / (-el.a * -el.a * -el.a)); // rad/day
+      const M = el.M0 + n * (daysSinceEpoch - el.epochDays);
+      const H = solveKeplerHyperbolic(M, el.e);
+      nu = 2 * Math.atan2(Math.sqrt(el.e + 1) * Math.sinh(H / 2), Math.sqrt(el.e - 1) * Math.cosh(H / 2));
+      r = el.a * (1 - el.e * Math.cosh(H));
+    }
+    const xOrb = r * Math.cos(nu);
+    const yOrb = r * Math.sin(nu);
+
+    const cosOm = Math.cos(el.Om), sinOm = Math.sin(el.Om);
+    const cosW = Math.cos(el.w), sinW = Math.sin(el.w);
+    const cosI = Math.cos(el.i), sinI = Math.sin(el.i);
+    const xw = xOrb * cosW - yOrb * sinW;
+    const yw = xOrb * sinW + yOrb * cosW;
+    const xi = xw;
+    const yi = yw * cosI;
+    const zi = yw * sinI;
+    const X = xi * cosOm - yi * sinOm;
+    const Y = xi * sinOm + yi * cosOm;
+    const Z = zi;
+    return [X, Y, Z];
+  }
+
+  // Position offset (km, planet-centered) for a spacecraft in a parking/
+  // phasing orbit segment -- the multi-day elliptical orbits real missions
+  // like Mangalyaan and Aditya-L1 sit in, raising apogee with a sequence of
+  // engine burns at perigee, before their actual heliocentric departure
+  // burn (TMI/TL1I). Structurally identical Keplerian propagation to
+  // computeFlightPosition, just around a planet (gmKm3Day2, the primary's
+  // own GM -- NOT hardcoded to Earth's, since nothing about a parking-orbit
+  // leg is Earth-specific: the same "raise apogee with perigee burns"
+  // pattern applies to any planet's escape sequence) instead of the Sun,
+  // and in km instead of AU -- these orbits (hundreds to a few
+  // hundred-thousand km) are far too small for AU-scale units to be
+  // numerically meaningful. elements: { aKm, e, i, Om, w, M0, epochDays },
+  // same shape/convention as computeFlightPosition's flight.elements (M0 is
+  // the mean anomaly AT epochDays, not at J2000 -- unlike the Moon/Phobos/
+  // outer-moon elements elsewhere in this file, so each new burn's segment
+  // is defined the same convenient way a flight leg is: "0 at the moment
+  // this segment starts", since every burn happens at that segment's own
+  // periapsis passage).
+  function computeGeocentricOffsetKm(elements, t, gmKm3Day2) {
+    const n = Math.sqrt(gmKm3Day2 / (elements.aKm * elements.aKm * elements.aKm)); // rad/day
+    const M = elements.M0 + n * (t - elements.epochDays);
+    const E = solveKepler(M, elements.e);
+    const nu = 2 * Math.atan2(Math.sqrt(1 + elements.e) * Math.sin(E / 2), Math.sqrt(1 - elements.e) * Math.cos(E / 2));
+    const r = elements.aKm * (1 - elements.e * Math.cos(E));
+    const xOrb = r * Math.cos(nu);
+    const yOrb = r * Math.sin(nu);
+
+    const cosOm = Math.cos(elements.Om), sinOm = Math.sin(elements.Om);
+    const cosW  = Math.cos(elements.w),  sinW  = Math.sin(elements.w);
+    const cosI  = Math.cos(elements.i),  sinI  = Math.sin(elements.i);
+    const xw = xOrb * cosW - yOrb * sinW;
+    const yw = xOrb * sinW + yOrb * cosW;
+    const X = xw * cosOm - yw * cosI * sinOm;
+    const Y = xw * sinOm + yw * cosI * cosOm;
+    const Z = yw * sinI;
+    return [X, Y, Z]; // km
+  }
+
+  // Build the { aKm, e, i, Om, w, M0, epochDays } element set for one
+  // geocentric_orbit leg from its JSON fields (periapsisKm/apoapsisKm as
+  // ALTITUDES above the primary's surface -- same convention as a
+  // gravity_assist leg's periapsisKm -- plus angles in degrees and a
+  // departDate that IS this segment's periapsis-passage epoch, since every
+  // burn happens there). primaryRadiusKm comes from PLANET_META[leg.
+  // primaryBody] at the call site -- despite the leg schema having always
+  // carried a primaryBody field, this function used to ignore it and
+  // hardcode Earth's radius, silently giving the wrong orbit shape for any
+  // non-Earth primary (would only have been caught once a Mars/Jupiter-
+  // system parking-orbit leg was actually added -- fixed proactively here).
+  function geocentricLegElements(leg, primaryRadiusKm) {
+    const rp = leg.periapsisKm + primaryRadiusKm; // true radius from the primary's center
+    const ra = leg.apoapsisKm  + primaryRadiusKm;
+    return {
+      aKm: (rp + ra) / 2,
+      e: (ra - rp) / (ra + rp),
+      i: (leg.inclinationDeg || 0) * D2R,
+      Om: (leg.raanDeg || 0) * D2R,
+      w: (leg.argPeriapsisDeg || 0) * D2R,
+      M0: 0, // every segment starts at its own periapsis passage
+      epochDays: daysSinceJ2000(parseFlightDate(leg.departDate)),
+    };
+  }
+
+  /* =========================================================================
+     LAGRANGE POINT POSITIONS
+     For any planet, the five Lagrange points co-rotate with the planet in
+     the Sun-planet system.  L1 and L2 lie on the Sun-planet line at the
+     Hill sphere radius from the planet; L4 and L5 lie at ±60° in the
+     ecliptic plane at the same heliocentric distance as the planet.
+     L3 (behind the Sun) is included for completeness but is not
+     mission-relevant and is not currently rendered.
+
+     Input:  planetPos — heliocentric ecliptic position vector [x,y,z] in AU
+             hillRadiusAU — from PLANET_META[name].hillRadiusAU
+     Output: { L1, L2, L4, L5 } — each a [x,y,z] AU position vector
+  ========================================================================= */
+
+  function getLagrangePositions(planetPos, hillRadiusAU) {
+    const r = Math.sqrt(planetPos[0] * planetPos[0] +
+                        planetPos[1] * planetPos[1] +
+                        planetPos[2] * planetPos[2]);
+    // Unit vector from Sun toward planet
+    const ux = planetPos[0] / r;
+    const uy = planetPos[1] / r;
+    const uz = planetPos[2] / r;
+
+    // L1: between Sun and planet, offset toward Sun from planet
+    const L1 = [
+      planetPos[0] - ux * hillRadiusAU,
+      planetPos[1] - uy * hillRadiusAU,
+      planetPos[2] - uz * hillRadiusAU
+    ];
+
+    // L2: beyond planet away from Sun
+    const L2 = [
+      planetPos[0] + ux * hillRadiusAU,
+      planetPos[1] + uy * hillRadiusAU,
+      planetPos[2] + uz * hillRadiusAU
+    ];
+
+    // L4: +60° rotation around ecliptic Z axis (leads planet in orbit)
+    // L5: -60° rotation (trails planet)
+    function rotateZ(pos, angleDeg) {
+      const theta = angleDeg * Math.PI / 180;
+      const c = Math.cos(theta), s = Math.sin(theta);
+      return [
+        pos[0] * c - pos[1] * s,
+        pos[0] * s + pos[1] * c,
+        pos[2]
+      ];
+    }
+    const L4 = rotateZ(planetPos, +60);
+    const L5 = rotateZ(planetPos, -60);
+
+    return { L1, L2, L4, L5 };
+  }
+
+  // Lagrange position cache — keyed by "planetName:dayFloor" (1-day resolution
+  // is plenty; L-point positions change by < 1 AU/day even for fast planets).
+  const _lagrangeCache = {};
+
+  function getCachedLagrange(planetName, planetPos, daysSinceEpoch) {
+    const key = planetName + ':' + Math.floor(daysSinceEpoch);
+    if (!_lagrangeCache[key]) {
+      const meta = PLANET_META[planetName];
+      _lagrangeCache[key] = getLagrangePositions(planetPos, meta.hillRadiusAU);
+    }
+    return _lagrangeCache[key];
+  }
+
+  /* =========================================================================
+     MULTI-LEG FLIGHT SOLVER AND POSITION HELPERS
+  ========================================================================= */
+
+  // Resolve any body key to its heliocentric position at a given epoch.
+  // Handles: planet names ("Earth"), Lagrange point refs ("Earth_L2"),
+  // and "Sun" (origin).  Used by getSolvedLeg and computeMultiLegPosition.
+  function getBodyPositionAtDays(bodyKey, t) {
+    if (bodyKey === 'Sun' || bodyKey === 'Sol') return [0, 0, 0];
+    const lpMatch = bodyKey.match(/^([A-Za-z]+)_(L[1245])$/);
+    if (lpMatch) {
+      const planetName = lpMatch[1];
+      const lpName     = lpMatch[2];
+      const planetPos  = computeStateVector(PLANET_ELEMENTS[planetName], t).pos;
+      return getCachedLagrange(planetName, planetPos, t)[lpName];
+    }
+    if (SMALL_BODIES[bodyKey]) {
+      return computeSmallBodyState(SMALL_BODIES[bodyKey].elements, t).pos;
+    }
+    return computeStateVector(PLANET_ELEMENTS[bodyKey], t).pos;
+  }
+
+  // Solve a single lambert leg within a multi-leg flight.  Same Lambert
+  // machinery as getSolvedFlight, applied per-leg.  Lazy + memoized via
+  // _solvedLegCache so only the currently-visible leg is solved on first
+  // encounter, not the whole chain at once.
+  function getSolvedLeg(flightKey, legIndex) {
+    const cacheKey = flightKey + ':' + legIndex;
+    if (_solvedLegCache[cacheKey]) return _solvedLegCache[cacheKey];
+
+    const raw = FLIGHTS_RAW[flightKey];
+    const leg = raw.legs[legIndex];
+    if (leg.type !== 'lambert') {
+      throw new Error('getSolvedLeg: leg ' + legIndex + ' of "' + flightKey +
+                      '" is type "' + leg.type + '", not lambert');
+    }
+
+    const departDays  = daysSinceJ2000(parseFlightDate(leg.departDate));
+    const arrivalDays = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+    const tofDays     = arrivalDays - departDays;
+
+    const r1 = getBodyPositionAtDays(leg.fromBody, departDays);
+    const r2 = getBodyPositionAtDays(leg.toBody,   arrivalDays);
+
+    const r1mag    = Math.hypot(r1[0], r1[1], r1[2]);
+    const r2mag    = Math.hypot(r2[0], r2[1], r2[2]);
+    const cosTheta = (r1[0]*r2[0] + r1[1]*r2[1] + r1[2]*r2[2]) / (r1mag * r2mag);
+    const rawDeg   = Math.acos(Math.max(-1, Math.min(1, cosTheta))) * 180 / Math.PI;
+    const crossZ   = r1[0]*r2[1] - r1[1]*r2[0];
+    const sweepDeg = crossZ < 0 ? 360 - rawDeg : rawDeg;
+    const shortWay = sweepDeg < 180;
+
+    const lambert  = solveLambertUniversal(r1, r2, tofDays, shortWay);
+    const elements = stateVectorToElements(r1, lambert.v1);
+
+    const solved = {
+      name: raw.name, legIndex,
+      launchDays: departDays, arrivalDays, tofDays, sweepDeg,
+      elements: {
+        a: elements.a, e: elements.e, i: elements.i,
+        Om: elements.Om, w: elements.w,
+        M0: elements.M, epochDays: departDays
+      }
+    };
+    _solvedLegCache[cacheKey] = solved;
+    return solved;
+  }
+
+  /* =========================================================================
+     PATCHED-CONIC GRAVITY ASSIST PHYSICS ENGINE
+     Root diagnosis: our Lambert solver finds the minimum-energy
+     single-revolution orbit between two endpoint positions.  For missions
+     like PSP or BepiColombo whose real trajectories are multi-revolution,
+     highly-eccentric orbits dipping deep toward the Sun, the single-rev arc
+     is completely wrong — e.g. PSP on a Venus→Venus leg sits at ~0.73 AU
+     (Venus orbital radius) instead of 0.085 AU at its actual perihelion.
+
+     Fix: patched-conic chaining.
+       1. Leg 0 (launch → first flyby): Lambert solve as before.
+       2. At each gravity_assist: compute the hyperbolic V_inf rotation to
+          get the correct post-flyby heliocentric departure velocity.
+       3. All subsequent segments: Keplerian propagation from post-GA state.
+     The correct orbit (with the right eccentricity and perihelion) is then
+     used for both position queries and arc rendering.
+
+     Turn-direction selection: two candidate outgoing V_inf vectors exist
+     (±rotation around the ecliptic-plane-normal axis). We propagate both
+     to the next flyby body position and pick whichever gets closer, making
+     the selection self-consistent with the mission's date sequence.
+  ========================================================================= */
+
+  // Module-level 3-vector helpers (v3_ prefix to avoid shadowing the local
+  // closures inside Lambert / stateVectorToElements).
+  function v3add(a, b)   { return [a[0]+b[0], a[1]+b[1], a[2]+b[2]]; }
+  function v3sub(a, b)   { return [a[0]-b[0], a[1]-b[1], a[2]-b[2]]; }
+  function v3scale(a, s) { return [a[0]*s, a[1]*s, a[2]*s]; }
+  function v3dot(a, b)   { return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]; }
+  function v3cross(a, b) {
+    return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+  }
+  function v3norm(a)     { return Math.sqrt(v3dot(a, a)); }
+  function v3unit(a) {
+    const m = v3norm(a);
+    return m < 1e-15 ? [1, 0, 0] : v3scale(a, 1 / m);
+  }
+
+  // Rotate vector v by angle (radians) around unit axis k — Rodrigues formula.
+  function rotateAroundAxis(v, k, angle) {
+    const cosA  = Math.cos(angle), sinA = Math.sin(angle);
+    const dot   = v3dot(k, v);
+    const cross = v3cross(k, v);
+    return [
+      v[0]*cosA + cross[0]*sinA + k[0]*dot*(1 - cosA),
+      v[1]*cosA + cross[1]*sinA + k[1]*dot*(1 - cosA),
+      v[2]*cosA + cross[2]*sinA + k[2]*dot*(1 - cosA),
+    ];
+  }
+
+  // Velocity (AU/day) at time t from a flight-element set.
+  // Element format: { a, e, i, Om, w, M0, epochDays } — same as getSolvedLeg
+  // returns and computeFlightPosition expects.  This is the velocity twin of
+  // computeFlightPosition, deriving Ėdot from Kepler's equation and rotating
+  // perifocal velocity into ecliptic via the standard 3-1-3 rotation.
+  function computeFlightVelocity(el, t) {
+    let xd, yd;
+    if (el.e < 1) {
+      const n    = Math.sqrt(GM_SUN_AU3_DAY2 / (el.a * el.a * el.a));
+      const M    = el.M0 + n * (t - el.epochDays);
+      const E    = solveKepler(M, el.e);
+      const Edot = n / (1 - el.e * Math.cos(E));
+      xd = -el.a * Math.sin(E) * Edot;
+      yd =  el.a * Math.sqrt(1 - el.e * el.e) * Math.cos(E) * Edot;
+    } else {
+      // Hyperbolic twin of the above -- see computeFlightPosition's
+      // comment for the a<0/|a|^3 convention. Perifocal position here is
+      // x=a(cosh(H)-e), y=a*sqrt(e^2-1)*sinh(H) (verified consistent with
+      // this file's r/nu-based position formula: at H=0, both give
+      // x=a(1-e), y=0, i.e. periapsis); differentiating those directly
+      // gives xd/yd below, the hyperbolic analog of the elliptical Edot
+      // terms above.
+      const n    = Math.sqrt(GM_SUN_AU3_DAY2 / (-el.a * -el.a * -el.a));
+      const M    = el.M0 + n * (t - el.epochDays);
+      const H    = solveKeplerHyperbolic(M, el.e);
+      const Hdot = n / (el.e * Math.cosh(H) - 1);
+      xd = el.a * Math.sinh(H) * Hdot;
+      yd = el.a * Math.sqrt(el.e * el.e - 1) * Math.cosh(H) * Hdot;
+    }
+
+    const cosOm = Math.cos(el.Om), sinOm = Math.sin(el.Om);
+    const cosW  = Math.cos(el.w),  sinW  = Math.sin(el.w);
+    const cosI  = Math.cos(el.i),  sinI  = Math.sin(el.i);
+    const xw = xd*cosW - yd*sinW;
+    const yw = xd*sinW + yd*cosW;
+    return [xw*cosOm - yw*cosI*sinOm, xw*sinOm + yw*cosI*cosOm, yw*sinI];
+  }
+
+  // Given incoming hyperbolic excess velocity (AU/day, planet frame), return
+  // the turn-angle magnitude and an orthonormal basis for the plane
+  // perpendicular to V_inf.
+  //
+  // Turn angle derivation: e_hyp = 1 + r_peri × v_inf² / GM_planet (km, km/s)
+  //   δ = 2 × arcsin(1 / e_hyp)
+  // This magnitude is exact -- straight from the hyperbolic-flyby vis-viva
+  // relation, given only periapsis and v_inf. What it does NOT fix is the
+  // roll angle: physically, every valid outgoing V_inf for a fixed δ lies
+  // on a cone of half-angle δ around the incoming V_inf direction, and
+  // where on that cone the real flyby lands depends on the actual approach
+  // geometry (the impact-parameter/B-plane vector), which isn't part of
+  // this simulator's per-leg data. flybyGeometry() only sets up the cone;
+  // computeGADeparture() below solves for the roll angle.
+  function flybyGeometry(vInfIn, periapsisKm, planetRadiusKm, gmPlanetKm3S2) {
+    const v = v3norm(vInfIn);
+    if (v < 1e-12) return null;
+
+    const v_kms  = v * AU_KM / SEC_PER_DAY;           // convert AU/day → km/s
+    const r_peri = periapsisKm + planetRadiusKm;       // km, total periapsis radius
+    const e_hyp  = 1 + r_peri * v_kms * v_kms / gmPlanetKm3S2;
+    const delta  = 2 * Math.asin(Math.min(1, 1 / e_hyp));  // turn angle, radians
+
+    // e1/e2: orthonormal basis spanning the plane perpendicular to V_inf,
+    // so any point on the turn cone is e1*cos(phi) + e2*sin(phi) rotated
+    // by delta around vInfIn (see vInfOutAtPhi).
+    const vUnit = v3unit(vInfIn);
+    const ref   = Math.abs(vUnit[2]) > 0.99 ? [1, 0, 0] : [0, 0, 1];
+    const e1    = v3unit(v3cross(vUnit, ref));
+    const e2    = v3cross(vUnit, e1); // unit already: vUnit ⟂ e1, both unit
+
+    return { delta, e1, e2, turnAngleDeg: delta * 180 / Math.PI };
+  }
+
+  // Outgoing V_inf at roll angle phi (radians) around the incoming asymptote.
+  function vInfOutAtPhi(vInfIn, geom, phi) {
+    const cosPhi = Math.cos(phi), sinPhi = Math.sin(phi);
+    const axis = [
+      geom.e1[0] * cosPhi + geom.e2[0] * sinPhi,
+      geom.e1[1] * cosPhi + geom.e2[1] * sinPhi,
+      geom.e1[2] * cosPhi + geom.e2[2] * sinPhi,
+    ];
+    return rotateAroundAxis(vInfIn, axis, geom.delta);
+  }
+
+  // Compute the post-flyby heliocentric state at a gravity assist.
+  //
+  // The turn-angle magnitude is exact (see flybyGeometry). The one
+  // remaining unknown -- the B-plane roll angle -- is solved for, not
+  // guessed: since we know where the spacecraft is recorded as going next
+  // (the following gravity assist or Lambert-arrival body, at its real
+  // date), the roll angle that reproduces that known point IS the correct
+  // one, up to the accuracy of the Lambert/two-body approximation itself.
+  // This replaces an earlier version that only tried two roll angles
+  // (±90° about one arbitrary axis) and picked whichever was closer --
+  // close enough for gentle flybys to look right but off by a percent or
+  // two, and for steep ones (e.g. BepiColombo's ~200km-altitude Mercury
+  // passes) sometimes missing badly enough to come out hyperbolic
+  // (unbound) relative to the Sun, which broke rendering entirely.
+  //
+  // Miss distance vs. roll angle can have more than one local minimum
+  // (the cone can cross near the target region twice), so this scans the
+  // full circle coarsely first, then refines the best sample with a
+  // golden-section search -- safer than gradient descent from one guess.
+  //
+  // KNOWN RESIDUAL ACCURACY LIMITS (verified 2026-07-22 by comparing this
+  // solver's best-achievable miss distance, i.e. even at the optimal roll
+  // angle, against each flight's recorded next encounter -- see the "OLD
+  // best vs NEW best" instrumentation this comment describes; not left in
+  // the code, just documented here for whoever picks this up next):
+  //   - PSP (chemical propulsion, real ballistic coast-and-flyby profile):
+  //     this solver gets most flybys within ~0.1% of the recorded next
+  //     encounter (down from 10-140x worse under the old ±90° guess). A
+  //     few flybys -- consistently the ones preceded by PSP's longest
+  //     coast segments (400+ days) -- stay off by tens of millions of km
+  //     EVEN AT the optimal roll angle, meaning no roll-angle choice
+  //     explains it; the incoming velocity itself is slightly wrong. Most
+  //     likely cause: real trajectory-correction burns and solar
+  //     radiation pressure over a long coast, neither of which exists in
+  //     this simulator's leg data. Treat as a real, probably irreducible
+  //     limit of a pure patched-conic model without added per-leg state
+  //     vectors or an SRP term -- not a bug to keep re-tuning per pass.
+  //   - BepiColombo: stays inaccurate on most legs even at the optimal
+  //     roll angle, MUCH more so than PSP. Root cause is different in
+  //     kind, not degree: BepiColombo flies on continuous solar-electric
+  //     (ion) thrust between flybys, so the "coast on a fixed ellipse"
+  //     assumption this whole GA-chain model relies on is the wrong
+  //     physical model for its inter-flyby legs, independent of how well
+  //     any single flyby's turn is solved. (Consistent evidence: its one
+  //     leg that fits almost exactly is also its shortest coast -- ~90
+  //     days -- i.e. the segment with the least accumulated thrust to be
+  //     wrong about.) Closing this gap for real needs either real
+  //     state-vector checkpoints per leg or a low-thrust arc model; it is
+  //     not fixable by better flyby-geometry solving, so don't spend more
+  //     time on roll-angle/turn-angle tuning for BepiColombo specifically.
+  //     getGAChain() below DOES guard against the worst symptom (a bad
+  //     enough fit was rendering BepiColombo's current position out past
+  //     Mars, once nearly at Jupiter, for a mission that's actually
+  //     Mercury-bound) by falling back to the plain Lambert endpoint-to-
+  //     endpoint solve when a patched fit's miss is too large to trust --
+  //     see missAU/chordAU below. That fallback is a bound on how wrong
+  //     the picture can look, not a fix for WHY it drifts; the underlying
+  //     ion-thrust mismodeling is still there.
+  function computeGADeparture(posGA, velPlanet, velArrival,
+                               periapsisKm, planetRadiusKm, gmPlanetKm3S2,
+                               nextBodyPos, nextT, epochT) {
+    const vInfIn = v3sub(velArrival, velPlanet);
+    const geom = flybyGeometry(vInfIn, periapsisKm, planetRadiusKm, gmPlanetKm3S2);
+    if (!geom) return { pos: posGA, vel: velArrival, epochDays: epochT, missAU: 0 }; // no relative velocity to turn
+
+    function evalPhi(phi) {
+      const vDep = v3add(velPlanet, vInfOutAtPhi(vInfIn, geom, phi));
+      try {
+        const el = stateVectorToElements(posGA, vDep);
+        // Reject only genuinely degenerate results (non-finite, or a=0 --
+        // energy computation blew up). Hyperbolic (a<0, e>=1) is a real,
+        // correctly-propagatable outcome now (see computeFlightPosition/
+        // computeFlightVelocity's hyperbolic branches) -- New Horizons'
+        // post-Jupiter state IS hyperbolic (e~1.03, genuinely escaping the
+        // solar system), so excluding e>=1 here would systematically bias
+        // the roll-angle search away from the physically correct answer
+        // for exactly the flybys energetic enough to need this branch.
+        if (!isFinite(el.a) || !isFinite(el.e) || el.a === 0) return { d: 1e30, vDep };
+        const elFmt = { a: el.a, e: el.e, i: el.i, Om: el.Om, w: el.w, M0: el.M, epochDays: epochT };
+        const pos   = computeFlightPosition({ elements: elFmt }, nextT);
+        return { d: v3norm(v3sub(pos, nextBodyPos)), vDep };
+      } catch (err) { return { d: 1e30, vDep }; }
+    }
+
+    const COARSE_N = 72; // 5° steps around the full roll-angle circle
+    let bestPhi = 0, bestD = Infinity;
+    for (let k = 0; k < COARSE_N; k++) {
+      const phi = (k / COARSE_N) * 2 * Math.PI;
+      const { d } = evalPhi(phi);
+      if (d < bestD) { bestD = d; bestPhi = phi; }
+    }
+
+    // Golden-section refine within ±1 coarse step of the best sample.
+    const step = (2 * Math.PI) / COARSE_N;
+    let lo = bestPhi - step, hi = bestPhi + step;
+    const gr = (Math.sqrt(5) - 1) / 2;
+    for (let iter = 0; iter < 40; iter++) {
+      const c = hi - gr * (hi - lo);
+      const f = lo + gr * (hi - lo);
+      if (evalPhi(c).d < evalPhi(f).d) hi = f; else lo = c;
+    }
+
+    const { vDep, d: finalD } = evalPhi((lo + hi) / 2);
+    return {
+      pos: posGA, vel: vDep, epochDays: epochT,
+      // How far off, at the BEST achievable roll angle, this fit still is
+      // from the real recorded next encounter -- and the direct distance
+      // between the two points, as a reference scale for judging that.
+      // getGAChain uses these to decide whether to trust this fit at all.
+      missAU: finalD,
+      chordAU: v3norm(v3sub(nextBodyPos, posGA)),
+    };
+  }
+
+  // Cache: flightKey → segment array built by getGAChain().
+  const _gaChainCache = {};
+
+  // Build (or return cached) the patched-conic segment chain for a multi-leg
+  // flight.  Each entry covers one Lambert-leg time window:
+  //   { legIndex, elements, tStart, tEnd, isPatched }
+  // isPatched=false → standard Lambert elements (leg 0 or any leg before the
+  //   first gravity_assist), rendered as a single-revolution arc.
+  // isPatched=true  → Keplerian elements derived from the post-GA departure
+  //   state; may span multiple revolutions; rendered via time-step sampling.
+  //
+  // For flights with no gravity_assist legs, every segment has isPatched=false
+  // and the result is identical to what getSolvedLeg already produces.
+  function getGAChain(flightKey) {
+    if (_gaChainCache[flightKey]) return _gaChainCache[flightKey];
+
+    const raw  = FLIGHTS_RAW[flightKey];
+    const legs = raw.legs;
+    const segs = [];
+    let postGA = null;   // { pos, vel, epochDays } after the most recent GA
+
+    for (let i = 0; i < legs.length; i++) {
+      const leg = legs[i];
+
+      if (leg.type === 'lambert') {
+        const tDepart = daysSinceJ2000(parseFlightDate(leg.departDate));
+        const tArrive = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+        let elements, isPatched;
+
+        if (postGA === null) {
+          // No prior GA: standard Lambert solve.
+          elements  = getSolvedLeg(flightKey, i).elements;
+          isPatched = false;
+        } else {
+          // After a GA: derive elements from post-flyby state vector. Two
+          // ways this can be untrustworthy:
+          //   1. Outright degenerate (non-finite, or a=0) -- the same
+          //      condition evalPhi() inside computeGADeparture already
+          //      screens for when scoring candidate roll angles. Can still
+          //      happen here if EVERY roll angle came out degenerate.
+          //      Hyperbolic (a<0, e>=1) is NOT included in this rejection
+          //      -- it's a real, correctly-propagatable outcome (see
+          //      computeFlightPosition's hyperbolic branch), needed for
+          //      cases like New Horizons' post-Jupiter state (e~1.03,
+          //      genuinely escaping the solar system).
+          //   2. Technically bound (or hyperbolic), but the incoming velocity it was built
+          //      from was already bad enough (see the SEP/ion-thrust note
+          //      above) that even the best achievable roll angle still
+          //      misses the real recorded next encounter by a wide margin.
+          //      At that point the fit carries little more information
+          //      than not fitting at all, and rendering it anyway produces
+          //      nonsense -- two observed cases:
+          //        - A BepiColombo leg whose best-case miss was ~650M km
+          //          (many times the chord distance), which came out as a
+          //          Jupiter-grazing a=2.1 AU / e=0.96 orbit for a
+          //          spacecraft actually en route to a Mercury arrival
+          //          months away.
+          //        - An ESCAPADE leg (its one Earth flyby has almost no
+          //          v_inf to work with -- see the mission's own loiter-
+          //          then-flyby design) whose best-case miss was "only"
+          //          ~73% of the chord distance -- which sounds passable,
+          //          but the resulting a=1.02 AU / e=0.04 orbit never
+          //          leaves the immediate neighborhood of Earth's own
+          //          orbit (0.98-1.06 AU) despite this leg's real endpoint
+          //          being Mars at 1.5+ AU. A miss that's merely "smaller
+          //          than the chord" is not the same as "close to the
+          //          target" -- a threshold near 100% of the chord passes
+          //          fits that clearly never converge on it, so this is
+          //          deliberately much stricter.
+          // Either way, fall back to the plain Lambert solve for this leg
+          // -- always well-posed (it's anchored to the two real endpoint
+          // positions and the real time-of-flight, independent of GA
+          // history) -- rather than trusting a wild extrapolation.
+          const el = stateVectorToElements(postGA.pos, postGA.vel);
+          const missTooLarge = postGA.missAU !== undefined &&
+                               postGA.missAU > Math.max(0.02, 0.2 * postGA.chordAU);
+          if (isFinite(el.a) && isFinite(el.e) && el.a !== 0 && !missTooLarge) {
+            elements  = {
+              a: el.a, e: el.e, i: el.i,
+              Om: el.Om, w: el.w,
+              M0: el.M, epochDays: postGA.epochDays
+            };
+            isPatched = true;
+          } else {
+            elements  = getSolvedLeg(flightKey, i).elements;
+            isPatched = false;
+          }
+          postGA = null;
+        }
+        segs.push({ legIndex: i, elements, tStart: tDepart, tEnd: tArrive, isPatched });
+
+      } else if (leg.type === 'gravity_assist') {
+        const tGA = daysSinceJ2000(parseFlightDate(leg.date));
+        if (segs.length === 0) continue;  // GA before any Lambert — skip
+
+        // Spacecraft arrival velocity from the preceding segment.
+        const prevEl  = segs[segs.length - 1].elements;
+        const velArr  = computeFlightVelocity(prevEl, tGA);
+
+        // Planet state at flyby time.
+        const pState = computeStateVector(PLANET_ELEMENTS[leg.body], tGA);
+
+        // Look ahead to the next GA or Lambert arrival (for turn direction).
+        let nextBodyPos = pState.pos, nextT = tGA + 180;
+        for (let j = i + 1; j < legs.length; j++) {
+          if (legs[j].type === 'lambert') {
+            nextT       = daysSinceJ2000(parseFlightDate(legs[j].arrivalDate));
+            nextBodyPos = getBodyPositionAtDays(legs[j].toBody, nextT);
+            break;
+          }
+          if (legs[j].type === 'gravity_assist') {
+            nextT       = daysSinceJ2000(parseFlightDate(legs[j].date));
+            nextBodyPos = computeStateVector(PLANET_ELEMENTS[legs[j].body], nextT).pos;
+            break;
+          }
+        }
+
+        const meta = PLANET_META[leg.body];
+        postGA = computeGADeparture(
+          pState.pos, pState.vel, velArr,
+          leg.periapsisKm || 500, meta.radiusKm, meta.gmKm3S2,
+          nextBodyPos, nextT, tGA
+        );
+      }
+      // loiter / deepspace_maneuver: no effect on GA chain state
+    }
+
+    _gaChainCache[flightKey] = segs;
+    return segs;
+  }
+
+  // Return the spacecraft's heliocentric position for a multi-leg flight at
+  // time t.  Uses pre-computed leg boundaries (getLegBoundaries) so no date
+  // parsing or daysSinceJ2000 calls happen per-frame — only numeric comparisons.
+  function computeMultiLegPosition(flightKey, t) {
+    const boundaries = getLegBoundaries(flightKey);
+    const rawLegs    = FLIGHTS_RAW[flightKey].legs;
+    const hasGA      = rawLegs.some(l => l.type === 'gravity_assist');
+
+    for (const b of boundaries) {
+      if (b.type === 'lambert') {
+        if (t >= b.dDays && t <= b.aDays) {
+          if (hasGA) {
+            // Use patched-conic elements: correct high-eccentricity post-GA orbit
+            const segs = getGAChain(flightKey);
+            const seg  = segs.find(s => s.legIndex === b.index);
+            if (seg) return computeFlightPosition({ elements: seg.elements }, t);
+          }
+          return computeFlightPosition(getSolvedLeg(flightKey, b.index), t);
+        }
+      } else if (b.type === 'geocentric_orbit') {
+        if (t >= b.dDays && t <= b.aDays) {
+          const leg         = rawLegs[b.index];
+          const primaryName = leg.primaryBody || 'Earth';
+          const primaryMeta = PLANET_META[primaryName];
+          const primaryPos  = computeStateVector(PLANET_ELEMENTS[primaryName], t).pos;
+          const gmKm3Day2   = primaryMeta.gmKm3S2 * SEC_PER_DAY * SEC_PER_DAY;
+          const offsetKm    = computeGeocentricOffsetKm(geocentricLegElements(leg, primaryMeta.radiusKm), t, gmKm3Day2);
+          return [
+            primaryPos[0] + offsetKm[0] / AU_KM,
+            primaryPos[1] + offsetKm[1] / AU_KM,
+            primaryPos[2] + offsetKm[2] / AU_KM,
+          ];
+        }
+      } else if (b.type === 'loiter') {
+        if (b.dDays !== null && t >= b.dDays && t <= b.aDays) {
+          const parts     = b.location.split('_');   // "Earth_L2" → ["Earth","L2"]
+          const planetPos = computeStateVector(PLANET_ELEMENTS[parts[0]], t).pos;
+          return getCachedLagrange(parts[0], planetPos, t)[parts[1]];
+        }
+      }
+      // gravity_assist / deepspace_maneuver: boundary tracking only, no position
+    }
+
+    // Outside all leg windows: this happens genuinely before the mission
+    // starts, genuinely after it ends, OR in an unrepresented GAP between
+    // two lambert legs -- e.g. an extended stay at an intermediate target,
+    // like Dawn's ~14 months orbiting Vesta before departing for Ceres,
+    // which isn't its own leg (no 'loiter' leg type generalizes to
+    // "parked at a moving body" the way it does for a fixed Lagrange
+    // point). In every one of those cases the right answer is "wherever
+    // the most recently-reached body still is" -- its own real ongoing
+    // position, not a frozen point -- or the very first leg's origin if
+    // we're before anything has happened yet.
+    const lambertBounds = boundaries.filter(b => b.type === 'lambert');
+    const firstB = lambertBounds[0];
+    if (t < firstB.dDays) {
+      return getBodyPositionAtDays(rawLegs[firstB.index].fromBody, t);
+    }
+    let mostRecentArrival = lambertBounds[0];
+    for (const b of lambertBounds) {
+      if (b.aDays <= t) mostRecentArrival = b;
+    }
+    return getBodyPositionAtDays(rawLegs[mostRecentArrival.index].toBody, t);
+  }
+
+  // Index (into raw.legs) of the lambert leg actually being flown at time t,
+  // or undefined if t falls on a gravity-assist instant or in a loiter --
+  // used so an unselected-but-in-transit multi-leg flight only draws the
+  // one arc it's currently on, not every leg it has ever flown.
+  function currentLambertLegIndex(flightKey, t) {
+    const boundaries = getLegBoundaries(flightKey);
+    for (const b of boundaries) {
+      if (b.type === 'lambert' && t >= b.dDays && t <= b.aDays) return b.index;
+    }
+    return undefined;
+  }
+
+  // Draw a flight arc by sampling position at evenly-spaced time steps.
+  // Used for patched-conic segments that may span multiple revolutions —
+  // drawFlightArc's eccentric-anomaly sweep assumes a single revolution and
+  // would produce a single-loop arc even for 3-orbit segments like PSP's
+  // Venus→Venus legs.  300 steps gives smooth curves even at high eccentricity.
+  function drawFlightArcByTime(elements, tStart, tEnd) {
+    const N = 300;
+    ctx.beginPath();
+    for (let k = 0; k <= N; k++) {
+      const t = tStart + (k / N) * (tEnd - tStart);
+      const [X, Y, Z] = computeFlightPosition({ elements }, t);
+      const [sx, sy]  = worldToScreen(X, Y, Z);
+      if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+  }
+
+  // Draw all lambert legs of a multi-leg flight, with slightly decreasing
+  // opacity for later legs and a bright "bend marker" dot at each junction.
+  // For flights with gravity assists, patched-conic segments are drawn via
+  // time-step sampling (drawFlightArcByTime) so multi-revolution arcs render
+  // correctly; the first Lambert leg still uses drawFlightArc.
+  // onlyLegIndex: if given, restrict rendering to that single lambert leg
+  // (used for an unselected-but-in-transit flight -- see the call site's
+  // comment for why showing every historical leg unconditionally is wrong).
+  // Omit it to draw the full multi-leg path.
+  function drawMultiLegArcs(flightKey, onlyLegIndex) {
+    const raw   = FLIGHTS_RAW[flightKey];
+    const hasGA = raw.legs.some(l => l.type === 'gravity_assist');
+    const lambertEntries = raw.legs
+      .map((leg, i) => ({ leg, i }))
+      .filter(({ leg }) => leg.type === 'lambert')
+      .filter(({ i }) => onlyLegIndex === undefined || i === onlyLegIndex);
+
+    lambertEntries.forEach(({ leg, i }, seqIndex) => {
+      ctx.globalAlpha = Math.max(0.4, 1.0 - seqIndex * 0.15);
+
+      if (hasGA) {
+        const segs = getGAChain(flightKey);
+        const seg  = segs.find(s => s.legIndex === i);
+        if (seg && seg.isPatched) {
+          // Post-GA orbit: may be multi-revolution; use time-step rendering.
+          drawFlightArcByTime(seg.elements, seg.tStart, seg.tEnd);
+        } else {
+          // First leg (pre-GA Lambert): standard eccentric-anomaly arc.
+          drawFlightArc(getSolvedLeg(flightKey, i));
+        }
+      } else {
+        drawFlightArc(getSolvedLeg(flightKey, i));
+      }
+
+      ctx.globalAlpha = 1.0;
+
+      // Bend marker at junction between legs (not after the final leg)
+      if (seqIndex < lambertEntries.length - 1) {
+        const tJunction = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+        const jPos      = hasGA
+          ? computeMultiLegPosition(flightKey, tJunction)
+          : getBodyPositionAtDays(leg.toBody, tJunction);
+        const [jSx, jSy] = worldToScreen(jPos[0], jPos[1], jPos[2]);
+        ctx.save();
+        ctx.fillStyle = '#7fd99c';
+        ctx.globalAlpha = 0.9;
+        ctx.beginPath();
+        ctx.arc(jSx, jSy, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    });
+  }
+
+  // Draw a small diamond (rotated square) at a world-space AU position.
+  // Used for Lagrange point markers — distinct from the circular body
+  // markers so L-points are visually identifiable at a glance.
+  // size: half-diagonal in pixels; color: CSS color string; alpha: 0-1.
+  function drawDiamondMarker(worldPos, size, color, alpha, label) {
+    const [sx, sy] = worldToScreen(worldPos[0], worldPos[1], worldPos[2] || 0);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(sx,        sy - size); // top
+    ctx.lineTo(sx + size, sy        ); // right
+    ctx.lineTo(sx,        sy + size); // bottom
+    ctx.lineTo(sx - size, sy        ); // left
+    ctx.closePath();
+    ctx.stroke();
+    if (label) {
+      ctx.fillStyle = color;
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(label, sx + size + 3, sy + 3);
+    }
+    ctx.restore();
+  }
+
+  // Draw Lagrange point markers for the selected multi-leg flight, or for
+  // any planet whose markers are pinned via the legend toggle (future).
+  // Currently: if the selected flight has loiter legs referencing a Lagrange
+  // point (e.g. "Earth_L2"), draw that point's marker at its live position
+  // for the current frame epoch.  L1/L2/L4/L5 all move with the planet.
+  function drawLagrangeMarkers(daysSinceEpoch) {
+    if (!selectedFlightKey) return;
+    const raw = FLIGHTS_RAW[selectedFlightKey];
+    if (!isMultiLeg(raw)) return;
+
+    // Collect unique (planetName, lpName) pairs from loiter legs
+    const seen = new Set();
+    raw.legs.forEach((leg) => {
+      if (leg.type !== 'loiter' || !leg.location) return;
+      const parts = leg.location.split('_'); // "Earth_L2" → ["Earth","L2"]
+      if (parts.length !== 2) return;
+      seen.add(leg.location);
+    });
+    if (seen.size === 0) return;
+
+    seen.forEach((locationStr) => {
+      const [planetName, lpName] = locationStr.split('_');
+      const meta = PLANET_META[planetName];
+      if (!meta) return;
+
+      // L1/L2 sit at the Hill sphere radius (~1.5M km for Earth = 0.01 AU).
+      // Below ~200 px/AU they'd render within a pixel of the planet dot and
+      // be invisible noise.  L4/L5 are 1 AU away from the planet so they
+      // always have enough separation; no zoom gate needed for them.
+      if ((lpName === 'L1' || lpName === 'L2') && pxPerAU < 200) return;
+
+      const pState = computeStateVector(PLANET_ELEMENTS[planetName], daysSinceEpoch);
+      const lpts   = getLagrangePositions(pState.pos, meta.hillRadiusAU);
+      const pos    = lpts[lpName];
+      if (!pos) return;
+      drawDiamondMarker(pos, 5, meta.color, 0.75, lpName);
+    });
+  }
+
+  // Draw dashed SOI boundary circles around flyby bodies when a
+  // gravity-assist flight is selected.  Only drawn for planets that appear
+  // as the flyby body in at least one gravity_assist leg; not drawn
+  // continuously for all planets (visual clutter).  The circle is drawn in
+  // world-space AU radius converted to px at the current zoom level, centred
+  // on the planet's live screen position so it tracks orbital motion.
+  function drawSOIOverlay(daysSinceEpoch) {
+    if (!selectedFlightKey) return;
+    const raw = FLIGHTS_RAW[selectedFlightKey];
+    if (!isMultiLeg(raw)) return;
+
+    // Collect unique flyby planet names from gravity_assist legs
+    const flybyBodies = new Set();
+    raw.legs.forEach((leg) => {
+      if (leg.type === 'gravity_assist' && leg.body) flybyBodies.add(leg.body);
+    });
+    if (flybyBodies.size === 0) return;
+
+    flybyBodies.forEach((bodyName) => {
+      const meta = PLANET_META[bodyName];
+      if (!meta || !meta.soiRadiusAU) return;
+      const state = computeStateVector(PLANET_ELEMENTS[bodyName], daysSinceEpoch);
+      const [sx, sy] = worldToScreen(state.pos[0], state.pos[1], state.pos[2]);
+      const soiPx = meta.soiRadiusAU * pxPerAU;
+
+      ctx.save();
+      ctx.strokeStyle = meta.color;
+      ctx.globalAlpha = 0.35;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(sx, sy, soiPx, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    });
+  }
+
+  // Generic satellite position relative to its primary: returns the
+  // satellite's offset FROM ITS PRIMARY (not an absolute position), in AU,
+  // plus its own local orbital elements for display. Used for the Moon
+  // (relative to Earth) and for Phobos/Deimos (relative to Mars). Distinct
+  // from computeStateVector because these bodies' primary is a planet, not
+  // the Sun, and because in the Moon's case its node/perigee precess fast
+  // enough (18.61 yr / 8.85 yr) to model explicitly. nodalPeriodDays and
+  // apsidalPeriodDays are optional; if omitted, Om and w are held fixed at
+  // their epoch values (used for Phobos/Deimos, where the real precession
+  // wobble is negligible at this orbital scale -- see comment above their
+  // element definitions).
+  function computeSatelliteOffset(elements, daysSinceEpoch) {
+    const a = elements.aKm;
+    const e = elements.e;
+    const i = elements.iDeg * D2R;
+
+    const Om = elements.nodalPeriodDays
+      ? (elements.OmDeg0 - 360 * (daysSinceEpoch / elements.nodalPeriodDays)) * D2R
+      : elements.OmDeg0 * D2R;
+    const w = elements.apsidalPeriodDays
+      ? (elements.wDeg0 + 360 * (daysSinceEpoch / elements.apsidalPeriodDays)) * D2R
+      : elements.wDeg0 * D2R;
+
+    const n = 2 * Math.PI / elements.periodSiderealDays; // rad/day
+    const M = (elements.M0Deg * D2R) + n * daysSinceEpoch;
+
+    const E = solveKepler(M, e);
+    const nu = 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2));
+    const r = a * (1 - e * Math.cos(E)); // km
+
+    const xOrb = r * Math.cos(nu);
+    const yOrb = r * Math.sin(nu);
+
+    const Edot = n / (1 - e * Math.cos(E));
+    const xOrbDot = -a * Math.sin(E) * Edot;
+    const yOrbDot = a * Math.sqrt(1 - e * e) * Math.cos(E) * Edot;
+
+    const cosOm = Math.cos(Om), sinOm = Math.sin(Om);
+    const cosW = Math.cos(w), sinW = Math.sin(w);
+    const cosI = Math.cos(i), sinI = Math.sin(i);
+
+    function rotate(x, y) {
+      const xw = x * cosW - y * sinW;
+      const yw = x * sinW + y * cosW;
+      const xi = xw;
+      const yi = yw * cosI;
+      const zi = yw * sinI;
+      const X = xi * cosOm - yi * sinOm;
+      const Y = xi * sinOm + yi * cosOm;
+      const Z = zi;
+      return [X, Y, Z];
+    }
+
+    const posKm = rotate(xOrb, yOrb);
+    const velKmDay = rotate(xOrbDot, yOrbDot);
+
+    // Convert to AU / (AU/day) so it composes directly with the primary's
+    // already-AU-scale heliocentric position and velocity.
+    const posAU = posKm.map((v) => v / AU_KM);
+    const velAU = velKmDay.map((v) => v / AU_KM);
+
+    return { posAU, velAU, rKm: r, a, e, i, Om, w, M, nu };
+  }
+
+  /* =========================================================================
+     SCENE / RENDER STATE
+  ========================================================================= */
+
+  const canvas = document.getElementById("scene");
+  const ctx = canvas.getContext("2d");
+
+  let dpr = window.devicePixelRatio || 1;
+  let viewW = 0, viewH = 0;
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    viewW = window.innerWidth;
+    viewH = window.innerHeight;
+    canvas.width = Math.round(viewW * dpr);
+    canvas.height = Math.round(viewH * dpr);
+    canvas.style.width = viewW + "px";
+    canvas.style.height = viewH + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  /* =========================================================================
+     CAMERA: true 3D orbit camera.
+     - yaw / pitch define a rotation applied to every world point before
+       projection, so the 3rd axis (out of the ecliptic plane) is a real,
+       inspectable rotation, not a cosmetic tilt.
+     - pan is a screen-space offset applied after projection.
+     - zoom is pixels-per-AU, applied after rotation, before pan.
+     Projection is a simple orthographic projection (no perspective
+     foreshortening) — appropriate here since the goal is accurate spatial
+     reading of relative positions, not a photographic camera; perspective
+     would distort apparent distances between bodies depending on depth,
+     which would work against the "read positions accurately" goal.
+  ========================================================================= */
+
+  const DEFAULT_PX_PER_AU = 70;
+  const DEFAULT_YAW = 0;
+  const DEFAULT_PITCH = -0.45; // start tilted so 3D is visible immediately
+
+  let pxPerAU = DEFAULT_PX_PER_AU;
+  let camX = 0, camY = 0;       // pan offset (screen px), applied after projection
+  let yaw = DEFAULT_YAW;        // rotation around the vertical (screen Y) axis, radians
+  let pitch = DEFAULT_PITCH;    // rotation around horizontal (screen X) axis, radians
+
+  // Declared here (rather than down near the hover/click-lock section
+  // where it's most heavily used) because buildLegend() -- called once at
+  // load time, below -- calls isSatelliteVisible(), which reads
+  // lockedBodyName. Since it's declared with `let`, reading it before
+  // this line would execute hits JavaScript's temporal dead zone and
+  // throws, so it must be declared before any load-time code path can
+  // reach it. selectedFlightKey is declared here for the identical
+  // reason: buildFlightsLegend() also runs once at load time and reads it.
+  let lockedBodyName = null;
+  let selectedFlightKey = null;
+  let renderedBodies = []; // populated each frame: {name, sx, sy, screenR, pos, vel, ...}
+
+  // User-dragged offset from the locked panel's default auto-follow
+  // position (see drawLockedPanelConnector) -- lets the panel be dragged
+  // anywhere while it keeps following its body/flight from that offset,
+  // rather than snapping back every frame. Reset to (0,0) whenever
+  // lockBody() switches to a genuinely different body, so a newly opened
+  // panel always starts at the default spot next to the body.
+  let lockedPanelDragOffset = { x: 0, y: 0 };
+
+  const MAX_PITCH = Math.PI / 2 - 0.02;
+  const MIN_PITCH = -(Math.PI / 2 - 0.02);
+
+  let isRotating = false;
+  let isPanning = false;
+  let dragStartX = 0, dragStartY = 0;
+  let camStartX = 0, camStartY = 0;
+  let yawStart = 0, pitchStart = 0;
+
+  function dragButtonIsPan(e) {
+    // Right mouse button, or left+shift, pans. Plain left drag rotates.
+    return e.button === 2 || e.shiftKey;
+  }
+
+  canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  canvas.addEventListener("mousedown", (e) => {
+    dragStartX = e.clientX; dragStartY = e.clientY;
+    if (dragButtonIsPan(e)) {
+      if (lockedBodyName) return; // panning is meaningless while the camera is following a locked body
+      isPanning = true;
+      camStartX = camX; camStartY = camY;
+    } else {
+      isRotating = true;
+      yawStart = yaw; pitchStart = pitch;
+    }
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (isRotating) {
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+      yaw = yawStart + dx * 0.006;
+      pitch = pitchStart - dy * 0.006;
+      pitch = Math.max(MIN_PITCH, Math.min(MAX_PITCH, pitch));
+    } else if (isPanning) {
+      camX = camStartX + (e.clientX - dragStartX);
+      camY = camStartY + (e.clientY - dragStartY);
+    }
+    handleHover(e);
+  });
+  window.addEventListener("mouseup", () => { isRotating = false; isPanning = false; });
+
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const zoomFactor = Math.exp(-e.deltaY * 0.0012);
+    pxPerAU *= zoomFactor;
+    pxPerAU = Math.max(2, Math.min(pxPerAU, 20000));
+  }, { passive: false });
+
+  // Touch support: one finger rotates, two fingers pinch-zoom + pan.
+  let touchStartDist = null;
+  let touchStartPxPerAU = null;
+  let touchMidStartX = 0, touchMidStartY = 0;
+  canvas.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 1) {
+      isRotating = true; isPanning = false;
+      dragStartX = e.touches[0].clientX; dragStartY = e.touches[0].clientY;
+      yawStart = yaw; pitchStart = pitch;
+    } else if (e.touches.length === 2) {
+      isRotating = false;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      touchStartDist = Math.hypot(dx, dy);
+      touchStartPxPerAU = pxPerAU;
+      touchMidStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      touchMidStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      camStartX = camX; camStartY = camY;
+    }
+  }, { passive: true });
+  canvas.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 1 && isRotating) {
+      const dx = e.touches[0].clientX - dragStartX;
+      const dy = e.touches[0].clientY - dragStartY;
+      yaw = yawStart + dx * 0.006;
+      pitch = pitchStart - dy * 0.006;
+      pitch = Math.max(MIN_PITCH, Math.min(MAX_PITCH, pitch));
+    } else if (e.touches.length === 2 && touchStartDist) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      pxPerAU = Math.max(2, Math.min(20000, touchStartPxPerAU * (dist / touchStartDist)));
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      camX = camStartX + (midX - touchMidStartX);
+      camY = camStartY + (midY - touchMidStartY);
+    }
+  }, { passive: true });
+  canvas.addEventListener("touchend", () => { isRotating = false; isPanning = false; touchStartDist = null; });
+
+  // Rotate a world point (AU, ecliptic frame: x,y in-plane, z out-of-plane)
+  // by yaw (about the world Z axis, spinning the system "in place" as seen
+  // from above) then pitch (about the resulting X axis, tilting the whole
+  // system toward/away from the viewer to reveal the 3rd dimension).
+  function rotateWorld(x, y, z) {
+    const cosYaw = Math.cos(yaw), sinYaw = Math.sin(yaw);
+    const x1 = x * cosYaw - y * sinYaw;
+    const y1 = x * sinYaw + y * cosYaw;
+    const z1 = z;
+
+    const cosPitch = Math.cos(pitch), sinPitch = Math.sin(pitch);
+    const y2 = y1 * cosPitch - z1 * sinPitch;
+    const z2 = y1 * sinPitch + z1 * cosPitch;
+
+    return [x1, y2, z2];
+  }
+
+  function worldToScreen(xAU, yAU, zAU) {
+    const [rx, ry, rz] = rotateWorld(xAU, yAU, zAU || 0);
+    const cx = viewW / 2 + camX;
+    const cy = viewH / 2 + camY;
+    return [cx + rx * pxPerAU, cy - ry * pxPerAU, rz];
+  }
+
+  /* =========================================================================
+     TIME STATE
+     Simulation date is tracked as a JS Date (UTC). Default real-time mapping
+     requested: 1 Earth year of simulated time per 1 minute of wall-clock time
+     at "speed = 1x". The speed slider scales this rate, and can go negative
+     to run time backwards. Speed = 0 pauses.
+  ========================================================================= */
+
+  const EARTH_YEAR_DAYS = 365.25;
+  const BASE_DAYS_PER_MS = EARTH_YEAR_DAYS / (60 * 1000); // 1 yr per 60,000 ms at 1x
+
+  let simDate = new Date(); // current simulated UTC date
+  let speedMultiplier = 1.0; // can be negative; 0 = paused (but we use separate pause flag)
+  let paused = false;
+  let lastFrameTime = performance.now();
+
+  function setSimDateFromInputValue(value) {
+    // value is "YYYY-MM-DD"; interpret as UTC midday to avoid TZ edge issues
+    const parts = value.split("-").map(Number);
+    const d = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2], 12, 0, 0));
+    simDate = d;
+  }
+
+  function dateInputValue(date) {
+    const y = date.getUTCFullYear();
+    const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const d = String(date.getUTCDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  const dateInput = document.getElementById("date-input");
+  dateInput.value = dateInputValue(simDate);
+
+  const editDateBtn = document.getElementById("edit-date-btn");
+  const applyDateBtn = document.getElementById("apply-date");
+  const cancelEditDateBtn = document.getElementById("cancel-edit-date-btn");
+
+  applyDateBtn.addEventListener("click", () => {
+    if (dateInput.value) setSimDateFromInputValue(dateInput.value);
+  });
+  document.getElementById("reset-today").addEventListener("click", () => {
+    simDate = new Date();
+    dateInput.value = dateInputValue(simDate);
+  });
+  editDateBtn.addEventListener("click", () => {
+    setPaused(true); // also flips dateInput to editable and swaps button visibility, see setPaused
+    dateInput.focus();
+  });
+  cancelEditDateBtn.addEventListener("click", () => {
+    // Discard whatever the user may have typed (without clicking "Go to
+    // date") by restoring the field to the actual current simDate, then
+    // resume -- this is "cancel," not "apply," so simDate itself is left
+    // untouched.
+    dateInput.value = dateInputValue(simDate);
+    setPaused(false);
+  });
+
+  const speedSlider = document.getElementById("speed-slider");
+  const speedReadout = document.getElementById("speed-readout");
+  const playPauseBtn = document.getElementById("playpause");
+
+  function formatSpeed(mult) {
+    if (mult === 0) return "paused";
+    const sign = mult < 0 ? "-" : "";
+    const abs = Math.abs(mult);
+    let valueStr;
+    if (abs >= 1) {
+      valueStr = (Math.round(abs * 10) / 10).toString();
+    } else {
+      valueStr = (Math.round(abs * 100) / 100).toString();
+    }
+    return `${sign}${valueStr}x (${sign}${(EARTH_YEAR_DAYS / 365.25 * abs).toFixed(2)} yr/min)`;
+  }
+
+  function updateSpeedFromSlider() {
+    // slider range -300..300 maps to multiplier via a curve giving fine
+    // control near 0 and large range at extremes: mult = sign * (|v|/100)^2
+    const v = Number(speedSlider.value);
+    const sign = v < 0 ? -1 : 1;
+    const norm = Math.abs(v) / 100; // 0..3
+    speedMultiplier = sign * norm * norm; // 0..9, squared for fine low-end control
+    speedReadout.textContent = formatSpeed(speedMultiplier);
+  }
+  speedSlider.addEventListener("input", updateSpeedFromSlider);
+  updateSpeedFromSlider();
+
+  function setPaused(value) {
+    paused = value;
+    playPauseBtn.textContent = paused ? "Play" : "Pause";
+    // The date field is only safely editable while paused: frame() only
+    // overwrites dateInput.value when NOT paused, so editing while running
+    // would otherwise get stomped on the very next frame. Locking the
+    // field to readonly when running makes that constraint visible rather
+    // than something the user discovers by losing their typed input.
+    dateInput.readOnly = !paused;
+    dateInput.classList.toggle("editable", paused);
+    // Button visibility tracks the SAME paused flag (rather than a
+    // separate "editing" flag) since the field's actual editability is
+    // already tied to paused -- keeping one flag as the source of truth
+    // means the buttons can't show a state the field doesn't actually
+    // support, regardless of how pausing was triggered (the Edit button,
+    // the main Pause/Play control, or the spacebar shortcut).
+    editDateBtn.style.display = paused ? "none" : "";
+    applyDateBtn.style.display = paused ? "" : "none";
+    cancelEditDateBtn.style.display = paused ? "" : "none";
+  }
+  setPaused(paused); // explicit initial sync, rather than relying on the
+                      // HTML "readonly" attribute happening to match
+                      // paused's default JS value
+
+  document.getElementById("reset-speed").addEventListener("click", () => {
+    speedSlider.value = 100;
+    updateSpeedFromSlider();
+    if (paused) setPaused(false);
+  });
+
+  playPauseBtn.addEventListener("click", () => {
+    setPaused(!paused);
+  });
+
+  // Keyboard shortcuts: space = play/pause, arrows nudge speed
+  window.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+      e.preventDefault();
+      setPaused(!paused);
+    }
+  });
+
+  /* =========================================================================
+     SIZE COMPARISON TOGGLE
+  ========================================================================= */
+
+  let showTrueSizes = false;
+  const sizeSwitch = document.getElementById("size-switch");
+  const sizeToggleLabel = document.getElementById("size-toggle-label");
+  const sizeComparePanel = document.getElementById("size-compare-panel");
+  const sizeRow = document.getElementById("size-row");
+
+  function buildSizeComparePanel() {
+    sizeRow.innerHTML = "";
+    const maxRadius = SUN_RADIUS_KM;
+    const maxPx = 80; // sun gets 80px diameter-equivalent radius in this mini chart
+
+    function addItem(name, radiusKm, color) {
+      const r = Math.max(1, (radiusKm / maxRadius) * maxPx);
+      const wrap = document.createElement("div");
+      wrap.className = "size-item";
+      const circle = document.createElement("div");
+      circle.className = "size-circle";
+      circle.style.width = (r * 2) + "px";
+      circle.style.height = (r * 2) + "px";
+      circle.style.background = color;
+      const label = document.createElement("div");
+      label.className = "size-label";
+      const pct = (radiusKm / maxRadius) * 100;
+      label.textContent = `${name} (${pct < 1 ? pct.toFixed(2) : pct.toFixed(1)}%)`;
+      wrap.appendChild(circle);
+      wrap.appendChild(label);
+      sizeRow.appendChild(wrap);
+    }
+
+    addItem("Sol", SUN_RADIUS_KM, SUN_COLOR);
+    PLANET_ORDER.forEach((name) => {
+      addItem(name, PLANET_META[name].radiusKm, PLANET_META[name].color);
+    });
+  }
+  buildSizeComparePanel();
+
+  sizeToggleLabel.addEventListener("click", () => {
+    showTrueSizes = !showTrueSizes;
+    sizeSwitch.classList.toggle("on", showTrueSizes);
+    sizeComparePanel.classList.toggle("visible", showTrueSizes);
+  });
+
+  /* =========================================================================
+     LEGEND
+  ========================================================================= */
+
+  const legendRows = document.getElementById("legend-rows");
+
+  // Shared by both the Planets legend (Moon/Phobos/Deimos/outer moons) and
+  // the Small Bodies legend (Charon, under Pluto) -- a satellite's row only
+  // ever appears expanded while its primary (or the satellite itself) is
+  // the locked/focused body (see isSatelliteVisible); container lets each
+  // caller target its own rows list.
+  function addSatelliteRow(container, name, parentName, color) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "satellite-accordion";
+    const expanded = isSatelliteVisible(parentName, name);
+    wrapper.classList.toggle("expanded", expanded);
+
+    const row = document.createElement("div");
+    row.className = "row";
+    row.style.paddingLeft = "17px";
+    row.style.cursor = "pointer";
+    row.innerHTML = `<span class="dot" style="background:${color};width:6px;height:6px"></span><span>${name}</span>`;
+    row.addEventListener("click", () => lockBody(name, { toggleIfSame: true }));
+
+    wrapper.appendChild(row);
+    container.appendChild(wrapper);
+  }
+
+  function buildLegend() {
+    legendRows.innerHTML = "";
+    const sunRow = document.createElement("div");
+    sunRow.className = "row";
+    sunRow.style.cursor = "pointer";
+    sunRow.innerHTML = `<span class="dot" style="background:${SUN_COLOR}"></span><span>Sol</span>`;
+    sunRow.addEventListener("click", () => lockBody("Sol", { toggleIfSame: true }));
+    legendRows.appendChild(sunRow);
+
+    PLANET_ORDER.forEach((name) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.style.cursor = "pointer";
+      row.innerHTML = `<span class="dot" style="background:${PLANET_META[name].color}"></span><span>${name}</span>`;
+      row.addEventListener("click", () => lockBody(name, { toggleIfSame: true }));
+      legendRows.appendChild(row);
+      if (name === "Earth") {
+        addSatelliteRow(legendRows, "Moon", "Earth", MOON_META.color);
+      }
+      if (name === "Mars") {
+        addSatelliteRow(legendRows, "Phobos", "Mars", PHOBOS_META.color);
+        addSatelliteRow(legendRows, "Deimos", "Mars", DEIMOS_META.color);
+      }
+      if (OUTER_MOONS[name]) {
+        OUTER_MOONS[name].forEach((m) => addSatelliteRow(legendRows, m.name, name, m.meta.color));
+      }
+    });
+  }
+  buildLegend();
+
+  // Asteroids & comets legend: unlike planets (always shown) or flights
+  // (rows always listed, visibility handled separately per-flight), every
+  // small body IS always listed here so it can be clicked to select it --
+  // that click is what makes an otherwise-hidden body visible in the scene
+  // (see isSmallBodyVisible). Listing them is cheap and static (9 rows,
+  // built once), unlike buildFlightsLegend which waits on an async fetch.
+  const smallBodiesRows = document.getElementById("smallbodies-rows");
+  // Split into two labeled sub-sections rather than one flat list: Pluto is
+  // an IAU dwarf planet, not an asteroid or comet, and lumping it in under
+  // an "Asteroids & Comets" header read as miscategorized once it had a
+  // companion (Charon) rendered alongside it. Ceres is ALSO technically a
+  // dwarf planet, but stays in the general section below -- it physically
+  // sits in the main asteroid belt and everyone (astronomers included)
+  // still looks for it right next to Vesta, so moving it would fight the
+  // mental model this legend exists to support, purely to satisfy a formal
+  // classification. This subsection is deliberately ready to gain more
+  // members later (Eris, Haumea, Makemake) without any further UI change.
+  // Small bodies are a mixed bag by design -- asteroids, comets, and (so
+  // far) one dwarf-planet system -- deliberately kept as one flat list
+  // rather than split into type-based sub-sections: subdividing by type
+  // doesn't stop at "dwarf planets get their own group," it also implies
+  // comets should split from asteroids, and so on, which just recreates a
+  // taxonomy argument in the UI for a handful of rows. A compact badge
+  // next to the name (full explanation on hover) flags anything unusual
+  // without spending vertical space or inventing new groups every time a
+  // body doesn't fit neatly in "asteroid."
+  const SMALL_BODY_TYPE_BADGES = {
+    dwarf_planet: { label: "DP", title: "Dwarf planet" },
+  };
+
+  function buildSmallBodiesLegend() {
+    smallBodiesRows.innerHTML = "";
+    Object.entries(SMALL_BODIES).forEach(([key, body]) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.style.cursor = "pointer";
+      const badge = SMALL_BODY_TYPE_BADGES[body.type];
+      const badgeHtml = badge
+        ? `<span class="body-type-badge" title="${badge.title}">${badge.label}</span>`
+        : "";
+      row.innerHTML = `<span class="dot" style="background:${body.meta.color}"></span><span>${body.name}</span>${badgeHtml}`;
+      // Locked by its display name, not the SMALL_BODIES key -- same
+      // convention every other body (planets, moons) already uses, so the
+      // locked panel title reads "101955 Bennu", not "bennu".
+      row.addEventListener("click", () => lockBody(body.name, { toggleIfSame: true }));
+      smallBodiesRows.appendChild(row);
+      if (key === "pluto") addSatelliteRow(smallBodiesRows, "Charon", "Pluto and Charon", CHARON_META.color);
+    });
+  }
+  buildSmallBodiesLegend();
+
+  // Generic collapsible layer-group toggle: clicking a group's header
+  // flips its "collapsed" class, which the CSS transition (max-height +
+  // opacity on .layer-body) animates. Used for the Planets, Flights, and
+  // Asteroids & Comets groups so none needs its own bespoke toggle logic.
+  function wireLayerGroupToggle(headerId, groupId) {
+    const header = document.getElementById(headerId);
+    const group = document.getElementById(groupId);
+    header.addEventListener("click", () => {
+      group.classList.toggle("collapsed");
+    });
+  }
+  wireLayerGroupToggle("planets-layer-header", "planets-layer-group");
+  wireLayerGroupToggle("flights-layer-header", "flights-layer-group");
+  wireLayerGroupToggle("smallbodies-layer-header", "smallbodies-layer-group");
+
+  // Flights legend: empty for now (no missions added yet). Built the same
+  // way buildLegend() builds the planets list, so adding real flight rows
+  // later is a drop-in replacement for the empty-state note below, not a
+  // new code path.
+  const flightsRows = document.getElementById("flights-rows");
+  // key -> row element, so the per-frame in-transit highlight (see
+  // updateFlightsLegendActiveState) can toggle a class on the existing
+  // rows without rebuilding the whole legend every frame.
+  let flightLegendRowEls = {};
+  function buildFlightsLegend() {
+    flightsRows.innerHTML = "";
+    flightLegendRowEls = {};
+    if (FLIGHTS_ORDER.length === 0) {
+      const note = document.createElement("div");
+      note.className = "empty-note";
+      note.textContent = "No flights added yet";
+      flightsRows.appendChild(note);
+      return;
+    }
+    FLIGHTS_ORDER.forEach((key) => {
+      const raw = FLIGHTS_RAW[key];
+      const row = document.createElement("div");
+      row.className = "row";
+      row.style.cursor = "pointer";
+      if (selectedFlightKey === key) row.style.color = "var(--text-primary)";
+      row.innerHTML = `<span class="dot" style="background:#7fd99c"></span><span>${raw.name}</span>`;
+      row.addEventListener("click", () => selectFlight(key));
+      flightsRows.appendChild(row);
+      flightLegendRowEls[key] = row;
+    });
+  }
+
+  // Lighten a flight's row while it's actually flying (in transit) right
+  // now, at the current simulated date -- independent of whether it's
+  // selected. Runs every frame (see frame()); only toggles a class on the
+  // rows buildFlightsLegend() already built, so it's cheap and doesn't
+  // touch the DOM otherwise.
+  function updateFlightsLegendActiveState(daysSinceEpoch) {
+    FLIGHTS_ORDER.forEach((key) => {
+      const row = flightLegendRowEls[key];
+      if (!row) return;
+      const { launchDays, arrivalDays } = getFlightDates(key);
+      const inTransit = daysSinceEpoch >= launchDays && daysSinceEpoch <= arrivalDays;
+      row.classList.toggle("in-transit", inTransit);
+    });
+  }
+  // NOTE: the initial call to buildFlightsLegend() happens in the async
+  // bootstrap at the end of this file, AFTER loadFlightsRaw() resolves --
+  // calling it here, synchronously, would run against an empty
+  // FLIGHTS_RAW/FLIGHTS_ORDER (the fetches haven't completed yet) and
+  // render a legend with nothing in it.
+
+
+  /* =========================================================================
+     HOVER TOOLTIP + CLICK-TO-LOCK SATELLITE DATA PANEL
+     Hovering shows a transient tooltip, as before. Clicking a body (a true
+     click — not the end of a drag/rotate gesture) locks that body: the
+     tooltip becomes a persistent panel that tracks the body's screen
+     position every frame as it orbits and as the camera moves, until the
+     user clicks elsewhere (on empty space, or on another body to switch
+     the lock) or clicks the panel's own close control.
+  ========================================================================= */
+
+  const hoverTip = document.getElementById("hover-tip");
+
+  // Track whether the current mouse-down/up sequence was a genuine click
+  // (negligible movement) rather than a camera drag, so rotating the view
+  // never accidentally locks/unlocks a planet.
+  let mouseDownX = 0, mouseDownY = 0;
+  let mouseDownWasDrag = false;
+  const CLICK_DRAG_THRESHOLD_PX = 5;
+
+  canvas.addEventListener("mousedown", (e) => {
+    mouseDownX = e.clientX; mouseDownY = e.clientY;
+    mouseDownWasDrag = false;
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (Math.hypot(e.clientX - mouseDownX, e.clientY - mouseDownY) > CLICK_DRAG_THRESHOLD_PX) {
+      mouseDownWasDrag = true;
+    }
+  });
+  canvas.addEventListener("click", (e) => {
+    if (mouseDownWasDrag) return; // was a rotate/pan gesture, not a click
+    if (e.button === 2 || e.shiftKey) return; // pan gesture
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    // Two-pass hit test: flight markers first, regardless of depth-sort
+    // order. renderedBodies is sorted by rz (camera depth) for correct
+    // drawing, not by "which target should win an overlapping click" --
+    // a flight marker is small and sits ON TOP of (at nearly the same
+    // screen position as) whatever body it's currently passing near, so
+    // depth order alone made the planet win unpredictably whenever the
+    // two happened to be close in rz. A spacecraft is always the more
+    // specific target when it overlaps a planet, so it gets first claim.
+    let hit = null;
+    for (const b of renderedBodies) {
+      if (!b.isFlight) continue;
+      const dx = mx - b.sx, dy = my - b.sy;
+      const hitR = Math.max(b.screenR, 8);
+      if (dx * dx + dy * dy <= hitR * hitR) { hit = b; break; }
+    }
+    if (!hit) {
+      for (const b of renderedBodies) {
+        if (b.isFlight) continue;
+        const dx = mx - b.sx, dy = my - b.sy;
+        const hitR = Math.max(b.screenR, 8);
+        if (dx * dx + dy * dy <= hitR * hitR) { hit = b; break; }
+      }
+    }
+    lockBody(hit ? hit.name : null, { toggleIfSame: true });
+  });
+
+  // Shared lock/unlock entry point, used both by clicking a body directly
+  // in the canvas and by clicking its row in the legend menu. Centralizing
+  // this avoids the legend needing to duplicate the lock/unlock/visibility
+  // logic that the canvas click handler already implements.
+  function lockBody(name, opts) {
+    opts = opts || {};
+    const prevLocked = lockedBodyName;
+    if (name === null) {
+      lockedBodyName = null;
+    } else if (opts.toggleIfSame && lockedBodyName === name) {
+      lockedBodyName = null; // clicking the same body again unlocks it
+    } else {
+      lockedBodyName = name;
+    }
+    if (lockedBodyName !== prevLocked) lockedPanelDragOffset = { x: 0, y: 0 };
+    // Locking onto a body (a planet, moon, or Sol) is a sign attention
+    // has moved elsewhere, so any lingering flight selection should clear
+    // -- otherwise a flight's arc stays pinned visible indefinitely after
+    // the user has moved on to look at something else, with no way to
+    // turn it off short of re-finding and re-clicking that exact flight
+    // again. selectFlight() itself calls lockBody() to focus the launch
+    // body as part of SETTING the selection, so it passes
+    // preserveFlightSelection to skip this -- every other caller (direct
+    // canvas/legend clicks) leaves it unset and gets the clearing.
+    if (!opts.preserveFlightSelection && selectedFlightKey !== null) {
+      selectedFlightKey = null;
+      buildFlightsLegend();
+    }
+    updateLockedPanelVisibility();
+    buildLegend(); // re-render so the accordion (moon rows) reflects the new focus
+  }
+
+  // Clicking a flight: jump the simulated date to just before launch (one
+  // day prior, so the launch body is shown in its pre-launch state rather
+  // than landing exactly on the launch moment itself), pause (so that
+  // date isn't immediately animated away on the next frame -- frame()
+  // only advances simDate while unpaused), and focus/lock the camera on
+  // the body the flight launches from.
+  function selectFlight(key) {
+    if (selectedFlightKey === key) {
+      // clicking the same flight again deselects it, mirroring lockBody's
+      // toggle-on-same-click convention used elsewhere
+      selectedFlightKey = null;
+      lockedBodyName = null;
+      buildLegend();
+      buildFlightsLegend();
+      updateLockedPanelVisibility();
+      return;
+    }
+    const raw = FLIGHTS_RAW[key];
+    const { launchDays } = getFlightDates(key);
+    selectedFlightKey = key;
+    simDate = dateFromDaysSinceJ2000(launchDays - 1); // one day before launch
+    dateInput.value = dateInputValue(simDate);
+    setPaused(true);
+    // Lock the camera to the spacecraft (raw.name), not the launch planet.
+    // worldStates is populated with the spacecraft position each frame
+    // (see the selectedFlightKey block below the moons section) so the
+    // camera-follow code can track it exactly like any planet or moon.
+    lockBody(raw.name, { toggleIfSame: false, preserveFlightSelection: true });
+    buildFlightsLegend();
+    // Clicking is one of the two conditions ("clicked or encountered
+    // during time manipulation") that should trigger the Lambert solve.
+    // Doing it explicitly here, rather than waiting for the next frame's
+    // draw call to discover (via isFlightVisible) that this flight is
+    // now selected, avoids any ordering ambiguity about which happens
+    // first within a single frame. getSolvedFlight is flat-schema-only
+    // (throws for multi-leg, by design -- see its own comment); multi-leg
+    // flights have no equivalent single upfront solve to warm, since each
+    // leg solves lazily via getSolvedLeg/getGAChain the first time its
+    // position is actually queried during rendering.
+    if (!isMultiLeg(raw)) getSolvedFlight(key);
+  }
+
+  // A moon is shown -- in the scene and in the legend's expanded accordion
+  // -- only while its parent planet is the focused/locked body, or while
+  // the moon itself is the locked body (so clicking a moon directly keeps
+  // it visible even though the "focus" is technically on the moon, not
+  // the planet). Nothing is shown when nothing is locked.
+  function isSatelliteVisible(parentName, satelliteName) {
+    return lockedBodyName === parentName || lockedBodyName === satelliteName;
+  }
+
+  // An asteroid/comet is too small to sit permanently on screen at
+  // planet-scale zoom (per design: they'd just be visual noise), so each
+  // one is hidden unless there's a specific reason to care about it right
+  // now:
+  //   1. it's directly selected (clicked in the Asteroids & Comets legend), or
+  //   2. a mission that actually targets it (SMALL_BODIES[key].targetOfFlights)
+  //      is selected in the Flights legend -- shown regardless of date, same
+  //      as a selected flight's own arc is, or
+  //   3. such a mission is within its transit window WIDENED by one year on
+  //      each side (launch-365d through arrival+365d) -- wider than a
+  //      flight's own normal in-transit window, specifically so scrubbing
+  //      time while the mission is selected lets you watch the target body's
+  //      real motion approaching/departing the encounter, not just see it
+  //      appear right at the moment of arrival.
+  const SMALL_BODY_VISIBILITY_PAD_DAYS = 365;
+  function isSmallBodyVisible(key, daysSinceEpoch) {
+    const body = SMALL_BODIES[key];
+    if (lockedBodyName === body.name) return true;
+    for (const flightKey of body.targetOfFlights) {
+      // A targetOfFlights entry can name a mission that isn't actually in
+      // this build's manifest.json yet (or was pulled, e.g. a hyperbolic
+      // trajectory this solver can't handle yet) -- don't let a stale
+      // reference throw for every other small body's visibility check too.
+      if (!FLIGHTS_RAW[flightKey]) continue;
+      if (selectedFlightKey === flightKey) return true;
+      const { launchDays, arrivalDays } = getFlightDates(flightKey);
+      if (daysSinceEpoch >= launchDays - SMALL_BODY_VISIBILITY_PAD_DAYS &&
+          daysSinceEpoch <= arrivalDays + SMALL_BODY_VISIBILITY_PAD_DAYS) return true;
+    }
+    return false;
+  }
+
+  // A flight's trajectory arc and spacecraft marker are shown only if
+  // EITHER it is currently selected (clicked in the Flights legend) OR
+  // the simulated date falls within its actual transit window (it is
+  // genuinely traversing space right now, not sitting docked/orbiting at
+  // either end). Outside both conditions, it is hidden entirely. This is
+  // the single rule every flight-visibility check should go through --
+  // at 100 or 1000 flights, drawing every arc unconditionally (the
+  // earlier behavior) would make the view unreadable, so the rule is
+  // centralized here rather than re-implemented at each call site.
+  //
+  // Uses getFlightDates(), NOT getSolvedFlight() -- this runs for every
+  // flight on every frame, so it must never trigger the expensive Lambert
+  // solve. Only date arithmetic happens here; the solve happens later,
+  // only for flights this function actually returns true for.
+  function isFlightVisible(key, daysSinceEpoch) {
+    if (selectedFlightKey === key) return true;
+    const { launchDays, arrivalDays } = getFlightDates(key);
+    return daysSinceEpoch >= launchDays && daysSinceEpoch <= arrivalDays;
+  }
+
+  function handleHover(e) {
+    if (lockedBodyName) { hoverTip.style.display = "none"; return; } // locked panel takes over
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    let hit = null;
+    for (const b of renderedBodies) {
+      const dx = mx - b.sx, dy = my - b.sy;
+      const hitR = Math.max(b.screenR, 6);
+      if (dx * dx + dy * dy <= hitR * hitR) { hit = b; break; }
+    }
+    if (hit) {
+      hoverTip.style.display = "block";
+      hoverTip.style.left = (e.clientX + 14) + "px";
+      hoverTip.style.top = (e.clientY + 14) + "px";
+      hoverTip.innerHTML = `<strong>${hit.name}</strong><span style="color:var(--text-dim)"> · click to track</span>`;
+    } else {
+      hoverTip.style.display = "none";
+    }
+  }
+
+  /* ---- Locked satellite-data panel ---- */
+
+  const lockedPanel = document.getElementById("locked-panel");
+  const lockedPanelTitle = document.getElementById("locked-panel-title");
+  const lockedPanelBody = document.getElementById("locked-panel-body");
+  const lockedPanelClose = document.getElementById("locked-panel-close");
+  const lockedPanelHeader = document.getElementById("locked-panel-header");
+
+  lockedPanelClose.addEventListener("click", () => {
+    lockedBodyName = null;
+    updateLockedPanelVisibility();
+  });
+
+  // Drag-to-reposition: mousedown on the header (but not the close button)
+  // starts a drag; the resulting offset is applied on top of the panel's
+  // normal auto-follow position every frame (see drawLockedPanelConnector),
+  // so a dragged panel keeps tracking its body/flight from wherever it was
+  // moved to instead of resetting each frame. mousemove/mouseup are on
+  // window, not the header, so the drag doesn't break if the cursor
+  // outruns the (small) header element mid-drag.
+  let lockedPanelDrag = null; // { startMouseX, startMouseY, startOffsetX, startOffsetY } while dragging
+  lockedPanelHeader.style.cursor = "grab";
+  lockedPanelHeader.addEventListener("mousedown", (e) => {
+    if (e.target === lockedPanelClose) return;
+    e.preventDefault();
+    lockedPanelDrag = {
+      startMouseX: e.clientX, startMouseY: e.clientY,
+      startOffsetX: lockedPanelDragOffset.x, startOffsetY: lockedPanelDragOffset.y
+    };
+    lockedPanelHeader.style.cursor = "grabbing";
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!lockedPanelDrag) return;
+    lockedPanelDragOffset = {
+      x: lockedPanelDrag.startOffsetX + (e.clientX - lockedPanelDrag.startMouseX),
+      y: lockedPanelDrag.startOffsetY + (e.clientY - lockedPanelDrag.startMouseY)
+    };
+  });
+  window.addEventListener("mouseup", () => {
+    if (!lockedPanelDrag) return;
+    lockedPanelDrag = null;
+    lockedPanelHeader.style.cursor = "grab";
+  });
+
+  const resetViewBtn = document.getElementById("reset-view-btn");
+  const stopTrackingBtn = document.getElementById("stop-tracking-btn");
+
+  resetViewBtn.addEventListener("click", () => {
+    // Restores rotation, zoom, and pan to their startup defaults. This is
+    // the fix for getting visually stuck near the ecliptic (pitch close
+    // to 0, looking edge-on) or any other disorienting yaw/pitch/zoom
+    // combination -- it does NOT clear a locked/tracked body, since being
+    // lost in the camera and tracking a body are independent problems;
+    // resetting the view while still tracking just re-centers cleanly on
+    // whatever is currently locked, which is also the desired behavior.
+    yaw = DEFAULT_YAW;
+    pitch = DEFAULT_PITCH;
+    pxPerAU = DEFAULT_PX_PER_AU;
+    if (!lockedBodyName) {
+      camX = 0;
+      camY = 0;
+    }
+    // If a body IS locked, camX/camY are recomputed every frame by the
+    // follow logic regardless, so no explicit reset is needed there.
+  });
+
+  stopTrackingBtn.addEventListener("click", () => {
+    lockBody(null);
+  });
+
+  function updateLockedPanelVisibility() {
+    // "flex", not "block" -- #locked-panel is a column flex container (see
+    // CSS) so its header stays put while a too-tall body scrolls under its
+    // own max-height, rather than the whole panel just growing past the
+    // viewport edge for a flight with a long statusNote + asset gallery.
+    lockedPanel.style.display = lockedBodyName ? "flex" : "none";
+    stopTrackingBtn.classList.toggle("visible", !!lockedBodyName);
+  }
+
+  // Rocket/spacecraft/lander thumbnail row for a flight's locked panel.
+  // raw.assets (set per-flight in data/flights/<key>.json) is keyed by
+  // "rocket"/"spacecraft"/"lander" (lander omitted where not applicable),
+  // each { title, infoUrl, localImage }. infoUrl is the official
+  // NASA/ESA/agency page where one was found, Wikipedia otherwise -- either
+  // way it's where the thumbnail links out to. localImage is a path
+  // relative to index.html (e.g. "images/rockets/atlas_v.jpg"); missing
+  // images still render a labeled placeholder tile rather than being
+  // silently dropped, since the info link itself is still useful.
+  // "image" is the single-tile case used for planets/Sol/small bodies (see
+  // BODY_INFO); it's harmless alongside the flight-specific keys since
+  // assetGalleryHtml only renders whichever keys are actually present on
+  // the assets object passed in.
+  const ASSET_ORDER = ["rocket", "spacecraft", "lander", "image"];
+  function assetGalleryHtml(assets) {
+    if (!assets) return "";
+    const tiles = ASSET_ORDER
+      .filter((k) => assets[k])
+      .map((k) => {
+        const a = assets[k];
+        const img = a.localImage
+          ? `<img src="${a.localImage}" alt="${a.title}" loading="lazy">`
+          : `<div class="lp-asset-noimg">${a.title}</div>`;
+        const label = k.charAt(0).toUpperCase() + k.slice(1);
+        return `<a class="lp-asset" href="${a.infoUrl}" target="_blank" rel="noopener noreferrer" title="${a.title}">${img}<span class="lp-asset-label">${label}</span></a>`;
+      });
+    if (tiles.length === 0) return "";
+    return `<div class="lp-assets">${tiles.join("")}</div>`;
+  }
+
+  function formatLockedPanelContent(b) {
+    if (b.isFlight) {
+      const raw = FLIGHTS_RAW[b.flightKey];
+      const ep  = flightEndpoints(raw);
+      let rows = "";
+      const addRow = (k, v) => { rows += `<div class="lp-row"><span class="lp-key">${k}</span><span class="lp-val">${v}</span></div>`; };
+      addRow("Mission", raw.name);
+      addRow("Launch from", ep.launchBody);
+      addRow("Launch date", ep.launchDate);
+      addRow("Destination", ep.destinationBody);
+      // "arrival" is always the intended arrival date the trajectory was
+      // flying toward (see FLIGHTS_RAW comment) -- label it plainly for a
+      // success, or as "intended" when the mission didn't reach it, so
+      // the same single field reads correctly either way.
+      addRow(raw.status === "Success" ? "Arrival" : "Arrival (intended)", ep.arrival);
+      addRow("Rocket", raw.rocket);
+      addRow("Payload", raw.payload);
+      addRow("Status", raw.status);
+      if (raw.significance) addRow("Why it matters", raw.significance);
+      if (raw.statusNote) addRow("Notes", raw.statusNote);
+      lockedPanelBody.innerHTML = rows + assetGalleryHtml(raw.assets);
+      return;
+    }
+
+    if (b.name === "Sol") {
+      const info = BODY_INFO["Sol"];
+      let rows =
+        `<div class="lp-row"><span class="lp-key">Role</span><span class="lp-val">Central body (reference origin)</span></div>` +
+        `<div class="lp-row"><span class="lp-key">Radius</span><span class="lp-val">${SUN_RADIUS_KM.toLocaleString()} km</span></div>`;
+      if (info && info.significance) {
+        rows += `<div class="lp-row"><span class="lp-key">Why it matters</span><span class="lp-val">${info.significance}</span></div>`;
+      }
+      lockedPanelBody.innerHTML = rows + (info ? assetGalleryHtml(info.assets) : "");
+      return;
+    }
+
+    if (b.primary && b.primary !== "Sol") {
+      // Any natural satellite (Earth's Moon, or Mars's Phobos/Deimos): its
+      // period/semi-major-axis are only meaningful computed against its
+      // actual primary's GM, not the Sun's. Heliocentric position is still
+      // shown for consistency with the planets' "from Sol" framing, but
+      // labeled distinctly so it isn't read as describing an orbit around Sol.
+      const speedKmS = Math.hypot(...b.vel) * AU_KM / SEC_PER_DAY;
+      const aKm = b.a * AU_KM;
+      const periodDays = 2 * Math.PI * Math.sqrt(Math.pow(aKm, 3) / b.primaryGmKm3Day2);
+      let rows = "";
+      const addRow = (k, v) => { rows += `<div class="lp-row"><span class="lp-key">${k}</span><span class="lp-val">${v}</span></div>`; };
+      addRow("Orbits", `${b.primary} (not Sol directly)`);
+      addRow(`Distance from ${b.primary}`, `${b.rKmFromPrimary.toLocaleString(undefined, {maximumFractionDigits: 0})} km`);
+      addRow("Heliocentric position", `${b.pos.map(v => v.toFixed(3)).join(", ")} AU`);
+      addRow("Speed (heliocentric)", `${speedKmS.toFixed(2)} km/s`);
+      addRow("Semi-major axis (a)", `${(aKm).toLocaleString(undefined,{maximumFractionDigits:0})} km`);
+      addRow("Eccentricity (e)", b.e.toFixed(4));
+      addRow("Inclination to ecliptic", `${(b.i / D2R).toFixed(2)}°`);
+      addRow(`Orbital period (around ${b.primary})`, `${periodDays.toFixed(4)} d`);
+      lockedPanelBody.innerHTML = rows;
+      return;
+    }
+
+    const speedKmS = Math.hypot(...b.vel) * AU_KM / SEC_PER_DAY;
+    const periodDays = 2 * Math.PI * Math.sqrt((b.a * b.a * b.a) / GM_SUN_AU3_DAY2);
+    const periodYears = periodDays / 365.25;
+    let rows = "";
+    const addRow = (k, v) => { rows += `<div class="lp-row"><span class="lp-key">${k}</span><span class="lp-val">${v}</span></div>`; };
+    addRow("Distance from Sol", `${b.r.toFixed(4)} AU`);
+    addRow("Position (x,y,z)", `${b.pos.map(v => v.toFixed(3)).join(", ")} AU`);
+    addRow("Speed", `${speedKmS.toFixed(2)} km/s`);
+    addRow("Semi-major axis (a)", `${b.a.toFixed(4)} AU`);
+    addRow("Eccentricity (e)", b.e.toFixed(4));
+    addRow("Inclination (i)", `${(b.i / D2R).toFixed(2)}°`);
+    addRow("Orbital period", `${periodYears.toFixed(2)} yr (${periodDays.toFixed(0)} d)`);
+    const info = BODY_INFO[b.name];
+    if (info && info.significance) addRow("Why it matters", info.significance);
+    lockedPanelBody.innerHTML = rows + (info ? assetGalleryHtml(info.assets) : "");
+  }
+
+  function drawLockedPanelConnector() {
+    if (!lockedBodyName) return;
+    const b = renderedBodies.find((x) => x.name === lockedBodyName);
+    if (!b) return;
+    lockedPanelTitle.textContent = b.name;
+    formatLockedPanelContent(b);
+
+    // Position the panel near the tracked body, clamped to viewport, with a
+    // small fixed offset so it doesn't sit directly on top of the body --
+    // plus whatever offset the user has dragged it to (see
+    // lockedPanelDragOffset), so a dragged panel keeps following the body
+    // from that offset rather than resetting to the default spot every frame.
+    const panelRect = lockedPanel.getBoundingClientRect();
+    let px = b.sx + 20 + lockedPanelDragOffset.x;
+    let py = b.sy - panelRect.height / 2 + lockedPanelDragOffset.y;
+    px = Math.max(8, Math.min(px, viewW - panelRect.width - 8));
+    py = Math.max(8, Math.min(py, viewH - panelRect.height - 8));
+    lockedPanel.style.left = px + "px";
+    lockedPanel.style.top = py + "px";
+
+    // Draw a thin connector line + highlight ring around the tracked body
+    // so it's unambiguous which body the panel refers to even after the
+    // camera has rotated and the body has moved across the screen.
+    ctx.save();
+    ctx.strokeStyle = "rgba(120,180,255,0.7)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(b.sx, b.sy, b.screenR + 6, 0, Math.PI * 2);
+    ctx.stroke();
+
+    const lineStartX = b.sx + (b.screenR + 6);
+    const lineStartY = b.sy;
+    ctx.beginPath();
+    ctx.moveTo(lineStartX, lineStartY);
+    ctx.lineTo(px, py + panelRect.height / 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /* =========================================================================
+     MAIN RENDER LOOP
+  ========================================================================= */
+
+  function drawOrbitEllipse(elements, daysSinceEpoch) {
+    // Draw the full ellipse path for current osculating elements (approx,
+    // using current a/e/i/Om/w — precise enough visually; orbit precesses
+    // slowly so this is stable frame to frame).
+    const T = daysSinceEpoch / DAYS_PER_CENTURY;
+    const a = elements.a + elements.aDot * T;
+    const e = elements.e + elements.eDot * T;
+    const i = (elements.i + (elements.iDot / 3600) * T) * D2R;
+    const Om = (elements.Om + (elements.OmDot / 3600) * T) * D2R;
+    const varpi = (elements.varpi + (elements.varpiDot / 3600) * T) * D2R;
+    const w = varpi - Om;
+
+    const cosOm = Math.cos(Om), sinOm = Math.sin(Om);
+    const cosW = Math.cos(w), sinW = Math.sin(w);
+    const cosI = Math.cos(i), sinI = Math.sin(i);
+
+    function rotate(x, y) {
+      const xw = x * cosW - y * sinW;
+      const yw = x * sinW + y * cosW;
+      const xi = xw;
+      const yi = yw * cosI;
+      const zi = yw * sinI;
+      const X = xi * cosOm - yi * sinOm;
+      const Y = xi * sinOm + yi * cosOm;
+      const Z = zi;
+      return [X, Y, Z];
+    }
+
+    const N = 180;
+    ctx.beginPath();
+    for (let k = 0; k <= N; k++) {
+      const E = (k / N) * 2 * Math.PI;
+      const xOrb = a * (Math.cos(E) - e);
+      const yOrb = a * Math.sqrt(1 - e * e) * Math.sin(E);
+      const [X, Y, Z] = rotate(xOrb, yOrb);
+      const [sx, sy] = worldToScreen(X, Y, Z);
+      if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+  }
+
+  // Draws only the TRAVELED PORTION of a flight's transfer ellipse --
+  // from launch to arrival -- not the full closed loop drawOrbitEllipse
+  // draws for planets. A real flight has a start and end; showing the
+  // rest of the ellipse (the part the spacecraft never flew) would be
+  // misleading, not just visually noisy.
+  function drawFlightArc(flight) {
+    const el = flight.elements;
+    const Eat = (mAnomaly) => {
+      // Eccentric anomaly at a given (unnormalized) mean anomaly, walking
+      // forward from M0 rather than solveKepler's normalized [0,2pi)
+      // result directly, so the arc sweeps the correct direction/amount
+      // even across a 0/2pi wrap.
+      return solveKepler(mAnomaly, el.e);
+    };
+    const nLaunchToArrival = Math.sqrt(GM_SUN_AU3_DAY2 / (el.a * el.a * el.a)) * (flight.arrivalDays - flight.launchDays);
+    const M_launch = el.M0;
+    const M_arrival = el.M0 + nLaunchToArrival;
+
+    const E_launch = Eat(M_launch);
+    let E_arrival = Eat(M_arrival);
+    // solveKepler normalizes into [0, 2pi); since M_arrival > M_launch by
+    // construction (time only moves forward) and the transfer is well
+    // under one full orbit, force E_arrival to be the value reached by
+    // sweeping FORWARD from E_launch, not wrapped back below it.
+    if (E_arrival < E_launch) E_arrival += 2 * Math.PI;
+
+    const cosOm = Math.cos(el.Om), sinOm = Math.sin(el.Om);
+    const cosW = Math.cos(el.w), sinW = Math.sin(el.w);
+    const cosI = Math.cos(el.i), sinI = Math.sin(el.i);
+    function rotate(x, y) {
+      const xw = x * cosW - y * sinW;
+      const yw = x * sinW + y * cosW;
+      const xi = xw;
+      const yi = yw * cosI;
+      const zi = yw * sinI;
+      const X = xi * cosOm - yi * sinOm;
+      const Y = xi * sinOm + yi * cosOm;
+      const Z = zi;
+      return [X, Y, Z];
+    }
+
+    const N = 90;
+    ctx.beginPath();
+    for (let k = 0; k <= N; k++) {
+      const E = E_launch + (k / N) * (E_arrival - E_launch);
+      const xOrb = el.a * (Math.cos(E) - el.e);
+      const yOrb = el.a * Math.sqrt(1 - el.e * el.e) * Math.sin(E);
+      const [X, Y, Z] = rotate(xOrb, yOrb);
+      const [sx, sy] = worldToScreen(X, Y, Z);
+      if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+  }
+
+  // Draws a satellite's orbit ellipse centered on a moving point (its
+  // primary's current position) rather than the origin -- needed for any
+  // moon, since it orbits its primary's current position, not Sol's fixed
+  // origin. Takes a satellite's element shape (aKm in km) rather than the
+  // planets' a-in-AU/centennial-rate shape, since these are genuinely
+  // different kinds of orbital elements, not the same structure reused.
+  // nodalPeriodDays/apsidalPeriodDays are optional, matching
+  // computeSatelliteOffset's convention (fixed Om/w if omitted).
+  function drawOrbitEllipseAroundPoint(satElements, daysSinceEpoch, centerAU) {
+    const a = satElements.aKm;
+    const e = satElements.e;
+    const i = satElements.iDeg * D2R;
+    const Om = satElements.nodalPeriodDays
+      ? (satElements.OmDeg0 - 360 * (daysSinceEpoch / satElements.nodalPeriodDays)) * D2R
+      : satElements.OmDeg0 * D2R;
+    const w = satElements.apsidalPeriodDays
+      ? (satElements.wDeg0 + 360 * (daysSinceEpoch / satElements.apsidalPeriodDays)) * D2R
+      : satElements.wDeg0 * D2R;
+
+    const cosOm = Math.cos(Om), sinOm = Math.sin(Om);
+    const cosW = Math.cos(w), sinW = Math.sin(w);
+    const cosI = Math.cos(i), sinI = Math.sin(i);
+
+    function rotate(x, y) {
+      const xw = x * cosW - y * sinW;
+      const yw = x * sinW + y * cosW;
+      const xi = xw;
+      const yi = yw * cosI;
+      const zi = yw * sinI;
+      const X = xi * cosOm - yi * sinOm;
+      const Y = xi * sinOm + yi * cosOm;
+      const Z = zi;
+      return [X, Y, Z];
+    }
+
+    const N = 90;
+    ctx.beginPath();
+    for (let k = 0; k <= N; k++) {
+      const E = (k / N) * 2 * Math.PI;
+      const xOrb = a * (Math.cos(E) - e);
+      const yOrb = a * Math.sqrt(1 - e * e) * Math.sin(E);
+      const [Xkm, Ykm, Zkm] = rotate(xOrb, yOrb);
+      const X = centerAU[0] + Xkm / AU_KM;
+      const Y = centerAU[1] + Ykm / AU_KM;
+      const Z = centerAU[2] + Zkm / AU_KM;
+      const [sx, sy] = worldToScreen(X, Y, Z);
+      if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+  }
+
+  function frame() {
+    const now = performance.now();
+    const dtMs = now - lastFrameTime;
+    lastFrameTime = now;
+
+    if (!paused && speedMultiplier !== 0) {
+      const daysElapsed = speedMultiplier * BASE_DAYS_PER_MS * dtMs;
+      simDate = new Date(simDate.getTime() + daysElapsed * 86400000);
+      dateInput.value = dateInputValue(simDate);
+    }
+
+    ctx.clearRect(0, 0, viewW, viewH);
+
+    // subtle starfield (static, cheap)
+    drawStars();
+
+    const daysSinceEpoch = daysSinceJ2000(simDate);
+    updateFlightsLegendActiveState(daysSinceEpoch);
+
+    // ---- Pass 1: compute world positions for every body, BEFORE any
+    // screen projection. This has to happen first so that, if a body is
+    // locked, we know its world position in time to correct the camera
+    // pan (camX/camY) before worldToScreen is called for anything --
+    // otherwise the locked body would lag one frame behind the camera
+    // correction, producing a visible jitter.
+    const worldStates = { Sol: { pos: [0, 0, 0], vel: [0, 0, 0], r: 0, e: 0, i: 0, a: 0 } };
+    let earthState = null;
+    let marsState = null;
+    PLANET_ORDER.forEach((name) => {
+      const state = computeStateVector(PLANET_ELEMENTS[name], daysSinceEpoch);
+      worldStates[name] = state;
+      if (name === "Earth") earthState = state;
+      if (name === "Mars") marsState = state;
+    });
+
+    // Generic helper: given a satellite's elements/meta and its primary's
+    // current state, compute the satellite's absolute position/velocity
+    // (primary's state + satellite's own offset) and package everything
+    // the body-record and the locked panel need, including which GM to
+    // use for that satellite's own orbital-period readout (its primary's,
+    // or -- for the Moon specifically -- the combined Earth+Moon value,
+    // since the Moon's mass is non-negligible relative to Earth's).
+    function buildSatelliteAbs(elements, primaryState, primaryGmKm3Day2) {
+      const sat = computeSatelliteOffset(elements, daysSinceEpoch);
+      const pos = [
+        primaryState.pos[0] + sat.posAU[0],
+        primaryState.pos[1] + sat.posAU[1],
+        primaryState.pos[2] + sat.posAU[2]
+      ];
+      const vel = [
+        primaryState.vel[0] + sat.velAU[0],
+        primaryState.vel[1] + sat.velAU[1],
+        primaryState.vel[2] + sat.velAU[2]
+      ];
+      return { pos, vel, sat, primaryGmKm3Day2 };
+    }
+
+    let moonAbs = null;
+    if (earthState) {
+      moonAbs = buildSatelliteAbs(MOON_ELEMENTS, earthState, GM_EARTH_MOON_KM3_DAY2);
+      worldStates.Moon = { pos: moonAbs.pos, vel: moonAbs.vel };
+    }
+    let phobosAbs = null, deimosAbs = null;
+    if (marsState) {
+      phobosAbs = buildSatelliteAbs(PHOBOS_ELEMENTS, marsState, GM_MARS_KM3_DAY2);
+      deimosAbs = buildSatelliteAbs(DEIMOS_ELEMENTS, marsState, GM_MARS_KM3_DAY2);
+      worldStates.Phobos = { pos: phobosAbs.pos, vel: phobosAbs.vel };
+      worldStates.Deimos = { pos: deimosAbs.pos, vel: deimosAbs.vel };
+    }
+
+    // Charon: only worth computing while Pluto itself is in play (small
+    // bodies are hidden by default -- see isSmallBodyVisible), same gating
+    // the outer moons get implicitly via their planet always being present.
+    let charonAbs = null, plutoState = null;
+    if (isSmallBodyVisible("pluto", daysSinceEpoch)) {
+      plutoState = computeSmallBodyState(SMALL_BODIES.pluto.elements, daysSinceEpoch);
+      charonAbs = buildSatelliteAbs(CHARON_ELEMENTS, plutoState, GM_PLUTO_CHARON_KM3_DAY2);
+      worldStates.Charon = { pos: charonAbs.pos, vel: charonAbs.vel };
+    }
+
+    // Outer moons: compute absolute states for all 16 bodies, keyed by name.
+    const outerMoonAbs = {};
+    PLANET_ORDER.forEach((planetName) => {
+      if (!OUTER_MOONS[planetName]) return;
+      const planetState  = worldStates[planetName];
+      const gmKm3Day2    = OUTER_PLANET_GM_DAY2[planetName];
+      OUTER_MOONS[planetName].forEach((moon) => {
+        const abs = buildSatelliteAbs(moon.elements, planetState, gmKm3Day2);
+        outerMoonAbs[moon.name] = { abs, primaryName: planetName, meta: moon.meta };
+        worldStates[moon.name]  = { pos: abs.pos, vel: abs.vel };
+      });
+    });
+
+    // ---- Spacecraft position in worldStates: if a flight is selected,
+    // register the spacecraft's current heliocentric position so the
+    // camera-follow code below can track it like any planet or moon.
+    // Pre-launch → spacecraft is still at the launch planet.
+    // In-transit → propagated from Lambert-derived Keplerian elements.
+    // Post-arrival → spacecraft is at the destination planet.
+    if (selectedFlightKey) {
+      const sfRaw = FLIGHTS_RAW[selectedFlightKey];
+      const { launchDays, arrivalDays } = getFlightDates(selectedFlightKey);
+      let scPos;
+      if (isMultiLeg(sfRaw)) {
+        if (daysSinceEpoch < launchDays) {
+          const firstLambert = sfRaw.legs.find(l => l.type === 'lambert');
+          scPos = getBodyPositionAtDays(firstLambert.fromBody, daysSinceEpoch);
+        } else if (daysSinceEpoch > arrivalDays) {
+          const lambertLegs = sfRaw.legs.filter(l => l.type === 'lambert');
+          scPos = getBodyPositionAtDays(lambertLegs[lambertLegs.length - 1].toBody, daysSinceEpoch);
+        } else {
+          scPos = computeMultiLegPosition(selectedFlightKey, daysSinceEpoch);
+        }
+      } else {
+        if (daysSinceEpoch < launchDays) {
+          scPos = worldStates[sfRaw.launchBody].pos;
+        } else if (daysSinceEpoch > arrivalDays) {
+          scPos = worldStates[sfRaw.destinationBody].pos;
+        } else {
+          scPos = computeFlightPosition(getSolvedFlight(selectedFlightKey), daysSinceEpoch);
+        }
+      }
+      worldStates[sfRaw.name] = { pos: scPos, vel: [0, 0, 0] };
+    }
+
+    // ---- Camera follow: if a body is locked, force camX/camY so that
+    // body's projected position lands at the viewport center every frame,
+    // while still respecting the user's current yaw/pitch/zoom -- i.e.
+    // rotate and zoom keep working around the followed body, only manual
+    // panning is superseded (since it would be overwritten next frame
+    // anyway; the pan gesture is disabled while locked, see mousedown
+    // handler, so this isn't fighting the user, just keeping the maths
+    // consistent with what the UI actually allows).
+    if (lockedBodyName && worldStates[lockedBodyName]) {
+      const lockedPos = worldStates[lockedBodyName].pos;
+      const [rx, ry] = rotateWorld(lockedPos[0], lockedPos[1], lockedPos[2] || 0);
+      // We want: viewW/2 + camX + rx*pxPerAU == viewW/2  =>  camX = -rx*pxPerAU
+      // (worldToScreen computes cx + rx*pxPerAU where cx = viewW/2 + camX)
+      camX = -rx * pxPerAU;
+      camY = ry * pxPerAU;
+    }
+
+    // Orbit paths (drawn first, beneath bodies)
+    ctx.lineWidth = 1;
+    PLANET_ORDER.forEach((name) => {
+      ctx.strokeStyle = hexWithAlpha(PLANET_META[name].color, 0.28);
+      drawOrbitEllipse(PLANET_ELEMENTS[name], daysSinceEpoch);
+    });
+    if (earthState && isSatelliteVisible("Earth", "Moon")) {
+      ctx.strokeStyle = hexWithAlpha(MOON_META.color, 0.35);
+      drawOrbitEllipseAroundPoint(MOON_ELEMENTS, daysSinceEpoch, earthState.pos);
+    }
+    if (marsState) {
+      if (isSatelliteVisible("Mars", "Phobos")) {
+        ctx.strokeStyle = hexWithAlpha(PHOBOS_META.color, 0.35);
+        drawOrbitEllipseAroundPoint(PHOBOS_ELEMENTS, daysSinceEpoch, marsState.pos);
+      }
+      if (isSatelliteVisible("Mars", "Deimos")) {
+        ctx.strokeStyle = hexWithAlpha(DEIMOS_META.color, 0.35);
+        drawOrbitEllipseAroundPoint(DEIMOS_ELEMENTS, daysSinceEpoch, marsState.pos);
+      }
+    }
+    PLANET_ORDER.forEach((planetName) => {
+      if (!OUTER_MOONS[planetName]) return;
+      const pPos = worldStates[planetName].pos;
+      OUTER_MOONS[planetName].forEach((moon) => {
+        if (!isSatelliteVisible(planetName, moon.name)) return;
+        ctx.strokeStyle = hexWithAlpha(moon.meta.color, 0.35);
+        drawOrbitEllipseAroundPoint(moon.elements, daysSinceEpoch, pPos);
+      });
+    });
+    if (plutoState && isSatelliteVisible("Pluto and Charon", "Charon")) {
+      ctx.strokeStyle = hexWithAlpha(CHARON_META.color, 0.35);
+      drawOrbitEllipseAroundPoint(CHARON_ELEMENTS, daysSinceEpoch, plutoState.pos);
+    }
+
+    // Flight trajectory arcs: shown only while the flight is selected or
+    // genuinely in transit (see isFlightVisible) -- not as a permanent
+    // historical record, since at any meaningful scale (dozens, hundreds,
+    // eventually thousands of flights as logistics/terraforming expands
+    // this) drawing every arc unconditionally would make the view
+    // unreadable. A completed flight's path disappears once you move on,
+    // the same way a moon's orbit disappears once you stop focusing on
+    // its planet.
+    //
+    // For a multi-leg flight this rule applies per-LEG, not per-flight:
+    // isFlightVisible/isMultiLeg only know about the flight's overall
+    // launch-to-arrival window, so an unselected flight still years away
+    // from arrival (e.g. BepiColombo, mid-cruise) would otherwise have
+    // drawMultiLegArcs render its *entire* history -- every already-flown
+    // leg back to 2018 -- every single frame, which is exactly the
+    // "permanent historical record" this comment says not to do. Only
+    // draw every leg when the flight is explicitly selected (the user
+    // asked to inspect its full path); otherwise draw just the one leg
+    // actually being flown right now, same as a single-leg flight only
+    // ever shows its one arc.
+    ctx.lineWidth = 1.5;
+    FLIGHTS_ORDER.forEach((key) => {
+      if (!isFlightVisible(key, daysSinceEpoch)) return;
+      ctx.strokeStyle = "#7fd99c";
+      if (isMultiLeg(FLIGHTS_RAW[key])) {
+        if (selectedFlightKey === key) {
+          drawMultiLegArcs(key);
+        } else {
+          const onlyLegIndex = currentLambertLegIndex(key, daysSinceEpoch);
+          if (onlyLegIndex !== undefined) drawMultiLegArcs(key, onlyLegIndex);
+        }
+      } else {
+        drawFlightArc(getSolvedFlight(key));
+      }
+    });
+
+    // Lagrange point diamond markers for the active multi-leg flight
+    drawLagrangeMarkers(daysSinceEpoch);
+
+    // SOI boundary circles for flyby planets in the active flight
+    drawSOIOverlay(daysSinceEpoch);
+
+    // ---- Pass 2: project everything to screen space now that the camera
+    // (including any follow-correction above) is finalized for this frame.
+    const bodies = [];
+
+    const [sunSx, sunSy, sunRz] = worldToScreen(0, 0, 0);
+    bodies.push({
+      name: "Sol", sx: sunSx, sy: sunSy, rz: sunRz,
+      screenR: bodyScreenRadius(SUN_RADIUS_KM, true),
+      color: SUN_COLOR, isSun: true, primary: null,
+      pos: [0, 0, 0], vel: [0, 0, 0], r: 0, e: 0, i: 0, a: 0
+    });
+
+    PLANET_ORDER.forEach((name) => {
+      const state = worldStates[name];
+      const [sx, sy, rz] = worldToScreen(state.pos[0], state.pos[1], state.pos[2]);
+      const meta = PLANET_META[name];
+      bodies.push({
+        name, sx, sy, rz,
+        screenR: bodyScreenRadius(meta.radiusKm, false),
+        color: meta.color, isSun: false, primary: "Sol",
+        pos: state.pos, vel: state.vel, r: state.r, e: state.e, i: state.i, a: state.a
+      });
+    });
+
+    // Shared body-record construction for any satellite, given its
+    // pre-computed absolute state (from buildSatelliteAbs above) and meta.
+    function pushSatelliteBody(name, abs, primaryName, meta) {
+      const [sx, sy, rz] = worldToScreen(abs.pos[0], abs.pos[1], abs.pos[2]);
+      bodies.push({
+        name, sx, sy, rz,
+        screenR: bodyScreenRadius(meta.radiusKm, false),
+        color: meta.color, isSun: false, primary: primaryName,
+        pos: abs.pos, vel: abs.vel,
+        r: abs.sat.rKm / AU_KM, e: abs.sat.e, i: abs.sat.i, a: abs.sat.a / AU_KM,
+        rKmFromPrimary: abs.sat.rKm,
+        primaryGmKm3Day2: abs.primaryGmKm3Day2
+      });
+    }
+
+    if (moonAbs && isSatelliteVisible("Earth", "Moon")) pushSatelliteBody("Moon", moonAbs, "Earth", MOON_META);
+    if (phobosAbs && isSatelliteVisible("Mars", "Phobos")) pushSatelliteBody("Phobos", phobosAbs, "Mars", PHOBOS_META);
+    if (deimosAbs && isSatelliteVisible("Mars", "Deimos")) pushSatelliteBody("Deimos", deimosAbs, "Mars", DEIMOS_META);
+    Object.entries(outerMoonAbs).forEach(([moonName, { abs, primaryName, meta }]) => {
+      if (isSatelliteVisible(primaryName, moonName)) pushSatelliteBody(moonName, abs, primaryName, meta);
+    });
+    if (charonAbs && isSatelliteVisible("Pluto and Charon", "Charon")) {
+      pushSatelliteBody("Charon", charonAbs, "Pluto and Charon", CHARON_META);
+    }
+
+    // Asteroids/comets: hidden by default (see isSmallBodyVisible) --
+    // heliocentric like a planet, so the body record shape matches a
+    // planet's exactly (primary: "Sol"), which is what lets the locked
+    // panel's existing generic-heliocentric-body branch render one with
+    // no new panel code.
+    Object.entries(SMALL_BODIES).forEach(([key, body]) => {
+      if (!isSmallBodyVisible(key, daysSinceEpoch)) return;
+      const state = computeSmallBodyState(body.elements, daysSinceEpoch);
+      const [sx, sy, rz] = worldToScreen(state.pos[0], state.pos[1], state.pos[2]);
+      bodies.push({
+        name: body.name, sx, sy, rz,
+        screenR: bodyScreenRadius(body.meta.radiusKm, false),
+        color: body.meta.color, isSun: false, primary: "Sol",
+        pos: state.pos, vel: state.vel, r: state.r, e: state.e, i: state.i, a: state.a
+      });
+    });
+
+    // Spacecraft markers: only exist (are drawn, clickable, hoverable)
+    // while the simulated date falls within the flight's actual transit
+    // window -- this is a stricter check than isFlightVisible, which also
+    // allows showing a SELECTED flight's planned path before launch (for
+    // logistics/planning purposes). A marker, unlike the path itself,
+    // represents a physical spacecraft; showing one sitting on a future
+    // path before launch, or frozen after arrival, would misrepresent
+    // what's actually happening rather than just omitting something.
+    FLIGHTS_ORDER.forEach((key) => {
+      const { launchDays, arrivalDays } = getFlightDates(key);
+      if (daysSinceEpoch < launchDays || daysSinceEpoch > arrivalDays) return;
+      const raw = FLIGHTS_RAW[key];
+      let pos, e, i, a;
+      if (isMultiLeg(raw)) {
+        pos = computeMultiLegPosition(key, daysSinceEpoch);
+        e = 0; i = 0; a = Math.hypot(...pos); // display fields only; orbital elements not meaningful across legs
+      } else {
+        const flight = getSolvedFlight(key);
+        pos = computeFlightPosition(flight, daysSinceEpoch);
+        e = flight.elements.e; i = flight.elements.i; a = flight.elements.a;
+      }
+      const [sx, sy, rz] = worldToScreen(pos[0], pos[1], pos[2]);
+      bodies.push({
+        name: raw.name, flightKey: key, sx, sy, rz,
+        screenR: 3, color: "#7fd99c", isSun: false, isFlight: true, primary: null,
+        pos, vel: [0, 0, 0], r: Math.hypot(...pos), e, i, a
+      });
+    });
+
+    // When the selected flight is outside its transit window (before launch
+    // or after arrival), push a virtual marker at the anchor planet so the
+    // locked panel connector has a body to attach to and can display mission
+    // data via formatLockedPanelContent. The in-transit case is already
+    // handled by the FLIGHTS_ORDER forEach above.
+    if (selectedFlightKey) {
+      const { launchDays, arrivalDays } = getFlightDates(selectedFlightKey);
+      if (daysSinceEpoch < launchDays || daysSinceEpoch > arrivalDays) {
+        const sfRaw = FLIGHTS_RAW[selectedFlightKey];
+        let anchorPos, e, i, a;
+        if (isMultiLeg(sfRaw)) {
+          const lambertLegs = sfRaw.legs.filter(l => l.type === 'lambert');
+          const anchorBodyKey = daysSinceEpoch < launchDays
+            ? lambertLegs[0].fromBody
+            : lambertLegs[lambertLegs.length - 1].toBody;
+          anchorPos = getBodyPositionAtDays(anchorBodyKey, daysSinceEpoch);
+          e = 0; i = 0; a = Math.hypot(...anchorPos);
+        } else {
+          const sf = getSolvedFlight(selectedFlightKey);
+          const anchorName = daysSinceEpoch < launchDays ? sfRaw.launchBody : sfRaw.destinationBody;
+          anchorPos = worldStates[anchorName].pos;
+          e = sf.elements.e; i = sf.elements.i; a = sf.elements.a;
+        }
+        const [sx, sy, rz] = worldToScreen(anchorPos[0], anchorPos[1], anchorPos[2]);
+        bodies.push({
+          name: sfRaw.name, flightKey: selectedFlightKey, sx, sy, rz,
+          screenR: 3, color: "#7fd99c", isSun: false, isFlight: true, primary: null,
+          pos: anchorPos, vel: [0, 0, 0], r: Math.hypot(...anchorPos), e, i, a
+        });
+      }
+    }
+
+    bodies.sort((a, b) => a.rz - b.rz); // consistent depth ordering: whichever rotated side currently faces the viewer (larger rz) is drawn last, on top
+
+    renderedBodies = [];
+    bodies.forEach((b) => {
+      // Direction from this body toward Sol (Sol sits at the world
+      // origin, so this is simply -pos, normalized), rotated through the
+      // same yaw/pitch transform as everything else so the lit side
+      // tracks both the body's real position relative to the Sun and the
+      // current camera angle. Bodies essentially at the origin (Sol
+      // itself) skip this -- drawBody special-cases isSun anyway.
+      let lightDirX = 0, lightDirY = -1; // arbitrary default, only used if magnitude is ~0
+      const distFromSol = Math.hypot(b.pos[0], b.pos[1], b.pos[2]);
+      if (distFromSol > 1e-9) {
+        const toSolWorld = [-b.pos[0] / distFromSol, -b.pos[1] / distFromSol, -b.pos[2] / distFromSol];
+        const [rx, ry] = rotateWorld(toSolWorld[0], toSolWorld[1], toSolWorld[2]);
+        const screenMag = Math.hypot(rx, ry);
+        if (screenMag > 1e-9) {
+          // Screen Y is flipped relative to world Y in worldToScreen
+          // (cy - ry * pxPerAU), so the direction vector's Y must flip
+          // the same way to stay consistent with where things actually
+          // render on screen.
+          lightDirX = rx / screenMag;
+          lightDirY = -ry / screenMag;
+        }
+      }
+      drawBody(b.sx, b.sy, b.screenR, b.color, b.isSun, lightDirX, lightDirY);
+      renderedBodies.push(b);
+    });
+
+    drawLockedPanelConnector();
+    drawDateLabel();
+
+    requestAnimationFrame(frame);
+  }
+
+  function hexWithAlpha(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  // Darkens a hex color toward black by the given fraction (0 = unchanged,
+  // 1 = pure black), used for the shadowed side of a planet. Mixing
+  // toward black (rather than just lowering alpha, which would let the
+  // dark space background show through and look translucent) keeps the
+  // sphere reading as a solid, lit object instead of a fading circle.
+  function hexDarken(hex, fraction) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const k = 1 - fraction;
+    return `rgb(${Math.round(r * k)},${Math.round(g * k)},${Math.round(b * k)})`;
+  }
+
+  // Stars: generate once, draw as fixed screen-space dots (decorative only)
+  let stars = null;
+  function drawStars() {
+    if (!stars) {
+      stars = [];
+      const count = 220;
+      for (let k = 0; k < count; k++) {
+        stars.push({
+          x: Math.random(),
+          y: Math.random(),
+          r: Math.random() * 1.1 + 0.2,
+          a: Math.random() * 0.5 + 0.2
+        });
+      }
+    }
+    ctx.save();
+    stars.forEach((s) => {
+      ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+      ctx.beginPath();
+      ctx.arc(s.x * viewW, s.y * viewH, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  // Minimum visible radius in px so planets remain visible/clickable even at
+  // true relative scale (per user request: AU distances true to scale, but
+  // bodies should stay visible -- true-size comparison is shown in the side
+  // panel toggle instead of warping the main scene).
+  const MIN_BODY_PX = 4;
+  const SUN_DISPLAY_PX = 14; // fixed visual size for the sun in the main scene
+  const PLANET_DISPLAY_BASE_PX = 5; // base visual size for planets in the main scene
+
+  function bodyScreenRadius(radiusKm, isSun) {
+    if (isSun) return SUN_DISPLAY_PX;
+    // Gentle log-ish scaling so gas giants read larger than terrestrials
+    // without being literally true-to-scale (which would make them
+    // invisible relative to AU-scale distances, per user's explicit request).
+    const ratio = radiusKm / PLANET_META.Earth.radiusKm;
+    const scaled = PLANET_DISPLAY_BASE_PX * Math.pow(ratio, 0.42);
+    return Math.max(MIN_BODY_PX, scaled);
+  }
+
+  // lightDirX/lightDirY: unit vector, in SCREEN space, pointing from the
+  // body TOWARD Sol -- i.e. where the lit hemisphere should face. Caller
+  // computes this once per body per frame (see frame()'s body-drawing
+  // loop) by rotating the body-to-Sol world-space direction through the
+  // same yaw/pitch transform already used for position, so the lit side
+  // visually tracks both the body's real orbital position relative to
+  // the Sun AND the current camera angle.
+  function drawBody(sx, sy, screenR, color, isSun, lightDirX, lightDirY) {
+    if (isSun) {
+      const glowR = screenR * 3.2;
+      const grad = ctx.createRadialGradient(sx, sy, 0, sx, sy, glowR);
+      grad.addColorStop(0, hexWithAlpha(color, 0.55));
+      grad.addColorStop(1, hexWithAlpha(color, 0));
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(sx, sy, glowR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // The Sun IS the light source, so it is drawn as an even, glowing
+      // disc rather than shaded -- a "lit side" wouldn't make physical
+      // sense for the thing doing the lighting.
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(sx, sy, screenR, 0, Math.PI * 2);
+      ctx.fill();
+      return;
+    }
+
+    // Offset the gradient's bright center toward the light direction, by
+    // a fraction of the body's own radius -- this is the standard
+    // Canvas2D "fake sphere" trick: a flat radial gradient with a
+    // off-center hotspot reads as a curved, lit surface far more
+    // convincingly than a gradient centered on the circle itself (which
+    // just looks like a glow, not a sphere).
+    const offsetFrac = 0.42;
+    const hx = sx + lightDirX * screenR * offsetFrac;
+    const hy = sy + lightDirY * screenR * offsetFrac;
+
+    const grad = ctx.createRadialGradient(hx, hy, 0, sx, sy, screenR * 1.35);
+    grad.addColorStop(0, hexWithAlpha(color, 1));       // lit hotspot, full color
+    grad.addColorStop(0.45, color);                      // mid-tone, true color
+    grad.addColorStop(0.78, hexDarken(color, 0.55));      // terminator region
+    grad.addColorStop(1, hexDarken(color, 0.88));         // deep shadow side
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(sx, sy, screenR, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip(); // keep the gradient strictly within the body's own disc
+    ctx.fillStyle = grad;
+    ctx.fillRect(sx - screenR, sy - screenR, screenR * 2, screenR * 2);
+    ctx.restore();
+  }
+
+  function drawDateLabel() {
+    // Rendered via the HTML panel's date input value already; nothing extra
+    // needed on canvas itself. Reserved hook if an in-canvas label is later
+    // desired (e.g., for screenshots/export).
+  }
+
+  // Bootstrap: everything above this point is function/variable
+  // definitions, which don't execute until called -- so load order
+  // doesn't matter for any of it. This is the one place load order DOES
+  // matter: buildFlightsLegend() reads FLIGHTS_RAW/FLIGHTS_ORDER, and the
+  // render loop (frame(), via requestAnimationFrame) reads them every
+  // frame through getFlightDates()/getSolvedFlight() once a flight is
+  // selected or in transit. Both must wait for loadFlightsRaw() to
+  // actually populate that data from data/flights/manifest.json and the
+  // per-flight JSON files before either runs.
+  async function bootstrap() {
+    try {
+      await loadFlightsRaw();
+    } catch (err) {
+      // Surface the failure visibly rather than silently leaving the
+      // legend empty with no explanation -- a missing or malformed
+      // data/flights/manifest.json or data/flights/<key>.json file is a real
+      // authoring error someone needs to notice and fix, not something
+      // to paper over.
+      console.error("Failed to load flight data:", err);
+      const note = document.createElement("div");
+      note.className = "empty-note";
+      note.textContent = "Failed to load flight data (see console)";
+      flightsRows.appendChild(note);
+    }
+    try {
+      await loadBodyInfo();
+    } catch (err) {
+      // Unlike flight data, body info (images/"why it matters" text) is
+      // purely supplementary to an already-functional locked panel -- log
+      // and move on rather than blocking the whole app over a missing or
+      // malformed data/bodies/info.json.
+      console.error("Failed to load body info:", err);
+    }
+    buildFlightsLegend();
+    requestAnimationFrame(frame);
+  }
+  bootstrap();
+
+})();

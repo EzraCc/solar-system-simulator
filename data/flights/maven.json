@@ -1,0 +1,25 @@
+{
+  "key": "maven",
+  "name": "MAVEN",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "2013-11-18",
+  "arrival": "2014-09-22",
+  "rocket": "Atlas V 401",
+  "payload": "MAVEN orbiter (2,454 kg)",
+  "status": "Success",
+  "significance": "MAVEN was launched to answer why Mars, which once had a thick atmosphere and liquid surface water, became the cold, dry planet seen today, by directly measuring how fast gas is currently escaping to space. It was the first mission built specifically to study Mars' upper atmosphere, ionosphere, and its interaction with the solar wind, rather than the lower atmosphere or surface. It showed that solar wind stripping and photochemical escape actively remove gas today, that loss rates spike sharply during solar storms, and in 2025 it made the first direct observation anywhere of atmospheric \"sputtering,\" demonstrating a process that has been bleeding Mars' atmosphere away for billions of years and driving its shift from a warmer, wetter world to today's thin atmosphere.",
+  "statusNote": null,
+  "assets": {
+    "spacecraft": {
+      "title": "MAVEN",
+      "infoUrl": "https://en.wikipedia.org/wiki/MAVEN",
+      "localImage": "images/missions/maven/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}

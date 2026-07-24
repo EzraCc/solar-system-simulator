@@ -1,0 +1,30 @@
+{
+  "key": "genesis",
+  "name": "Genesis",
+  "rocket": "Delta II 7326",
+  "payload": "Genesis sample-return spacecraft (636 kg, 494 kg dry)",
+  "status": "Success",
+  "significance": "Genesis was launched to directly measure the isotopic and elemental composition of the Sun, using the solar wind as a proxy, because no such precision data existed and the Sun's composition anchors models of the whole solar system's formation. It was the first mission to collect material from beyond the Moon and return it to Earth, capturing solar wind ions passively implanted into ultra-pure collector wafers over 28 months at the Earth-Sun L1 point. Despite a hard landing in 2004 caused by a parachute failure, scientists recovered usable samples and found that the Sun's oxygen and nitrogen isotope ratios differ measurably from those of Earth, the Moon, and meteorites, indicating the inner planets formed from solar-nebula material that was isotopically distinct from the Sun itself. This reshaped models of how the early solar system's building blocks became chemically fractionated from the primordial cloud.",
+  "statusNote": "Solar wind sample collection, stationed in a halo orbit around Sun-Earth L1 -- the first mission trajectory designed using modern dynamical-systems theory, giving it a genuinely low-energy, near-direct path to L1 rather than the multi-week Earth-orbit-raising phase Aditya-L1 used. Modeled as a single direct Earth->L1 transfer, matching the real trajectory's actual shape. Return trip and Earth reentry (2004-09-08, sample capsule landed hard due to a parachute failure, but most samples were still recovered and analyzed) are not modeled -- this flight is shown as remaining at L1 after arrival.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth_L1",
+      "departDate": "2001-08-08",
+      "arrivalDate": "2001-11-16"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Genesis (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Genesis_(spacecraft)",
+      "localImage": "images/missions/genesis/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.png"
+    }
+  }
+}

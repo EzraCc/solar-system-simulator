@@ -1,0 +1,30 @@
+{
+  "key": "tianwen2",
+  "name": "Tianwen-2",
+  "rocket": "Long March 3B",
+  "payload": "Tianwen-2 spacecraft (~2,100 kg)",
+  "status": "En Route",
+  "significance": "Tianwen-2 was launched to resolve the disputed origin of Kamo'oalewa, a small, fast-rotating quasi-satellite of Earth whose orbital and spectral properties leave it unclear whether it is a fragment blasted off the Moon or an ordinary main-belt asteroid captured into Earth's vicinity. It is the first mission to attempt a sample return from a quasi-satellite, and it carries three distinct, untested-in-combination sampling systems -- hovering collection, touch-and-go, and a robotic anchor-and-attach method using drill-tipped arms -- so it can adapt to whatever surface cohesion its approach survey reveals. After a roughly 400-day cruise, the spacecraft rendezvoused with the roughly 20-meter, school-bus-sized Kamo'oalewa in mid-2026 and returned the first close-up images of the object, refining its shape and spin state. Sample collection is planned by 2027, with return to Earth expected in late 2027; analysis of the returned material is intended to settle the lunar-versus-asteroid-belt origin question, while an extended mission will go on to visit the main-belt comet 311P/PANSTARRS.",
+  "statusNote": "Near-Earth asteroid sample return, then onward to a main-belt comet. This entry models only the confirmed primary target -- rendezvous with 469219 Kamo'oalewa, achieved 2026-06-07 after station-keeping first at 30,000 km then 2,000 km, with sample collection (touch-and-go plus anchor-and-attach, targeting 200-1,000g) underway through April 2027 and Earth return expected late November 2027. The comet extension -- an Earth gravity-assist flyby after sample drop-off, then on to comet 311P/PanSTARRS, arrival not expected until 2035-01 -- is not modeled here: those dates are still provisional this far out (the same reason Tianwen-4, MMX, and other not-yet-executed mission phases aren't modeled), matching how OSIRIS-REx's Apophis extension and Hayabusa2's Torifune extension are also left off past their primary target.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "kamooalewa",
+      "departDate": "2025-05-28",
+      "arrivalDate": "2026-06-07"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Tianwen-2",
+      "infoUrl": "https://en.wikipedia.org/wiki/Tianwen-2",
+      "localImage": "images/missions/tianwen2/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Long March 3B",
+      "infoUrl": "https://en.wikipedia.org/wiki/Long_March_3B",
+      "localImage": "images/rockets/long_march_3b.jpg"
+    }
+  }
+}

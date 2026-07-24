@@ -1,0 +1,43 @@
+{
+  "key": "hera",
+  "name": "Hera",
+  "rocket": "Falcon 9",
+  "payload": "Hera orbiter + Milani and Juventas CubeSats (~1,128 kg combined)",
+  "status": "En Route",
+  "significance": "Hera was launched to return to the Didymos-Dimorphos system after DART's impact and gather the \"ground truth\" needed to turn DART's single demonstration into a reusable, scalable planetary defense technique. It is the first mission to conduct a detailed, close-up survey of a binary asteroid system, carrying two CubeSats and radar and gravity-science instruments to directly measure properties DART could only infer from a distance. Its primary goals are to precisely measure Dimorphos's mass and internal structure (via the gravitational \"wobble\" it induces in Didymos), map the shape and depth of the DART impact crater, and characterize both bodies' composition and porosity. Because Dimorphos represents the common S-type near-Earth asteroid class most relevant to Earth-impact hazards, Hera's results are expected to let scientists convert DART's momentum-transfer result into a predictive model applicable to other potentially hazardous asteroids.",
+  "statusNote": "Planetary-defense follow-up to NASA's DART impact; post-impact survey of the binary asteroid system. Single Mars gravity-assist flyby, completed 2025-03-12 at 5,000 km altitude -- Hera also imaged Mars's moon Deimos from as close as 300 km during the same pass, purely incidental (Deimos's gravity is far too weak to meaningfully affect the trajectory), not modeled as a separate leg. Didymos rendezvous timeline has shifted earlier since launch (ESA now targets an 'impulsive rendezvous' around October 2026, with orbit-insertion completing late January/early February 2027); this file uses 2027-01-15 as a representative arrival date pending a firmer published one.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Mars",
+      "departDate": "2024-10-07",
+      "arrivalDate": "2025-03-12"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mars",
+      "date": "2025-03-12",
+      "periapsisKm": 5000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mars",
+      "toBody": "didymos",
+      "departDate": "2025-03-12",
+      "arrivalDate": "2027-01-15"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Hera (space mission)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Hera_(space_mission)",
+      "localImage": "images/missions/hera/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Falcon 9",
+      "infoUrl": "https://en.wikipedia.org/wiki/Falcon_9",
+      "localImage": "images/rockets/falcon_9.png"
+    }
+  }
+}
