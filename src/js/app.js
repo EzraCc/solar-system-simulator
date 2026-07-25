@@ -2213,14 +2213,25 @@
       pitch = pitchStart - dy * 0.006;
       pitch = Math.max(MIN_PITCH, Math.min(MAX_PITCH, pitch));
     } else if (e.touches.length === 2 && touchStartDist) {
+      // Panning while a body is locked/followed is meaningless -- the
+      // camera-follow code re-centers on the tracked body every frame
+      // regardless, so any pan offset here would just fight it. The
+      // mouse path (dragButtonIsPan's mousedown handler above) already
+      // skips starting a pan in that case; two-finger touch pan had no
+      // equivalent guard, so a pinch while locked used to silently
+      // accumulate a camX/camY offset that camera-follow immediately
+      // overrode anyway -- harmless but pointless. Still allow the pinch
+      // itself to zoom either way.
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const dist = Math.hypot(dx, dy);
       pxPerAU = Math.max(2, Math.min(20000, touchStartPxPerAU * (dist / touchStartDist)));
-      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-      camX = camStartX + (midX - touchMidStartX);
-      camY = camStartY + (midY - touchMidStartY);
+      if (!lockedBodyName) {
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        camX = camStartX + (midX - touchMidStartX);
+        camY = camStartY + (midY - touchMidStartY);
+      }
     }
   }, { passive: true });
   canvas.addEventListener("touchend", () => { isRotating = false; isPanning = false; touchStartDist = null; });
@@ -2713,12 +2724,38 @@
       mouseDownWasDrag = true;
     }
   });
+  // Touch has no native "click" gesture -- the browser synthesizes one
+  // from a tap (touchstart+touchend with little movement in between),
+  // and that synthesized click is what the listener below actually
+  // receives. But mouseDownWasDrag was only ever updated from mouse
+  // events, so it stayed permanently false through any touch session --
+  // meaning a one-finger ROTATE drag on mobile would still fire a
+  // synthesized click at wherever the finger lifted, misfiring a body
+  // selection mid-gesture. Feeding touchstart/touchmove into the exact
+  // same threshold tracking mousedown/mousemove already use closes that
+  // gap without needing a separate touch-specific click handler.
+  canvas.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) return; // 2-finger gesture is pan/zoom, never a tap-to-select
+    mouseDownX = e.touches[0].clientX; mouseDownY = e.touches[0].clientY;
+    mouseDownWasDrag = false;
+  }, { passive: true });
+  canvas.addEventListener("touchmove", (e) => {
+    if (e.touches.length !== 1) return;
+    if (Math.hypot(e.touches[0].clientX - mouseDownX, e.touches[0].clientY - mouseDownY) > CLICK_DRAG_THRESHOLD_PX) {
+      mouseDownWasDrag = true;
+    }
+  }, { passive: true });
   canvas.addEventListener("click", (e) => {
     if (mouseDownWasDrag) return; // was a rotate/pan gesture, not a click
     if (e.button === 2 || e.shiftKey) return; // pan gesture
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
+
+    // A mouse pointer is precise; a fingertip isn't -- give touch a much
+    // more forgiving hit radius so tapping a small/distant body (or a
+    // thin flight marker) doesn't require pixel-perfect accuracy.
+    const minHitR = isMobileLayout ? 24 : 8;
 
     // Two-pass hit test: flight markers first, regardless of depth-sort
     // order. renderedBodies is sorted by rz (camera depth) for correct
@@ -2732,14 +2769,14 @@
     for (const b of renderedBodies) {
       if (!b.isFlight) continue;
       const dx = mx - b.sx, dy = my - b.sy;
-      const hitR = Math.max(b.screenR, 8);
+      const hitR = Math.max(b.screenR, minHitR);
       if (dx * dx + dy * dy <= hitR * hitR) { hit = b; break; }
     }
     if (!hit) {
       for (const b of renderedBodies) {
         if (b.isFlight) continue;
         const dx = mx - b.sx, dy = my - b.sy;
-        const hitR = Math.max(b.screenR, 8);
+        const hitR = Math.max(b.screenR, minHitR);
         if (dx * dx + dy * dy <= hitR * hitR) { hit = b; break; }
       }
     }
