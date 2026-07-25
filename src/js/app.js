@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "11";
+  const BUILD_VERSION = "12";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -2600,7 +2600,16 @@
       flightsRows.appendChild(note);
       return;
     }
-    FLIGHTS_ORDER.forEach((key) => {
+    // Sorted alphabetically by display name for the legend -- at 38+
+    // flights and growing, launch-chronological order (FLIGHTS_ORDER's own
+    // sequence, still used everywhere else: flightColor's hue assignment,
+    // the GA-chain/render loops, etc.) meant finding a specific mission
+    // required already knowing roughly when it launched. This sort is
+    // local to how the legend is BUILT, not a mutation of FLIGHTS_ORDER
+    // itself, so nothing else keys off it.
+    const sortedKeys = [...FLIGHTS_ORDER].sort((a, b) =>
+      FLIGHTS_RAW[a].name.localeCompare(FLIGHTS_RAW[b].name));
+    sortedKeys.forEach((key) => {
       const raw = FLIGHTS_RAW[key];
       const row = document.createElement("div");
       row.className = "row";
