@@ -375,8 +375,17 @@
      reposition-by-drag and the native resize handle are both
      desktop-only interactions that don't apply here, so both are
      disabled. */
+  /* bottom: 306px clears the footer cluster -- #camera-controls stacked
+     above #bottom-right-controls (see MOBILE CONTROL LAYOUT below),
+     measured in a live browser (Playwright): camera-controls grows from
+     32px tall (just "Reset view") to 68px ("Reset view" + "Stop
+     tracking" both showing, which happens exactly when a body/flight is
+     locked -- i.e. exactly when this sheet is also open). 226px own
+     offset + 68px worst-case height + 12px gap = 306px. Without this the
+     sheet's z-index (40) beats the footer panels' default stacking and
+     visually covers them rather than sitting alongside. */
   body.mobile:not(.landscape) #locked-panel {
-    left: 0; right: 0; bottom: 0; top: auto;
+    left: 0; right: 0; bottom: 306px; top: auto;
     width: 100%; max-width: 100%; min-width: 0;
     border-radius: 16px 16px 0 0;
     resize: none;
@@ -384,7 +393,7 @@
     transition: max-height 0.25s ease;
   }
   body.mobile:not(.landscape) #locked-panel.sheet-full {
-    max-height: calc(100vh - 32px);
+    max-height: calc(100vh - 322px);
   }
 
   /* Landscape mobile: docked sidebar instead -- short/wide viewport has
@@ -554,34 +563,63 @@
 
   /* =========================================================================
      MOBILE CONTROL LAYOUT
-     Portrait's locked panel is a FULL-WIDTH bottom sheet (see the
-     "body.mobile:not(.landscape) #locked-panel" rule above) that can sit
-     anywhere from "peek" (40vh) to nearly the whole screen -- anything
-     else anchored to the bottom edge would either be covered by it or
-     require guessing a pixel offset that stays correct across every
-     content height. Simpler and more robust: move the persistent
-     controls (time/date/camera) to the TOP on mobile instead, leaving
-     the bottom edge exclusively to the sheet. zoom-hint's desktop-only
-     instructions (mouse/keyboard modifiers) are dropped entirely rather
-     than translated -- screen space is scarce and none of it applies to
-     touch anyway.
+     Time/date controls stay at the bottom (matching desktop) rather than
+     moving to the top -- shrunk instead, so the top of the screen isn't
+     crowded with everything at once. camera-controls moves to bottom-
+     left (small, secondary actions) so the two don't collide with each
+     other. Portrait's locked panel is a full-width bottom sheet (see
+     "body.mobile:not(.landscape) #locked-panel" above); its "bottom"
+     offset is set to actually clear #bottom-right-controls' real
+     rendered height (measured in a live browser via Playwright, not
+     guessed) rather than a value that only looks right by luck. zoom-
+     hint's desktop-only instructions (mouse/keyboard modifiers) are
+     dropped entirely rather than translated -- screen space is scarce
+     and none of it applies to touch anyway.
   ========================================================================= */
   body.mobile #zoom-hint { display: none; }
 
-  /* Below the legend-drawer-toggle (top-left, 44px + 16px margin) so it
-     doesn't overlap that button. */
   body.mobile #bottom-right-controls {
-    top: 68px; bottom: auto; left: 16px; right: auto;
-    width: calc(100vw - 32px); max-width: 360px;
-    align-items: stretch;
+    right: 12px; left: auto; bottom: 12px; top: auto;
+    gap: 6px;
   }
-  body.mobile #time-panel { min-width: 0; }
-  body.mobile #date-panel { justify-content: flex-start; }
+  body.mobile #time-panel { min-width: 0; gap: 5px; }
+  body.mobile #time-panel .row { gap: 6px; }
+  body.mobile #speed-readout { min-width: 58px; font-size: 11px; }
+  body.mobile #date-panel { gap: 6px; }
+  body.mobile #date-panel input[type="date"] { font-size: 11px; padding: 3px 6px; }
+  /* More specific than the general "bigger tap target" rule from phase 2
+     (adds #bottom-right-controls to the selector) so it wins regardless
+     of source order -- this footer needs to be visibly compact, not just
+     tappable, so it gets its own smaller sizing rather than the ~44px
+     guideline used everywhere else. Still comfortably tappable (~32-34px
+     including line-height/borders), just not as generous. */
+  body.mobile #bottom-right-controls button {
+    padding: 7px 10px; font-size: 12px;
+  }
 
-  /* Below scale-toggle-panel's two switches, right-aligned to match it.
-     Small/secondary actions -- acceptable if size-compare-panel (only
-     shown when the true-sizes toggle is on) occasionally runs into this,
-     lower priority than the primary time/date controls opposite it. */
+  /* Stacked directly above #bottom-right-controls (both right-anchored)
+     rather than bottom-left -- measured in a live browser (Playwright):
+     bottom-right-controls' real height ranges 166.5px (idle) to 202.5px
+     (mid-date-edit, when the date row wraps to 2 lines on a narrow
+     screen); a bottom-left position at this width overlapped it
+     horizontally since bottom-right-controls is ~300px wide, most of
+     the screen on a narrow phone. 226px = 12px own margin + 202.5px
+     worst-case height + 12px margin, rounded up. */
   body.mobile #camera-controls {
-    top: 100px; bottom: auto; left: auto; right: 16px; transform: none;
+    bottom: 226px; left: auto; right: 12px; top: auto; transform: none;
+    flex-direction: column; gap: 6px; padding: 0;
+  }
+  body.mobile #camera-controls button { padding: 7px 10px; font-size: 12px; }
+
+  /* Landscape docks the locked panel to the RIGHT edge as a sidebar (see
+     "body.mobile.landscape #locked-panel" above), which would otherwise
+     cover this whole right-anchored footer cluster (confirmed visually
+     via Playwright) exactly like the portrait sheet did before its own
+     bottom offset was added. Landscape has surplus width, so simplest
+     fix is moving the footer to the left edge instead of computing yet
+     another offset -- the canvas is unobstructed there regardless of
+     whether the sidebar is open. */
+  body.mobile.landscape #bottom-right-controls,
+  body.mobile.landscape #camera-controls {
+    right: auto; left: 12px;
   }
