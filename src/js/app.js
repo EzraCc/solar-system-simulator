@@ -1278,6 +1278,16 @@
   // Handles: planet names ("Earth"), Lagrange point refs ("Earth_L2"),
   // and "Sun" (origin).  Used by getSolvedLeg and computeMultiLegPosition.
   function getBodyPositionAtDays(bodyKey, t) {
+    // A lambert leg endpoint is usually a named body, but can instead be a
+    // fixed heliocentric AU coordinate ({ fixedPos: [x,y,z] }) recorded
+    // from real spacecraft ephemeris (JPL Horizons) at that leg boundary's
+    // specific date -- used to split an otherwise-unconstrained two-point
+    // Lambert solve through a real intermediate waypoint, for a leg where
+    // the endpoints alone produce a wildly wrong orbit shape (see
+    // BepiColombo's leg 0 comment in its flight JSON). Not tied to any
+    // moving body, so it doesn't depend on t at all -- t is only accepted
+    // here to keep this function's call signature uniform for every caller.
+    if (bodyKey && typeof bodyKey === 'object' && bodyKey.fixedPos) return bodyKey.fixedPos;
     if (bodyKey === 'Sun' || bodyKey === 'Sol') return [0, 0, 0];
     const lpMatch = bodyKey.match(/^([A-Za-z]+)_(L[1245])$/);
     if (lpMatch) {

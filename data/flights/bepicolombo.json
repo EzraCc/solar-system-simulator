@@ -8,10 +8,18 @@
   "statusNote": "ESA/JAXA joint mission. 9 gravity assists: 1 Earth, 2 Venus, 6 Mercury. Mercury orbit insertion 2026-11-21. Tier 1 visualization uses chained Lambert arcs between flyby bodies.",
   "legs": [
     {
+      "_comment": "Real BepiColombo trajectory stays within ~0.88-1.19 AU this whole leg (JPL Horizons ephemeris, target -121, checked 2026-07) -- a plain 2-point Lambert solve between the Oct-2018 and Apr-2020 Earth encounters produces an unconstrained a=1.46 AU / e=0.58 orbit (apoapsis 2.30 AU, past Mars), since it has no way to know the spacecraft used continuous ion thrust rather than coasting. Split into two legs through a real recorded waypoint (2019-07-08, near this leg's actual max heliocentric distance) so each half is anchored to an actual position instead of extrapolating freely.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [0.3554334282809242, -1.140526855379426, -0.01589126223750011] },
       "departDate": "2018-10-20",
+      "arrivalDate": "2019-07-08"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.3554334282809242, -1.140526855379426, -0.01589126223750011] },
+      "toBody": "Earth",
+      "departDate": "2019-07-08",
       "arrivalDate": "2020-04-10"
     },
     {
