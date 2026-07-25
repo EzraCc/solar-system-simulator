@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=15">
+<link rel="stylesheet" href="src/css/style.css?v=18">
 </head>
 <body>
 
@@ -147,6 +147,14 @@
   <div id="glossary-panel-body"></div>
 </div>
 
-<script src="src/js/app.js?v=25"></script>
+<!-- "Watch it happen" maneuver demo: a docked caption bar, not a modal --
+     the whole point is that the main scene stays visible and playing
+     behind it. See startManeuverDemo/exitManeuverDemo in app.js. -->
+<div class="panel" id="demo-caption">
+  <div id="demo-caption-text"></div>
+  <button type="button" id="demo-exit-btn">Exit demo</button>
+</div>
+
+<script src="src/js/app.js?v=26"></script>
 </body>
 </html>

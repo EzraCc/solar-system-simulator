@@ -2644,19 +2644,36 @@
      (flightProfileHtml) for the mission-specific numbers this generalizes.
   ========================================================================= */
 
+  // Same as lpSectionHtml, plus an optional "Watch it happen" button that
+  // drives startManeuverDemo (defined below) -- prose stays the primary
+  // explanation, the button is a way to actually SEE it using this
+  // simulator's own physics/rendering on a real mission's real leg,
+  // rather than a separate hand-built illustration.
+  function glossarySectionHtml(heading, bodyHtml, demoType) {
+    const btn = demoType
+      ? `<button type="button" class="demo-watch-btn" data-demo-type="${demoType}">▶ Watch it happen</button>`
+      : "";
+    return `<div class="lp-section"><div class="lp-section-heading">${heading}</div><div class="lp-section-body">${bodyHtml}</div>${btn}</div>`;
+  }
+
   const GLOSSARY_HTML =
-    lpSectionHtml("Coasting between burns (Lambert transfers)",
-      "Between a launch and an arrival, and between one flyby and the next, this simulator draws a smooth ellipse or hyperbola. That shape isn't decoration: outside of the specific moments below (a launch burn, a flyby, an orbit-raising burn, or continuous low-thrust cruising), nothing is pushing the spacecraft at all. Gravity alone shapes the path once it's coasting, the same way a thrown ball's arc is entirely gravity once it leaves your hand.") +
-    lpSectionHtml("Gravity assists: how a flyby changes speed",
+    glossarySectionHtml("Coasting between burns (Lambert transfers)",
+      "Between a launch and an arrival, and between one flyby and the next, this simulator draws a smooth ellipse or hyperbola. That shape isn't decoration: outside of the specific moments below (a launch burn, a flyby, an orbit-raising burn, or continuous low-thrust cruising), nothing is pushing the spacecraft at all — and without that initial burn, it would simply stay on whatever orbit it was already on. Gravity alone shapes the path once it's coasting, the same way a thrown ball's arc is entirely gravity once it leaves your hand.",
+      "lambert") +
+    glossarySectionHtml("Gravity assists: how a flyby changes speed",
       "In the planet's own frame, a flyby doesn't speed a spacecraft up or slow it down at all — it only turns the direction of its velocity relative to the planet, by an angle set by how close the flyby passes and how fast it's moving. Back in the Sun's frame, since the planet itself is orbiting, that turn can add to or subtract from the spacecraft's solar-orbit speed depending on which side of the planet it passes: catching the planet from behind and swinging past its leading side tends to boost the spacecraft; approaching from ahead and passing its trailing side tends to brake it." +
       "<br><br>A boost or brake happens at essentially one point in the orbit — near the planet — and doesn't move that point right away. What it changes is the orbit's total energy, which reshapes the <em>opposite</em> side: a brake near the orbit's far point (aphelion) pulls the near point (perihelion) in closer to the Sun; a boost near the near point pushes the far point out. That's what makes a \"small\" few-km/s change matter. Parker Solar Probe's Venus brakes are each only 2–6 km/s — modest next to the ~30 km/s it's already moving at that distance — but because each one happens near the orbit's far point, it drags the near point in: after just its first three Venus flybys, PSP's orbital period had already shrunk from 174 days to 112, and its perihelion kept falling with each later pass, eventually diving under 0.05 AU (about 9 solar radii) from the Sun. Run the other way, a single ~4 km/s Earth flyby stretched the Lucy mission's far point from 2.3 AU out to 5.8 AU — reaching Jupiter's own distance — and nearly tripled its orbital period, from about two years to over six." +
-      "<br><br>This is exactly how Venus helps Parker Solar Probe get <em>closer</em> to the Sun instead of farther from it. Simply pointing at the Sun and firing an engine doesn't work: Earth's own orbital motion is already about 30 km/s sideways, and anything launched from Earth keeps that sideways speed unless something cancels it out — expensive to do with propellant alone. Repeated Venus brakes shed that sideways speed a few km/s at a time, letting the orbit sink closer to the Sun with each pass.") +
-    lpSectionHtml("Orbit-raising sequences (parking orbits)",
-      "Missions launched on a smaller, cheaper rocket sometimes can't reach escape velocity in one shot. Instead, the spacecraft parks in an elliptical orbit around Earth and, every time it swings back through its closest point (perigee), fires its own engine again to stretch the far side of the orbit a little further out. Repeated enough times, the orbit eventually reaches escape velocity on its own — slower than a single powerful upper stage, but far cheaper. Aditya-L1 and Mangalyaan, both launched on ISRO's PSLV, used this technique.") +
-    lpSectionHtml("Loiter / station-keeping",
-      "Some missions deliberately pause at a location — a body, or a gravitationally stable Lagrange point like Earth–L2 — for weeks or months before their next maneuver, whether to run science operations, complete a checkout period, or wait for the next window when their following target is correctly positioned for departure.") +
-    lpSectionHtml("Continuous low-thrust (ion) missions",
-      "Most spacecraft here fly the way the sections above describe: brief chemical burns bracketing long coasts. A few — Dawn, Hayabusa, Hayabusa2, and BepiColombo — instead carry ion engines that thrust continuously for months at a time, at a tiny fraction of a chemical engine's force but far higher efficiency. This simulator's Lambert-arc rendering approximates their true, gently-curving continuous-thrust path rather than modeling it exactly, a simplification each of those missions' own notes already flag.");
+      "<br><br>This is exactly how Venus helps Parker Solar Probe get <em>closer</em> to the Sun instead of farther from it. Simply pointing at the Sun and firing an engine doesn't work: Earth's own orbital motion is already about 30 km/s sideways, and anything launched from Earth keeps that sideways speed unless something cancels it out — expensive to do with propellant alone. Repeated Venus brakes shed that sideways speed a few km/s at a time, letting the orbit sink closer to the Sun with each pass.",
+      "gravity_assist") +
+    glossarySectionHtml("Orbit-raising sequences (parking orbits)",
+      "Missions launched on a smaller, cheaper rocket sometimes can't reach escape velocity in one shot. Instead, the spacecraft parks in an elliptical orbit around Earth and, every time it swings back through its closest point (perigee), fires its own engine again to stretch the far side of the orbit a little further out. Repeated enough times, the orbit eventually reaches escape velocity on its own — slower than a single powerful upper stage, but far cheaper. Aditya-L1 and Mangalyaan, both launched on ISRO's PSLV, used this technique.",
+      "geocentric_orbit") +
+    glossarySectionHtml("Loiter / station-keeping",
+      "Some missions deliberately pause at a location — a body, or a gravitationally stable Lagrange point like Earth–L2 — for weeks or months before their next maneuver, whether to run science operations, complete a checkout period, or wait for the next window when their following target is correctly positioned for departure.",
+      "loiter") +
+    glossarySectionHtml("Continuous low-thrust (ion) missions",
+      "Most spacecraft here fly the way the sections above describe: brief chemical burns bracketing long coasts. A few — Dawn, Hayabusa, Hayabusa2, and BepiColombo — instead carry ion engines that thrust continuously for months at a time, at a tiny fraction of a chemical engine's force but far higher efficiency. This simulator's Lambert-arc rendering approximates their true, gently-curving continuous-thrust path rather than modeling it exactly, a simplification each of those missions' own notes already flag.",
+      "ion_thrust");
 
   const glossaryToggle  = document.getElementById("glossary-toggle");
   const glossaryPanel   = document.getElementById("glossary-panel");
@@ -2672,6 +2689,230 @@
   glossaryBackdrop.addEventListener("click", () => {
     document.body.classList.remove("glossary-open");
   });
+
+  /* =========================================================================
+     MANEUVER DEMOS ("Watch it happen" -- animates a real mission's real leg
+     using this simulator's own physics/camera/clock rather than a separate
+     illustration)
+
+     Built fresh on demand (not as a top-level constant) because FLIGHTS_RAW
+     (app.js ~line 158) starts as an empty object and is only populated by
+     loadFlightsRaw()'s async fetch -- computing this eagerly at module-load
+     time would run before that data exists. Cheap enough (a handful of
+     date parses) that recomputing per call, like getFlightDestinations
+     elsewhere in this file, needs no caching.
+  ========================================================================= */
+
+  const DEMO_TARGET_SECONDS = 14; // how long each demo takes to play out in real time
+  const DEMO_PX_PER_AU = 260;     // fixed demo zoom -- tighter than the default 70 so the
+                                   // camera-followed spacecraft's own maneuver reads clearly
+
+  function getManeuverDemoConfig(typeKey) {
+    if (typeKey === 'lambert') {
+      const raw = FLIGHTS_RAW.dart;
+      const leg = raw.legs[0];
+      const depart = daysSinceJ2000(parseFlightDate(leg.departDate));
+      const arrive = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+      return {
+        flightKey: 'dart',
+        startDays: depart - 5,
+        endDays: arrive + 2,
+        stages: [
+          { atDays: depart - 5, text: "DART is still coasting on Earth's own orbit — nothing has changed yet." },
+          { atDays: depart, text: "Departure burn: DART leaves Earth's orbit and starts coasting toward Didymos. From here to arrival, gravity is the only force acting on it — no more engine burns." },
+          { atDays: arrive - 5, text: "Still coasting — the whole ~10-month cruise is a single arc, shaped only by gravity since that one burn at the start." },
+        ],
+      };
+    }
+
+    if (typeKey === 'gravity_assist') {
+      const raw = FLIGHTS_RAW.psp;
+      const gaLeg = raw.legs[1]; // first Venus flyby
+      const flyby = daysSinceJ2000(parseFlightDate(gaLeg.date));
+      const ev = getGAEvents('psp').find((e) => e.legIndex === 1);
+      let resultText = "braked PSP's heliocentric speed, pulling its orbit's far point closer to the Sun";
+      if (ev && ev.speedOutKmS !== undefined) {
+        const before = apsisAU(ev.aBeforeAU, ev.eBefore), after = apsisAU(ev.aAfterAU, ev.eAfter);
+        resultText = `braked PSP from ${ev.speedInKmS.toFixed(1)} to ${ev.speedOutKmS.toFixed(1)} km/s relative to the Sun, pulling its orbit's far point in from ${before.Q.toFixed(3)} to ${after.Q.toFixed(3)} AU`;
+      }
+      return {
+        flightKey: 'psp',
+        startDays: flyby - 20,
+        endDays: flyby + 25,
+        stages: [
+          { atDays: flyby - 20, text: "PSP is approaching Venus after coasting from Earth." },
+          { atDays: flyby - 1, text: "Flyby moment: Venus's gravity bends PSP's path. Its speed relative to VENUS barely changes — only the direction does. But since Venus itself is moving, that turn changes PSP's speed relative to the SUN too." },
+          { atDays: flyby + 3, text: `Result: this flyby ${resultText} — a brake, not a boost, which is exactly how Venus helps PSP get closer to the Sun.` },
+        ],
+      };
+    }
+
+    if (typeKey === 'geocentric_orbit') {
+      const raw = FLIGHTS_RAW.aditya_l1;
+      const legs = raw.legs.filter((l) => l.type === 'geocentric_orbit');
+      const first = legs[0], last = legs[legs.length - 1];
+      const depart = daysSinceJ2000(parseFlightDate(first.departDate));
+      const lastArrive = daysSinceJ2000(parseFlightDate(last.arrivalDate));
+      const mid = depart + (lastArrive - depart) / 2;
+      return {
+        flightKey: 'aditya_l1',
+        startDays: depart - 1,
+        endDays: lastArrive + 4,
+        stages: [
+          { atDays: depart - 1, text: "Aditya-L1 begins in a small parking orbit around Earth." },
+          { atDays: mid, text: "Each pass through perigee (closest approach), the engine fires again, stretching the far side of the orbit further out." },
+          { atDays: lastArrive, text: `After ${legs.length} burns, the orbit has grown from ${Math.round(first.periapsisKm).toLocaleString()}×${Math.round(first.apoapsisKm).toLocaleString()} km to ${Math.round(last.periapsisKm).toLocaleString()}×${Math.round(last.apoapsisKm).toLocaleString()} km — enough to coast the rest of the way to the Sun–Earth L1 point.` },
+        ],
+      };
+    }
+
+    if (typeKey === 'loiter') {
+      const raw = FLIGHTS_RAW.escapade;
+      const loiterLeg = raw.legs.find((l) => l.type === 'loiter');
+      const loiterIdx = raw.legs.indexOf(loiterLeg);
+      const arriveLeg = raw.legs[loiterIdx - 1];
+      const arrive = daysSinceJ2000(parseFlightDate(arriveLeg.arrivalDate));
+      const depart = daysSinceJ2000(parseFlightDate(loiterLeg.departure));
+      return {
+        flightKey: 'escapade',
+        startDays: arrive - 3,
+        endDays: depart + 8,
+        stages: [
+          { atDays: arrive - 3, text: "ESCAPADE is arriving at the Earth–L2 point." },
+          { atDays: arrive + (depart - arrive) / 2, text: "It stays here for months — no burns, just holding position near L2 for spacecraft checkout — before its next departure window opens. (Sped way up here so the wait doesn't take, well, months.)" },
+          { atDays: depart, text: "Departure: ESCAPADE leaves L2, heading back past Earth for a gravity assist on its way to Mars." },
+        ],
+      };
+    }
+
+    if (typeKey === 'ion_thrust') {
+      const raw = FLIGHTS_RAW.dawn;
+      const leg = raw.legs.find((l) => l.type === 'lambert' && l.fromBody === 'Earth');
+      const depart = daysSinceJ2000(parseFlightDate(leg.departDate));
+      const arrive = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+      return {
+        flightKey: 'dawn',
+        startDays: depart - 3,
+        endDays: arrive + 3,
+        stages: [
+          { atDays: depart - 3, text: "Dawn is about to leave Earth under continuous ion thrust — not a single burn, but a gentle push that never stops." },
+          { atDays: depart + (arrive - depart) / 3, text: "Unlike a chemical rocket, Dawn's ion engine fires continuously for months at a time, at a tiny fraction of the force but far higher efficiency." },
+          { atDays: arrive - 5, text: "Arrival at Mars for a gravity assist. The smooth curve shown here approximates that continuous thrust — a real chemical-propulsion coast would only burn at the very start." },
+        ],
+      };
+    }
+
+    return null;
+  }
+
+  let demoSnapshot = null;   // saved state to restore on exit, or null while no demo is active
+  let demoStages = null;     // this demo's caption stages, sorted by atDays
+  let demoEndDays = null;
+  let demoRafId = null;
+
+  const demoCaption = document.getElementById("demo-caption");
+  const demoCaptionText = document.getElementById("demo-caption-text");
+  const demoExitBtn = document.getElementById("demo-exit-btn");
+
+  function setDemoControlsDisabled(disabled) {
+    speedSlider.disabled = disabled;
+    playPauseBtn.disabled = disabled;
+    editDateBtn.disabled = disabled;
+    document.getElementById("reset-speed").disabled = disabled;
+  }
+
+  function startManeuverDemo(typeKey) {
+    const demo = getManeuverDemoConfig(typeKey);
+    if (!demo || !FLIGHTS_RAW[demo.flightKey]) return; // flight data not loaded yet
+
+    if (demoSnapshot === null) {
+      demoSnapshot = {
+        simDate: new Date(simDate), speedSliderValue: speedSlider.value,
+        lockedBodyName, selectedFlightKey, sceneVisibilityMode,
+        pxPerAU, camX, camY, paused,
+      };
+    }
+
+    document.body.classList.remove("glossary-open");
+    document.body.classList.add("demo-active");
+
+    sceneVisibilityMode = "focused";
+    focusSwitch.classList.toggle("on", true);
+    selectFlight(demo.flightKey);
+    autoPausedOnLock = false; // this is a deliberate play state, not an auto-pause to track/undo
+
+    simDate = dateFromDaysSinceJ2000(demo.startDays);
+    dateInput.value = dateInputValue(simDate);
+    pxPerAU = DEMO_PX_PER_AU;
+
+    const spanDays = demo.endDays - demo.startDays;
+    speedMultiplier = spanDays * 60 / (DEMO_TARGET_SECONDS * EARTH_YEAR_DAYS);
+    speedReadout.textContent = formatSpeed(speedMultiplier);
+    setPaused(false);
+    setDemoControlsDisabled(true);
+
+    demoStages = demo.stages.slice().sort((a, b) => a.atDays - b.atDays);
+    demoEndDays = demo.endDays;
+    demoCaptionText.textContent = demoStages[0].text;
+    demoExitBtn.textContent = "Exit demo";
+    demoCaption.classList.remove("demo-ended");
+
+    if (demoRafId !== null) cancelAnimationFrame(demoRafId);
+    demoWatchTick();
+  }
+
+  function demoWatchTick() {
+    if (demoSnapshot === null) return; // demo was exited
+    const nowDays = daysSinceJ2000(simDate);
+    let current = demoStages[0];
+    for (const stage of demoStages) {
+      if (nowDays >= stage.atDays) current = stage;
+    }
+    if (demoCaptionText.textContent !== current.text) demoCaptionText.textContent = current.text;
+
+    if (nowDays >= demoEndDays && !paused) {
+      setPaused(true);
+      demoCaption.classList.add("demo-ended");
+      demoExitBtn.textContent = "Exit demo";
+    }
+    demoRafId = requestAnimationFrame(demoWatchTick);
+  }
+
+  function exitManeuverDemo() {
+    if (demoSnapshot === null) return;
+    if (demoRafId !== null) { cancelAnimationFrame(demoRafId); demoRafId = null; }
+    const snap = demoSnapshot;
+    demoSnapshot = null; // clear first so the watch tick (if it fires once more) no-ops
+
+    if (snap.selectedFlightKey) {
+      selectFlight(snap.selectedFlightKey);
+    } else if (snap.lockedBodyName) {
+      lockBody(snap.lockedBodyName);
+    } else {
+      lockBody(null);
+    }
+    autoPausedOnLock = false;
+
+    simDate = snap.simDate;
+    dateInput.value = dateInputValue(simDate);
+    speedSlider.value = snap.speedSliderValue;
+    updateSpeedFromSlider();
+    sceneVisibilityMode = snap.sceneVisibilityMode;
+    focusSwitch.classList.toggle("on", sceneVisibilityMode === "focused");
+    pxPerAU = snap.pxPerAU;
+    camX = snap.camX; camY = snap.camY;
+    setPaused(snap.paused);
+    setDemoControlsDisabled(false);
+
+    document.body.classList.remove("demo-active");
+    document.body.classList.add("glossary-open");
+  }
+
+  document.getElementById("glossary-panel-body").addEventListener("click", (e) => {
+    const btn = e.target.closest(".demo-watch-btn");
+    if (btn) startManeuverDemo(btn.dataset.demoType);
+  });
+  demoExitBtn.addEventListener("click", exitManeuverDemo);
 
   /* =========================================================================
      LEGEND

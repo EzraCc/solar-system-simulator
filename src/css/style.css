@@ -294,6 +294,47 @@
     pointer-events: none;
   }
 
+  /* "Watch it happen" maneuver demo (startManeuverDemo/exitManeuverDemo in
+     app.js) -- a small docked caption, not a modal, since the whole point
+     is that the real 3D scene stays visible and playing behind it. */
+  #demo-caption {
+    display: none;
+    position: fixed;
+    top: 16px; left: 50%; transform: translateX(-50%);
+    max-width: 520px; width: calc(100% - 32px);
+    z-index: 70;
+    flex-direction: column; gap: 8px;
+    text-align: center;
+  }
+  body.demo-active #demo-caption { display: flex; }
+  #demo-caption-text { font-size: 13px; line-height: 1.5; }
+  #demo-exit-btn {
+    background: #16203a; color: var(--text-primary);
+    border: 1px solid var(--panel-border); border-radius: 6px;
+    padding: 6px 12px; font-family: inherit; font-size: 12px;
+    cursor: pointer; align-self: center;
+  }
+  #demo-exit-btn:hover { background: #1f2c4d; }
+  #demo-caption.demo-ended #demo-exit-btn { border-color: var(--accent); color: var(--accent); }
+
+  /* selectFlight()/lockBody() (used to camera-track the demo's spacecraft)
+     normally also opens the full text info panel -- full-screen on mobile
+     -- which would cover the very animation this feature exists to show.
+     !important is required here since that panel's shown/hidden state is
+     otherwise driven by an inline style.display set from JS
+     (updateLockedPanelVisibility), which no non-!important stylesheet
+     rule can outrank regardless of selector specificity. */
+  body.demo-active #locked-panel { display: none !important; }
+
+  /* setDemoControlsDisabled (app.js) sets .disabled on these while a demo
+     plays, so the user can't fight its own speed/date changes -- none of
+     them otherwise had a :disabled style, so the custom background/text
+     colors set below would have made "disabled" look identical to normal. */
+  #speed-slider:disabled, #playpause:disabled,
+  #edit-date-btn:disabled, #reset-speed:disabled {
+    opacity: 0.4; cursor: not-allowed;
+  }
+
   #camera-controls {
     position: fixed;
     bottom: 40px; left: 50%; transform: translateX(-50%);
@@ -553,6 +594,17 @@
   }
   .lp-jump-btn:hover { background: #1f2c4d; }
 
+  /* "Watch it happen" button inside a glossary section -- see
+     glossarySectionHtml/startManeuverDemo in app.js. */
+  .demo-watch-btn {
+    display: block; margin-top: 8px;
+    background: #16203a; color: var(--accent);
+    border: 1px solid var(--panel-border); border-radius: 6px;
+    padding: 6px 10px; font-family: inherit; font-size: 12px;
+    cursor: pointer; width: fit-content;
+  }
+  .demo-watch-btn:hover { background: #1f2c4d; color: var(--text-primary); }
+
   /* Rocket/spacecraft/lander thumbnail gallery in the flight locked panel --
      each tile links out to its source (NASA/ESA/agency page where known,
      Wikipedia otherwise) so a click takes the user to the real reference. */
@@ -657,6 +709,15 @@
      screen space is scarce and none of it applies to touch anyway.
   ========================================================================= */
   body.mobile #zoom-hint { display: none; }
+
+  /* A centered, viewport-wide demo caption can reach as far left as the
+     drawer toggle's own top-left corner on narrow phones -- not useful
+     mid-demo anyway (focused mode + the flight lock already declutter the
+     scene), so it just gets out of the way instead of overlapping. */
+  body.mobile.demo-active #legend-drawer-toggle { display: none; }
+  body.mobile.demo-active #scale-toggle-panel { display: none; }
+  body.mobile #demo-caption-text { font-size: 12px; }
+  body.mobile #demo-exit-btn { padding: 8px 14px; font-size: 13px; }
 
   body.mobile #bottom-right-controls {
     right: 12px; left: auto; bottom: 12px; top: auto;
