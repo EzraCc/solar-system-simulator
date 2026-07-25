@@ -356,23 +356,26 @@
 
   /* Mobile-only drag handle (a small pill above the title) signaling the
      header is draggable -- desktop uses a "grab" cursor for the same
-     affordance instead, which doesn't mean anything on a touchscreen. */
+     affordance instead, which doesn't mean anything on a touchscreen.
+     Portrait (bottom sheet) only -- a sidebar (landscape) isn't
+     height-adjustable by dragging, see below. */
   .sheet-handle { display: none; }
-  body.mobile .sheet-handle {
+  body.mobile:not(.landscape) .sheet-handle {
     display: block; width: 36px; height: 4px; border-radius: 2px;
     background: var(--panel-border); margin: 0 auto 8px;
   }
 
-  /* Bottom sheet: JS stops setting inline left/top on mobile (see
-     drawLockedPanelConnector and the header drag handlers) so these
-     position rules actually take effect instead of being overridden by
-     inline styles. Two height states, snapped between (not free-dragged)
-     via touch handlers on the header -- "peek" (default on any new
-     lock) shows the title + first couple rows, "sheet-full" expands to
-     nearly the full screen. Free reposition-by-drag and the native
-     resize handle are both desktop-only interactions that don't apply
-     to a bottom sheet, so both are disabled here. */
-  body.mobile #locked-panel {
+  /* Portrait mobile: bottom sheet. JS stops setting inline left/top on
+     mobile (see drawLockedPanelConnector and the header drag handlers)
+     so these position rules actually take effect instead of being
+     overridden by inline styles. Two height states, snapped between
+     (not free-dragged) via touch handlers on the header -- "peek"
+     (default on any new lock) shows the title + first couple rows,
+     "sheet-full" expands to nearly the full screen. Free
+     reposition-by-drag and the native resize handle are both
+     desktop-only interactions that don't apply here, so both are
+     disabled. */
+  body.mobile:not(.landscape) #locked-panel {
     left: 0; right: 0; bottom: 0; top: auto;
     width: 100%; max-width: 100%; min-width: 0;
     border-radius: 16px 16px 0 0;
@@ -380,9 +383,24 @@
     max-height: 40vh;
     transition: max-height 0.25s ease;
   }
-  body.mobile #locked-panel.sheet-full {
+  body.mobile:not(.landscape) #locked-panel.sheet-full {
     max-height: calc(100vh - 32px);
   }
+
+  /* Landscape mobile: docked sidebar instead -- short/wide viewport has
+     surplus width but scarce height, the opposite tradeoff from
+     portrait, so a bottom sheet would eat most of the screen. Fixed
+     width/full height, no peek/full states (nothing to drag -- the
+     constraint here is width, not height), just the existing close
+     button. */
+  body.mobile.landscape #locked-panel {
+    left: auto; right: 0; top: 0; bottom: 0;
+    width: 360px; max-width: 42vw; min-width: 0;
+    height: 100vh; max-height: 100vh;
+    border-radius: 0;
+    resize: none;
+  }
+
   body.mobile #locked-panel-header { cursor: default; }
 
   body.mobile .lp-row { flex-direction: column; align-items: flex-start; gap: 2px; }

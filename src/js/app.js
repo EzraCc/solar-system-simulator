@@ -2062,10 +2062,21 @@
   // (pointer: coarse) alone would also catch a touch-capable laptop with
   // a big screen, hence the width clause on both branches.
   let isMobileLayout = false;
+  // The locked panel specifically needs a second axis: portrait mobile
+  // (tall and narrow) has room to spare vertically but not horizontally,
+  // so a bottom sheet makes sense; landscape mobile (short and wide,
+  // e.g. a phone rotated) is the opposite -- a bottom sheet there would
+  // eat most of the already-scarce vertical space, where a docked
+  // sidebar (like desktop's panel, but fixed rather than floating) uses
+  // the surplus width instead. Only meaningful when isMobileLayout is
+  // also true -- a landscape *desktop* window doesn't get sidebar mode.
+  let isLandscapeMobile = false;
   const MOBILE_LAYOUT_QUERY = "(max-width: 820px), (pointer: coarse) and (max-width: 1024px)";
   function updateMobileLayoutMode() {
     isMobileLayout = window.matchMedia(MOBILE_LAYOUT_QUERY).matches;
+    isLandscapeMobile = isMobileLayout && window.matchMedia("(orientation: landscape)").matches;
     document.body.classList.toggle("mobile", isMobileLayout);
+    document.body.classList.toggle("landscape", isLandscapeMobile);
   }
 
   function resize() {
@@ -3129,11 +3140,11 @@
   const SHEET_DISMISS_THRESHOLD_PX = 100;
   const SHEET_TOGGLE_THRESHOLD_PX = 40;
   lockedPanelHeader.addEventListener("touchstart", (e) => {
-    if (!isMobileLayout) return;
+    if (!isMobileLayout || isLandscapeMobile) return; // sidebar mode has no peek/full states to drag between
     sheetDragStartY = e.touches[0].clientY;
   }, { passive: true });
   lockedPanelHeader.addEventListener("touchend", (e) => {
-    if (!isMobileLayout || sheetDragStartY === null) return;
+    if (!isMobileLayout || isLandscapeMobile || sheetDragStartY === null) return;
     const endTouch = e.changedTouches && e.changedTouches[0];
     const deltaY = endTouch ? endTouch.clientY - sheetDragStartY : 0;
     sheetDragStartY = null;
