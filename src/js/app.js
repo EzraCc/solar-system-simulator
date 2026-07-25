@@ -362,7 +362,13 @@
       elements: { a: 3.462249489765068, e: 0.6409081306555051, iDeg: 7.040294906760007,
                   OmDeg: 50.13557380441372, wDeg: 12.79824973415729, M0Deg: 8.859927418758764,
                   epochDays: 5760.5 },
-      meta: { color: '#9c8f7a', radiusKm: 1.7 },
+      // dimensionsKm: overall nucleus envelope (both lobes together) --
+      // matches the figure already cited in this body's own "Why it
+      // matters" text (data/bodies/info.json) rather than a different
+      // real-but-narrower figure (e.g. just the large lobe's own
+      // 4.1x3.3x1.8 km), so the two don't read as contradicting each
+      // other within the same panel.
+      meta: { color: '#9c8f7a', radiusKm: 1.7, dimensionsKm: [4.3, 4.1, 1.6], shapeNote: 'bilobed "rubber duck" nucleus' },
       targetOfFlights: ['rosetta'],
     },
     bennu: {
@@ -370,7 +376,9 @@
       elements: { a: 1.126391025894812, e: 0.2037450762416414, iDeg: 6.03494377024794,
                   OmDeg: 2.06086619569642, wDeg: 66.22306084084298, M0Deg: 101.703952002457,
                   epochDays: 4017.5 },
-      meta: { color: '#4a4640', radiusKm: 0.24222 },
+      // dimensionsKm: OSIRIS-REx-measured equatorial long/intermediate
+      // axes (565/535 m) and polar diameter (508 m) -- Lauretta et al. 2019.
+      meta: { color: '#4a4640', radiusKm: 0.24222, dimensionsKm: [0.565, 0.535, 0.508], shapeNote: 'spinning-top shape' },
       targetOfFlights: ['osiris_rex'],
     },
     ryugu: {
@@ -378,7 +386,11 @@
       elements: { a: 1.190918932477906, e: 0.1910730049967184, iDeg: 5.866442495106322,
                   OmDeg: 251.2897124408818, wDeg: 211.6089939475371, M0Deg: 62.34067433781601,
                   epochDays: 9655.5 },
-      meta: { color: '#5c5650', radiusKm: 0.448 },
+      // dimensionsKm: Hayabusa2-measured equatorial diameter (1004 m,
+      // roughly axisymmetric) and polar diameter (875 m) -- Watanabe et
+      // al. 2019. Equatorial listed twice since it's a near-circular
+      // cross-section, not a distinct long/intermediate pair like Bennu's.
+      meta: { color: '#5c5650', radiusKm: 0.448, dimensionsKm: [1.004, 1.004, 0.875], shapeNote: 'spinning-top shape' },
       targetOfFlights: ['hayabusa2'],
     },
     didymos: {
@@ -386,6 +398,10 @@
       elements: { a: 1.642709608529702, e: 0.3831233242624545, iDeg: 3.413876519313629,
                   OmDeg: 72.9858236207145, wDeg: 319.5807001349104, M0Deg: 260.8612886320632,
                   epochDays: 9655.5 },
+      // No dimensionsKm -- Didymos itself (unlike its moonlet Dimorphos,
+      // modeled as a real satellite below near CHARON_ELEMENTS) is close
+      // enough to round that radiusKm's implied ~780 m diameter already
+      // matches the real measured value.
       meta: { color: '#a89a82', radiusKm: 0.39 },
       targetOfFlights: ['dart', 'hera'],
     },
@@ -394,7 +410,10 @@
       elements: { a: 1.324052284342771, e: 0.2801776414987972, iDeg: 1.620940810523569,
                   OmDeg: 69.07449749929083, wDeg: 162.8409022415483, M0Deg: 170.653905937934,
                   epochDays: 9655.5 },
-      meta: { color: '#8c7d68', radiusKm: 0.165 },
+      // dimensionsKm: Hayabusa-measured principal axes -- one of the most
+      // dramatically non-spherical bodies in this list ("sea otter"
+      // shape), definitely not well described by a single radius.
+      meta: { color: '#8c7d68', radiusKm: 0.165, dimensionsKm: [0.535, 0.294, 0.209], shapeNote: 'elongated, irregular shape' },
       targetOfFlights: ['hayabusa'],
     },
     vesta: {
@@ -418,7 +437,11 @@
       elements: { a: 3.146133758958915, e: 0.5097028326964878, iDeg: 10.4734281543904,
                   OmDeg: 68.75357468050096, wDeg: 179.1972753698572, M0Deg: 336.5854438553629,
                   epochDays: 5925.5 },
-      meta: { color: '#a8a098', radiusKm: 3.0 },
+      // dimensionsKm: Deep Impact-era estimate of the elongated nucleus
+      // (length x width) -- comet nuclei are routinely this irregular;
+      // Tempel 1 has no well-published 3rd (short) axis, hence only 2
+      // values here (formatBodySize handles either 2 or 3 entries).
+      meta: { color: '#a8a098', radiusKm: 3.0, dimensionsKm: [7.6, 4.9], shapeNote: 'elongated nucleus' },
       targetOfFlights: ['deep_impact'],
     },
     psyche: {
@@ -426,7 +449,11 @@
       elements: { a: 2.925720466462538, e: 0.1349324738201893, iDeg: 3.098749116151128,
                   OmDeg: 149.9753859305033, wDeg: 230.0326782748359, M0Deg: 79.76939505329617,
                   epochDays: 9655.5 },
-      meta: { color: '#8f8f92', radiusKm: 111 },
+      // dimensionsKm: telescopic/occultation-derived triaxial shape model
+      // (Shepard et al. 2021) -- large enough to be interesting as a
+      // target for its own Psyche mission (2029 arrival), but still
+      // distinctly potato-shaped, not spherical.
+      meta: { color: '#8f8f92', radiusKm: 111, dimensionsKm: [278, 238, 171], shapeNote: 'irregular, potato-shaped' },
       targetOfFlights: ['psyche'],
     },
     pluto: {
@@ -442,7 +469,10 @@
       elements: { a: 2.543047155641573, e: 0.6246302247178447, iDeg: 0.4480836624628189,
                   OmDeg: 125.3654799655549, wDeg: 277.8615384113277, M0Deg: 125.5161576467994,
                   epochDays: 9655.5 },
-      meta: { color: '#8f7f6a', radiusKm: 2.7 },
+      // dimensionsKm: Chang'e 2 flyby-confirmed contact-binary shape
+      // (two fused lobes, max length x width) -- one of the most
+      // dramatically elongated bodies in this list.
+      meta: { color: '#8f7f6a', radiusKm: 2.7, dimensionsKm: [4.75, 2.4, 1.95], shapeNote: 'elongated contact binary' },
       targetOfFlights: ['chunge2_toutatis'],
     },
     kamooalewa: {
@@ -466,7 +496,10 @@
       elements: { a: 2.383835831129859, e: 0.1868593763038477, iDeg: 4.425205239728406,
                   OmDeg: 262.7765342454273, wDeg: 212.8821499078564, M0Deg: 147.8525890028124,
                   epochDays: 9655.5 },
-      meta: { color: '#8f8478', radiusKm: 1.95 },
+      // dimensionsKm: Lucy flyby (2025-04-20) shape model -- two heavily
+      // cratered lobes joined by a narrower neck, described by the
+      // mission team as a "bowling pin" shape.
+      meta: { color: '#8f8478', radiusKm: 1.95, dimensionsKm: [8.8, 4.4, 3.1], shapeNote: 'elongated contact binary' },
       targetOfFlights: ['lucy'],
     },
     eurybates: {
@@ -540,6 +573,41 @@
     periodSiderealDays: 6.387222,
   };
   const CHARON_META = { color: '#9c958c', radiusKm: 606 };
+
+  // Didymos-Dimorphos: DART's target binary, and the same "actually two
+  // objects" situation as Pluto+Charon above -- Dimorphos, the moonlet
+  // DART actually hit, is modeled as a real satellite of Didymos (a
+  // SMALL_BODIES entry) using the identical buildSatelliteAbs pattern
+  // Charon uses relative to Pluto, rather than folding it into a single
+  // "Didymos" blob.
+  //
+  // Uses the POST-impact orbit (2022-09-26 impact already in the past
+  // relative to this simulator's "now") -- DART's whole point was
+  // changing this orbit, so the pre-impact values it was launched to
+  // change are the wrong ones to model as the current, ongoing state.
+  // Real measured post-impact a=1.144 km, e=0.028 (Naidu et al. 2024,
+  // Nature) -- a 37 m / -33.24 min change from pre-impact. GM here is
+  // derived from those via Kepler's third law (4*pi^2*a^3/T^2) rather
+  // than an independent mass measurement, same reasoning as
+  // GM_PLUTO_CHARON above. Inclination approximated as Didymos's own
+  // heliocentric orbital inclination (assumes Dimorphos orbits roughly
+  // in Didymos's orbital plane) -- no published ecliptic-frame pole
+  // solution for Didymos was available to derive a more precise figure
+  // the way Charon's real Horizons-sourced value above does. Om/w/M0 are
+  // placeholder phase angles: at an 11.37-HOUR period, "correct"
+  // real-time phase only matters for less than half a day at a stretch,
+  // and no precise phase solution was readily available either.
+  const GM_DIDYMOS_DIMORPHOS_KM3_S2 = 3.529e-8;
+  const GM_DIDYMOS_DIMORPHOS_KM3_DAY2 = GM_DIDYMOS_DIMORPHOS_KM3_S2 * SEC_PER_DAY * SEC_PER_DAY;
+  const DIMORPHOS_ELEMENTS = {
+    aKm: 1.144, e: 0.028, iDeg: SMALL_BODIES.didymos.elements.iDeg,
+    OmDeg0: 0, wDeg0: 0, M0Deg: 0,
+    periodSiderealDays: 11.37 / 24, // ~11.37 h post-DART (was ~11.92 h pre-impact)
+  };
+  const DIMORPHOS_META = {
+    color: '#7a7268', radiusKm: 0.0755, dimensionsKm: [0.177, 0.174, 0.116],
+    shapeNote: 'ellipsoidal moonlet',
+  };
 
   /* =========================================================================
      ORBITAL MECHANICS: Kepler element propagation + Cartesian conversion
@@ -2632,6 +2700,7 @@
       smallBodiesRows.appendChild(row);
       smallBodyLegendRowEls[key] = row;
       if (key === "pluto") addSatelliteRow(smallBodiesRows, "Charon", "Pluto and Charon", CHARON_META.color);
+      if (key === "didymos") addSatelliteRow(smallBodiesRows, "Dimorphos", "Didymos (65803)", DIMORPHOS_META.color);
     });
   }
   buildSmallBodiesLegend();
@@ -3306,6 +3375,40 @@
     return `<div class="lp-section"><div class="lp-section-heading">${heading}</div><div class="lp-section-body">${bodyHtml}</div></div>`;
   }
 
+  // Renders a body's physical size for the info panel. Most bodies here
+  // (planets, round moons, dwarf planets) are spherical enough that a
+  // single radius/diameter says everything worth saying. But several
+  // small bodies in this app's catalog are dramatically NOT spherical --
+  // 67P's bilobed "rubber duck" nucleus, Itokawa's elongated shape,
+  // Toutatis's contact-binary "peanut" -- and describing those with a
+  // single radius (as if they were round) would be actively misleading,
+  // not just imprecise. dimensionsKm (real published long/intermediate/
+  // [polar] axis measurements, set per-body in SMALL_BODIES' meta) is
+  // shown instead when present; a plain diameter otherwise.
+  //
+  // Values under ~2 km are shown in meters, not km -- real mission
+  // dimensions for small asteroids/comets are always quoted that way
+  // ("535 x 294 x 209 m" for Itokawa, never "0.535 x 0.294 x 0.209 km"),
+  // and this app's own small-body radii span more than 4 orders of
+  // magnitude (30 m to 1,400+ km), so one fixed unit would read badly
+  // at one end or the other.
+  function formatBodySize(radiusKm, dimensionsKm, shapeNote) {
+    let sizeText;
+    if (dimensionsKm && dimensionsKm.length) {
+      const useMeters = Math.max(...dimensionsKm) < 2;
+      const scale = useMeters ? 1000 : 1;
+      const unit = useMeters ? "m" : "km";
+      sizeText = dimensionsKm.map((d) => Math.round(d * scale).toLocaleString()).join(" × ") + " " + unit;
+    } else {
+      const diameterKm = radiusKm * 2;
+      const useMeters = diameterKm < 2;
+      const scale = useMeters ? 1000 : 1;
+      const unit = useMeters ? "m" : "km";
+      sizeText = `${Math.round(diameterKm * scale).toLocaleString()} ${unit} diameter`;
+    }
+    return shapeNote ? `${sizeText} (${shapeNote})` : sizeText;
+  }
+
   // Flight keys whose actual destination (see flightEndpoints -- the FINAL
   // leg's target for multi-leg flights, not any intermediate gravity-assist
   // stop) is this body. Small bodies already carry a curated, authoritative
@@ -3438,6 +3541,7 @@
       const periodDays = 2 * Math.PI * Math.sqrt(Math.pow(aKm, 3) / b.primaryGmKm3Day2);
       let rows = "";
       const addRow = (k, v) => { rows += `<div class="lp-row"><span class="lp-key">${k}</span><span class="lp-val">${v}</span></div>`; };
+      addRow("Size", formatBodySize(b.radiusKm, b.dimensionsKm, b.shapeNote));
       addRow("Orbits", `${b.primary} (not Sol directly)`);
       addRow(`Distance from ${b.primary}`, `${b.rKmFromPrimary.toLocaleString(undefined, {maximumFractionDigits: 0})} km`);
       addRow("Heliocentric position", `${b.pos.map(v => v.toFixed(3)).join(", ")} AU`);
@@ -3461,6 +3565,7 @@
     const periodYears = periodDays / 365.25;
     let rows = "";
     const addRow = (k, v) => { rows += `<div class="lp-row"><span class="lp-key">${k}</span><span class="lp-val">${v}</span></div>`; };
+    addRow("Size", formatBodySize(b.radiusKm, b.dimensionsKm, b.shapeNote));
     addRow("Distance from Sol", `${b.r.toFixed(4)} AU`);
     addRow("Position (x,y,z)", `${b.pos.map(v => v.toFixed(3)).join(", ")} AU`);
     addRow("Speed", `${speedKmS.toFixed(2)} km/s`);
@@ -3853,11 +3958,31 @@
     // Charon: only worth computing while Pluto itself is in play (small
     // bodies are hidden by default -- see isSmallBodyVisible), same gating
     // the outer moons get implicitly via their planet always being present.
+    // Also computed when CHARON ITSELF is directly locked (the "|| isSatel-
+    // liteVisible" clause) -- isSmallBodyVisible("pluto", ...) only ever
+    // checks whether PLUTO's own name is locked, so clicking Charon's own
+    // nested legend row (a completely normal action, lockBody("Charon",
+    // ...)) used to leave charonAbs uncomputed, silently dropping Charon
+    // out of renderedBodies entirely and leaving the locked panel showing
+    // Pluto's stale content from before the click (formatLockedPanelContent
+    // never got called again for a body drawLockedPanelConnector's `b`
+    // lookup couldn't find) -- a real, pre-existing bug found while
+    // verifying the new Dimorphos satellite below hits the identical
+    // failure mode for the identical reason.
     let charonAbs = null, plutoState = null;
-    if (isSmallBodyVisible("pluto", daysSinceEpoch)) {
+    if (isSmallBodyVisible("pluto", daysSinceEpoch) || isSatelliteVisible("Pluto and Charon", "Charon")) {
       plutoState = computeSmallBodyState(SMALL_BODIES.pluto.elements, daysSinceEpoch);
       charonAbs = buildSatelliteAbs(CHARON_ELEMENTS, plutoState, GM_PLUTO_CHARON_KM3_DAY2);
       worldStates.Charon = { pos: charonAbs.pos, vel: charonAbs.vel };
+    }
+
+    // Dimorphos: same gating as Charon above (including the same direct-
+    // lock fix), keyed off Didymos instead of Pluto.
+    let dimorphosAbs = null, didymosState = null;
+    if (isSmallBodyVisible("didymos", daysSinceEpoch) || isSatelliteVisible("Didymos (65803)", "Dimorphos")) {
+      didymosState = computeSmallBodyState(SMALL_BODIES.didymos.elements, daysSinceEpoch);
+      dimorphosAbs = buildSatelliteAbs(DIMORPHOS_ELEMENTS, didymosState, GM_DIDYMOS_DIMORPHOS_KM3_DAY2);
+      worldStates.Dimorphos = { pos: dimorphosAbs.pos, vel: dimorphosAbs.vel };
     }
 
     // Outer moons: compute absolute states for all 16 bodies, keyed by name.
@@ -3955,6 +4080,10 @@
       ctx.strokeStyle = hexWithAlpha(CHARON_META.color, 0.35);
       drawOrbitEllipseAroundPoint(CHARON_ELEMENTS, daysSinceEpoch, plutoState.pos);
     }
+    if (didymosState && isSatelliteVisible("Didymos (65803)", "Dimorphos")) {
+      ctx.strokeStyle = hexWithAlpha(DIMORPHOS_META.color, 0.35);
+      drawOrbitEllipseAroundPoint(DIMORPHOS_ELEMENTS, daysSinceEpoch, didymosState.pos);
+    }
 
     // Small body orbit ellipses: narrower than the body's own dot
     // visibility (see isSmallBodyOrbitVisible) -- only clicking the body
@@ -4040,7 +4169,8 @@
         name, sx, sy, rz,
         screenR: bodyScreenRadius(meta.radiusKm, false),
         color: meta.color, isSun: false, primary: "Sol",
-        pos: state.pos, vel: state.vel, r: state.r, e: state.e, i: state.i, a: state.a
+        pos: state.pos, vel: state.vel, r: state.r, e: state.e, i: state.i, a: state.a,
+        radiusKm: meta.radiusKm // every planet is spherical enough that dimensionsKm never applies here
       });
     });
 
@@ -4055,7 +4185,8 @@
         pos: abs.pos, vel: abs.vel,
         r: abs.sat.rKm / AU_KM, e: abs.sat.e, i: abs.sat.i, a: abs.sat.a / AU_KM,
         rKmFromPrimary: abs.sat.rKm,
-        primaryGmKm3Day2: abs.primaryGmKm3Day2
+        primaryGmKm3Day2: abs.primaryGmKm3Day2,
+        radiusKm: meta.radiusKm, dimensionsKm: meta.dimensionsKm, shapeNote: meta.shapeNote
       });
     }
 
@@ -4067,6 +4198,9 @@
     });
     if (charonAbs && isSatelliteVisible("Pluto and Charon", "Charon")) {
       pushSatelliteBody("Charon", charonAbs, "Pluto and Charon", CHARON_META);
+    }
+    if (dimorphosAbs && isSatelliteVisible("Didymos (65803)", "Dimorphos")) {
+      pushSatelliteBody("Dimorphos", dimorphosAbs, "Didymos (65803)", DIMORPHOS_META);
     }
 
     // Asteroids/comets: hidden by default (see isSmallBodyVisible) --
@@ -4082,7 +4216,8 @@
         name: body.name, sx, sy, rz,
         screenR: bodyScreenRadius(body.meta.radiusKm, false),
         color: body.meta.color, isSun: false, primary: "Sol",
-        pos: state.pos, vel: state.vel, r: state.r, e: state.e, i: state.i, a: state.a
+        pos: state.pos, vel: state.vel, r: state.r, e: state.e, i: state.i, a: state.a,
+        radiusKm: body.meta.radiusKm, dimensionsKm: body.meta.dimensionsKm, shapeNote: body.meta.shapeNote
       });
     });
 
