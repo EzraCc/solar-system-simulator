@@ -3030,8 +3030,19 @@
         // until now: every asset across every flight/body JSON file had this same
         // silent 404, invisible to the headless test harness since it only checks
         // the rendered HTML string, never actually fetches the image.
+        // No loading="lazy" -- these tiles only ever exist inside the
+        // locked panel, which itself only gets created after a deliberate
+        // click (never many dozens on a page at once, the actual case
+        // lazy-loading exists for), so there's no real cost to eager
+        // loading. Removed after several images were reported not
+        // rendering with no data-side cause found (paths/files all
+        // verified correct) -- lazy-loading images inside a
+        // resizable, `position: fixed`, nested-scroll container like this
+        // panel is a known source of native browser IntersectionObserver
+        // flakiness, and eager loading eliminates that whole class of
+        // failure regardless of whether it was the actual cause here.
         const img = a.localImage
-          ? `<img src="data/${a.localImage}" alt="${a.title}" loading="lazy">`
+          ? `<img src="data/${a.localImage}" alt="${a.title}">`
           : `<div class="lp-asset-noimg">${a.title}</div>`;
         // Caption (the asset's real title) and a visible attribution/
         // source line are both always-on text, not just an invisible
