@@ -2537,6 +2537,21 @@
   // updateFlightsLegendActiveState) can toggle a class on the existing
   // rows without rebuilding the whole legend every frame.
   let flightLegendRowEls = {};
+  // Converts an HSL color to "#rrggbb" -- every other color in this app
+  // (planet/body meta colors, the flight marker's own drawBody call via
+  // hexWithAlpha/hexDarken below) is hex, so flightColor must produce hex
+  // too rather than a CSS hsl() string, which those two functions can't
+  // parse (they slice fixed hex digit positions and would silently
+  // produce NaN channels instead of throwing early).
+  function hslToHex(h, s, l) {
+    s /= 100; l /= 100;
+    const k = (n) => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const toHex = (n) => Math.round(f(n) * 255).toString(16).padStart(2, "0");
+    return `#${toHex(0)}${toHex(8)}${toHex(4)}`;
+  }
+
   // Deterministic per-flight color so several trajectories on screen at
   // once are visually distinguishable, rather than every arc being the
   // same solid green. Hues are spread with the golden angle (~137.5deg)
@@ -2548,7 +2563,7 @@
   function flightColor(key) {
     const idx = FLIGHTS_ORDER.indexOf(key);
     const hue = (idx * 137.508) % 360;
-    return `hsl(${hue.toFixed(1)}, 55%, 58%)`;
+    return hslToHex(hue, 55, 58);
   }
 
   function buildFlightsLegend() {
