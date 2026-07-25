@@ -1798,14 +1798,22 @@
     ctx.stroke();
   }
 
-  // Draw all lambert legs of a multi-leg flight, with slightly decreasing
-  // opacity for later legs and a bright "bend marker" dot at each junction.
-  // For flights with gravity assists, patched-conic segments are drawn via
-  // time-step sampling (drawFlightArcByTime) so multi-revolution arcs render
-  // correctly; the first Lambert leg still uses drawFlightArc. Always draws
-  // the full path (every leg), regardless of selection state -- see the
-  // call site's comment for why.
-  function drawMultiLegArcs(flightKey) {
+  // Draw a multi-leg flight's lambert legs, with slightly decreasing
+  // opacity for later legs. For flights with gravity assists, patched-conic
+  // segments are drawn via time-step sampling (drawFlightArcByTime) so
+  // multi-revolution arcs render correctly; plain legs use drawFlightArc's
+  // closed-form sweep.
+  //
+  // opts.windowStart/windowEnd (days since J2000), if given, restrict
+  // drawing to whatever portion of each leg falls within that range --
+  // legs with no overlap at all are skipped outright. Omit both to draw
+  // every leg in full (used for the selected flight: an explicit click is
+  // "show me the whole thing"). opts.alphaScale multiplies the whole
+  // leg-fade opacity, used to keep an unselected, merely-in-transit
+  // flight's path visually quieter than the one the user actually clicked.
+  function drawMultiLegArcs(flightKey, opts) {
+    opts = opts || {};
+    const { windowStart, windowEnd, alphaScale = 1 } = opts;
     const raw   = FLIGHTS_RAW[flightKey];
     const hasGA = raw.legs.some(l => l.type === 'gravity_assist');
     const lambertEntries = raw.legs
@@ -1813,39 +1821,34 @@
       .filter(({ leg }) => leg.type === 'lambert');
 
     lambertEntries.forEach(({ leg, i }, seqIndex) => {
-      ctx.globalAlpha = Math.max(0.4, 1.0 - seqIndex * 0.15);
-
+      let legStart, legEnd, drawFn;
       if (hasGA) {
         const segs = getGAChain(flightKey);
         const seg  = segs.find(s => s.legIndex === i);
         if (seg && seg.isPatched) {
           // Post-GA orbit: may be multi-revolution; use time-step rendering.
-          drawFlightArcByTime(seg.elements, seg.tStart, seg.tEnd);
-        } else {
-          // First leg (pre-GA Lambert): standard eccentric-anomaly arc.
-          drawFlightArc(getSolvedLeg(flightKey, i));
+          legStart = seg.tStart; legEnd = seg.tEnd;
+          drawFn = (t0, t1) => drawFlightArcByTime(seg.elements, t0, t1);
         }
-      } else {
-        drawFlightArc(getSolvedLeg(flightKey, i));
+      }
+      if (!drawFn) {
+        // First leg (pre-GA Lambert), or no GA at all: standard
+        // eccentric-anomaly arc, which drawFlightArc can clip directly.
+        const solved = getSolvedLeg(flightKey, i);
+        legStart = solved.launchDays; legEnd = solved.arrivalDays;
+        drawFn = (t0, t1) => drawFlightArc(solved, t0, t1);
       }
 
+      let drawStart = legStart, drawEnd = legEnd;
+      if (windowStart !== undefined) {
+        drawStart = Math.max(legStart, windowStart);
+        drawEnd   = Math.min(legEnd, windowEnd);
+        if (drawStart >= drawEnd) return; // this leg doesn't overlap the window at all
+      }
+
+      ctx.globalAlpha = Math.max(0.4, 1.0 - seqIndex * 0.15) * alphaScale;
+      drawFn(drawStart, drawEnd);
       ctx.globalAlpha = 1.0;
-
-      // Bend marker at junction between legs (not after the final leg)
-      if (seqIndex < lambertEntries.length - 1) {
-        const tJunction = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
-        const jPos      = hasGA
-          ? computeMultiLegPosition(flightKey, tJunction)
-          : getBodyPositionAtDays(leg.toBody, tJunction);
-        const [jSx, jSy] = worldToScreen(jPos[0], jPos[1], jPos[2]);
-        ctx.save();
-        ctx.fillStyle = '#7fd99c';
-        ctx.globalAlpha = 0.9;
-        ctx.beginPath();
-        ctx.arc(jSx, jSy, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
     });
   }
 
@@ -2534,6 +2537,20 @@
   // updateFlightsLegendActiveState) can toggle a class on the existing
   // rows without rebuilding the whole legend every frame.
   let flightLegendRowEls = {};
+  // Deterministic per-flight color so several trajectories on screen at
+  // once are visually distinguishable, rather than every arc being the
+  // same solid green. Hues are spread with the golden angle (~137.5deg)
+  // rather than picked from a fixed-size palette, so adjacent flights in
+  // FLIGHTS_ORDER land on maximally distinct hues and the scheme never
+  // runs out or starts repeating as more flights are added. Muted
+  // saturation/lightness keeps arcs from competing visually with the
+  // brighter planet/body colors.
+  function flightColor(key) {
+    const idx = FLIGHTS_ORDER.indexOf(key);
+    const hue = (idx * 137.508) % 360;
+    return `hsl(${hue.toFixed(1)}, 55%, 58%)`;
+  }
+
   function buildFlightsLegend() {
     flightsRows.innerHTML = "";
     flightLegendRowEls = {};
@@ -2550,7 +2567,7 @@
       row.className = "row";
       row.style.cursor = "pointer";
       if (selectedFlightKey === key) row.style.color = "var(--text-primary)";
-      row.innerHTML = `<span class="dot" style="background:#7fd99c"></span><span>${raw.name}</span>`;
+      row.innerHTML = `<span class="dot" style="background:${flightColor(key)}"></span><span>${raw.name}</span>`;
       row.addEventListener("click", () => selectFlight(key));
       flightsRows.appendChild(row);
       flightLegendRowEls[key] = row;
@@ -2737,6 +2754,11 @@
   //      time while the mission is selected lets you watch the target body's
   //      real motion approaching/departing the encounter, not just see it
   //      appear right at the moment of arrival.
+  // How far on either side of "now" an unselected, merely-in-transit
+  // flight's trajectory arc is drawn (see the FLIGHTS_ORDER render loop).
+  // A selected flight ignores this entirely and draws its full path.
+  const TRAJECTORY_WINDOW_DAYS = 182; // ~6 months
+
   const SMALL_BODY_VISIBILITY_PAD_DAYS = 365;
   function isSmallBodyVisible(key, daysSinceEpoch) {
     const body = SMALL_BODIES[key];
@@ -2943,6 +2965,21 @@
   // assetGalleryHtml only renders whichever keys are actually present on
   // the assets object passed in.
   const ASSET_ORDER = ["rocket", "spacecraft", "lander", "image"];
+  // No "credit"/"source" field exists in the data yet -- every asset only
+  // carries title/infoUrl/localImage -- so attribution is derived from
+  // infoUrl's hostname rather than requiring a data migration across every
+  // flight/body JSON file. Falls back to the bare hostname for anything
+  // not explicitly named here (still real attribution, just unstyled).
+  function sourceLabel(url) {
+    let host;
+    try { host = new URL(url).hostname.replace(/^www\./, ""); }
+    catch { return "Source"; }
+    if (host.endsWith("nasa.gov")) return "NASA";
+    if (host === "en.wikipedia.org") return "Wikipedia";
+    if (host.endsWith("esa.int")) return "ESA";
+    return host;
+  }
+
   function assetGalleryHtml(assets) {
     if (!assets) return "";
     const tiles = ASSET_ORDER
@@ -2959,11 +2996,31 @@
         const img = a.localImage
           ? `<img src="data/${a.localImage}" alt="${a.title}" loading="lazy">`
           : `<div class="lp-asset-noimg">${a.title}</div>`;
-        const label = k.charAt(0).toUpperCase() + k.slice(1);
-        return `<a class="lp-asset" href="${a.infoUrl}" target="_blank" rel="noopener noreferrer" title="${a.title}">${img}<span class="lp-asset-label">${label}</span></a>`;
+        // Caption (the asset's real title) and a visible attribution/
+        // source line are both always-on text, not just an invisible
+        // click target on the thumbnail -- the whole tile still links out
+        // to infoUrl on click, this just makes that discoverable without
+        // having to guess or hover.
+        return `<a class="lp-asset" href="${a.infoUrl}" target="_blank" rel="noopener noreferrer">${img}<span class="lp-asset-caption">${a.title}</span><span class="lp-asset-source">${sourceLabel(a.infoUrl)} ↗</span></a>`;
       });
     if (tiles.length === 0) return "";
     return `<div class="lp-assets">${tiles.join("")}</div>`;
+  }
+
+  // A single prominent outbound link near the top of the panel, distinct
+  // from the per-image attribution in the asset gallery below -- addresses
+  // "click to learn more about the subject of this whole panel," not just
+  // "where did this thumbnail come from." Prefers the spacecraft asset for
+  // flights (its infoUrl is the mission's own page, unlike the rocket
+  // asset which just points at the generic launch-vehicle article) and the
+  // body's own image asset otherwise.
+  function learnMoreHtml(assets) {
+    if (!assets) return "";
+    const order = ["spacecraft", "image", "lander", "rocket"];
+    let url = null;
+    for (const k of order) { if (assets[k] && assets[k].infoUrl) { url = assets[k].infoUrl; break; } }
+    if (!url) return "";
+    return `<a class="lp-learn-more" href="${url}" target="_blank" rel="noopener noreferrer">Learn more at ${sourceLabel(url)} ↗</a>`;
   }
 
   // Full-width block (heading + paragraph) for prose content -- see the
@@ -3080,7 +3137,7 @@
       if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
       sections += flightDestinationsHtml(b.flightKey);
       if (raw.statusNote) sections += lpSectionHtml("Notes", raw.statusNote);
-      lockedPanelBody.innerHTML = rows + jumpBtn + sections + assetGalleryHtml(raw.assets);
+      lockedPanelBody.innerHTML = rows + jumpBtn + learnMoreHtml(raw.assets) + sections + assetGalleryHtml(raw.assets);
       return;
     }
 
@@ -3091,7 +3148,7 @@
         `<div class="lp-row"><span class="lp-key">Radius</span><span class="lp-val">${SUN_RADIUS_KM.toLocaleString()} km</span></div>`;
       let sections = "";
       if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
-      lockedPanelBody.innerHTML = rows + sections + (info ? assetGalleryHtml(info.assets) : "");
+      lockedPanelBody.innerHTML = rows + (info ? learnMoreHtml(info.assets) : "") + sections + (info ? assetGalleryHtml(info.assets) : "");
       return;
     }
 
@@ -3117,7 +3174,7 @@
       const satInfo = BODY_INFO[b.name];
       let sections = "";
       if (satInfo && satInfo.significance) sections += lpSectionHtml("Why it matters", satInfo.significance);
-      lockedPanelBody.innerHTML = rows + sections + (satInfo ? assetGalleryHtml(satInfo.assets) : "");
+      lockedPanelBody.innerHTML = rows + (satInfo ? learnMoreHtml(satInfo.assets) : "") + sections + (satInfo ? assetGalleryHtml(satInfo.assets) : "");
       return;
     }
 
@@ -3140,7 +3197,7 @@
     let sections = "";
     if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
     sections += missionsToHereHtml(b.name);
-    lockedPanelBody.innerHTML = rows + sections + (info ? assetGalleryHtml(info.assets) : "");
+    lockedPanelBody.innerHTML = rows + (info ? learnMoreHtml(info.assets) : "") + sections + (info ? assetGalleryHtml(info.assets) : "");
   }
 
   // The locked panel is event-based, not per-frame: formatLockedPanelContent
@@ -3258,8 +3315,19 @@
   // draws for planets. A real flight has a start and end; showing the
   // rest of the ellipse (the part the spacecraft never flew) would be
   // misleading, not just visually noisy.
-  function drawFlightArc(flight) {
+  // tStart/tEnd optionally clip the drawn portion to a sub-interval of the
+  // flight's full [launchDays, arrivalDays] span (days since J2000) --
+  // used to render only a rolling window around "now" for an unselected,
+  // merely-in-transit flight (see the FLIGHTS_ORDER render loop) instead
+  // of its entire path. Defaults to the full span when omitted. Computed
+  // from mean motion directly (M0 is anchored at el.epochDays, not
+  // necessarily flight.launchDays -- true for a multi-leg leg's own solved
+  // elements) rather than assuming the clip bounds coincide with the
+  // flight's own endpoints.
+  function drawFlightArc(flight, tStart, tEnd) {
     const el = flight.elements;
+    const t0 = tStart !== undefined ? tStart : flight.launchDays;
+    const t1 = tEnd !== undefined ? tEnd : flight.arrivalDays;
     const Eat = (mAnomaly) => {
       // Eccentric anomaly at a given (unnormalized) mean anomaly, walking
       // forward from M0 rather than solveKepler's normalized [0,2pi)
@@ -3267,9 +3335,9 @@
       // even across a 0/2pi wrap.
       return solveKepler(mAnomaly, el.e);
     };
-    const nLaunchToArrival = Math.sqrt(GM_SUN_AU3_DAY2 / (el.a * el.a * el.a)) * (flight.arrivalDays - flight.launchDays);
-    const M_launch = el.M0;
-    const M_arrival = el.M0 + nLaunchToArrival;
+    const n = Math.sqrt(GM_SUN_AU3_DAY2 / (el.a * el.a * el.a));
+    const M_launch = el.M0 + n * (t0 - el.epochDays);
+    const M_arrival = el.M0 + n * (t1 - el.epochDays);
 
     const E_launch = Eat(M_launch);
     let E_arrival = Eat(M_arrival);
@@ -3544,26 +3612,41 @@
     // the same way a moon's orbit disappears once you stop focusing on
     // its planet.
     //
-    // For a multi-leg flight, once it's visible at all, the FULL path
-    // (every leg) is drawn every time -- previously this only happened
-    // while the flight was explicitly selected, falling back to just the
-    // single leg currently being flown otherwise, specifically to avoid
-    // a still-mid-cruise flight (e.g. BepiColombo) rendering its entire
-    // already-flown history every frame. In practice that made long
-    // multi-leg tours (Lucy's 13 legs especially) look like they were
-    // rendering "in chunks" -- only ever one disconnected arc segment
-    // visible at a time as the current leg changed -- which reads as
-    // broken even though it was deliberate. Full path is more useful
-    // than it is cluttered in practice at this flight count; revisit
-    // this tradeoff if it stops being true at much higher flight counts.
-    ctx.lineWidth = 1.5;
+    // An unselected flight (visible only because it's genuinely in transit
+    // right now) draws just a rolling +/-TRAJECTORY_WINDOW_DAYS window
+    // around the current date, thinner and dimmer than a selected one --
+    // full multi-year paths for every simultaneously-in-transit mission
+    // (BepiColombo, Lucy, PSP...) turned the view into unreadable clutter.
+    // Clicking a flight is the deliberate "show me the whole thing"
+    // action: it draws every leg in full, at full weight/opacity, so the
+    // one you actually care about reads clearly against the muted rest.
     FLIGHTS_ORDER.forEach((key) => {
       if (!isFlightVisible(key, daysSinceEpoch)) return;
-      ctx.strokeStyle = "#7fd99c";
+      const selected = selectedFlightKey === key;
+      ctx.strokeStyle = flightColor(key);
+      ctx.lineWidth = selected ? 1.6 : 0.9;
       if (isMultiLeg(FLIGHTS_RAW[key])) {
-        drawMultiLegArcs(key);
+        if (selected) {
+          drawMultiLegArcs(key);
+        } else {
+          drawMultiLegArcs(key, {
+            windowStart: daysSinceEpoch - TRAJECTORY_WINDOW_DAYS,
+            windowEnd: daysSinceEpoch + TRAJECTORY_WINDOW_DAYS,
+            alphaScale: 0.55,
+          });
+        }
       } else {
-        drawFlightArc(getSolvedFlight(key));
+        const flight = getSolvedFlight(key);
+        if (selected) {
+          ctx.globalAlpha = 1;
+          drawFlightArc(flight);
+        } else {
+          const ws = Math.max(flight.launchDays, daysSinceEpoch - TRAJECTORY_WINDOW_DAYS);
+          const we = Math.min(flight.arrivalDays, daysSinceEpoch + TRAJECTORY_WINDOW_DAYS);
+          ctx.globalAlpha = 0.55;
+          drawFlightArc(flight, ws, we);
+          ctx.globalAlpha = 1;
+        }
       }
     });
 
@@ -3663,7 +3746,7 @@
       const [sx, sy, rz] = worldToScreen(pos[0], pos[1], pos[2]);
       bodies.push({
         name: raw.name, flightKey: key, sx, sy, rz,
-        screenR: 3, color: "#7fd99c", isSun: false, isFlight: true, primary: null,
+        screenR: 3, color: flightColor(key), isSun: false, isFlight: true, primary: null,
         pos, vel: [0, 0, 0], r: Math.hypot(...pos), e, i, a
       });
     });
@@ -3694,7 +3777,7 @@
         const [sx, sy, rz] = worldToScreen(anchorPos[0], anchorPos[1], anchorPos[2]);
         bodies.push({
           name: sfRaw.name, flightKey: selectedFlightKey, sx, sy, rz,
-          screenR: 3, color: "#7fd99c", isSun: false, isFlight: true, primary: null,
+          screenR: 3, color: flightColor(selectedFlightKey), isSun: false, isFlight: true, primary: null,
           pos: anchorPos, vel: [0, 0, 0], r: Math.hypot(...anchorPos), e, i, a
         });
       }
