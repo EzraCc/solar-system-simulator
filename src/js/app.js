@@ -2668,7 +2668,19 @@
         if (dx * dx + dy * dy <= hitR * hitR) { hit = b; break; }
       }
     }
-    lockBody(hit ? hit.name : null, { toggleIfSame: true });
+    // A flight marker needs selectFlight(), not the generic lockBody() --
+    // selectFlight is what sets selectedFlightKey, which is what tells the
+    // arc-drawing pass in frame() to render this mission's FULL path (see
+    // its comment) instead of the usual +/-6-month window it draws for a
+    // merely-in-transit, unselected flight. Clicking a flight's legend row
+    // already went through selectFlight; clicking its marker directly on
+    // the canvas was going through plain lockBody() instead, so the panel
+    // opened correctly but the full-path treatment never kicked in.
+    if (hit && hit.isFlight) {
+      selectFlight(hit.flightKey);
+    } else {
+      lockBody(hit ? hit.name : null, { toggleIfSame: true });
+    }
   });
 
   // Shared lock/unlock entry point, used both by clicking a body directly
@@ -2772,7 +2784,7 @@
   // How far on either side of "now" an unselected, merely-in-transit
   // flight's trajectory arc is drawn (see the FLIGHTS_ORDER render loop).
   // A selected flight ignores this entirely and draws its full path.
-  const TRAJECTORY_WINDOW_DAYS = 182; // ~6 months
+  const TRAJECTORY_WINDOW_DAYS = 365; // ~12 months
 
   const SMALL_BODY_VISIBILITY_PAD_DAYS = 365;
   function isSmallBodyVisible(key, daysSinceEpoch) {
@@ -3441,6 +3453,46 @@
     ctx.stroke();
   }
 
+  // A small body's a/e/i/Om/w are fixed (SMALL_BODIES elements carry no
+  // secular rates the way PLANET_ELEMENTS do -- see drawOrbitEllipse), so
+  // its orbit shape doesn't depend on the current date at all: drawn
+  // directly from the polar conic equation swept over true anomaly,
+  // rather than needing daysSinceEpoch or an eccentric-anomaly solve.
+  function drawSmallBodyOrbitEllipse(elements) {
+    const a = elements.a, e = elements.e;
+    const i = elements.iDeg * D2R;
+    const Om = elements.OmDeg * D2R;
+    const w = elements.wDeg * D2R;
+
+    const cosOm = Math.cos(Om), sinOm = Math.sin(Om);
+    const cosW = Math.cos(w), sinW = Math.sin(w);
+    const cosI = Math.cos(i), sinI = Math.sin(i);
+    function rotate(x, y) {
+      const xw = x * cosW - y * sinW;
+      const yw = x * sinW + y * cosW;
+      const xi = xw;
+      const yi = yw * cosI;
+      const zi = yw * sinI;
+      const X = xi * cosOm - yi * sinOm;
+      const Y = xi * sinOm + yi * cosOm;
+      const Z = zi;
+      return [X, Y, Z];
+    }
+
+    const N = 180;
+    ctx.beginPath();
+    for (let k = 0; k <= N; k++) {
+      const nu = (k / N) * 2 * Math.PI;
+      const r = (a * (1 - e * e)) / (1 + e * Math.cos(nu));
+      const xOrb = r * Math.cos(nu);
+      const yOrb = r * Math.sin(nu);
+      const [X, Y, Z] = rotate(xOrb, yOrb);
+      const [sx, sy] = worldToScreen(X, Y, Z);
+      if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+  }
+
   function frame() {
     const now = performance.now();
     const dtMs = now - lastFrameTime;
@@ -3617,6 +3669,17 @@
       ctx.strokeStyle = hexWithAlpha(CHARON_META.color, 0.35);
       drawOrbitEllipseAroundPoint(CHARON_ELEMENTS, daysSinceEpoch, plutoState.pos);
     }
+
+    // Small body orbit ellipses: same visibility rule as the body itself
+    // (isSmallBodyVisible -- directly clicked, or a targeting mission is
+    // selected/in-transit), so clicking Bennu or selecting OSIRIS-REx both
+    // reveal Bennu's actual path around the Sun, not just a dot with no
+    // path to contextualize it.
+    Object.entries(SMALL_BODIES).forEach(([key, body]) => {
+      if (!isSmallBodyVisible(key, daysSinceEpoch)) return;
+      ctx.strokeStyle = hexWithAlpha(body.meta.color, 0.35);
+      drawSmallBodyOrbitEllipse(body.elements);
+    });
 
     // Flight trajectory arcs: shown only while the flight is selected or
     // genuinely in transit (see isFlightVisible) -- not as a permanent
