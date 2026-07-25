@@ -3509,6 +3509,15 @@
     if (lockedBodyName !== _lastLockedBodyForPanel) {
       lockedPanelTitle.textContent = b.name;
       formatLockedPanelContent(b);
+      // Scrolling #locked-panel-body doesn't recreate it, so without this
+      // a new target inherits whatever scroll position the PREVIOUS one
+      // was left at -- e.g. scroll down to a flight's image gallery,
+      // click a different mission from "Destinations", and the new
+      // panel opens already scrolled past its own Mission/Launch/
+      // Destination rows straight to wherever the old scroll happened to
+      // land. Easy to miss entirely for a new user who doesn't think to
+      // scroll up on a panel that just visibly opened.
+      lockedPanelBody.scrollTop = 0;
       // Mobile: the panel is a full-screen modal, positioned entirely by
       // CSS (body.mobile #locked-panel { inset:0; ... }) -- setting
       // inline left/top here would win over that (inline styles beat
