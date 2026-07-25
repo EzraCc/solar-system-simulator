@@ -3089,6 +3089,7 @@
   let lockedPanelDrag = null; // { startMouseX, startMouseY, startX, startY } while dragging
   lockedPanelHeader.style.cursor = "grab";
   lockedPanelHeader.addEventListener("mousedown", (e) => {
+    if (isMobileLayout) return; // mobile uses the touch snap-drag below instead
     if (e.target === lockedPanelClose) return;
     if (!lockedPanelPos) return; // nothing locked yet, nothing to drag
     e.preventDefault();
@@ -3114,6 +3115,42 @@
     lockedPanelDrag = null;
     lockedPanelHeader.style.cursor = "grab";
   });
+
+  // Mobile bottom sheet: snap-drag (not free-follow) between two height
+  // states via the header -- drag/tap up beyond the toggle threshold
+  // expands to "sheet-full", drag down toggles back to the peek default,
+  // and a bigger drag down dismisses entirely (same effect as the close
+  // button). Deliberately snaps on touchend rather than resizing live
+  // frame-by-frame while dragging -- simpler to get right than a
+  // continuous height follow, and reads as a native bottom-sheet flick
+  // rather than a freeform resize (which the desktop panel already has
+  // via CSS resize:both, disabled on mobile -- see the CSS).
+  let sheetDragStartY = null;
+  const SHEET_DISMISS_THRESHOLD_PX = 100;
+  const SHEET_TOGGLE_THRESHOLD_PX = 40;
+  lockedPanelHeader.addEventListener("touchstart", (e) => {
+    if (!isMobileLayout) return;
+    sheetDragStartY = e.touches[0].clientY;
+  }, { passive: true });
+  lockedPanelHeader.addEventListener("touchend", (e) => {
+    if (!isMobileLayout || sheetDragStartY === null) return;
+    const endTouch = e.changedTouches && e.changedTouches[0];
+    const deltaY = endTouch ? endTouch.clientY - sheetDragStartY : 0;
+    sheetDragStartY = null;
+    if (deltaY > SHEET_DISMISS_THRESHOLD_PX) {
+      lockBody(null);
+    } else if (deltaY < -SHEET_TOGGLE_THRESHOLD_PX) {
+      lockedPanel.classList.add("sheet-full");
+    } else if (deltaY > SHEET_TOGGLE_THRESHOLD_PX) {
+      lockedPanel.classList.remove("sheet-full");
+    }
+    // A near-zero delta (a tap on the handle/title, not a drag) toggles
+    // between the two states instead of doing nothing -- a tap is a
+    // reasonable, more discoverable alternative to a drag gesture.
+    else if (Math.abs(deltaY) < 10) {
+      lockedPanel.classList.toggle("sheet-full");
+    }
+  }, { passive: true });
 
   const resetViewBtn = document.getElementById("reset-view-btn");
   const stopTrackingBtn = document.getElementById("stop-tracking-btn");
@@ -3444,20 +3481,33 @@
     if (lockedBodyName !== _lastLockedBodyForPanel) {
       lockedPanelTitle.textContent = b.name;
       formatLockedPanelContent(b);
-      const panelRect = lockedPanel.getBoundingClientRect();
-      let px = b.sx + 20;
-      let py = b.sy - panelRect.height / 2;
-      px = Math.max(8, Math.min(px, viewW - panelRect.width - 8));
-      py = Math.max(8, Math.min(py, viewH - panelRect.height - 8));
-      lockedPanelPos = { x: px, y: py };
-      lockedPanel.style.left = px + "px";
-      lockedPanel.style.top = py + "px";
+      // Mobile: the panel is a bottom sheet, positioned entirely by CSS
+      // (body.mobile #locked-panel { left:0; right:0; bottom:0; ... }) --
+      // setting inline left/top here would win over that (inline styles
+      // beat class rules) and fight the CSS positioning, so skip it
+      // entirely. Every new lock starts at the "peek" height regardless
+      // of whatever state a previously-locked body's sheet was left in.
+      if (isMobileLayout) {
+        lockedPanel.classList.remove("sheet-full");
+        lockedPanelPos = null;
+      } else {
+        const panelRect = lockedPanel.getBoundingClientRect();
+        let px = b.sx + 20;
+        let py = b.sy - panelRect.height / 2;
+        px = Math.max(8, Math.min(px, viewW - panelRect.width - 8));
+        py = Math.max(8, Math.min(py, viewH - panelRect.height - 8));
+        lockedPanelPos = { x: px, y: py };
+        lockedPanel.style.left = px + "px";
+        lockedPanel.style.top = py + "px";
+      }
       _lastLockedBodyForPanel = lockedBodyName;
     }
 
-    // Draw a thin connector line + highlight ring around the tracked body
-    // so it's unambiguous which body the (now-stationary) panel refers to
-    // even after the camera has rotated or the body has moved on.
+    // Highlight ring around the tracked body -- kept on mobile too (cheap
+    // canvas draw, useful regardless of panel layout). The connector LINE
+    // to the panel's position doesn't make sense once the panel is a
+    // fixed bottom sheet rather than something floating near the body, so
+    // that part is desktop-only.
     ctx.save();
     ctx.strokeStyle = "rgba(120,180,255,0.7)";
     ctx.lineWidth = 1.5;
@@ -3465,13 +3515,15 @@
     ctx.arc(b.sx, b.sy, b.screenR + 6, 0, Math.PI * 2);
     ctx.stroke();
 
-    const lineStartX = b.sx + (b.screenR + 6);
-    const lineStartY = b.sy;
-    const panelRect = lockedPanel.getBoundingClientRect(); // current rect, possibly moved by a drag
-    ctx.beginPath();
-    ctx.moveTo(lineStartX, lineStartY);
-    ctx.lineTo(lockedPanelPos.x, lockedPanelPos.y + panelRect.height / 2);
-    ctx.stroke();
+    if (!isMobileLayout) {
+      const lineStartX = b.sx + (b.screenR + 6);
+      const lineStartY = b.sy;
+      const panelRect = lockedPanel.getBoundingClientRect(); // current rect, possibly moved by a drag
+      ctx.beginPath();
+      ctx.moveTo(lineStartX, lineStartY);
+      ctx.lineTo(lockedPanelPos.x, lockedPanelPos.y + panelRect.height / 2);
+      ctx.stroke();
+    }
     ctx.restore();
   }
 

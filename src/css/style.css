@@ -338,10 +338,12 @@
     min-height: 120px;
   }
   #locked-panel-header {
-    display: flex; align-items: center; justify-content: space-between;
     flex-shrink: 0; /* stays visible even if the body below scrolls */
     margin-bottom: 8px;
     user-select: none; /* dragging the header shouldn't select the title text */
+  }
+  #locked-panel-header-top {
+    display: flex; align-items: center; justify-content: space-between;
   }
   #locked-panel-title {
     font-weight: 600; font-size: 14px;
@@ -351,6 +353,43 @@
     cursor: pointer; font-size: 16px; line-height: 1; padding: 0 4px;
   }
   #locked-panel-close:hover { color: var(--text-primary); }
+
+  /* Mobile-only drag handle (a small pill above the title) signaling the
+     header is draggable -- desktop uses a "grab" cursor for the same
+     affordance instead, which doesn't mean anything on a touchscreen. */
+  .sheet-handle { display: none; }
+  body.mobile .sheet-handle {
+    display: block; width: 36px; height: 4px; border-radius: 2px;
+    background: var(--panel-border); margin: 0 auto 8px;
+  }
+
+  /* Bottom sheet: JS stops setting inline left/top on mobile (see
+     drawLockedPanelConnector and the header drag handlers) so these
+     position rules actually take effect instead of being overridden by
+     inline styles. Two height states, snapped between (not free-dragged)
+     via touch handlers on the header -- "peek" (default on any new
+     lock) shows the title + first couple rows, "sheet-full" expands to
+     nearly the full screen. Free reposition-by-drag and the native
+     resize handle are both desktop-only interactions that don't apply
+     to a bottom sheet, so both are disabled here. */
+  body.mobile #locked-panel {
+    left: 0; right: 0; bottom: 0; top: auto;
+    width: 100%; max-width: 100%; min-width: 0;
+    border-radius: 16px 16px 0 0;
+    resize: none;
+    max-height: 40vh;
+    transition: max-height 0.25s ease;
+  }
+  body.mobile #locked-panel.sheet-full {
+    max-height: calc(100vh - 32px);
+  }
+  body.mobile #locked-panel-header { cursor: default; }
+
+  body.mobile .lp-row { flex-direction: column; align-items: flex-start; gap: 2px; }
+  body.mobile .lp-val { text-align: left; }
+  body.mobile .lp-assets { flex-wrap: wrap; }
+  body.mobile .lp-asset { flex: 1 1 40%; }
+
   #locked-panel-body {
     overflow-y: auto;
     min-height: 0; /* required for a flex child to actually shrink/scroll instead of overflowing its container */

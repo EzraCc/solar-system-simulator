@@ -117,8 +117,15 @@
 
 <div class="panel" id="locked-panel">
   <div id="locked-panel-header">
-    <span id="locked-panel-title"></span>
-    <button id="locked-panel-close" title="Stop tracking">&times;</button>
+    <!-- Mobile-only drag handle (see .sheet-handle in style.css); the
+         header's whole area (handle + title row) is the bottom sheet's
+         drag target on mobile, plain draggable-by-mouse header on
+         desktop. -->
+    <div class="sheet-handle"></div>
+    <div id="locked-panel-header-top">
+      <span id="locked-panel-title"></span>
+      <button id="locked-panel-close" title="Stop tracking">&times;</button>
+    </div>
   </div>
   <div id="locked-panel-body"></div>
 </div>
@@ -130,6 +137,6 @@
 
 <div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
 
-<script src="src/js/app.js?v=16"></script>
+<script src="src/js/app.js?v=17"></script>
 </body>
 </html>
