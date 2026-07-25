@@ -551,3 +551,37 @@
   }
   body.mobile .lp-mission-link { padding: 4px 0; font-size: 13px; }
   body.mobile .lp-asset { padding: 4px 0; }
+
+  /* =========================================================================
+     MOBILE CONTROL LAYOUT
+     Portrait's locked panel is a FULL-WIDTH bottom sheet (see the
+     "body.mobile:not(.landscape) #locked-panel" rule above) that can sit
+     anywhere from "peek" (40vh) to nearly the whole screen -- anything
+     else anchored to the bottom edge would either be covered by it or
+     require guessing a pixel offset that stays correct across every
+     content height. Simpler and more robust: move the persistent
+     controls (time/date/camera) to the TOP on mobile instead, leaving
+     the bottom edge exclusively to the sheet. zoom-hint's desktop-only
+     instructions (mouse/keyboard modifiers) are dropped entirely rather
+     than translated -- screen space is scarce and none of it applies to
+     touch anyway.
+  ========================================================================= */
+  body.mobile #zoom-hint { display: none; }
+
+  /* Below the legend-drawer-toggle (top-left, 44px + 16px margin) so it
+     doesn't overlap that button. */
+  body.mobile #bottom-right-controls {
+    top: 68px; bottom: auto; left: 16px; right: auto;
+    width: calc(100vw - 32px); max-width: 360px;
+    align-items: stretch;
+  }
+  body.mobile #time-panel { min-width: 0; }
+  body.mobile #date-panel { justify-content: flex-start; }
+
+  /* Below scale-toggle-panel's two switches, right-aligned to match it.
+     Small/secondary actions -- acceptable if size-compare-panel (only
+     shown when the true-sizes toggle is on) occasionally runs into this,
+     lower priority than the primary time/date controls opposite it. */
+  body.mobile #camera-controls {
+    top: 100px; bottom: auto; left: auto; right: 16px; transform: none;
+  }
