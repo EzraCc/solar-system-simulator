@@ -1680,6 +1680,20 @@
   // Cache: flightKey → segment array built by getGAChain().
   const _gaChainCache = {};
 
+  // Cache: flightKey → array of real per-flyby speed-change facts, one per
+  // gravity_assist leg, populated as a side effect of getGAChain()'s own
+  // loop below (which already computes the incoming/outgoing heliocentric
+  // velocity for every flyby to solve the turn geometry -- this just keeps
+  // a small record of it instead of throwing it away). Used by the
+  // educational "Flight profile" panel section (flightProfileHtml) to show
+  // a real, mission-specific boost/brake fact instead of an assumption.
+  const _gaEventsCache = {};
+
+  function getGAEvents(flightKey) {
+    if (!_gaEventsCache[flightKey]) getGAChain(flightKey);
+    return _gaEventsCache[flightKey] || [];
+  }
+
   // Build (or return cached) the patched-conic segment chain for a multi-leg
   // flight.  Each entry covers one Lambert-leg time window:
   //   { legIndex, elements, tStart, tEnd, isPatched }
@@ -1696,7 +1710,18 @@
     const raw  = FLIGHTS_RAW[flightKey];
     const legs = raw.legs;
     const segs = [];
+    const gaEvents = _gaEventsCache[flightKey] = [];
     let postGA = null;   // { pos, vel, epochDays } after the most recent GA
+    // The GA event's "speed after" can't be read off postGA.vel directly --
+    // getGAChain sometimes REJECTS that patched state a few lines below
+    // (missTooLarge) and falls back to a fresh Lambert refit instead, which
+    // this record has to reflect too or it describes a discarded solution
+    // instead of what's actually rendered (verified against real numbers:
+    // New Horizons' recorded post-Jupiter fit is one of the rejected ones,
+    // and postGA.vel alone gave a bogus ~5 km/s BRAKE where the real,
+    // well-documented figure is a ~4 km/s BOOST). So this is only finalized
+    // once the following lambert branch settles on its real elements.
+    let pendingGaEvent = null;
 
     for (let i = 0; i < legs.length; i++) {
       const leg = legs[i];
@@ -1766,6 +1791,27 @@
           }
           postGA = null;
         }
+        if (pendingGaEvent) {
+          // Only trust a computed speed number when isPatched is true, i.e.
+          // the SAME condition getGAChain already uses to trust the patched
+          // state for rendering. When it's false (a long, weakly-constrained
+          // coast -- verified against New Horizons' 8-year post-Jupiter leg
+          // to Pluto: even the BEST achievable roll angle misses the real
+          // recorded arrival by ~29 AU against a ~29 AU chord, i.e. no real
+          // signal at all), the fallback Lambert refit's implied velocity at
+          // this point reflects an unrelated curve fit, not this flyby's
+          // actual local physics (verified against PSP: legs whose fallback
+          // triggered showed a ~14 km/s "boost" for a flyby whose periapsis
+          // was too gentle to physically produce anywhere near that). Leave
+          // speedOutKmS unset in that case; flightProfileHtml falls back to
+          // a qualitative description instead of fabricating a number.
+          if (isPatched) {
+            pendingGaEvent.speedOutKmS = v3norm(computeFlightVelocity(elements, tDepart)) * AU_KM / SEC_PER_DAY;
+            pendingGaEvent.aAfterAU = elements.a;
+            pendingGaEvent.eAfter = elements.e;
+          }
+          pendingGaEvent = null;
+        }
         segs.push({ legIndex: i, elements, tStart: tDepart, tEnd: tArrive, isPatched });
 
       } else if (leg.type === 'gravity_assist') {
@@ -1800,6 +1846,13 @@
           leg.periapsisKm || 500, meta.radiusKm, meta.gmKm3S2,
           nextBodyPos, nextT, tGA
         );
+        pendingGaEvent = {
+          legIndex: i, body: leg.body, date: leg.date, periapsisKm: leg.periapsisKm,
+          speedInKmS: v3norm(velArr) * AU_KM / SEC_PER_DAY,
+          speedOutKmS: undefined, // filled in once the next lambert leg settles on real elements
+          aBeforeAU: prevEl.a, eBefore: prevEl.e,
+        };
+        gaEvents.push(pendingGaEvent);
       }
       // loiter / deepspace_maneuver: no effect on GA chain state
     }
@@ -2580,6 +2633,44 @@
   });
   legendBackdrop.addEventListener("click", () => {
     document.body.classList.remove("drawer-open");
+  });
+
+  /* =========================================================================
+     GLOSSARY (general "how spacecraft get around" explainer)
+     Deliberately independent of lockedBodyName/lockBody -- it's general
+     education, not tied to any specific body, so opening/closing it must
+     not touch auto-pause or camera-tracking state the way locking a body
+     does. See the "Flight profile" section on individual missions
+     (flightProfileHtml) for the mission-specific numbers this generalizes.
+  ========================================================================= */
+
+  const GLOSSARY_HTML =
+    lpSectionHtml("Coasting between burns (Lambert transfers)",
+      "Between a launch and an arrival, and between one flyby and the next, this simulator draws a smooth ellipse or hyperbola. That shape isn't decoration: outside of the specific moments below (a launch burn, a flyby, an orbit-raising burn, or continuous low-thrust cruising), nothing is pushing the spacecraft at all. Gravity alone shapes the path once it's coasting, the same way a thrown ball's arc is entirely gravity once it leaves your hand.") +
+    lpSectionHtml("Gravity assists: how a flyby changes speed",
+      "In the planet's own frame, a flyby doesn't speed a spacecraft up or slow it down at all — it only turns the direction of its velocity relative to the planet, by an angle set by how close the flyby passes and how fast it's moving. Back in the Sun's frame, since the planet itself is orbiting, that turn can add to or subtract from the spacecraft's solar-orbit speed depending on which side of the planet it passes: catching the planet from behind and swinging past its leading side tends to boost the spacecraft; approaching from ahead and passing its trailing side tends to brake it." +
+      "<br><br>A boost or brake happens at essentially one point in the orbit — near the planet — and doesn't move that point right away. What it changes is the orbit's total energy, which reshapes the <em>opposite</em> side: a brake near the orbit's far point (aphelion) pulls the near point (perihelion) in closer to the Sun; a boost near the near point pushes the far point out. That's what makes a \"small\" few-km/s change matter. Parker Solar Probe's Venus brakes are each only 2–6 km/s — modest next to the ~30 km/s it's already moving at that distance — but because each one happens near the orbit's far point, it drags the near point in: after just its first three Venus flybys, PSP's orbital period had already shrunk from 174 days to 112, and its perihelion kept falling with each later pass, eventually diving under 0.05 AU (about 9 solar radii) from the Sun. Run the other way, a single ~4 km/s Earth flyby stretched the Lucy mission's far point from 2.3 AU out to 5.8 AU — reaching Jupiter's own distance — and nearly tripled its orbital period, from about two years to over six." +
+      "<br><br>This is exactly how Venus helps Parker Solar Probe get <em>closer</em> to the Sun instead of farther from it. Simply pointing at the Sun and firing an engine doesn't work: Earth's own orbital motion is already about 30 km/s sideways, and anything launched from Earth keeps that sideways speed unless something cancels it out — expensive to do with propellant alone. Repeated Venus brakes shed that sideways speed a few km/s at a time, letting the orbit sink closer to the Sun with each pass.") +
+    lpSectionHtml("Orbit-raising sequences (parking orbits)",
+      "Missions launched on a smaller, cheaper rocket sometimes can't reach escape velocity in one shot. Instead, the spacecraft parks in an elliptical orbit around Earth and, every time it swings back through its closest point (perigee), fires its own engine again to stretch the far side of the orbit a little further out. Repeated enough times, the orbit eventually reaches escape velocity on its own — slower than a single powerful upper stage, but far cheaper. Aditya-L1 and Mangalyaan, both launched on ISRO's PSLV, used this technique.") +
+    lpSectionHtml("Loiter / station-keeping",
+      "Some missions deliberately pause at a location — a body, or a gravitationally stable Lagrange point like Earth–L2 — for weeks or months before their next maneuver, whether to run science operations, complete a checkout period, or wait for the next window when their following target is correctly positioned for departure.") +
+    lpSectionHtml("Continuous low-thrust (ion) missions",
+      "Most spacecraft here fly the way the sections above describe: brief chemical burns bracketing long coasts. A few — Dawn, Hayabusa, Hayabusa2, and BepiColombo — instead carry ion engines that thrust continuously for months at a time, at a tiny fraction of a chemical engine's force but far higher efficiency. This simulator's Lambert-arc rendering approximates their true, gently-curving continuous-thrust path rather than modeling it exactly, a simplification each of those missions' own notes already flag.");
+
+  const glossaryToggle  = document.getElementById("glossary-toggle");
+  const glossaryPanel   = document.getElementById("glossary-panel");
+  const glossaryBackdrop = document.getElementById("glossary-backdrop");
+  const glossaryClose   = document.getElementById("glossary-panel-close");
+  document.getElementById("glossary-panel-body").innerHTML = GLOSSARY_HTML;
+  glossaryToggle.addEventListener("click", () => {
+    document.body.classList.add("glossary-open");
+  });
+  glossaryClose.addEventListener("click", () => {
+    document.body.classList.remove("glossary-open");
+  });
+  glossaryBackdrop.addEventListener("click", () => {
+    document.body.classList.remove("glossary-open");
   });
 
   /* =========================================================================
@@ -3483,6 +3574,167 @@
     return `<div class="lp-section"><div class="lp-section-heading">Destinations</div><div class="lp-mission-links">${links}</div></div>`;
   }
 
+  // Missions that fly continuous low-thrust (ion) propulsion instead of
+  // coasting between chemical burns between flybys -- already called out
+  // in each of these four missions' own statusNote text. The Lambert arcs
+  // this simulator draws for their cruise legs are a simplified stand-in
+  // for that smooth, continuous-thrust path, not a literal coast; the
+  // Flight profile section below says so explicitly for these.
+  const ION_THRUST_MISSIONS = new Set(['dawn', 'hayabusa', 'hayabusa2', 'bepicolombo']);
+
+  // Resolve any of the several shapes a leg's body/fromBody/toBody/location
+  // field can take (a PLANET_META key, a lowercase SMALL_BODIES key, an
+  // "Earth_L1"/"Earth_L2" Lagrange-point string, a real recorded {fixedPos}
+  // waypoint -- see getBodyPositionAtDays, which handles the same shapes
+  // for rendering) into a human-readable name plus that body's legend
+  // color, so the Flight profile timeline below can show a colored dot
+  // that ties each line back to the same body in the legend/3D scene.
+  function describeLegBody(bodyRef) {
+    if (bodyRef && typeof bodyRef === 'object' && bodyRef.fixedPos) {
+      return { name: 'a recorded waypoint', color: null };
+    }
+    const lpMatch = typeof bodyRef === 'string' && bodyRef.match(/^([A-Za-z]+)_(L[1245])$/);
+    if (lpMatch) {
+      const planet = lpMatch[1], lp = lpMatch[2];
+      return { name: `${planet}–${lp}`, color: PLANET_META[planet] ? PLANET_META[planet].color : null };
+    }
+    if (PLANET_META[bodyRef]) return { name: bodyRef, color: PLANET_META[bodyRef].color };
+    if (SMALL_BODIES[bodyRef]) return { name: SMALL_BODIES[bodyRef].name, color: SMALL_BODIES[bodyRef].meta.color };
+    if (bodyRef === 'Sol' || bodyRef === 'Sun') return { name: 'Sol', color: SUN_COLOR };
+    return { name: String(bodyRef), color: null };
+  }
+
+  // A gravity assist changes speed at essentially one point in the orbit
+  // (near the flyby planet) -- that point's own distance from the Sun
+  // barely moves, but the orbit's total energy changes, which reshapes the
+  // OTHER side: braking near the far point (aphelion) pulls the near point
+  // (perihelion) in closer to the Sun; boosting near the near point pushes
+  // the far point out. This is what actually makes a "small" few-km/s
+  // change matter -- it shows up as a large shift on whichever side of the
+  // orbit the flyby ISN'T at, which is why PSP's few-km/s Venus brakes
+  // compound into a perihelion that ends up deep inside Mercury's orbit.
+  function apsisAU(a, e) {
+    return { q: a * (1 - e), Q: e < 1 ? a * (1 + e) : null };
+  }
+  function periodDaysFor(a, e) {
+    return (e < 1 && a > 0) ? 2 * Math.PI * Math.sqrt(a * a * a / GM_SUN_AU3_DAY2) : null;
+  }
+  function orbitShapeChangeHtml(aBeforeAU, eBefore, aAfterAU, eAfter) {
+    const before = apsisAU(aBeforeAU, eBefore);
+    const after  = apsisAU(aAfterAU, eAfter);
+    const dQ = (before.Q !== null && after.Q !== null) ? Math.abs(after.Q - before.Q) : -1;
+    const dq = Math.abs(after.q - before.q);
+
+    let apsisText;
+    if (dQ > dq) {
+      apsisText = after.Q === null
+        ? `aphelion ${before.Q.toFixed(3)} AU &rarr; unbound (this orbit now escapes the Sun's pull entirely)`
+        : `aphelion ${before.Q.toFixed(3)} &rarr; ${after.Q.toFixed(3)} AU`;
+    } else {
+      apsisText = `perihelion ${before.q.toFixed(3)} &rarr; ${after.q.toFixed(3)} AU`;
+    }
+
+    const periodBefore = periodDaysFor(aBeforeAU, eBefore);
+    const periodAfter  = periodDaysFor(aAfterAU, eAfter);
+    let periodText = "";
+    if (periodBefore !== null && periodAfter !== null) {
+      periodText = `, orbital period ${periodBefore.toFixed(0)} &rarr; ${periodAfter.toFixed(0)} days`;
+    } else if (periodBefore !== null && periodAfter === null) {
+      periodText = `, and it's no longer a closed loop around the Sun at all`;
+    }
+    return ` (${apsisText}${periodText})`;
+  }
+
+  function legTimelineItemHtml(color, html) {
+    const dot = color
+      ? `<span class="lp-timeline-dot" style="background:${color}"></span>`
+      : `<span class="lp-timeline-dot lp-timeline-dot-none"></span>`;
+    return `<div class="lp-timeline-item">${dot}<span class="lp-timeline-text">${html}</span></div>`;
+  }
+
+  // Chronological, per-leg breakdown of how a mission actually got where
+  // it went -- which planet was involved in each flyby and what kind of
+  // maneuver happened where. Built entirely from raw.legs (already the
+  // ground truth this simulator renders from) plus getGAEvents' real
+  // computed speed-before/after for each gravity_assist leg -- nothing
+  // here is hand-authored per mission.
+  function flightProfileHtml(flightKey) {
+    const raw = FLIGHTS_RAW[flightKey];
+    if (!raw.legs || raw.legs.length === 0) return "";
+    const legs = raw.legs;
+    const gaByLegIndex = {};
+    getGAEvents(flightKey).forEach((ev) => { gaByLegIndex[ev.legIndex] = ev; });
+    const isIon = ION_THRUST_MISSIONS.has(flightKey);
+
+    let items = "";
+    let i = 0;
+    while (i < legs.length) {
+      const leg = legs[i];
+
+      if (leg.type === 'lambert') {
+        const from = describeLegBody(leg.fromBody);
+        const to = describeLegBody(leg.toBody);
+        const verb = isIon ? "Continuous ion-thrust cruise" : "Coast";
+        let text = `${verb} from ${from.name} to ${to.name} (${leg.departDate.slice(0, 10)} &rarr; ${leg.arrivalDate.slice(0, 10)})`;
+        if (isIon) {
+          text += " &mdash; engines fire gently the whole way, not just at the ends; the smooth arc shown here approximates that continuous push, not a literal coast.";
+        }
+        items += legTimelineItemHtml(to.color || from.color, text);
+        i++;
+
+      } else if (leg.type === 'gravity_assist') {
+        const body = describeLegBody(leg.body);
+        const ev = gaByLegIndex[i];
+        let text = `Gravity assist at <strong>${body.name}</strong> (${leg.date.slice(0, 10)}, periapsis ${Math.round(leg.periapsisKm).toLocaleString()} km)`;
+        if (ev && ev.speedOutKmS !== undefined) {
+          const delta = ev.speedOutKmS - ev.speedInKmS;
+          text += `: ${ev.speedInKmS.toFixed(1)} &rarr; ${ev.speedOutKmS.toFixed(1)} km/s heliocentric`;
+          if (Math.abs(delta) < 0.05) {
+            text += " &mdash; this pass barely changed its solar-orbital speed, mostly just bending its path instead";
+          } else {
+            const dir = delta > 0 ? "boost" : "brake";
+            text += ` &mdash; a <strong>${dir}</strong>, ${delta > 0 ? "gaining" : "shedding"} ${Math.abs(delta).toFixed(1)} km/s of speed relative to the Sun`;
+            if (ev.aAfterAU !== undefined) {
+              text += orbitShapeChangeHtml(ev.aBeforeAU, ev.eBefore, ev.aAfterAU, ev.eAfter);
+            }
+          }
+        } else {
+          text += " &mdash; a real flyby, though the long coast that follows is beyond what this simulator's simplified model can precisely track, so an exact speed change isn't shown for this one";
+        }
+        items += legTimelineItemHtml(body.color, text);
+        i++;
+
+      } else if (leg.type === 'geocentric_orbit') {
+        // Collapse a run of consecutive geocentric_orbit legs around the
+        // same primary into one entry -- Aditya-L1's 5 successive perigee-
+        // raising burns would otherwise clutter the panel with 5 nearly
+        // identical lines.
+        let j = i;
+        while (j < legs.length && legs[j].type === 'geocentric_orbit' && legs[j].primaryBody === leg.primaryBody) j++;
+        const last = legs[j - 1];
+        const primary = describeLegBody(leg.primaryBody);
+        const burnCount = j - i;
+        const text = burnCount > 1
+          ? `${burnCount}-burn orbit-raising sequence around ${primary.name}: ${Math.round(leg.periapsisKm).toLocaleString()}×${Math.round(leg.apoapsisKm).toLocaleString()} km &rarr; ${Math.round(last.periapsisKm).toLocaleString()}×${Math.round(last.apoapsisKm).toLocaleString()} km apogee (${leg.departDate.slice(0, 10)} &ndash; ${last.arrivalDate.slice(0, 10)}) &mdash; each pass through perigee, the engine fires again to raise the far side of the orbit a little further, cheaper than one large burn.`
+          : `Parking orbit around ${primary.name}: ${Math.round(leg.periapsisKm).toLocaleString()}×${Math.round(leg.apoapsisKm).toLocaleString()} km.`;
+        items += legTimelineItemHtml(primary.color, text);
+        i = j;
+
+      } else if (leg.type === 'loiter') {
+        const loc = describeLegBody(leg.location);
+        const text = `Extended stay at ${loc.name}${leg.departure ? ` (until ${leg.departure.slice(0, 10)})` : ""}.`;
+        items += legTimelineItemHtml(loc.color, text);
+        i++;
+
+      } else {
+        i++;
+      }
+    }
+
+    if (!items) return "";
+    return `<div class="lp-section"><div class="lp-section-heading">Flight profile</div><div class="lp-timeline">${items}</div></div>`;
+  }
+
   function formatLockedPanelContent(b) {
     if (b.isFlight) {
       const raw = FLIGHTS_RAW[b.flightKey];
@@ -3513,6 +3765,7 @@
       const jumpBtn = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-jump-to-launch="${b.flightKey}">Jump to launch date</button></div>`;
       let sections = "";
       if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
+      sections += flightProfileHtml(b.flightKey);
       sections += flightDestinationsHtml(b.flightKey);
       if (raw.statusNote) sections += lpSectionHtml("Notes", raw.statusNote);
       lockedPanelBody.innerHTML = rows + jumpBtn + learnMoreHtml(raw.assets) + sections + assetGalleryHtml(raw.assets);

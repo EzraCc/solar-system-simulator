@@ -422,6 +422,66 @@
     background: rgba(120, 150, 200, 0.35); border-radius: 3px;
   }
   #locked-panel-body::-webkit-scrollbar-thumb:hover { background: rgba(120, 150, 200, 0.55); }
+
+  /* General "how spacecraft get around" glossary -- a small button in
+     #scale-toggle-panel opens it. Deliberately NOT tied to lockBody/
+     lockedBodyName (see the JS wiring), so its show/hide is its own
+     "glossary-open" class on <body> rather than reusing drawer-open or
+     the locked-panel visibility toggle. */
+  #glossary-toggle {
+    background: transparent; border: 1px solid var(--panel-border);
+    color: var(--accent); border-radius: 6px; padding: 5px 8px;
+    font-family: inherit; font-size: 11px; cursor: pointer;
+    text-align: left; width: 100%;
+  }
+  #glossary-toggle:hover { background: rgba(90,176,255,0.1); color: var(--text-primary); }
+
+  #glossary-backdrop {
+    display: none; position: fixed; inset: 0; z-index: 90;
+    background: rgba(0,0,0,0.5);
+  }
+  body.glossary-open #glossary-backdrop { display: block; }
+
+  /* Desktop: a simple centered overlay -- unlike #locked-panel this isn't
+     anchored to any body's on-screen position, so there's no connector-
+     line/reposition logic to account for. */
+  #glossary-panel {
+    display: none; flex-direction: column;
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 600px; max-width: 90vw; max-height: 80vh;
+    z-index: 95;
+  }
+  body.glossary-open #glossary-panel { display: flex; }
+  #glossary-panel-header { flex-shrink: 0; margin-bottom: 8px; user-select: none; }
+  #glossary-panel-header-top { display: flex; align-items: center; justify-content: space-between; }
+  #glossary-panel-title { font-weight: 600; font-size: 14px; }
+  #glossary-panel-close {
+    background: transparent; border: none; color: var(--text-dim);
+    cursor: pointer; font-size: 16px; line-height: 1; padding: 0 4px;
+  }
+  #glossary-panel-close:hover { color: var(--text-primary); }
+  #glossary-panel-body {
+    overflow-y: auto; min-height: 0;
+    scrollbar-width: thin; scrollbar-color: rgba(120, 150, 200, 0.35) transparent;
+  }
+  #glossary-panel-body::-webkit-scrollbar { width: 6px; }
+  #glossary-panel-body::-webkit-scrollbar-track { background: transparent; }
+  #glossary-panel-body::-webkit-scrollbar-thumb { background: rgba(120, 150, 200, 0.35); border-radius: 3px; }
+  #glossary-panel-body::-webkit-scrollbar-thumb:hover { background: rgba(120, 150, 200, 0.55); }
+  #glossary-panel .lp-section:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+  /* Mobile: same full-screen-modal treatment as #locked-panel (see its own
+     comment above for why) -- covering the full viewport at a high
+     z-index is enough on its own to block interaction with anything
+     behind it, no extra JS needed. */
+  body.mobile #glossary-panel {
+    inset: 0; top: auto; left: auto; transform: none;
+    width: 100%; max-width: 100%; height: 100%; max-height: 100%;
+    border-radius: 0; z-index: 100;
+  }
+  body.mobile #glossary-panel-close { font-size: 22px; padding: 4px 8px; }
+  body.mobile #glossary-panel-body { padding-right: 18px; }
+
   .lp-row {
     display: flex; justify-content: space-between; gap: 10px;
     font-size: 12px; padding: 2px 0; border-bottom: 1px solid rgba(120,150,200,0.1);
@@ -458,6 +518,26 @@
     width: fit-content;
   }
   .lp-mission-link:hover { color: var(--text-primary); }
+
+  /* Flight profile: chronological per-leg breakdown (see flightProfileHtml
+     in app.js). Each entry gets a small colored dot matching that body's
+     own legend/scene color -- same visual language as .dot in the legend
+     rows -- so the text ties back to what's actually on screen. */
+  .lp-timeline {
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .lp-timeline-item {
+    display: flex; align-items: flex-start; gap: 7px;
+    font-size: 12px; line-height: 1.5;
+  }
+  .lp-timeline-dot {
+    flex: 0 0 auto; width: 9px; height: 9px; border-radius: 50%;
+    margin-top: 4px;
+  }
+  .lp-timeline-dot-none {
+    background: transparent; border: 1px dashed rgba(120,150,200,0.4);
+  }
+  .lp-timeline-text { flex: 1 1 auto; min-width: 0; }
 
   .lp-jump-row { margin-top: 8px; }
   .lp-jump-btn {

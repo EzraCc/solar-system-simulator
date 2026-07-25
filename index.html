@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=13">
+<link rel="stylesheet" href="src/css/style.css?v=15">
 </head>
 <body>
 
@@ -80,6 +80,7 @@
     <div class="switch" id="focus-switch"></div>
     <span>Focused view</span>
   </label>
+  <button type="button" id="glossary-toggle">How do these missions get around?</button>
 </div>
 
 <div class="panel" id="size-compare-panel">
@@ -132,6 +133,20 @@
 
 <div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
 
-<script src="src/js/app.js?v=23"></script>
+<!-- General "how spacecraft get around" glossary -- independent of
+     lockedBodyName/lockBody (see the JS wiring near the legend drawer's),
+     so it doesn't touch auto-pause or camera tracking. -->
+<div id="glossary-backdrop"></div>
+<div class="panel" id="glossary-panel">
+  <div id="glossary-panel-header">
+    <div id="glossary-panel-header-top">
+      <span id="glossary-panel-title">How spacecraft get around</span>
+      <button id="glossary-panel-close" title="Close">&times;</button>
+    </div>
+  </div>
+  <div id="glossary-panel-body"></div>
+</div>
+
+<script src="src/js/app.js?v=25"></script>
 </body>
 </html>
