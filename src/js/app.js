@@ -3492,15 +3492,32 @@
     if (lockedBodyName !== _lastLockedBodyForPanel) {
       lockedPanelTitle.textContent = b.name;
       formatLockedPanelContent(b);
-      // Mobile: the panel is a bottom sheet, positioned entirely by CSS
-      // (body.mobile #locked-panel { left:0; right:0; bottom:0; ... }) --
+      // Mobile: the panel is a bottom sheet (or sidebar in landscape),
+      // positioned entirely by CSS (body.mobile #locked-panel {...}) --
       // setting inline left/top here would win over that (inline styles
       // beat class rules) and fight the CSS positioning, so skip it
       // entirely. Every new lock starts at the "peek" height regardless
       // of whatever state a previously-locked body's sheet was left in.
+      //
+      // Real bug found via a live-browser repro (Playwright, not just the
+      // headless harness): locking something while desktop-sized sets a
+      // real inline left/top; if the SAME PAGE is then resized/rotated
+      // into mobile layout (no reload -- e.g. toggling a devtools device
+      // preset on an already-open tab) and a NEW body gets locked, this
+      // branch never used to touch that stale inline style at all, only
+      // the "else" branch below ever wrote to it. Since inline beats the
+      // CSS class rule per-property, the stale left/top (from whatever
+      // the desktop viewport size used to be) could push the whole panel
+      // off-screen even though display:flex made it "visible" and every
+      // other property was correct -- exactly a "I don't see the panel"
+      // report with no console error. Explicitly clearing them here means
+      // mobile mode is never at the mercy of whatever inline values a
+      // prior desktop session happened to leave behind.
       if (isMobileLayout) {
         lockedPanel.classList.remove("sheet-full");
         lockedPanelPos = null;
+        lockedPanel.style.left = "";
+        lockedPanel.style.top = "";
       } else {
         const panelRect = lockedPanel.getBoundingClientRect();
         let px = b.sx + 20;
