@@ -1,6 +1,20 @@
 (function () {
   "use strict";
 
+  // Cache-busting suffix for every data/*.json fetch below -- keep this in
+  // sync with the ?v= on this file's own <script> tag in index.html (bump
+  // both together on any edit to app.js OR to any data/ JSON file). The
+  // script tag's ?v= only forces a fresh fetch of app.js ITSELF; the data
+  // files are separate sub-resources fetched at runtime, with no cache
+  // headers set by a plain static file server, so a browser can keep
+  // serving an old cached copy of e.g. data/flights/escapade.json
+  // indefinitely even once app.js itself is confirmed fresh -- exactly the
+  // failure mode that made a real, verified-correct code fix look like it
+  // wasn't landing (rows/Destinations/Notes rendering correctly off
+  // whatever fields an old JSON snapshot happened to have, while newer
+  // fields like "significance"/"assets" silently no-op'd as absent).
+  const BUILD_VERSION = "10";
+
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
      Source: J2000.0 mean orbital elements (a, e, i, Omega, varpi, L), from
@@ -155,13 +169,13 @@
   const BODY_INFO = {};
 
   async function loadBodyInfo() {
-    const res = await fetch("data/bodies/info.json");
+    const res = await fetch(`data/bodies/info.json?v=${BUILD_VERSION}`);
     if (!res.ok) throw new Error("Failed to load data/bodies/info.json: " + res.status);
     Object.assign(BODY_INFO, await res.json());
   }
 
   async function loadFlightsRaw() {
-    const manifestRes = await fetch("data/flights/manifest.json");
+    const manifestRes = await fetch(`data/flights/manifest.json?v=${BUILD_VERSION}`);
     if (!manifestRes.ok) throw new Error("Failed to load data/flights/manifest.json: " + manifestRes.status);
     const manifest = await manifestRes.json();
     FLIGHTS_ORDER = manifest.order;
@@ -172,7 +186,7 @@
     // no reason, since these are independent requests.
     const entries = await Promise.all(
       FLIGHTS_ORDER.map(async (key) => {
-        const res = await fetch(`data/flights/${key}.json`);
+        const res = await fetch(`data/flights/${key}.json?v=${BUILD_VERSION}`);
         if (!res.ok) throw new Error(`Failed to load data/flights/${key}.json: ${res.status}`);
         const raw = await res.json();
         return [key, raw];
