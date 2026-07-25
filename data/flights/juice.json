@@ -8,10 +8,18 @@
   "statusNote": "ESA mission (partners NASA, JAXA, Israel Space Agency) to study Ganymede, Europa, and Callisto as candidate habitable icy-ocean worlds. Real trajectory used a world-first lunar-Earth double flyby (Moon 2024-08-19, Earth 2024-08-20, ~1.5 days apart) -- this simulator has no lunar gravity-assist physics, so that pair is modeled as a single Earth flyby at the real Earth-encounter date/altitude; the next leg still targets Venus's real recorded 2025-08-31 position, so the simplification doesn't propagate error forward. The 2026-09-29 and 2029-01-18 Earth flyby altitudes are not yet officially published (as of this data's compilation, 2026-07); ~5,000 km is a placeholder in line with the two already-flown Earth flybys, not a confirmed figure. Trajectory modeled through Jupiter orbit insertion (2031-07-20) only -- the following 3+ year Jovian-system tour (Europa/Callisto flybys) and eventual Ganymede orbit insertion (~end of 2034) are a separate multi-target tour phase, not a single transfer arc, and are not modeled here (same reasoning as Lucy's Trojan tour).",
   "legs": [
     {
+      "_comment": "Real JUICE trajectory (JPL Horizons, target -28, checked 2026-07) stays within ~0.86-1.10 AU this whole leg, but a plain 2-point Lambert solve between the two Earth encounters produces an unconstrained a=1.38 AU / e=0.72 orbit (apoapsis 2.37 AU, past Mars). Split through a real recorded waypoint (2023-12-11, near this leg's actual closest approach to the Sun) so each half is anchored to an actual position instead of extrapolating freely.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [0.1082366200770938, 0.856187772661859, 0.0002145812693342752] },
       "departDate": "2023-04-14",
+      "arrivalDate": "2023-12-11"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.1082366200770938, 0.856187772661859, 0.0002145812693342752] },
+      "toBody": "Earth",
+      "departDate": "2023-12-11",
       "arrivalDate": "2024-08-20"
     },
     {
@@ -21,10 +29,18 @@
       "periapsisKm": 6807
     },
     {
+      "_comment": "Same issue as the leg above: real trajectory stays within ~0.64-1.01 AU, plain Lambert gives apoapsis 2.03 AU. Split through the real recorded closest-approach point (2025-01-03).",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Venus",
+      "toBody": { "fixedPos": [-0.5412919076871876, 0.3478209566761877, -1.739750462437329e-05] },
       "departDate": "2024-08-20",
+      "arrivalDate": "2025-01-03"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.5412919076871876, 0.3478209566761877, -1.739750462437329e-05] },
+      "toBody": "Venus",
+      "departDate": "2025-01-03",
       "arrivalDate": "2025-08-31"
     },
     {
