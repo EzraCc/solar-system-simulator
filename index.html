@@ -8,7 +8,15 @@
      doesn't rewrite that to anything real). Colors match the app's own
      palette: dark panel background, gold Sun, blue accent planet. -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0f1a'/%3E%3Cellipse cx='16' cy='17' rx='12' ry='6' fill='none' stroke='%233a4a6b' stroke-width='1.2'/%3E%3Ccircle cx='16' cy='14' r='4.2' fill='%23ffd27a'/%3E%3Ccircle cx='26' cy='17' r='2.1' fill='%235ab0ff'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="src/css/style.css">
+<!-- ?v= cache-buster on both src/js/app.js and src/css/style.css below --
+     bump the number on any edit to either file. Both were being served
+     with no explicit cache headers, so browsers were free to keep
+     serving an old cached copy across normal (non-hard) reloads, which
+     is the likely cause of "my fix isn't showing up" reports where the
+     source itself checks out fine (verified content missing on some
+     panels but not others, exactly the kind of partial staleness a
+     cached JS file mid-series-of-edits would produce). -->
+<link rel="stylesheet" href="src/css/style.css?v=8">
 </head>
 <body>
 
@@ -97,6 +105,6 @@
 
 <div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
 
-<script src="src/js/app.js"></script>
+<script src="src/js/app.js?v=8"></script>
 </body>
 </html>
