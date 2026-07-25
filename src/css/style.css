@@ -384,7 +384,12 @@
     text-decoration: none; color: var(--text-dim); gap: 3px;
   }
   .lp-asset img {
-    width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 4px;
+    /* contain, not cover -- rockets in particular are tall and skinny,
+       and cropping to fill a square tile cut off the top/bottom of the
+       vehicle. Letterboxing (black bars from the panel's own dark
+       background showing through) reads better than a cropped rocket. */
+    width: 100%; aspect-ratio: 1 / 1; object-fit: contain; border-radius: 4px;
+    background: #05070d;
     border: 1px solid rgba(120,150,200,0.25);
     transition: border-color 0.15s ease, transform 0.15s ease;
   }
