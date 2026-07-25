@@ -2814,6 +2814,26 @@
     return false;
   }
 
+  // Stricter than isSmallBodyVisible: the body's own DOT is deliberately
+  // shown for the whole widened in-transit window (so scrubbing time lets
+  // you watch a target approach/depart even without clicking anything --
+  // see isSmallBodyVisible's comment), but its ORBIT LINE should only
+  // appear as the direct result of an explicit action -- clicking the body
+  // itself, or clicking/selecting a mission that targets it -- not just
+  // because a targeting mission happens to be in transit somewhere nearby
+  // in time. Otherwise the orbit ellipse would flicker on/off across a
+  // full year on either side of every targeting mission's launch/arrival
+  // regardless of whether anyone asked to see it.
+  function isSmallBodyOrbitVisible(key) {
+    const body = SMALL_BODIES[key];
+    if (lockedBodyName === body.name) return true;
+    for (const flightKey of body.targetOfFlights) {
+      if (!FLIGHTS_RAW[flightKey]) continue;
+      if (selectedFlightKey === flightKey) return true;
+    }
+    return false;
+  }
+
   // A flight's trajectory arc and spacecraft marker are shown only if
   // EITHER it is currently selected (clicked in the Flights legend) OR
   // the simulated date falls within its actual transit window (it is
@@ -3691,13 +3711,13 @@
       drawOrbitEllipseAroundPoint(CHARON_ELEMENTS, daysSinceEpoch, plutoState.pos);
     }
 
-    // Small body orbit ellipses: same visibility rule as the body itself
-    // (isSmallBodyVisible -- directly clicked, or a targeting mission is
-    // selected/in-transit), so clicking Bennu or selecting OSIRIS-REx both
-    // reveal Bennu's actual path around the Sun, not just a dot with no
-    // path to contextualize it.
+    // Small body orbit ellipses: narrower than the body's own dot
+    // visibility (see isSmallBodyOrbitVisible) -- only clicking the body
+    // directly, or clicking/selecting a mission that targets it, reveals
+    // its path; merely being in the widened in-transit window (which
+    // shows the dot) is not enough on its own.
     Object.entries(SMALL_BODIES).forEach(([key, body]) => {
-      if (!isSmallBodyVisible(key, daysSinceEpoch)) return;
+      if (!isSmallBodyOrbitVisible(key)) return;
       ctx.strokeStyle = hexWithAlpha(body.meta.color, 0.35);
       drawSmallBodyOrbitEllipse(body.elements);
     });
