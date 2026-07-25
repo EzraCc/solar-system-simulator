@@ -66,15 +66,6 @@
 </div>
 
 <div id="bottom-right-controls">
-  <div class="panel" id="date-panel">
-    <span class="label">Date</span>
-    <input type="date" id="date-input" readonly>
-    <button id="edit-date-btn" title="Pause and edit the date directly">Edit</button>
-    <button id="apply-date" title="Jump to this date">Go to date</button>
-    <button id="cancel-edit-date-btn" title="Cancel editing">✕</button>
-    <button id="reset-today">Today</button>
-  </div>
-
   <div class="panel" id="time-panel">
     <div class="row">
       <span class="label">Speed</span>
@@ -87,6 +78,18 @@
       <button id="playpause">Pause</button>
       <button id="reset-speed">Reset speed</button>
     </div>
+  </div>
+
+  <!-- Wider than #time-panel above it -- put last (bottom edge, where
+       #bottom-right-controls is anchored) so the narrower panel sits on
+       top instead of the stack's width visibly stepping out partway up. -->
+  <div class="panel" id="date-panel">
+    <span class="label">Date</span>
+    <input type="date" id="date-input" readonly>
+    <button id="edit-date-btn" title="Pause and edit the date directly">Edit</button>
+    <button id="apply-date" title="Jump to this date">Go to date</button>
+    <button id="cancel-edit-date-btn" title="Cancel editing">✕</button>
+    <button id="reset-today">Today</button>
   </div>
 </div>
 
