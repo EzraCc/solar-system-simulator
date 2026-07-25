@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- user-scalable=no hands pinch/pan entirely to the canvas's own touch
+     handlers -- without this the page itself would ALSO natively
+     pinch-zoom/pan at the same time as the app's custom gesture code,
+     fighting it. Without width=device-width at all, mobile browsers fake
+     a ~980px viewport and scale the whole page down instead of laying it
+     out at the real screen width. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Solar System — Orbital Mechanics Visualizer</title>
 <!-- Inline SVG data URI, not a separate file -- avoids the browser's
      automatic /favicon.ico request 404ing (a plain static file server
@@ -58,6 +65,10 @@
     <div class="switch" id="size-switch"></div>
     <span>Compare true sizes</span>
   </label>
+  <label id="focus-toggle-label" title="Broad: everything currently in transit shows. Focused: only the selected flight (or missions to the locked body) shows.">
+    <div class="switch" id="focus-switch"></div>
+    <span>Focused view</span>
+  </label>
 </div>
 
 <div class="panel" id="size-compare-panel">
@@ -108,6 +119,6 @@
 
 <div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
 
-<script src="src/js/app.js?v=13"></script>
+<script src="src/js/app.js?v=14"></script>
 </body>
 </html>

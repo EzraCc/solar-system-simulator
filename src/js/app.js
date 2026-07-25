@@ -2053,6 +2053,21 @@
   let dpr = window.devicePixelRatio || 1;
   let viewW = 0, viewH = 0;
 
+  // Single source of truth for "are we in the mobile layout" -- several
+  // things this drives (the locked panel's bottom-sheet positioning in
+  // drawLockedPanelConnector, the canvas tap hit-radius, the zoom-hint
+  // text) are computed in JS, not just styled, so a CSS media query alone
+  // can't express them. body.mobile lets CSS key off the same flag rather
+  // than maintaining a second, separately-tuned breakpoint there.
+  // (pointer: coarse) alone would also catch a touch-capable laptop with
+  // a big screen, hence the width clause on both branches.
+  let isMobileLayout = false;
+  const MOBILE_LAYOUT_QUERY = "(max-width: 820px), (pointer: coarse) and (max-width: 1024px)";
+  function updateMobileLayoutMode() {
+    isMobileLayout = window.matchMedia(MOBILE_LAYOUT_QUERY).matches;
+    document.body.classList.toggle("mobile", isMobileLayout);
+  }
+
   function resize() {
     dpr = window.devicePixelRatio || 1;
     viewW = window.innerWidth;
@@ -2062,8 +2077,10 @@
     canvas.style.width = viewW + "px";
     canvas.style.height = viewH + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    updateMobileLayoutMode();
   }
   window.addEventListener("resize", resize);
+  window.addEventListener("orientationchange", resize);
   resize();
 
   /* =========================================================================
@@ -2100,6 +2117,16 @@
   let lockedBodyName = null;
   let selectedFlightKey = null;
   let renderedBodies = []; // populated each frame: {name, sx, sy, screenR, pos, vel, ...}
+
+  // "broad" (default): a flight/small body shows whenever it's genuinely
+  // in transit right now, independent of selection -- lets you casually
+  // watch whatever's happening at the current date. "focused": suppress
+  // that entirely -- show ONLY the currently selected flight's own
+  // path(s), or (if a body/small body is locked instead) only the
+  // flights that actually target it, hiding every other flight/body in
+  // transit right now regardless of date. Read by isFlightVisible and
+  // isSmallBodyVisible below.
+  let sceneVisibilityMode = "broad"; // "broad" | "focused"
 
   // Absolute screen position of the locked panel -- set once when a new
   // body/flight is locked (see drawLockedPanelConnector's edge-detection),
@@ -2394,6 +2421,21 @@
     showTrueSizes = !showTrueSizes;
     sizeSwitch.classList.toggle("on", showTrueSizes);
     sizeComparePanel.classList.toggle("visible", showTrueSizes);
+  });
+
+  /* =========================================================================
+     BROAD / FOCUSED SCENE VISIBILITY TOGGLE
+     sceneVisibilityMode itself is declared up near lockedBodyName/
+     selectedFlightKey (same load-time-read reasoning) -- this just wires
+     the switch to it. See isFlightVisible/isSmallBodyVisible for what the
+     mode actually changes.
+  ========================================================================= */
+
+  const focusSwitch = document.getElementById("focus-switch");
+  const focusToggleLabel = document.getElementById("focus-toggle-label");
+  focusToggleLabel.addEventListener("click", () => {
+    sceneVisibilityMode = sceneVisibilityMode === "broad" ? "focused" : "broad";
+    focusSwitch.classList.toggle("on", sceneVisibilityMode === "focused");
   });
 
   /* =========================================================================
@@ -2821,6 +2863,10 @@
 
   const SMALL_BODY_VISIBILITY_PAD_DAYS = 365;
   function isSmallBodyVisible(key, daysSinceEpoch) {
+    // Focused mode strips the widened in-transit-window fallback below
+    // entirely -- it's exactly isSmallBodyOrbitVisible's own (stricter)
+    // rule, so delegate rather than duplicating it.
+    if (sceneVisibilityMode === "focused") return isSmallBodyOrbitVisible(key);
     const body = SMALL_BODIES[key];
     if (lockedBodyName === body.name) return true;
     for (const flightKey of body.targetOfFlights) {
@@ -2873,6 +2919,16 @@
   // only for flights this function actually returns true for.
   function isFlightVisible(key, daysSinceEpoch) {
     if (selectedFlightKey === key) return true;
+    // Focused mode: no flight gets the "merely in transit" pass below --
+    // the only other way in is being a mission that targets whatever
+    // body/small body is currently locked (getFlightDestinations already
+    // walks a flight's legs for exactly this "what does it touch"
+    // question, reused here rather than re-implemented). Nothing locked
+    // and not selected means hidden, full stop.
+    if (sceneVisibilityMode === "focused") {
+      if (!lockedBodyName) return false;
+      return getFlightDestinations(key).includes(lockedBodyName);
+    }
     const { launchDays, arrivalDays } = getFlightDates(key);
     return daysSinceEpoch >= launchDays && daysSinceEpoch <= arrivalDays;
   }

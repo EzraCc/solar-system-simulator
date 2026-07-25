@@ -15,7 +15,12 @@
     overflow: hidden;
   }
   #canvas-wrap { position: fixed; inset: 0; }
-  canvas { display: block; width: 100%; height: 100%; }
+  /* touch-action: none hands ALL gesture handling to the canvas's own
+     touchstart/touchmove listeners -- without it the browser's default
+     scroll/pinch-zoom behavior can still compete with the app's custom
+     one-finger-rotate/two-finger-pinch-pan gestures even with the
+     passive touch listeners those use. */
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 
   .panel {
     position: fixed;
@@ -195,7 +200,7 @@
 
   #scale-toggle-panel {
     right: 16px; top: 16px;
-    display: flex; align-items: center; gap: 8px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
   }
   #scale-toggle-panel label {
     display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;
