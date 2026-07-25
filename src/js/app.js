@@ -2129,6 +2129,12 @@
   let selectedFlightKey = null;
   let renderedBodies = []; // populated each frame: {name, sx, sy, screenR, pos, vel, ...}
 
+  // Whether syncPauseWithLockedPanel (see near setPaused) auto-paused
+  // playback when the panel most recently opened -- so closing it knows
+  // whether to resume (it was actually playing) or leave things alone
+  // (it was already paused for some other reason, e.g. manually).
+  let autoPausedOnLock = false;
+
   // "broad" (default): a flight/small body shows whenever it's genuinely
   // in transit right now, independent of selection -- lets you casually
   // watch whatever's happening at the current date. "focused": suppress
@@ -2380,6 +2386,31 @@
   setPaused(paused); // explicit initial sync, rather than relying on the
                       // HTML "readonly" attribute happening to match
                       // paused's default JS value
+
+  // Reading "Why it matters"/Notes/an image gallery while bodies keep
+  // drifting past defeats the point of a detail panel -- opening one
+  // auto-pauses playback, closing it resumes ONLY if playback was
+  // actually running before (not already paused for some other reason,
+  // and not un-paused just because a SECOND lock happened to replace a
+  // first one -- see the two "null <-> non-null transition only" guards
+  // below). Called from every place lockedBodyName changes: lockBody,
+  // selectFlight's own deselect path, and the close button -- all three
+  // mutate it directly rather than funneling through one setter, so this
+  // needs to be invoked from each rather than being able to live inside
+  // a single lockedBodyName= assignment.
+  function syncPauseWithLockedPanel(prevLocked, newLocked) {
+    if (prevLocked === null && newLocked !== null) {
+      if (!paused) {
+        autoPausedOnLock = true;
+        setPaused(true);
+      }
+    } else if (prevLocked !== null && newLocked === null) {
+      if (autoPausedOnLock) {
+        autoPausedOnLock = false;
+        setPaused(false);
+      }
+    }
+  }
 
   document.getElementById("reset-speed").addEventListener("click", () => {
     speedSlider.value = 100;
@@ -2836,6 +2867,7 @@
     } else {
       lockedBodyName = name;
     }
+    syncPauseWithLockedPanel(prevLocked, lockedBodyName);
     // Locking onto a body (a planet, moon, or Sol) is a sign attention
     // has moved elsewhere, so any lingering flight selection should clear
     // -- otherwise a flight's arc stays pinned visible indefinitely after
@@ -2864,14 +2896,19 @@
   }
 
   // Clicking a flight selects it and focuses the camera on the
-  // spacecraft, WITHOUT touching simDate/pause state -- see the comment
-  // further down for why that date-jump was removed.
+  // spacecraft, WITHOUT touching simDate -- see the comment further down
+  // for why that date-jump was removed. (Pause state DOES get touched,
+  // but only as the panel-open/close side effect syncPauseWithLockedPanel
+  // applies uniformly to every lock/unlock, not something specific to
+  // flight selection.)
   function selectFlight(key) {
     if (selectedFlightKey === key) {
       // clicking the same flight again deselects it, mirroring lockBody's
       // toggle-on-same-click convention used elsewhere
       selectedFlightKey = null;
+      const prevLocked = lockedBodyName;
       lockedBodyName = null;
+      syncPauseWithLockedPanel(prevLocked, null);
       buildLegend();
       buildFlightsLegend();
       updateLockedPanelVisibility();
@@ -3037,7 +3074,9 @@
   const lockedPanelHeader = document.getElementById("locked-panel-header");
 
   lockedPanelClose.addEventListener("click", () => {
+    const prevLocked = lockedBodyName;
     lockedBodyName = null;
+    syncPauseWithLockedPanel(prevLocked, null);
     updateLockedPanelVisibility();
   });
 
@@ -3127,41 +3166,12 @@
     lockedPanelHeader.style.cursor = "grab";
   });
 
-  // Mobile bottom sheet: snap-drag (not free-follow) between two height
-  // states via the header -- drag/tap up beyond the toggle threshold
-  // expands to "sheet-full", drag down toggles back to the peek default,
-  // and a bigger drag down dismisses entirely (same effect as the close
-  // button). Deliberately snaps on touchend rather than resizing live
-  // frame-by-frame while dragging -- simpler to get right than a
-  // continuous height follow, and reads as a native bottom-sheet flick
-  // rather than a freeform resize (which the desktop panel already has
-  // via CSS resize:both, disabled on mobile -- see the CSS).
-  let sheetDragStartY = null;
-  const SHEET_DISMISS_THRESHOLD_PX = 100;
-  const SHEET_TOGGLE_THRESHOLD_PX = 40;
-  lockedPanelHeader.addEventListener("touchstart", (e) => {
-    if (!isMobileLayout || isLandscapeMobile) return; // sidebar mode has no peek/full states to drag between
-    sheetDragStartY = e.touches[0].clientY;
-  }, { passive: true });
-  lockedPanelHeader.addEventListener("touchend", (e) => {
-    if (!isMobileLayout || isLandscapeMobile || sheetDragStartY === null) return;
-    const endTouch = e.changedTouches && e.changedTouches[0];
-    const deltaY = endTouch ? endTouch.clientY - sheetDragStartY : 0;
-    sheetDragStartY = null;
-    if (deltaY > SHEET_DISMISS_THRESHOLD_PX) {
-      lockBody(null);
-    } else if (deltaY < -SHEET_TOGGLE_THRESHOLD_PX) {
-      lockedPanel.classList.add("sheet-full");
-    } else if (deltaY > SHEET_TOGGLE_THRESHOLD_PX) {
-      lockedPanel.classList.remove("sheet-full");
-    }
-    // A near-zero delta (a tap on the handle/title, not a drag) toggles
-    // between the two states instead of doing nothing -- a tap is a
-    // reasonable, more discoverable alternative to a drag gesture.
-    else if (Math.abs(deltaY) < 10) {
-      lockedPanel.classList.toggle("sheet-full");
-    }
-  }, { passive: true });
+  // Mobile: no drag-to-dismiss or peek/full snapping -- the panel is a
+  // full-screen modal now (see body.mobile #locked-panel in the CSS),
+  // and the whole point of "make sure it covers things and we don't
+  // allow interactions through without closing" is that closing is
+  // deliberate (the close button only), not something an accidental
+  // swipe on the header could trigger.
 
   const resetViewBtn = document.getElementById("reset-view-btn");
   const stopTrackingBtn = document.getElementById("stop-tracking-btn");
@@ -3492,12 +3502,10 @@
     if (lockedBodyName !== _lastLockedBodyForPanel) {
       lockedPanelTitle.textContent = b.name;
       formatLockedPanelContent(b);
-      // Mobile: the panel is a bottom sheet (or sidebar in landscape),
-      // positioned entirely by CSS (body.mobile #locked-panel {...}) --
-      // setting inline left/top here would win over that (inline styles
-      // beat class rules) and fight the CSS positioning, so skip it
-      // entirely. Every new lock starts at the "peek" height regardless
-      // of whatever state a previously-locked body's sheet was left in.
+      // Mobile: the panel is a full-screen modal, positioned entirely by
+      // CSS (body.mobile #locked-panel { inset:0; ... }) -- setting
+      // inline left/top here would win over that (inline styles beat
+      // class rules) and fight the CSS positioning, so skip it entirely.
       //
       // Real bug found via a live-browser repro (Playwright, not just the
       // headless harness): locking something while desktop-sized sets a
@@ -3514,7 +3522,6 @@
       // mobile mode is never at the mercy of whatever inline values a
       // prior desktop session happened to leave behind.
       if (isMobileLayout) {
-        lockedPanel.classList.remove("sheet-full");
         lockedPanelPos = null;
         lockedPanel.style.left = "";
         lockedPanel.style.top = "";
