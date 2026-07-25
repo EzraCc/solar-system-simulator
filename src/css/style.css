@@ -394,6 +394,14 @@
   body.mobile .lp-val { text-align: left; }
   body.mobile .lp-assets { flex-wrap: wrap; }
   body.mobile .lp-asset { flex: 1 1 40%; }
+  /* Extra right breathing room for the scrollable body specifically --
+     the panel's own 14px right padding (from .panel, shared with every
+     other panel) put text and the scrollbar right at that edge with no
+     margin between them. Most noticeable in landscape (iPad Air etc.):
+     wide-short viewports stretch text lines across nearly the full
+     width, so a moving scrollbar directly against wrapped text read as
+     the content getting cut off rather than a deliberate edge. */
+  body.mobile #locked-panel-body { padding-right: 18px; }
 
   #locked-panel-body {
     overflow-y: auto;

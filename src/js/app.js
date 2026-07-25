@@ -2071,7 +2071,14 @@
   // the surplus width instead. Only meaningful when isMobileLayout is
   // also true -- a landscape *desktop* window doesn't get sidebar mode.
   let isLandscapeMobile = false;
-  const MOBILE_LAYOUT_QUERY = "(max-width: 820px), (pointer: coarse) and (max-width: 1024px)";
+  // The coarse-pointer clause's max-width used to be 1024px, which
+  // excludes iPad Air LANDSCAPE (~1180-1194px wide, real device
+  // dimensions) entirely -- portrait iPad Air (820px) matched via the
+  // first clause, but rotating it, the panel would have silently fallen
+  // back to desktop's floating-panel behavior instead of the mobile
+  // full-screen modal. Widened to comfortably cover landscape tablet
+  // widths generally (up to iPad Pro 12.9" landscape, ~1366px).
+  const MOBILE_LAYOUT_QUERY = "(max-width: 820px), (pointer: coarse) and (max-width: 1366px)";
   function updateMobileLayoutMode() {
     isMobileLayout = window.matchMedia(MOBILE_LAYOUT_QUERY).matches;
     isLandscapeMobile = isMobileLayout && window.matchMedia("(orientation: landscape)").matches;
