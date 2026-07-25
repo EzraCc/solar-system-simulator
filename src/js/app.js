@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "12";
+  const BUILD_VERSION = "13";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
