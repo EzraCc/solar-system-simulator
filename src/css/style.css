@@ -112,6 +112,50 @@
     scrollbar-width: thin;
     scrollbar-color: rgba(120, 150, 200, 0.35) transparent;
   }
+
+  /* Hamburger toggle + backdrop: both desktop-hidden by default, shown
+     only under body.mobile (see the mobile drawer block below). Kept
+     outside any body.mobile selector themselves so the "hidden by
+     default" state doesn't depend on load order relative to the mobile
+     flag being computed. */
+  #legend-drawer-toggle {
+    display: none;
+    position: fixed; left: 16px; top: 16px; z-index: 65;
+    width: 44px; height: 44px;
+    background: var(--panel-bg); border: 1px solid var(--panel-border);
+    border-radius: 10px; backdrop-filter: blur(6px);
+    flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    cursor: pointer;
+  }
+  #legend-drawer-toggle .drawer-toggle-bar {
+    width: 20px; height: 2px; background: var(--text-primary); border-radius: 1px;
+  }
+  #legend-backdrop {
+    display: none;
+    position: fixed; inset: 0; z-index: 55;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  body.mobile #legend-drawer-toggle { display: flex; }
+  /* Driven by a "drawer-open" class on <body> (alongside "mobile"),
+     toggled in JS -- not a CSS sibling-combinator trick keyed off
+     #legend-panel's own class, since that would depend on the toggle
+     button/backdrop coming AFTER #legend-panel in DOM order (the "~"
+     combinator only selects later siblings), which they don't. One
+     class on body driving all three pieces has no such ordering
+     dependency. */
+  body.mobile.drawer-open #legend-drawer-toggle { display: none; }
+  body.mobile.drawer-open #legend-backdrop { display: block; }
+  body.mobile #legend-panel {
+    left: 0; top: 0;
+    width: 82vw; max-width: 320px;
+    height: 100vh; max-height: 100vh;
+    border-radius: 0; border-left: none; border-top: none; border-bottom: none;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+  body.mobile.drawer-open #legend-panel { transform: translateX(0); }
   #legend-panel::-webkit-scrollbar { width: 6px; }
   #legend-panel::-webkit-scrollbar-track { background: transparent; }
   #legend-panel::-webkit-scrollbar-thumb {

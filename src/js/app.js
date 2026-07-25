@@ -2450,6 +2450,22 @@
   });
 
   /* =========================================================================
+     LEGEND DRAWER (mobile only -- see body.mobile rules in style.css)
+     Desktop keeps the legend as an always-visible floating panel; on
+     mobile it's a slide-out drawer instead, open/close driven by a
+     single "drawer-open" class on <body>.
+  ========================================================================= */
+
+  const legendDrawerToggle = document.getElementById("legend-drawer-toggle");
+  const legendBackdrop = document.getElementById("legend-backdrop");
+  legendDrawerToggle.addEventListener("click", () => {
+    document.body.classList.add("drawer-open");
+  });
+  legendBackdrop.addEventListener("click", () => {
+    document.body.classList.remove("drawer-open");
+  });
+
+  /* =========================================================================
      LEGEND
   ========================================================================= */
 
@@ -2824,6 +2840,16 @@
     }
     updateLockedPanelVisibility();
     buildLegend(); // re-render so the accordion (moon rows) reflects the new focus
+    // Picking something from the legend drawer is the natural "I'm done
+    // browsing" signal on mobile -- close it so the canvas/info panel are
+    // actually visible. selectFlight() routes through here too (see its
+    // own lockBody call), so this covers flight selection as well without
+    // a separate hook. No-op on desktop (drawer-open only means anything
+    // under body.mobile) and harmless if the drawer was already closed
+    // (e.g. a canvas tap, not a drawer row).
+    if (isMobileLayout && lockedBodyName !== null) {
+      document.body.classList.remove("drawer-open");
+    }
   }
 
   // Clicking a flight selects it and focuses the camera on the

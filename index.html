@@ -33,6 +33,17 @@
 
 <div id="hover-tip"></div>
 
+<!-- Mobile-only: hidden on desktop (see body.mobile rules in style.css).
+     Legend becomes a slide-out drawer on mobile instead of an
+     always-visible floating box -- this button plus the backdrop below
+     are its open/close affordances. -->
+<button id="legend-drawer-toggle" title="Show legend" aria-label="Show legend">
+  <span class="drawer-toggle-bar"></span>
+  <span class="drawer-toggle-bar"></span>
+  <span class="drawer-toggle-bar"></span>
+</button>
+<div id="legend-backdrop"></div>
+
 <div class="panel" id="legend-panel">
   <div class="layer-group" id="planets-layer-group">
     <div class="layer-header" id="planets-layer-header">
@@ -119,6 +130,6 @@
 
 <div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
 
-<script src="src/js/app.js?v=15"></script>
+<script src="src/js/app.js?v=16"></script>
 </body>
 </html>
