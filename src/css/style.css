@@ -354,63 +354,41 @@
   }
   #locked-panel-close:hover { color: var(--text-primary); }
 
-  /* Mobile-only drag handle (a small pill above the title) signaling the
-     header is draggable -- desktop uses a "grab" cursor for the same
-     affordance instead, which doesn't mean anything on a touchscreen.
-     Portrait (bottom sheet) only -- a sidebar (landscape) isn't
-     height-adjustable by dragging, see below. */
-  .sheet-handle { display: none; }
-  body.mobile:not(.landscape) .sheet-handle {
-    display: block; width: 36px; height: 4px; border-radius: 2px;
-    background: var(--panel-border); margin: 0 auto 8px;
-  }
-
-  /* Portrait mobile: bottom sheet. JS stops setting inline left/top on
-     mobile (see drawLockedPanelConnector and the header drag handlers)
-     so these position rules actually take effect instead of being
-     overridden by inline styles. Two height states, snapped between
-     (not free-dragged) via touch handlers on the header -- "peek"
-     (default on any new lock) shows the title + first couple rows,
-     "sheet-full" expands to nearly the full screen. Free
-     reposition-by-drag and the native resize handle are both
-     desktop-only interactions that don't apply here, so both are
-     disabled. */
-  /* bottom: 306px clears the footer cluster -- #camera-controls stacked
-     above #bottom-right-controls (see MOBILE CONTROL LAYOUT below),
-     measured in a live browser (Playwright): camera-controls grows from
-     32px tall (just "Reset view") to 68px ("Reset view" + "Stop
-     tracking" both showing, which happens exactly when a body/flight is
-     locked -- i.e. exactly when this sheet is also open). 226px own
-     offset + 68px worst-case height + 12px gap = 306px. Without this the
-     sheet's z-index (40) beats the footer panels' default stacking and
-     visually covers them rather than sitting alongside. */
-  body.mobile:not(.landscape) #locked-panel {
-    left: 0; right: 0; bottom: 306px; top: auto;
+  /* Mobile: full-screen modal, same in both orientations -- a partial
+     bottom sheet/sidebar (the previous design) still didn't have room
+     for a flight's full content (rows + Why it matters + Destinations +
+     Notes + image gallery) even on a relatively large device like iPad
+     Air, and left the canvas tappable/visible around its edges, which
+     read as "you can still interact with other things" when the intent
+     is a focused, must-close-to-leave detail view. JS stops setting
+     inline left/top on mobile (see drawLockedPanelConnector) so these
+     rules actually take effect instead of being overridden by inline
+     styles. z-index 100 is comfortably above every other mobile-only
+     floating element (legend-drawer-toggle is the highest of those, at
+     65) so nothing behind it is reachable until it's explicitly closed --
+     covering the full viewport at a higher z-index is sufficient on its
+     own to block clicks/taps to whatever's underneath, no extra JS
+     needed for that part. No peek/partial state and no drag-to-dismiss
+     (see the removed touch handlers in app.js) -- the close button is
+     the only way out, deliberately, so it can't be dismissed by an
+     accidental swipe. Free reposition-by-drag and the native resize
+     handle are both desktop-only interactions that don't apply to a
+     full-screen view, so both are disabled. */
+  body.mobile #locked-panel {
+    inset: 0;
     width: 100%; max-width: 100%; min-width: 0;
-    border-radius: 16px 16px 0 0;
-    resize: none;
-    max-height: 40vh;
-    transition: max-height 0.25s ease;
-  }
-  body.mobile:not(.landscape) #locked-panel.sheet-full {
-    max-height: calc(100vh - 322px);
-  }
-
-  /* Landscape mobile: docked sidebar instead -- short/wide viewport has
-     surplus width but scarce height, the opposite tradeoff from
-     portrait, so a bottom sheet would eat most of the screen. Fixed
-     width/full height, no peek/full states (nothing to drag -- the
-     constraint here is width, not height), just the existing close
-     button. */
-  body.mobile.landscape #locked-panel {
-    left: auto; right: 0; top: 0; bottom: 0;
-    width: 360px; max-width: 42vw; min-width: 0;
-    height: 100vh; max-height: 100vh;
+    height: 100%; max-height: 100%;
     border-radius: 0;
     resize: none;
+    z-index: 100;
   }
 
   body.mobile #locked-panel-header { cursor: default; }
+  /* Close button gets extra room to tap in a full-screen context, and
+     stays pinned top-right regardless of how far the body scrolls --
+     "true" for free already since the header is flex-shrink:0 and only
+     #locked-panel-body scrolls, not the header itself. */
+  body.mobile #locked-panel-close { font-size: 22px; padding: 4px 8px; }
 
   body.mobile .lp-row { flex-direction: column; align-items: flex-start; gap: 2px; }
   body.mobile .lp-val { text-align: left; }
@@ -565,16 +543,17 @@
      MOBILE CONTROL LAYOUT
      Time/date controls stay at the bottom (matching desktop) rather than
      moving to the top -- shrunk instead, so the top of the screen isn't
-     crowded with everything at once. camera-controls moves to bottom-
-     left (small, secondary actions) so the two don't collide with each
-     other. Portrait's locked panel is a full-width bottom sheet (see
-     "body.mobile:not(.landscape) #locked-panel" above); its "bottom"
-     offset is set to actually clear #bottom-right-controls' real
-     rendered height (measured in a live browser via Playwright, not
-     guessed) rather than a value that only looks right by luck. zoom-
-     hint's desktop-only instructions (mouse/keyboard modifiers) are
-     dropped entirely rather than translated -- screen space is scarce
-     and none of it applies to touch anyway.
+     crowded with everything at once. camera-controls docks directly
+     above the time/date stack (both bottom-right) rather than
+     bottom-left, which overlapped it horizontally at narrow widths (the
+     time/date stack alone runs ~300px wide, most of the screen on a
+     phone). Since the locked panel is a full-screen modal (see "body.mobile
+     #locked-panel" above) rather than a partial sheet/sidebar, there's no
+     collision to avoid between it and this footer -- opening it covers
+     the footer entirely, which is the intended behavior, not something
+     to route around. zoom-hint's desktop-only instructions (mouse/
+     keyboard modifiers) are dropped entirely rather than translated --
+     screen space is scarce and none of it applies to touch anyway.
   ========================================================================= */
   body.mobile #zoom-hint { display: none; }
 
@@ -611,15 +590,3 @@
   }
   body.mobile #camera-controls button { padding: 7px 10px; font-size: 12px; }
 
-  /* Landscape docks the locked panel to the RIGHT edge as a sidebar (see
-     "body.mobile.landscape #locked-panel" above), which would otherwise
-     cover this whole right-anchored footer cluster (confirmed visually
-     via Playwright) exactly like the portrait sheet did before its own
-     bottom offset was added. Landscape has surplus width, so simplest
-     fix is moving the footer to the left edge instead of computing yet
-     another offset -- the canvas is unobstructed there regardless of
-     whether the sidebar is open. */
-  body.mobile.landscape #bottom-right-controls,
-  body.mobile.landscape #camera-controls {
-    right: auto; left: 12px;
-  }
