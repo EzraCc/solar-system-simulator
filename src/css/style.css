@@ -495,6 +495,19 @@
     transition: border-color 0.15s ease, transform 0.15s ease;
   }
   .lp-asset:hover img { border-color: var(--accent); transform: scale(1.03); }
+
+  /* Mobile landscape: the viewport itself is short, and a 1:1 square tile
+     sized off a wide flex-item width (esp. when it's the only asset, so
+     flex:1 1 0 lets it stretch) can end up taller than the whole screen --
+     the user has to scroll past their own viewport height just to see one
+     photo in full. Drop the forced square and let the image use its real
+     aspect ratio, capped to a height that always fits on screen. */
+  body.mobile.landscape .lp-asset img {
+    aspect-ratio: auto;
+    width: auto;
+    max-width: 100%;
+    max-height: 70vh;
+  }
   .lp-asset-noimg {
     width: 100%; aspect-ratio: 1 / 1; border-radius: 4px;
     border: 1px dashed rgba(120,150,200,0.25);
