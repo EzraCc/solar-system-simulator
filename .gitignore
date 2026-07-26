@@ -14,3 +14,7 @@ Thumbs.db
 # Screenshots dropped here for visual bug reports -- transient, not project content
 debug/screenshots/*
 !debug/screenshots/.gitkeep
+
+# Local venv for the optional dev-only trajectory validation tooling (see
+# tools/README.md) -- not project content, not a runtime dependency.
+tools/.venv/
