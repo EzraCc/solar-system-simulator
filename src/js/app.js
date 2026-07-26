@@ -1933,14 +1933,17 @@
   // Venus→Venus legs.  300 steps gives smooth curves even at high eccentricity.
   function drawFlightArcByTime(elements, tStart, tEnd) {
     const N = 300;
+    const points = [];
     ctx.beginPath();
     for (let k = 0; k <= N; k++) {
       const t = tStart + (k / N) * (tEnd - tStart);
       const [X, Y, Z] = computeFlightPosition({ elements }, t);
       const [sx, sy]  = worldToScreen(X, Y, Z);
+      points.push([sx, sy]);
       if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
     }
     ctx.stroke();
+    return points;
   }
 
   // Draw a multi-leg flight's lambert legs, with slightly decreasing
@@ -1964,6 +1967,13 @@
     const lambertEntries = raw.legs
       .map((leg, i) => ({ leg, i }))
       .filter(({ leg }) => leg.type === 'lambert');
+
+    // Screen-point arrays actually drawn, one per leg -- returned so the
+    // caller can register them for click/hover hit-testing (hitTestPaths).
+    // A separate array per leg (rather than one flattened list) so a
+    // skipped/rejected-fit leg's gap never creates a false connecting
+    // segment between two otherwise-unrelated legs.
+    const segments = [];
 
     lambertEntries.forEach(({ leg, i }, seqIndex) => {
       let legStart, legEnd, drawFn;
@@ -2017,9 +2027,12 @@
       }
 
       ctx.globalAlpha = Math.max(0.4, 1.0 - seqIndex * 0.15) * alphaScale;
-      drawFn(drawStart, drawEnd);
+      const pts = drawFn(drawStart, drawEnd);
       ctx.globalAlpha = 1.0;
+      if (pts && pts.length) segments.push(pts);
     });
+
+    return segments;
   }
 
   // Draw a small diamond (rotated square) at a world-space AU position.
@@ -2281,6 +2294,20 @@
   let lockedBodyName = null;
   let selectedFlightKey = null;
   let renderedBodies = []; // populated each frame: {name, sx, sy, screenR, pos, vel, ...}
+  // Populated each frame alongside renderedBodies, from the exact screen
+  // points each orbit/arc-drawing function already computes (see e.g.
+  // drawOrbitEllipse's `return points`) -- reused for click/hover
+  // hit-testing (hitTestPaths) so a path's clickable geometry always
+  // matches its drawn geometry exactly, at no extra sampling cost.
+  // Entry shape: { name, flightKey, color, segments: [[[x,y],...], ...] }
+  let renderedPaths = [];
+  // The path currently under the pointer (desktop hover, or a brief touch
+  // preview -- see handleHover/canvas touchstart), redrawn with a wider
+  // translucent glow each frame so the user can see, before clicking,
+  // exactly which single path is about to be selected -- the mechanism
+  // that actually resolves crossing/overlapping orbits, rather than any
+  // kind of "layers" picker. Null when the pointer isn't near any path.
+  let hoveredPathEntry = null;
 
   // Whether syncPauseWithLockedPanel (see near setPaused) auto-paused
   // playback when the panel most recently opened -- so closing it knows
@@ -3282,6 +3309,41 @@
       mouseDownWasDrag = true;
     }
   }, { passive: true });
+  // Minimum squared distance from point (px,py) to a line segment (x1,y1)-(x2,y2).
+  function pointToSegmentDistSq(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const lenSq = dx * dx + dy * dy;
+    let t = lenSq > 0 ? ((px - x1) * dx + (py - y1) * dy) / lenSq : 0;
+    t = Math.max(0, Math.min(1, t));
+    const cx = x1 + t * dx, cy = y1 + t * dy;
+    const ex = px - cx, ey = py - cy;
+    return ex * ex + ey * ey;
+  }
+
+  // Nearest-path-wins hit test against renderedPaths (populated each frame
+  // right alongside renderedBodies -- see the "Orbit paths" block above) --
+  // the fallback when a click/hover misses every body/flight marker (see
+  // the canvas "click" and handleHover below). Returns the closest path
+  // entry within tolerancePx, or null. Deliberately the SAME "nearest
+  // under threshold" philosophy the marker hit test already uses (its own
+  // comment above) rather than any kind of selection menu for overlapping
+  // paths -- the hover-glow preview this feeds is what actually resolves
+  // ambiguity for the user, by letting them nudge the pointer until the
+  // right name lights up, rather than the app guessing or listing options.
+  function hitTestPaths(mx, my, tolerancePx) {
+    let best = null, bestDistSq = tolerancePx * tolerancePx;
+    for (const path of renderedPaths) {
+      for (const seg of path.segments) {
+        for (let k = 0; k < seg.length - 1; k++) {
+          const [x1, y1] = seg[k], [x2, y2] = seg[k + 1];
+          const dSq = pointToSegmentDistSq(mx, my, x1, y1, x2, y2);
+          if (dSq < bestDistSq) { bestDistSq = dSq; best = path; }
+        }
+      }
+    }
+    return best;
+  }
+
   canvas.addEventListener("click", (e) => {
     if (mouseDownWasDrag) return; // was a rotate/pan gesture, not a click
     if (e.button === 2 || e.shiftKey) return; // pan gesture
@@ -3315,6 +3377,23 @@
         const dx = mx - b.sx, dy = my - b.sy;
         const hitR = Math.max(b.screenR, minHitR);
         if (dx * dx + dy * dy <= hitR * hitR) { hit = b; break; }
+      }
+    }
+    // Marker miss: fall back to the path/orbit line itself -- a flight
+    // marker especially is small and constantly moving, but the arc it's
+    // following is a much bigger, static target. Same nearest-under-
+    // threshold philosophy as the marker test above (see hitTestPaths'
+    // own comment), just a slightly larger tolerance since a thin line is
+    // harder to land on than a marker's own already-generous minHitR.
+    if (!hit) {
+      const pathHit = hitTestPaths(mx, my, isMobileLayout ? 28 : 10);
+      if (pathHit) {
+        if (pathHit.flightKey) {
+          selectFlight(pathHit.flightKey);
+        } else {
+          lockBody(pathHit.name, { toggleIfSame: true });
+        }
+        return;
       }
     }
     // A flight marker needs selectFlight(), not the generic lockBody() --
@@ -3524,7 +3603,7 @@
   }
 
   function handleHover(e) {
-    if (lockedBodyName) { hoverTip.style.display = "none"; return; } // locked panel takes over
+    if (lockedBodyName) { hoverTip.style.display = "none"; hoveredPathEntry = null; return; } // locked panel takes over
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
@@ -3535,10 +3614,24 @@
       if (dx * dx + dy * dy <= hitR * hitR) { hit = b; break; }
     }
     if (hit) {
+      hoveredPathEntry = null;
       hoverTip.style.display = "block";
       hoverTip.style.left = (e.clientX + 14) + "px";
       hoverTip.style.top = (e.clientY + 14) + "px";
       hoverTip.innerHTML = `<strong>${hit.name}</strong><span style="color:var(--text-dim)"> · click to track</span>`;
+      return;
+    }
+    // Marker miss: same path fallback as the click handler (hitTestPaths),
+    // so hovering near a path previews -- via #hover-tip's name plus a
+    // glow redrawn each frame (see the "Orbit paths" block in frame()) --
+    // exactly what a click there would select, before it's committed.
+    const pathHit = hitTestPaths(mx, my, 10);
+    hoveredPathEntry = pathHit;
+    if (pathHit) {
+      hoverTip.style.display = "block";
+      hoverTip.style.left = (e.clientX + 14) + "px";
+      hoverTip.style.top = (e.clientY + 14) + "px";
+      hoverTip.innerHTML = `<strong>${pathHit.name}</strong><span style="color:var(--text-dim)"> · click to track</span>`;
     } else {
       hoverTip.style.display = "none";
     }
@@ -4290,6 +4383,7 @@
     }
 
     const N = 180;
+    const points = [];
     ctx.beginPath();
     for (let k = 0; k <= N; k++) {
       const E = (k / N) * 2 * Math.PI;
@@ -4297,9 +4391,11 @@
       const yOrb = a * Math.sqrt(1 - e * e) * Math.sin(E);
       const [X, Y, Z] = rotate(xOrb, yOrb);
       const [sx, sy] = worldToScreen(X, Y, Z);
+      points.push([sx, sy]);
       if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
     }
     ctx.stroke();
+    return points; // reused for click/hover hit-testing (hitTestPaths) -- no extra sampling cost
   }
 
   // Draws only the TRAVELED PORTION of a flight's transfer ellipse --
@@ -4355,6 +4451,7 @@
     }
 
     const N = 90;
+    const points = [];
     ctx.beginPath();
     for (let k = 0; k <= N; k++) {
       const E = E_launch + (k / N) * (E_arrival - E_launch);
@@ -4362,9 +4459,11 @@
       const yOrb = el.a * Math.sqrt(1 - el.e * el.e) * Math.sin(E);
       const [X, Y, Z] = rotate(xOrb, yOrb);
       const [sx, sy] = worldToScreen(X, Y, Z);
+      points.push([sx, sy]);
       if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
     }
     ctx.stroke();
+    return points;
   }
 
   // Draws a satellite's orbit ellipse centered on a moving point (its
@@ -4403,6 +4502,7 @@
     }
 
     const N = 90;
+    const points = [];
     ctx.beginPath();
     for (let k = 0; k <= N; k++) {
       const E = (k / N) * 2 * Math.PI;
@@ -4413,9 +4513,11 @@
       const Y = centerAU[1] + Ykm / AU_KM;
       const Z = centerAU[2] + Zkm / AU_KM;
       const [sx, sy] = worldToScreen(X, Y, Z);
+      points.push([sx, sy]);
       if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
     }
     ctx.stroke();
+    return points;
   }
 
   // A small body's a/e/i/Om/w are fixed (SMALL_BODIES elements carry no
@@ -4445,6 +4547,7 @@
     }
 
     const N = 180;
+    const points = [];
     ctx.beginPath();
     for (let k = 0; k <= N; k++) {
       const nu = (k / N) * 2 * Math.PI;
@@ -4453,9 +4556,11 @@
       const yOrb = r * Math.sin(nu);
       const [X, Y, Z] = rotate(xOrb, yOrb);
       const [sx, sy] = worldToScreen(X, Y, Z);
+      points.push([sx, sy]);
       if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
     }
     ctx.stroke();
+    return points;
   }
 
   function frame() {
@@ -4622,23 +4727,28 @@
     }
 
     // Orbit paths (drawn first, beneath bodies)
+    renderedPaths = [];
     ctx.lineWidth = 1;
     PLANET_ORDER.forEach((name) => {
       ctx.strokeStyle = hexWithAlpha(PLANET_META[name].color, 0.28);
-      drawOrbitEllipse(PLANET_ELEMENTS[name], daysSinceEpoch);
+      const pts = drawOrbitEllipse(PLANET_ELEMENTS[name], daysSinceEpoch);
+      renderedPaths.push({ name, color: PLANET_META[name].color, segments: [pts] });
     });
     if (earthState && isSatelliteVisible("Earth", "Moon")) {
       ctx.strokeStyle = hexWithAlpha(MOON_META.color, 0.35);
-      drawOrbitEllipseAroundPoint(MOON_ELEMENTS, daysSinceEpoch, earthState.pos);
+      const pts = drawOrbitEllipseAroundPoint(MOON_ELEMENTS, daysSinceEpoch, earthState.pos);
+      renderedPaths.push({ name: "Moon", color: MOON_META.color, segments: [pts] });
     }
     if (marsState) {
       if (isSatelliteVisible("Mars", "Phobos")) {
         ctx.strokeStyle = hexWithAlpha(PHOBOS_META.color, 0.35);
-        drawOrbitEllipseAroundPoint(PHOBOS_ELEMENTS, daysSinceEpoch, marsState.pos);
+        const pts = drawOrbitEllipseAroundPoint(PHOBOS_ELEMENTS, daysSinceEpoch, marsState.pos);
+        renderedPaths.push({ name: "Phobos", color: PHOBOS_META.color, segments: [pts] });
       }
       if (isSatelliteVisible("Mars", "Deimos")) {
         ctx.strokeStyle = hexWithAlpha(DEIMOS_META.color, 0.35);
-        drawOrbitEllipseAroundPoint(DEIMOS_ELEMENTS, daysSinceEpoch, marsState.pos);
+        const pts = drawOrbitEllipseAroundPoint(DEIMOS_ELEMENTS, daysSinceEpoch, marsState.pos);
+        renderedPaths.push({ name: "Deimos", color: DEIMOS_META.color, segments: [pts] });
       }
     }
     PLANET_ORDER.forEach((planetName) => {
@@ -4647,16 +4757,19 @@
       OUTER_MOONS[planetName].forEach((moon) => {
         if (!isSatelliteVisible(planetName, moon.name)) return;
         ctx.strokeStyle = hexWithAlpha(moon.meta.color, 0.35);
-        drawOrbitEllipseAroundPoint(moon.elements, daysSinceEpoch, pPos);
+        const pts = drawOrbitEllipseAroundPoint(moon.elements, daysSinceEpoch, pPos);
+        renderedPaths.push({ name: moon.name, color: moon.meta.color, segments: [pts] });
       });
     });
     if (plutoState && isSatelliteVisible("Pluto and Charon", "Charon")) {
       ctx.strokeStyle = hexWithAlpha(CHARON_META.color, 0.35);
-      drawOrbitEllipseAroundPoint(CHARON_ELEMENTS, daysSinceEpoch, plutoState.pos);
+      const pts = drawOrbitEllipseAroundPoint(CHARON_ELEMENTS, daysSinceEpoch, plutoState.pos);
+      renderedPaths.push({ name: "Charon", color: CHARON_META.color, segments: [pts] });
     }
     if (didymosState && isSatelliteVisible("Didymos (65803)", "Dimorphos")) {
       ctx.strokeStyle = hexWithAlpha(DIMORPHOS_META.color, 0.35);
-      drawOrbitEllipseAroundPoint(DIMORPHOS_ELEMENTS, daysSinceEpoch, didymosState.pos);
+      const pts = drawOrbitEllipseAroundPoint(DIMORPHOS_ELEMENTS, daysSinceEpoch, didymosState.pos);
+      renderedPaths.push({ name: "Dimorphos", color: DIMORPHOS_META.color, segments: [pts] });
     }
 
     // Small body orbit ellipses: narrower than the body's own dot
@@ -4667,7 +4780,8 @@
     Object.entries(SMALL_BODIES).forEach(([key, body]) => {
       if (!isSmallBodyOrbitVisible(key)) return;
       ctx.strokeStyle = hexWithAlpha(body.meta.color, 0.35);
-      drawSmallBodyOrbitEllipse(body.elements);
+      const pts = drawSmallBodyOrbitEllipse(body.elements);
+      renderedPaths.push({ name: body.name, color: body.meta.color, segments: [pts] });
     });
 
     // Flight trajectory arcs: shown only while the flight is selected or
@@ -4692,11 +4806,12 @@
       const selected = selectedFlightKey === key;
       ctx.strokeStyle = flightColor(key);
       ctx.lineWidth = selected ? 1.6 : 0.9;
+      let segments;
       if (isMultiLeg(FLIGHTS_RAW[key])) {
         if (selected) {
-          drawMultiLegArcs(key);
+          segments = drawMultiLegArcs(key);
         } else {
-          drawMultiLegArcs(key, {
+          segments = drawMultiLegArcs(key, {
             windowStart: daysSinceEpoch - TRAJECTORY_WINDOW_DAYS,
             windowEnd: daysSinceEpoch + TRAJECTORY_WINDOW_DAYS,
             alphaScale: 0.55,
@@ -4706,16 +4821,33 @@
         const flight = getSolvedFlight(key);
         if (selected) {
           ctx.globalAlpha = 1;
-          drawFlightArc(flight);
+          segments = [drawFlightArc(flight)];
         } else {
           const ws = Math.max(flight.launchDays, daysSinceEpoch - TRAJECTORY_WINDOW_DAYS);
           const we = Math.min(flight.arrivalDays, daysSinceEpoch + TRAJECTORY_WINDOW_DAYS);
           ctx.globalAlpha = 0.55;
-          drawFlightArc(flight, ws, we);
+          segments = [drawFlightArc(flight, ws, we)];
           ctx.globalAlpha = 1;
         }
       }
+      renderedPaths.push({ name: FLIGHTS_RAW[key].name, flightKey: key, color: flightColor(key), segments: segments || [] });
     });
+
+    // Hover/near-tap preview glow: a single extra stroke over whichever
+    // path the pointer is currently nearest to (see handleHover), wider
+    // and translucent so it reads as "this is what a click here selects"
+    // without permanently thickening every path and cluttering Broad mode.
+    if (hoveredPathEntry) {
+      ctx.save();
+      ctx.strokeStyle = hexWithAlpha(hoveredPathEntry.color, 0.35);
+      ctx.lineWidth = 6;
+      for (const seg of hoveredPathEntry.segments) {
+        ctx.beginPath();
+        seg.forEach(([x, y], k) => { if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
 
     // Lagrange point diamond markers for the active multi-leg flight
     drawLagrangeMarkers(daysSinceEpoch);
