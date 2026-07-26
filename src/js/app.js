@@ -1967,6 +1967,8 @@
 
     lambertEntries.forEach(({ leg, i }, seqIndex) => {
       let legStart, legEnd, drawFn;
+      const prevLeg = raw.legs[i - 1];
+      const followsGA = !!(prevLeg && prevLeg.type === 'gravity_assist');
       if (hasGA) {
         const segs = getGAChain(flightKey);
         const seg  = segs.find(s => s.legIndex === i);
@@ -1981,7 +1983,26 @@
         // eccentric-anomaly arc, which drawFlightArc can clip directly.
         const solved = getSolvedLeg(flightKey, i);
         legStart = solved.launchDays; legEnd = solved.arrivalDays;
-        drawFn = (t0, t1) => drawFlightArc(solved, t0, t1);
+        if (followsGA) {
+          // This leg's patched-conic fit was REJECTED (getGAChain's
+          // missTooLarge fallback -- see its own giant comment), meaning
+          // getSolvedLeg's plain 2-point Lambert solve is standing in for
+          // it. That solve DOES pass through the two real endpoints, but
+          // the ellipse/hyperbola shape connecting them over a long,
+          // often multi-revolution real gap can bulge wildly in the
+          // wrong direction -- confirmed via harness survey: 19 such legs
+          // across 12 missions in this catalog, several with e above 0.9
+          // and one outright hyperbolic (New Horizons' post-Jupiter leg),
+          // reproducing exactly the "extends past Mars, arcs sharply out
+          // past Jupiter" artifact reported for Dawn's post-flyby leg. A
+          // straight dashed line between the two real endpoints is
+          // honest about what this simulator actually knows here (where
+          // the leg started and ended) without asserting a specific,
+          // often fictional, curved shape in between.
+          drawFn = (t0, t1) => drawFlightChord(solved.elements, t0, t1);
+        } else {
+          drawFn = (t0, t1) => drawFlightArc(solved, t0, t1);
+        }
       }
 
       let drawStart = legStart, drawEnd = legEnd;
@@ -2793,11 +2814,24 @@
       return {
         flightKey: 'dawn',
         startDays: depart - 3,
-        endDays: arrive + 3,
+        // Stop just short of `arrive`, not past it: the leg right after
+        // this one is a rejected gravity-assist patched-conic fit (see
+        // getGAChain's missTooLarge fallback -- confirmed via harness:
+        // legIndex 2 here comes out isPatched=false, a nearly-parabolic
+        // e=0.9974 fallback orbit reaching ~4 AU, versus this leg's own
+        // well-behaved e=0.33). Crossing into it drew a sharp, wildly
+        // wrong arc out past Mars/Jupiter that has nothing to do with
+        // Dawn's real continuous-thrust path -- an artifact of the
+        // fallback fit, not a real feature of the trajectory. Every
+        // other demo's endDays was checked against this same hazard and
+        // only Dawn's crossed it (PSP's leg IS a trusted patched fit;
+        // Aditya-L1/ESCAPADE's following legs aren't gated by the GA
+        // chain at all).
+        endDays: arrive - 0.5,
         stages: [
           { atDays: depart - 3, text: "Dawn is about to leave Earth under continuous ion thrust — not a single burn, but a gentle push that never stops." },
           { atDays: depart + (arrive - depart) / 3, text: "Unlike a chemical rocket, Dawn's ion engine fires continuously for months at a time, at a tiny fraction of the force but far higher efficiency." },
-          { atDays: arrive - 5, text: "Arrival at Mars for a gravity assist. The smooth curve shown here approximates that continuous thrust — a real chemical-propulsion coast would only burn at the very start." },
+          { atDays: arrive - 5, text: "Almost at Mars for a gravity assist. The smooth curve shown here approximates that continuous thrust — a real chemical-propulsion coast would only burn at the very start." },
         ],
       };
     }
@@ -4285,6 +4319,26 @@
       if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
     }
     ctx.stroke();
+  }
+
+  // Straight dashed line between two real endpoint positions -- used by
+  // drawMultiLegArcs in place of drawFlightArc for a leg whose patched-conic
+  // fit was rejected (see that call site's comment): computeFlightPosition
+  // handles both bound (e<1) and hyperbolic (e>=1) elements correctly, so
+  // this works regardless of which kind the rejected fallback solve
+  // produced.
+  function drawFlightChord(elements, t0, t1) {
+    const p0 = computeFlightPosition({ elements }, t0);
+    const p1 = computeFlightPosition({ elements }, t1);
+    const [sx0, sy0] = worldToScreen(p0[0], p0[1], p0[2]);
+    const [sx1, sy1] = worldToScreen(p1[0], p1[1], p1[2]);
+    ctx.save();
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(sx0, sy0);
+    ctx.lineTo(sx1, sy1);
+    ctx.stroke();
+    ctx.restore();
   }
 
   // Draws a satellite's orbit ellipse centered on a moving point (its
