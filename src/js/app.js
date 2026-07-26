@@ -2292,6 +2292,18 @@
   // reach it. selectedFlightKey is declared here for the identical
   // reason: buildFlightsLegend() also runs once at load time and reads it.
   let lockedBodyName = null;
+  // Separate from lockedBodyName: camera tracking and the info PANEL's own
+  // visibility used to be the same thing (lockedBodyName null <-> panel
+  // hidden), so closing the panel also dropped tracking -- especially bad
+  // on mobile, where the panel is a full-screen modal covering the whole
+  // scene, so "close it to see the animation again" also meant "lose your
+  // target." Now lockedBodyName alone drives tracking/highlight/camera-
+  // follow; infoPanelVisible alone drives whether the panel is shown.
+  // lockBody/selectFlight open it for a NEWLY chosen target; the panel's
+  // own close button (and toggling the same target off) close it without
+  // touching lockedBodyName; stopTrackingBtn -> lockBody(null) is the only
+  // way to actually stop tracking.
+  let infoPanelVisible = false;
   let selectedFlightKey = null;
   let renderedBodies = []; // populated each frame: {name, sx, sy, screenR, pos, vel, ...}
   // Populated each frame alongside renderedBodies, from the exact screen
@@ -2572,19 +2584,24 @@
   // auto-pauses playback, closing it resumes ONLY if playback was
   // actually running before (not already paused for some other reason,
   // and not un-paused just because a SECOND lock happened to replace a
-  // first one -- see the two "null <-> non-null transition only" guards
-  // below). Called from every place lockedBodyName changes: lockBody,
-  // selectFlight's own deselect path, and the close button -- all three
-  // mutate it directly rather than funneling through one setter, so this
-  // needs to be invoked from each rather than being able to live inside
-  // a single lockedBodyName= assignment.
-  function syncPauseWithLockedPanel(prevLocked, newLocked) {
-    if (prevLocked === null && newLocked !== null) {
+  // first one -- see the two "false <-> true transition only" guards
+  // below). Keyed off infoPanelVisible (the panel's own shown/hidden
+  // state), NOT lockedBodyName (camera tracking) -- since closing the
+  // panel no longer drops tracking (see infoPanelVisible's own comment),
+  // auto-pause/resume needs to follow whether you're actually LOOKING at
+  // the panel, not whether a body happens to be tracked. Called from
+  // every place infoPanelVisible changes: lockBody, selectFlight's own
+  // deselect path, and the panel's close button -- all three mutate it
+  // directly rather than funneling through one setter, so this needs to
+  // be invoked from each rather than being able to live inside a single
+  // infoPanelVisible= assignment.
+  function syncPauseWithLockedPanel(prevPanelVisible, newPanelVisible) {
+    if (!prevPanelVisible && newPanelVisible) {
       if (!paused) {
         autoPausedOnLock = true;
         setPaused(true);
       }
-    } else if (prevLocked !== null && newLocked === null) {
+    } else if (prevPanelVisible && !newPanelVisible) {
       if (autoPausedOnLock) {
         autoPausedOnLock = false;
         setPaused(false);
@@ -2906,7 +2923,7 @@
       demoSnapshot = {
         simDate: new Date(simDate), speedSliderValue: speedSlider.value,
         lockedBodyName, selectedFlightKey, sceneVisibilityMode,
-        pxPerAU, camX, camY, paused,
+        pxPerAU, camX, camY, paused, infoPanelVisible,
       };
     }
 
@@ -2989,6 +3006,11 @@
     } else {
       lockBody(null);
     }
+    // The calls above always (re)open the panel for whatever they just
+    // locked (see lockBody's own comment) -- override with the exact
+    // pre-demo panel state (it may have been closed while still tracking).
+    infoPanelVisible = snap.infoPanelVisible;
+    updateLockedPanelVisibility();
     autoPausedOnLock = false;
 
     simDate = snap.simDate;
@@ -3417,15 +3439,25 @@
   // logic that the canvas click handler already implements.
   function lockBody(name, opts) {
     opts = opts || {};
-    const prevLocked = lockedBodyName;
+    const prevPanelVisible = infoPanelVisible;
     if (name === null) {
       lockedBodyName = null;
+      infoPanelVisible = false;
     } else if (opts.toggleIfSame && lockedBodyName === name) {
-      lockedBodyName = null; // clicking the same body again unlocks it
+      if (infoPanelVisible) {
+        lockedBodyName = null; // panel's already open: same-body click unlocks it, as before
+        infoPanelVisible = false;
+      } else {
+        // Still tracking this target but the panel was closed (see the
+        // panel close button) -- re-clicking it means "show me that info
+        // again," not "stop tracking" (that's stopTrackingBtn's job).
+        infoPanelVisible = true;
+      }
     } else {
       lockedBodyName = name;
+      infoPanelVisible = true; // (re)opens the panel for the newly chosen target
     }
-    syncPauseWithLockedPanel(prevLocked, lockedBodyName);
+    syncPauseWithLockedPanel(prevPanelVisible, infoPanelVisible);
     // Locking onto a body (a planet, moon, or Sol) is a sign attention
     // has moved elsewhere, so any lingering flight selection should clear
     // -- otherwise a flight's arc stays pinned visible indefinitely after
@@ -3464,9 +3496,10 @@
       // clicking the same flight again deselects it, mirroring lockBody's
       // toggle-on-same-click convention used elsewhere
       selectedFlightKey = null;
-      const prevLocked = lockedBodyName;
+      const prevPanelVisible = infoPanelVisible;
       lockedBodyName = null;
-      syncPauseWithLockedPanel(prevLocked, null);
+      infoPanelVisible = false;
+      syncPauseWithLockedPanel(prevPanelVisible, false);
       buildLegend();
       buildFlightsLegend();
       updateLockedPanelVisibility();
@@ -3603,7 +3636,11 @@
   }
 
   function handleHover(e) {
-    if (lockedBodyName) { hoverTip.style.display = "none"; hoveredPathEntry = null; return; } // locked panel takes over
+    // Only suppressed while the panel is actually open (it visually covers
+    // enough of the view that a hover preview underneath is pointless) --
+    // tracking a body with the panel closed leaves the scene fully
+    // interactive, hover previews included.
+    if (lockedBodyName && infoPanelVisible) { hoverTip.style.display = "none"; hoveredPathEntry = null; return; }
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
@@ -3646,9 +3683,15 @@
   const lockedPanelHeader = document.getElementById("locked-panel-header");
 
   lockedPanelClose.addEventListener("click", () => {
-    const prevLocked = lockedBodyName;
-    lockedBodyName = null;
-    syncPauseWithLockedPanel(prevLocked, null);
+    // Hides the panel WITHOUT touching lockedBodyName -- camera tracking
+    // (and the highlight ring/connector) continues on whatever was
+    // selected. Especially important on mobile, where this panel is a
+    // full-screen modal: closing it to see the animation again shouldn't
+    // also lose your target. Use "Stop tracking" (camera-controls) to
+    // actually clear lockedBodyName.
+    const prevPanelVisible = infoPanelVisible;
+    infoPanelVisible = false;
+    syncPauseWithLockedPanel(prevPanelVisible, false);
     updateLockedPanelVisibility();
   });
 
@@ -3781,7 +3824,12 @@
     // CSS) so its header stays put while a too-tall body scrolls under its
     // own max-height, rather than the whole panel just growing past the
     // viewport edge for a flight with a long statusNote + asset gallery.
-    lockedPanel.style.display = lockedBodyName ? "flex" : "none";
+    lockedPanel.style.display = (lockedBodyName && infoPanelVisible) ? "flex" : "none";
+    // Deliberately still keyed on lockedBodyName alone (not infoPanelVisible)
+    // -- "Stop tracking" needs to stay reachable even while the panel is
+    // closed but a body/flight is still being tracked, since it's the only
+    // way to fully clear lockedBodyName once the panel's own close button
+    // no longer does that.
     stopTrackingBtn.classList.toggle("visible", !!lockedBodyName);
   }
 
@@ -4327,10 +4375,14 @@
     }
 
     // Highlight ring around the tracked body -- kept on mobile too (cheap
-    // canvas draw, useful regardless of panel layout). The connector LINE
-    // to the panel's position doesn't make sense once the panel is a
-    // fixed bottom sheet rather than something floating near the body, so
-    // that part is desktop-only.
+    // canvas draw, useful regardless of panel layout), and kept even while
+    // the info panel itself is closed (infoPanelVisible=false): it's the
+    // visual cue for what's being TRACKED, independent of the panel. The
+    // connector LINE to the panel's position only makes sense while that
+    // panel is actually visible -- otherwise it's a stray line pointing at
+    // a hidden panel's last on-screen position -- so it's gated on both
+    // desktop-only (a fixed bottom sheet on mobile has no "near the body"
+    // position to connect to) and infoPanelVisible.
     ctx.save();
     ctx.strokeStyle = "rgba(120,180,255,0.7)";
     ctx.lineWidth = 1.5;
@@ -4338,7 +4390,7 @@
     ctx.arc(b.sx, b.sy, b.screenR + 6, 0, Math.PI * 2);
     ctx.stroke();
 
-    if (!isMobileLayout) {
+    if (!isMobileLayout && infoPanelVisible) {
       const lineStartX = b.sx + (b.screenR + 6);
       const lineStartY = b.sy;
       const panelRect = lockedPanel.getBoundingClientRect(); // current rect, possibly moved by a drag
