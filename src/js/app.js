@@ -1285,6 +1285,87 @@
     };
   }
 
+  // For the "current orbit" toggle (orbitViewMode "current" vs "full" --
+  // see its own UI wiring near focusToggleLabel): find whichever leg is
+  // active at the given time and return the orbital elements + reference
+  // center (in AU, default the origin/Sol) it should be drawn around.
+  // Per the user's own call on how to resolve "what is it orbiting":
+  // Sol for a heliocentric (lambert, or a gravity-assist-patched segment)
+  // leg or a Lagrange-point loiter (a halo/Lissajous orbit isn't a simple
+  // two-body ellipse, so falling back to the underlying heliocentric
+  // orbit is the well-defined choice); the geocentric_orbit leg's own
+  // primaryBody otherwise (Earth for every current mission, but this
+  // reads leg.primaryBody generically so a future non-Earth parking-orbit
+  // leg -- Mars, say -- would resolve the same way without new code).
+  // Returns null if no leg is active at this time (before launch/after
+  // final arrival) or its shape is one of the rejected gravity-assist
+  // fallback fits (see drawMultiLegArcs' own comment on why those don't
+  // get a specific shape asserted, even here) -- callers fall back to
+  // full-path rendering in that case.
+  function getCurrentOrbitElements(flightKey, daysSinceEpoch) {
+    const raw = FLIGHTS_RAW[flightKey];
+    // Flat-schema flights (isMultiLeg false) have no raw.legs at all -- a
+    // single implicit heliocentric transfer, same as this function's own
+    // lambert/Sol fallback below.
+    if (!isMultiLeg(raw)) {
+      const flight = getSolvedFlight(flightKey);
+      if (daysSinceEpoch < flight.launchDays || daysSinceEpoch > flight.arrivalDays) return null;
+      return { elements: flight.elements, centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2 };
+    }
+    const legs = raw.legs;
+
+    for (const leg of legs) {
+      if (leg.type !== 'geocentric_orbit') continue;
+      const d = daysSinceJ2000(parseFlightDate(leg.departDate));
+      const a = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+      if (daysSinceEpoch < d || daysSinceEpoch > a) continue;
+      const meta = PLANET_META[leg.primaryBody];
+      if (!meta || !worldStates[leg.primaryBody]) return null;
+      const el = geocentricLegElements(leg, meta.radiusKm);
+      return {
+        elements: { a: el.aKm / AU_KM, e: el.e, i: el.i, Om: el.Om, w: el.w, M0: el.M0, epochDays: el.epochDays },
+        centerAU: worldStates[leg.primaryBody].pos,
+        // Same km/s^2 -> AU^3/day^2 conversion GM_SUN_AU3_DAY2 itself uses
+        // (line ~45) -- mean motion around this leg's actual primary, not
+        // the Sun, matters once "current orbit" needs to anchor its sweep
+        // to elapsed time (see drawCurrentOrbitEllipse).
+        gmAU3Day2: meta.gmKm3S2 * (SEC_PER_DAY * SEC_PER_DAY) / (AU_KM * AU_KM * AU_KM),
+      };
+    }
+
+    for (const leg of legs) {
+      if (leg.type !== 'loiter') continue;
+      const boundaries = getLegBoundaries(flightKey);
+      const b = boundaries.find((x) => x.type === 'loiter' && x.location === leg.location);
+      if (!b || daysSinceEpoch < b.dDays || daysSinceEpoch > b.aDays) continue;
+      const p0 = getBodyPositionAtDays(leg.location, daysSinceEpoch);
+      const p1 = getBodyPositionAtDays(leg.location, daysSinceEpoch + 0.5);
+      const vel = [(p1[0] - p0[0]) / 0.5, (p1[1] - p0[1]) / 0.5, (p1[2] - p0[2]) / 0.5];
+      return { elements: stateVectorToElements(p0, vel), centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2 };
+    }
+
+    const hasGA = legs.some((l) => l.type === 'gravity_assist');
+    const lambertEntries = legs.map((leg, i) => ({ leg, i })).filter(({ leg }) => leg.type === 'lambert');
+    if (hasGA) {
+      const segs = getGAChain(flightKey);
+      for (const seg of segs) {
+        if (daysSinceEpoch < seg.tStart || daysSinceEpoch > seg.tEnd) continue;
+        const prevLeg = legs[seg.legIndex - 1];
+        const followsGA = !!(prevLeg && prevLeg.type === 'gravity_assist');
+        if (followsGA && !seg.isPatched) return null; // rejected fallback fit -- no reliable shape to show
+        return { elements: seg.elements, centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2 };
+      }
+    } else {
+      for (const { leg, i } of lambertEntries) {
+        const solved = getSolvedLeg(flightKey, i);
+        if (daysSinceEpoch >= solved.launchDays && daysSinceEpoch <= solved.arrivalDays) {
+          return { elements: solved.elements, centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2 };
+        }
+      }
+    }
+    return null;
+  }
+
   /* =========================================================================
      LAGRANGE POINT POSITIONS
      For any planet, the five Lagrange points co-rotate with the planet in
@@ -2336,6 +2417,11 @@
   // transit right now regardless of date. Read by isFlightVisible and
   // isSmallBodyVisible below.
   let sceneVisibilityMode = "broad"; // "broad" | "focused"
+  // Only meaningful (and only shown in the UI) while a flight is selected:
+  // "full" draws the whole path as today; "current" draws just the one
+  // 360-degree orbit the spacecraft is presently on (see
+  // getCurrentOrbitElements/drawCurrentOrbitEllipse).
+  let orbitViewMode = "full"; // "full" | "current"
 
   // Absolute screen position of the locked panel -- set once when a new
   // body/flight is locked (see drawLockedPanelConnector's edge-detection),
@@ -2695,6 +2781,16 @@
     // "broad" is the default -- omit the param entirely rather than
     // writing focus=broad, so a plain visit keeps a clean bare URL.
     updateURLParams({ focus: sceneVisibilityMode === "focused" ? "focused" : null });
+  });
+
+  // Only meaningful with a mission selected (see orbitViewMode's own
+  // comment); visibility is kept in sync from buildFlightsLegend, the one
+  // central place selectedFlightKey actually changes.
+  const orbitViewSwitch = document.getElementById("orbit-view-switch");
+  const orbitViewToggleLabel = document.getElementById("orbit-view-toggle-label");
+  orbitViewToggleLabel.addEventListener("click", () => {
+    orbitViewMode = orbitViewMode === "full" ? "current" : "full";
+    orbitViewSwitch.classList.toggle("on", orbitViewMode === "current");
   });
 
   /* =========================================================================
@@ -3239,6 +3335,11 @@
   }
 
   function buildFlightsLegend() {
+    // The "current orbit" toggle only means anything once a mission is
+    // selected -- buildFlightsLegend is called from every place
+    // selectedFlightKey changes, so this is the one central spot to keep
+    // its visibility in sync without hunting down each call site.
+    orbitViewToggleLabel.classList.toggle("visible", !!selectedFlightKey);
     flightsRows.innerHTML = "";
     flightLegendRowEls = {};
     if (FLIGHTS_ORDER.length === 0) {
@@ -4595,6 +4696,68 @@
     return points;
   }
 
+  // One 360-degree loop of static, radians-based orbital elements (a in
+  // AU, e, i/Om/w already in radians, plus M0/epochDays -- the same shape
+  // flight-leg elements already use, e.g. getSolvedLeg's/getGAChain's
+  // output, or getCurrentOrbitElements' AU-converted geocentric/loiter
+  // output), optionally centered on a moving point (centerAU, default the
+  // origin/Sol). Used by the "current orbit" toggle to show one full
+  // revolution of whatever the spacecraft is CURRENTLY on.
+  //
+  // Anchored to the CURRENT position, not an arbitrary start point: swept
+  // 90 degrees of mean anomaly BEHIND where the spacecraft is right now
+  // through 270 degrees AHEAD (one full 360-degree loop, just weighted
+  // toward what's coming rather than centered/symmetric or starting from
+  // periapsis) -- so the recent-past and upcoming path both stay visually
+  // intact around wherever it actually is, per the user's own call. Mean
+  // anomaly (not eccentric or true anomaly) because it's the one that maps
+  // linearly to elapsed TIME, which is what "90 degrees ago" / "270
+  // degrees from now" actually means here; gmAU3Day2 is the mean motion's
+  // own primary's GM (Sol for a heliocentric leg, the geocentric_orbit
+  // leg's own primaryBody otherwise -- see getCurrentOrbitElements),
+  // NOT always GM_SUN_AU3_DAY2.
+  // Returns null (draws nothing) for e>=1 -- a hyperbolic/parabolic path
+  // never closes into a 360-degree loop, so there's no ellipse to show.
+  function drawCurrentOrbitEllipse(el, centerAU, gmAU3Day2, daysSinceEpoch) {
+    if (el.e >= 1) return null;
+    centerAU = centerAU || [0, 0, 0];
+    const cosOm = Math.cos(el.Om), sinOm = Math.sin(el.Om);
+    const cosW = Math.cos(el.w), sinW = Math.sin(el.w);
+    const cosI = Math.cos(el.i), sinI = Math.sin(el.i);
+    function rotate(x, y) {
+      const xw = x * cosW - y * sinW;
+      const yw = x * sinW + y * cosW;
+      const xi = xw, yi = yw * cosI, zi = yw * sinI;
+      return [xi * cosOm - yi * sinOm, xi * sinOm + yi * cosOm, zi];
+    }
+    const n = Math.sqrt(gmAU3Day2 / (el.a * el.a * el.a)); // rad/day
+    const M_now   = el.M0 + n * (daysSinceEpoch - el.epochDays);
+    const M_start = M_now - Math.PI / 2;      // 90 degrees behind
+    const M_end   = M_now + 1.5 * Math.PI;    // 270 degrees ahead
+
+    const N = 180;
+    const points = [];
+    ctx.beginPath();
+    for (let k = 0; k <= N; k++) {
+      const M = M_start + (k / N) * (M_end - M_start);
+      // solveKepler normalizes M into [0, 2pi) internally, so it's already
+      // correct for any M here regardless of sign/range -- each M maps to
+      // its own definite (x,y), no "unwrap E to stay increasing" trick
+      // needed (that's only for parametrizing directly by E across a
+      // linear sweep, e.g. drawFlightArc; here E is re-derived fresh at
+      // every sample).
+      const E = solveKepler(M, el.e);
+      const xOrb = el.a * (Math.cos(E) - el.e);
+      const yOrb = el.a * Math.sqrt(1 - el.e * el.e) * Math.sin(E);
+      const [x, y, z] = rotate(xOrb, yOrb);
+      const [sx, sy] = worldToScreen(centerAU[0] + x, centerAU[1] + y, centerAU[2] + z);
+      points.push([sx, sy]);
+      if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+    return points;
+  }
+
   // Draws a satellite's orbit ellipse centered on a moving point (its
   // primary's current position) rather than the origin -- needed for any
   // moon, since it orbits its primary's current position, not Sol's fixed
@@ -4936,7 +5099,15 @@
       ctx.strokeStyle = flightColor(key);
       ctx.lineWidth = selected ? 1.6 : 0.9;
       let segments;
-      if (isMultiLeg(FLIGHTS_RAW[key])) {
+      if (selected && orbitViewMode === "current") {
+        // "Current orbit only": one 360-degree loop anchored on wherever
+        // the spacecraft actually is right now (see getCurrentOrbitElements/
+        // drawCurrentOrbitEllipse), REPLACING the full/windowed path
+        // rather than drawing both -- the toggle is an either/or choice.
+        const orbitInfo = getCurrentOrbitElements(key, daysSinceEpoch);
+        const pts = orbitInfo && drawCurrentOrbitEllipse(orbitInfo.elements, orbitInfo.centerAU, orbitInfo.gmAU3Day2, daysSinceEpoch);
+        segments = pts ? [pts] : [];
+      } else if (isMultiLeg(FLIGHTS_RAW[key])) {
         if (selected) {
           segments = drawMultiLegArcs(key);
         } else {

@@ -260,6 +260,16 @@
   }
   .switch.on::after { left: 18px; }
 
+  /* Only means anything with a mission selected -- see orbitViewMode's own
+     comment in app.js. Selector needs to match #scale-toggle-panel label's
+     own specificity (an id + type selector) to actually win the display
+     property over it -- a bare #orbit-view-toggle-label loses that fight
+     regardless of source order, since both rules have exactly one id and
+     CSS specificity compares tier by tier, not "most specific wins by any
+     margin." */
+  #scale-toggle-panel #orbit-view-toggle-label { display: none; }
+  #scale-toggle-panel #orbit-view-toggle-label.visible { display: flex; }
+
   #size-compare-panel {
     right: 16px; top: 64px;
     max-width: 320px;

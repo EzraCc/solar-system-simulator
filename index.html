@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=20">
+<link rel="stylesheet" href="src/css/style.css?v=22">
 </head>
 <body>
 
@@ -79,6 +79,10 @@
   <label id="focus-toggle-label" title="Broad: everything currently in transit shows. Focused: only the selected flight (or missions to the locked body) shows.">
     <div class="switch" id="focus-switch"></div>
     <span>Focused view</span>
+  </label>
+  <label id="orbit-view-toggle-label" title="Full path: the mission's entire trajectory. Current orbit: just the one 360-degree loop it's presently on (90 degrees behind through 270 degrees ahead of where it is right now).">
+    <div class="switch" id="orbit-view-switch"></div>
+    <span>Current orbit only</span>
   </label>
   <button type="button" id="glossary-toggle">How do these missions get around?</button>
 </div>
@@ -155,6 +159,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=34"></script>
+<script src="src/js/app.js?v=36"></script>
 </body>
 </html>
