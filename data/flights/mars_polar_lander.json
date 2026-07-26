@@ -1,0 +1,25 @@
+{
+  "key": "mars_polar_lander",
+  "name": "Mars Polar Lander",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1999-01-03",
+  "arrival": "1999-12-03",
+  "rocket": "Delta II 7425",
+  "payload": "Mars Polar Lander (290 kg) + Deep Space 2 microprobes (4.8 kg)",
+  "status": "Landing failed",
+  "significance": "Mars Polar Lander was designed to touch down in the planet's south polar layered terrain, a region no prior mission had attempted to reach, and directly investigate Mars's climate history by searching for shallow water ice and studying the seasonal exchange of water and carbon dioxide between the polar caps and atmosphere. It carried two piggyback microprobes, Deep Space 2, meant to slam into the surface at high speed and test whether small, simple impactors could survive to sample subsurface soil. Contact was never established after atmospheric entry on December 3, 1999, and with no telemetry from the descent, the exact cause was never confirmed -- the leading hypothesis is that vibration during landing-leg deployment triggered a spurious touchdown signal, shutting down the descent engines roughly 40 meters above the surface. Arriving just eleven weeks after Mars Climate Orbiter was lost to a unit-conversion error, its failure became a defining case study against NASA's \"faster, better, cheaper\" philosophy, driving reforms toward more rigorous systems testing on later missions such as Mars Odyssey and the Mars Exploration Rovers.",
+  "statusNote": "Direct Earth->Mars transfer, no gravity assists. The two Deep Space 2 microprobes rode the same cruise stage and shared this exact launch and Mars-arrival trajectory with no independent maneuvers of their own, separating from the lander assembly moments before atmospheric entry to attempt a hard, parachute-less impact near the lander's target site -- not modeled as a separate flight here since it never had a distinct trajectory. Contact with both the lander and the microprobes was lost during the December 3, 1999 entry/descent and never reestablished; the leading (unconfirmed, since no descent telemetry survived) cause was a software fault that mistook landing-leg deployment vibration for touchdown, cutting the descent engines prematurely.",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars Polar Lander",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_Polar_Lander",
+      "localImage": "images/missions/mars_polar_lander/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.jpg"
+    }
+  }
+}

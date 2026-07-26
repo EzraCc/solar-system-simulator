@@ -542,6 +542,47 @@
       meta: { color: '#6a5646', radiusKm: 70.18 },
       targetOfFlights: ['lucy'],
     },
+    annefrank: {
+      name: 'Annefrank (5535)', type: 'asteroid',
+      elements: { a: 2.212362295338773, e: 0.06320477836052894, iDeg: 4.247441129204184,
+                  OmDeg: 120.5509750356931, wDeg: 9.553711836846162, M0Deg: 260.8814202465155,
+                  epochDays: 9655.5 },
+      // dimensionsKm: Stardust flyby (2002-11-02) tri-axial best-fit
+      // (Duxbury et al. 2003) -- imaged as a "triangular prism" possibly
+      // a contact binary.
+      meta: { color: '#8c7d68', radiusKm: 2.4, dimensionsKm: [6.6, 5.0, 3.4], shapeNote: 'triangular-prism shape, possible contact binary' },
+      targetOfFlights: ['stardust'],
+    },
+    wild2: {
+      name: 'Wild 2 (81P)', type: 'comet',
+      elements: { a: 3.449745576963111, e: 0.5373989073846863, iDeg: 3.237004173608168,
+                  OmDeg: 136.1102208500619, wDeg: 41.72523085114398, M0Deg: 187.5966814232084,
+                  epochDays: 7263.5 },
+      // dimensionsKm: Stardust flyby-imaged nucleus -- irregular, riddled
+      // with flat-bottomed depressions and active jets during the encounter.
+      meta: { color: '#a8a098', radiusKm: 2.0, dimensionsKm: [5.5, 4.0, 3.3], shapeNote: 'irregular nucleus with flat-bottomed depressions and active jets' },
+      targetOfFlights: ['stardust'],
+    },
+    braille: {
+      name: 'Braille (9969)', type: 'asteroid',
+      elements: { a: 2.339484343556827, e: 0.4340700166133246, iDeg: 29.02096189309999,
+                  OmDeg: 241.8990690138807, wDeg: 356.1093437035709, M0Deg: 177.6926985712546,
+                  epochDays: 9655.5 },
+      // dimensionsKm: Deep Space 1 flyby / JPL SBDB tri-axial extent.
+      meta: { color: '#8f8072', radiusKm: 0.64, dimensionsKm: [2.1, 1.0, 1.0], shapeNote: 'elongated, irregular shape' },
+      targetOfFlights: ['deep_space_1'],
+    },
+    borrelly: {
+      name: 'Borrelly (19P)', type: 'comet',
+      elements: { a: 3.606964684326838, e: 0.6379142835777641, iDeg: 29.3186623395529,
+                  OmDeg: 74.30084258786506, wDeg: 351.8616063839783, M0Deg: 312.1229200779977,
+                  epochDays: 7734.5 },
+      // dimensionsKm: Deep Space 1 flyby-imaged nucleus -- one of the most
+      // dramatically non-spherical cometary nuclei imaged, a "bowling pin"
+      // shape.
+      meta: { color: '#8f8478', radiusKm: 2.4, dimensionsKm: [8.0, 4.0, 4.0], shapeNote: 'elongated "bowling-pin" nucleus' },
+      targetOfFlights: ['deep_space_1'],
+    },
   };
 
   // Pluto-Charon: the solar system's only known "double dwarf planet" --
@@ -4216,7 +4257,7 @@
   // this simulator draws for their cruise legs are a simplified stand-in
   // for that smooth, continuous-thrust path, not a literal coast; the
   // Flight profile section below says so explicitly for these.
-  const ION_THRUST_MISSIONS = new Set(['dawn', 'hayabusa', 'hayabusa2', 'bepicolombo']);
+  const ION_THRUST_MISSIONS = new Set(['dawn', 'hayabusa', 'hayabusa2', 'bepicolombo', 'deep_space_1']);
 
   // Resolve any of the several shapes a leg's body/fromBody/toBody/location
   // field can take (a PLANET_META key, a lowercase SMALL_BODIES key, an

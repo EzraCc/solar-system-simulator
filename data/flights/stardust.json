@@ -1,0 +1,43 @@
+{
+  "key": "stardust",
+  "name": "Stardust",
+  "rocket": "Delta II 7426",
+  "payload": "Stardust sample-return spacecraft (385 kg, 305 kg dry)",
+  "status": "Success",
+  "significance": "Stardust was launched to answer a basic question no prior mission could: what is a comet actually made of, sampled directly rather than just imaged from afar? It became the first spacecraft to collect material from beyond the Moon and bring it back to Earth, capturing thousands of comet-coma particles in aerogel during a 237 km flyby of comet 81P/Wild 2, plus a handful of interstellar dust grains gathered from outside the solar system entirely. Analysis of the Wild 2 samples turned up crystalline minerals that could only have formed near the hot inner solar system or around other stars, embedded in an otherwise icy, primitive comet -- evidence that comet-forming material was thoroughly mixed across the young solar nebula rather than staying put where it condensed. In 2014, citizen-scientist volunteers combing through the returned aerogel confirmed seven particles as genuine interstellar dust, the first such grains ever positively identified in a laboratory.",
+  "statusNote": "First comet sample-return mission. Single Earth gravity-assist flyby (2001-01-15, altitude 6,008 km) used for a plane change ahead of the Wild 2 encounter. Also imaged asteroid 5535 Annefrank at a distance of 3,079 km on 2002-11-02 during the already-planned coast, as a practice run for the flyby/imaging sequence -- an incidental pass with no meaningful mass for a gravity assist, so not modeled as its own leg, the same treatment Rosetta's Steins/Lutetia passes get. Sample return capsule landed in Utah 2006-01-15; the carrier spacecraft was then repurposed as Stardust-NExT for a bonus Tempel 1 flyby in 2011. Neither the return trip nor the extended mission are modeled here -- this flight is shown as remaining at Wild 2 after the primary encounter, the same convention Genesis uses for its L1 station-keeping.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "1999-02-07",
+      "arrivalDate": "2001-01-15"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2001-01-15",
+      "periapsisKm": 6008
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "wild2",
+      "departDate": "2001-01-15",
+      "arrivalDate": "2004-01-02"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Stardust (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Stardust_(spacecraft)",
+      "localImage": "images/missions/stardust/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.jpg"
+    }
+  }
+}

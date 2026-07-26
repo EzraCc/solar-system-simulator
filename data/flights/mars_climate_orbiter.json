@@ -1,0 +1,25 @@
+{
+  "key": "mars_climate_orbiter",
+  "name": "Mars Climate Orbiter",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1998-12-11",
+  "arrival": "1999-09-23",
+  "rocket": "Delta II 7425",
+  "payload": "Mars Climate Orbiter (638 kg at launch)",
+  "status": "Orbit insertion failed",
+  "significance": "Mars Climate Orbiter was launched to study the Martian atmosphere and climate history, and to serve as a communications relay for the Mars Polar Lander that would arrive weeks later. It carried instruments to track daily weather, atmospheric dust, and water content, and to monitor how surface and polar-cap ice reservoirs change with the seasons. The mission never returned any science: during the orbit-insertion burn, ground navigation software computed thruster performance data in pound-force-seconds while the spacecraft's own software expected the data in newton-seconds, a unit-conversion error that went undetected through months of trajectory checks. The resulting mismatch drove the orbiter roughly 100 km lower than planned, and it either burned up or broke apart in the Martian atmosphere, becoming one of the most cited case studies in spaceflight of how a simple, unchecked unit error can destroy a $327 million mission.",
+  "statusNote": "Direct Earth->Mars transfer, no gravity assists. Cruise arrived on schedule, but the orbit-insertion burn (1999-09-23, beginning 09:00:46 UTC) put the spacecraft on a trajectory passing an estimated ~57 km above the surface -- well inside the ~80 km minimum survivable altitude -- due to a since-famous English/metric unit-conversion error between contractor and NASA navigation software. Contact was lost at 09:04:52 UTC, shortly after the spacecraft passed behind Mars as expected, and was never reestablished. As with Akatsuki, the orbit-insertion burn itself is outside this simulator's modeled scope (launch -> arrival only, not capture); unlike Akatsuki, no recovery was possible here.",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars Climate Orbiter",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_Climate_Orbiter",
+      "localImage": "images/missions/mars_climate_orbiter/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.jpg"
+    }
+  }
+}
