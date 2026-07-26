@@ -2847,6 +2847,18 @@
   let demoStages = null;     // this demo's caption stages, sorted by atDays
   let demoEndDays = null;
   let demoRafId = null;
+  let demoStageIdx = 0;      // index into demoStages of the currently-displayed caption
+  let demoStageShownAt = 0;  // performance.now() when demoStageIdx was last advanced
+
+  // Caption stages are spaced by simulated days, not real seconds -- for a
+  // demo whose stages happen to be clustered close together in sim-time
+  // (PSP's "flyby moment" and "result" captions, only ~4 sim-days apart),
+  // the day-threshold alone let one flash on screen for under a second
+  // before the next replaced it. This guarantees every stage gets the
+  // same minimum real-world reading time regardless of how close together
+  // its underlying real events are, by advancing at most one stage per
+  // tick and only once the current one has been shown this long.
+  const MIN_STAGE_DWELL_MS = 4500;
 
   const demoCaption = document.getElementById("demo-caption");
   const demoCaptionText = document.getElementById("demo-caption-text");
@@ -2891,6 +2903,8 @@
 
     demoStages = demo.stages.slice().sort((a, b) => a.atDays - b.atDays);
     demoEndDays = demo.endDays;
+    demoStageIdx = 0;
+    demoStageShownAt = performance.now();
     demoCaptionText.textContent = demoStages[0].text;
     demoExitBtn.textContent = "Exit demo";
     demoCaption.classList.remove("demo-ended");
@@ -2902,14 +2916,33 @@
   function demoWatchTick() {
     if (demoSnapshot === null) return; // demo was exited
     const nowDays = daysSinceJ2000(simDate);
-    let current = demoStages[0];
-    for (const stage of demoStages) {
-      if (nowDays >= stage.atDays) current = stage;
-    }
-    if (demoCaptionText.textContent !== current.text) demoCaptionText.textContent = current.text;
+    const now = performance.now();
 
-    if (nowDays >= demoEndDays && !paused) {
-      setPaused(true);
+    // The physically-correct stage for the current simDate...
+    let targetIdx = 0;
+    for (let k = 0; k < demoStages.length; k++) {
+      if (nowDays >= demoStages[k].atDays) targetIdx = k;
+    }
+    // ...but only actually advance the caption one stage at a time, and
+    // only once the current one has had its minimum reading time -- so a
+    // fast-playing demo queues up rather than skipping straight to
+    // whatever stage the clock has already reached.
+    if (targetIdx > demoStageIdx && (now - demoStageShownAt) >= MIN_STAGE_DWELL_MS) {
+      demoStageIdx++;
+      demoStageShownAt = now;
+      demoCaptionText.textContent = demoStages[demoStageIdx].text;
+    }
+
+    // The animation itself still pauses as soon as it reaches its natural
+    // end point, even if the caption is still catching up -- freezing on
+    // the final frame while the last stage finishes its own dwell time is
+    // better than either running past the interesting part or looking
+    // stuck with no explanation.
+    if (nowDays >= demoEndDays && !paused) setPaused(true);
+
+    const lastStageSettled = demoStageIdx === demoStages.length - 1 &&
+                              (now - demoStageShownAt) >= MIN_STAGE_DWELL_MS;
+    if (nowDays >= demoEndDays && lastStageSettled && !demoCaption.classList.contains("demo-ended")) {
       demoCaption.classList.add("demo-ended");
       demoExitBtn.textContent = "Exit demo";
     }
