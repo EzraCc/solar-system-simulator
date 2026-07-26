@@ -2507,11 +2507,17 @@
   const cancelEditDateBtn = document.getElementById("cancel-edit-date-btn");
 
   applyDateBtn.addEventListener("click", () => {
-    if (dateInput.value) setSimDateFromInputValue(dateInput.value);
+    if (dateInput.value) {
+      setSimDateFromInputValue(dateInput.value);
+      updateURLParams({ date: dateInput.value });
+    }
   });
   document.getElementById("reset-today").addEventListener("click", () => {
     simDate = new Date();
     dateInput.value = dateInputValue(simDate);
+    // "Today" means "always-current," not a specific moment worth
+    // pinning -- clear rather than write today's date into the URL.
+    updateURLParams({ date: null });
   });
   editDateBtn.addEventListener("click", () => {
     setPaused(true); // also flips dateInput to editable and swaps button visibility, see setPaused
@@ -2686,6 +2692,9 @@
   focusToggleLabel.addEventListener("click", () => {
     sceneVisibilityMode = sceneVisibilityMode === "broad" ? "focused" : "broad";
     focusSwitch.classList.toggle("on", sceneVisibilityMode === "focused");
+    // "broad" is the default -- omit the param entirely rather than
+    // writing focus=broad, so a plain visit keeps a clean bare URL.
+    updateURLParams({ focus: sceneVisibilityMode === "focused" ? "focused" : null });
   });
 
   /* =========================================================================
@@ -3433,6 +3442,62 @@
     }
   });
 
+  /* =========================================================================
+     URL PERMALINKS
+     Query params, not hash/path routing -- this is a static single-page
+     app served straight from a plain host (GitHub Pages) with no
+     server-side routing, so query params are what actually survive a
+     page refresh/share/bookmark without any server config. Every update
+     goes through history.replaceState (never pushState): toggling
+     Focused/Broad or editing the date shouldn't spam browser history --
+     the CURRENT url is always a valid, shareable snapshot of what's on
+     screen, but back/forward isn't turned into a step-by-step undo log
+     of every toggle. Params are omitted entirely when they'd just be the
+     default (broad, no locked target, no pinned date), so a plain visit
+     keeps a clean bare URL.
+  ========================================================================= */
+
+  const DEFAULT_DOCUMENT_TITLE = document.title;
+  function updateDocumentTitle() {
+    document.title = lockedBodyName ? `${lockedBodyName} — ${DEFAULT_DOCUMENT_TITLE}` : DEFAULT_DOCUMENT_TITLE;
+  }
+
+  function updateURLParams(updates) {
+    const url = new URL(window.location.href);
+    for (const [key, value] of Object.entries(updates)) {
+      if (value === null || value === undefined) url.searchParams.delete(key);
+      else url.searchParams.set(key, value);
+    }
+    history.replaceState(null, "", url);
+  }
+
+  // Read once at bootstrap, after flight data has loaded (a flight= param
+  // needs FLIGHTS_RAW populated to validate against). Order: focus mode
+  // and date first (cheap state, no rendering dependency), then the
+  // locked target last, since locking also rebuilds the legend/panel and
+  // should reflect the final date/focus state when it does.
+  function applyInitialURLState() {
+    const params = new URLSearchParams(window.location.search);
+    const focus = params.get("focus");
+    if (focus === "focused") {
+      sceneVisibilityMode = "focused";
+      focusSwitch.classList.toggle("on", true);
+    }
+    const date = params.get("date");
+    if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      setSimDateFromInputValue(date);
+      dateInput.value = dateInputValue(simDate);
+      setPaused(true);
+    }
+    const flightKey = params.get("flight");
+    const bodyName = params.get("body");
+    if (flightKey && FLIGHTS_RAW[flightKey]) {
+      selectFlight(flightKey);
+    } else if (bodyName) {
+      lockBody(bodyName);
+    }
+  }
+
   // Shared lock/unlock entry point, used both by clicking a body directly
   // in the canvas and by clicking its row in the legend menu. Centralizing
   // this avoids the legend needing to duplicate the lock/unlock/visibility
@@ -3483,6 +3548,14 @@
     if (isMobileLayout && lockedBodyName !== null) {
       document.body.classList.remove("drawer-open");
     }
+    updateDocumentTitle();
+    // Skip the URL write when this call is selectFlight's own internal
+    // lockBody(raw.name, {preserveFlightSelection:true}) -- selectFlight
+    // writes flight=<key> itself right after, which is the correct param
+    // for a flight (its data-file key, not its display name).
+    if (!opts.preserveFlightSelection) {
+      updateURLParams({ body: lockedBodyName, flight: null });
+    }
   }
 
   // Clicking a flight selects it and focuses the camera on the
@@ -3503,6 +3576,8 @@
       buildLegend();
       buildFlightsLegend();
       updateLockedPanelVisibility();
+      updateDocumentTitle();
+      updateURLParams({ body: null, flight: null });
       return;
     }
     const raw = FLIGHTS_RAW[key];
@@ -3533,6 +3608,8 @@
     // leg solves lazily via getSolvedLeg/getGAChain the first time its
     // position is actually queried during rendering.
     if (!isMultiLeg(raw)) getSolvedFlight(key);
+    updateDocumentTitle();
+    updateURLParams({ body: null, flight: key });
   }
 
   // A moon is shown -- in the scene and in the legend's expanded accordion
@@ -5232,6 +5309,7 @@
       console.error("Failed to load body info:", err);
     }
     buildFlightsLegend();
+    applyInitialURLState();
     requestAnimationFrame(frame);
   }
   bootstrap();
