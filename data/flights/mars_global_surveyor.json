@@ -1,0 +1,25 @@
+{
+  "key": "mars_global_surveyor",
+  "name": "Mars Global Surveyor",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1996-11-07",
+  "arrival": "1997-09-11",
+  "rocket": "Delta II 7925",
+  "payload": "Mars Global Surveyor (1,030.5 kg dry)",
+  "status": "Success",
+  "significance": "Mars Global Surveyor set out to answer a question left open since the failed Mars Observer mission four years earlier: what does the Martian surface actually look like at global scale, and could it reveal whether liquid water ever -- or still -- shaped the planet? Launched direct to Mars on a Delta II 7925 and inserted into orbit using a pioneering aerobraking technique that traded propellant mass for months of careful atmospheric-drag passes, it became the first fully successful Mars orbiter since Viking. Its laser altimeter produced the first high-resolution global topographic map of Mars, while its camera discovered hundreds of geologically young gully features whose morphology strongly suggested recent flows of liquid water. Operating for nearly a decade -- five times its planned mission life -- MGS also scouted landing sites for the Spirit, Opportunity, and Phoenix missions before contact was lost in November 2006, leaving a legacy still cited as one of the most scientifically productive Mars missions ever flown.",
+  "statusNote": "Direct Earth->Mars transfer, no gravity assists. Mars orbit insertion 1997-09-11, then months of aerobraking (repeated atmospheric-drag passes) to reach its final circular mapping orbit while conserving propellant -- the first fully successful use of this technique at another planet. Operated for nearly a decade before an error while reorienting a solar panel triggered a power/thermal fault; contact was lost 2006-11-02, and NASA declared the mission ended 2007-01-28. The spacecraft remains in stable Mars orbit.",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars Global Surveyor",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_Global_Surveyor",
+      "localImage": "images/missions/mars_global_surveyor/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.jpg"
+    }
+  }
+}

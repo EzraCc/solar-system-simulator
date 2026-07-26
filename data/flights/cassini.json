@@ -1,0 +1,82 @@
+{
+  "key": "cassini",
+  "name": "Cassini-Huygens",
+  "rocket": "Titan IVB(401B)/Centaur",
+  "payload": "Cassini orbiter + Huygens probe (5,712 kg at launch)",
+  "status": "Success",
+  "significance": "Cassini-Huygens was designed to answer a central question about our solar system: what can a decade-long, close-up study of a giant ringed planet and its retinue of icy moons reveal about the origins of planetary systems and the potential for life beyond Earth? It was the first spacecraft to achieve orbit around Saturn and, via its ESA-built Huygens probe, the first to land on a moon in the outer solar system -- returning images and in-situ data from the haze-shrouded surface of Titan. Among its landmark discoveries, Cassini found that Titan hosts stable liquid methane/ethane lakes and a rich prebiotic atmospheric chemistry, and that the small moon Enceladus vents plumes of water, ice, and organic molecules from a subsurface ocean through its south-polar fractures -- revealing an unexpectedly accessible, potentially habitable environment. By the time it deliberately plunged into Saturn's atmosphere in 2017 to protect those ocean worlds from biological contamination, Cassini had fundamentally rewritten our understanding of ring dynamics, moon formation, and icy ocean worlds, directly shaping the design of follow-on missions such as Europa Clipper.",
+  "statusNote": "Most flyby-dense mission in this catalog after Nozomi: a VVEJGA (Venus-Venus-Earth-Jupiter Gravity Assist) trajectory to Saturn. Venus flyby 1998-04-26 (altitude 284 km), a 450 m/s Deep Space Maneuver on 1998-12-03 to retarget for the second Venus pass (not modeled as a separate leg, the same simplification this catalog uses for other mid-course correction burns), Venus flyby 1999-06-24 (altitude 623 km), Earth flyby 1999-08-18 (altitude 1,171 km), and a distant Jupiter flyby 2000-12-30 (altitude ~9.7 million km -- large because Jupiter's mass makes even a distant pass sufficient to bend the trajectory, and this pass doubled as a ~6-month joint imaging campaign). Saturn orbit insertion 2004-07-01. The Huygens probe separated 2004-12-25 and landed on Titan 2005-01-14 -- the first landing on an outer-solar-system moon -- not modeled as its own leg since Huygens had no independent heliocentric trajectory. Mission ended with the 'Grand Finale' ring-grazing orbits and a deliberate atmospheric entry into Saturn on 2017-09-15.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "1997-10-15",
+      "arrivalDate": "1998-04-26"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "1998-04-26",
+      "periapsisKm": 284
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "1998-04-26",
+      "arrivalDate": "1999-06-24"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "1999-06-24",
+      "periapsisKm": 623
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Earth",
+      "departDate": "1999-06-24",
+      "arrivalDate": "1999-08-18"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "1999-08-18",
+      "periapsisKm": 1171
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Jupiter",
+      "departDate": "1999-08-18",
+      "arrivalDate": "2000-12-30"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Jupiter",
+      "date": "2000-12-30",
+      "periapsisKm": 9700000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Jupiter",
+      "toBody": "Saturn",
+      "departDate": "2000-12-30",
+      "arrivalDate": "2004-07-01"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Cassini-Huygens",
+      "infoUrl": "https://en.wikipedia.org/wiki/Cassini%E2%80%93Huygens",
+      "localImage": "images/missions/cassini/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Titan IV",
+      "infoUrl": "https://en.wikipedia.org/wiki/Titan_IV",
+      "localImage": "images/missions/cassini/rocket.jpg"
+    }
+  }
+}

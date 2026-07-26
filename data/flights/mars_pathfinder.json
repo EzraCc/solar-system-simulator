@@ -1,0 +1,25 @@
+{
+  "key": "mars_pathfinder",
+  "name": "Mars Pathfinder",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1996-12-04",
+  "arrival": "1997-07-04",
+  "rocket": "Delta II 7925",
+  "payload": "Mars Pathfinder lander + Sojourner rover (890 kg at launch, incl. 10.6 kg rover)",
+  "status": "Success",
+  "significance": "Mars Pathfinder set out to answer a deceptively simple question -- could a spacecraft land on Mars cheaply and reliably enough to put a mobile science platform on its surface -- and its airbag-cushioned direct-entry landing, the first of its kind, proved a low-cost alternative to the propulsive-legged landers used since Viking. Aboard was Sojourner, the first wheeled rover to operate on another planet, which spent 83 sols (nearly twelve times its planned lifetime) roaming Ares Vallis and analyzing rocks like \"Barnacle Bill\" and \"Yogi.\" Those analyses, together with the surrounding channel-scoured terrain, provided compelling evidence that Mars was once warm and wet, reshaping scientific understanding of the planet's early history. By validating both a cheap airbag landing system and a small autonomous rover in a single mission, Pathfinder directly paved the way for the rocker-bogie rovers that followed -- Spirit, Opportunity, Curiosity, and Perseverance.",
+  "statusNote": "Direct Earth->Mars transfer, no gravity assists. Landed in Ares Vallis, Chryse Planitia via parachute + retrorockets + airbags -- the airbags inflated in under a second at ~355 m altitude, then the lander bounced roughly 15 times before rolling to a stop, the first use of this landing method on Mars. Renamed the Carl Sagan Memorial Station after landing. Planned for ~30 sols (lander) / ~7 sols (Sojourner); actually operated 83 sols before last contact on 1997-09-27, likely due to a cold-weakened battery.",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars Pathfinder",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_Pathfinder",
+      "localImage": "images/missions/mars_pathfinder/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.jpg"
+    }
+  }
+}

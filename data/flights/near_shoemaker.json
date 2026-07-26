@@ -1,0 +1,43 @@
+{
+  "key": "near_shoemaker",
+  "name": "NEAR Shoemaker",
+  "rocket": "Delta II 7925-8",
+  "payload": "NEAR Shoemaker (805 kg at launch, 487 kg dry)",
+  "status": "Success",
+  "significance": "NEAR Shoemaker was launched to determine whether a small, tightly-budgeted spacecraft could resolve a debate about S-type asteroids through close-range, extended orbital study of a large near-Earth object, 433 Eros, rather than a brief flyby. It became the first spacecraft to orbit an asteroid and, when its instruments outlasted expectations, the first spacecraft ever to soft-land on one -- a feat achieved by a probe never designed with landing gear. Its year in orbit showed Eros to be a solid, unfractured S-type body of roughly chondritic composition, directly linking ordinary-chondrite meteorites to a real S-type parent asteroid, while its en-route flyby of 253 Mathilde delivered the first close-up images of a primitive, dark C-type asteroid. As the first mission of NASA's low-cost Discovery program, NEAR Shoemaker proved that a small, inexpensive spacecraft could rendezvous with, orbit, and ultimately touch a small solar-system body, opening the trajectory-and-budget playbook every subsequent asteroid rendezvous mission would follow.",
+  "statusNote": "Single Earth gravity-assist flyby (1998-01-23, altitude 540 km) used to reshape the trajectory toward Eros. Also imaged asteroid 253 Mathilde at a distance of 1,212 km on 1997-06-27 during the already-planned coast -- a deliberately targeted science pass, but Mathilde is far too low-mass to produce a meaningful gravity assist, so not modeled as its own leg, the same treatment Rosetta's Steins/Lutetia passes get. A rendezvous-burn abort on 1998-12-20 threw the spacecraft into safe mode and past Eros at 3,827 km instead of the planned arrival, costing 29 kg of propellant and delaying orbit insertion by over a year; a recovery burn on 1999-01-03 corrected course, and NEAR finally entered orbit around Eros on 2000-02-14. The mission ended with a historic soft landing on Eros (2001-02-12), the first landing on an asteroid by a spacecraft never designed to land.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth",
+      "departDate": "1996-02-17",
+      "arrivalDate": "1998-01-23"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "1998-01-23",
+      "periapsisKm": 540
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "eros",
+      "departDate": "1998-01-23",
+      "arrivalDate": "2000-02-14"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "NEAR Shoemaker",
+      "infoUrl": "https://en.wikipedia.org/wiki/NEAR_Shoemaker",
+      "localImage": "images/missions/near_shoemaker/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/missions/near_shoemaker/rocket.jpg"
+    }
+  }
+}

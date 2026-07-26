@@ -618,6 +618,36 @@
       meta: { color: '#8f8478', radiusKm: 2.4, dimensionsKm: [8.0, 4.0, 4.0], shapeNote: 'elongated "bowling-pin" nucleus' },
       targetOfFlights: ['deep_space_1'],
     },
+    eros: {
+      name: 'Eros (433)', type: 'asteroid',
+      elements: { a: 1.458243716760167, e: 0.2228779627700761, iDeg: 10.82854410314273,
+                  OmDeg: 304.2679713350896, wDeg: 178.9181319135911, M0Deg: 62.51145501986792,
+                  epochDays: 9655.5 },
+      // dimensionsKm: NEAR Shoemaker-measured tri-axial extent -- one of the
+      // most elongated large near-Earth asteroids, "peanut"-shaped.
+      meta: { color: '#9c8f7a', radiusKm: 8.42, dimensionsKm: [34.4, 11.2, 11.2], shapeNote: 'elongated, peanut-shaped' },
+      targetOfFlights: ['near_shoemaker'],
+    },
+    gaspra: {
+      name: 'Gaspra (951)', type: 'asteroid',
+      elements: { a: 2.209978353670737, e: 0.1737374595425464, iDeg: 4.10465496946464,
+                  OmDeg: 252.9672913251979, wDeg: 130.0037637381037, M0Deg: 112.9508716440696,
+                  epochDays: 9655.5 },
+      // dimensionsKm: Galileo flyby (1991-10-29) tri-axial best-fit (Thomas
+      // et al. 1994) -- the first asteroid ever visited by a spacecraft.
+      meta: { color: '#9a8c78', radiusKm: 6.1, dimensionsKm: [18.2, 10.5, 8.9], shapeNote: 'irregular, angular shape' },
+      targetOfFlights: ['galileo'],
+    },
+    ida: {
+      name: 'Ida (243)', type: 'asteroid',
+      elements: { a: 2.863348031699649, e: 0.04610962795708528, iDeg: 1.130363094271507,
+                  OmDeg: 323.5366609419851, wDeg: 113.2571826848795, M0Deg: 49.64769088009876,
+                  epochDays: 9655.5 },
+      // dimensionsKm: Galileo flyby (1993-08-28) tri-axial best-fit (Thomas
+      // et al. 1996) -- imaged with its small moon Dactyl (not modeled here).
+      meta: { color: '#8f8272', radiusKm: 16.0, dimensionsKm: [59.8, 25.4, 18.6], shapeNote: 'elongated, irregular shape' },
+      targetOfFlights: ['galileo'],
+    },
   };
 
   // Pluto-Charon: the solar system's only known "double dwarf planet" --
@@ -3997,6 +4027,7 @@
     const { launchDays } = getFlightDates(key);
     simDate = dateFromDaysSinceJ2000(launchDays - 1);
     dateInput.value = dateInputValue(simDate);
+    updateURLParams({ date: dateInput.value });
     setPaused(true);
     if (selectedFlightKey !== key) {
       selectedFlightKey = key;
@@ -4464,7 +4495,7 @@
       addRow("Mission", raw.name);
       addRow("Launch from", ep.launchBody);
       addRow("Launch date", ep.launchDate);
-      addRow("Destination", ep.destinationBody);
+      addRow("Destination", describeLegBody(ep.destinationBody).name);
       // "arrival" is always the intended arrival date the trajectory was
       // flying toward (see FLIGHTS_RAW comment) -- label it plainly for a
       // success, or as "intended" when the mission didn't reach it, so

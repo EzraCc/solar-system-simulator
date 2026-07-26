@@ -1,6 +1,16 @@
 {
   "_comment": "Ordered list of flight keys. Each key must have a corresponding flights/<key>.json file. This is the ONLY place flight inclusion is declared -- app.js has no hardcoded flight list.",
   "order": [
+    "phobos_1",
+    "phobos_2",
+    "magellan",
+    "galileo",
+    "ulysses",
+    "mars_observer",
+    "near_shoemaker",
+    "mars_global_surveyor",
+    "mars_pathfinder",
+    "cassini",
     "nozomi",
     "deep_space_1",
     "mars_climate_orbiter",

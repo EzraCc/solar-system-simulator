@@ -1,0 +1,83 @@
+{
+  "key": "galileo",
+  "name": "Galileo",
+  "rocket": "Space Shuttle Atlantis (STS-34) / IUS",
+  "payload": "Galileo orbiter + atmospheric probe (2,560 kg)",
+  "status": "Success",
+  "significance": "Galileo set out to answer a fundamental question about our solar system's largest planet: what is Jupiter actually made of, and how do its moons -- worlds in their own right -- work? Launched from Space Shuttle Atlantis on a looping VEEGA trajectory to gain the velocity a Shuttle-launched probe couldn't provide directly, it became the first spacecraft to orbit an outer planet, the first to fly past an asteroid (951 Gaspra, 1991), and the source of the first confirmed asteroid moon, Dactyl, discovered orbiting 243 Ida in 1993. Its atmospheric probe delivered humanity's only in-situ measurements of Jupiter's atmosphere, while the orbiter's eight-year tour past Io, Europa, Ganymede, and Callisto revealed volcanism 100 times more intense than Earth's and strong magnetic and gravitational evidence for a salty subsurface ocean beneath Europa's ice. That Europa evidence was consequential enough to end the mission: in 2003 NASA deliberately steered Galileo into Jupiter's atmosphere to eliminate any chance of contaminating a potentially habitable ocean world, cementing planetary protection as a permanent consideration for future outer-solar-system exploration.",
+  "statusNote": "Full VEEGA (Venus-Earth-Earth Gravity Assist) trajectory to Jupiter: Venus flyby 1990-02-10 (altitude 16,106 km), Earth flyby 1990-12-08 (altitude 960 km), Earth flyby 1992-12-08 (altitude 304 km, so accurate a planned correction burn was cancelled). Between the two Earth flybys, Galileo made the first-ever spacecraft flyby of an asteroid, 951 Gaspra (1991-10-29, distance 1,604 km), and after the second Earth flyby it passed 243 Ida (1993-08-28, distance 2,410 km) -- both deliberately targeted encounters, modeled here as real lambert-leg waypoints rather than incidental passes. Ida's images, downlinked slowly after a high-gain antenna deployment failure, later revealed the small moon Dactyl in 47 frames -- the first confirmed satellite of an asteroid, not modeled here as its own body. Jupiter arrival and atmospheric probe entry: 1995-12-07. Mission ended 2003-09-21 with a deliberate atmospheric entry into Jupiter to protect Europa from contamination.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "1989-10-18",
+      "arrivalDate": "1990-02-10"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "1990-02-10",
+      "periapsisKm": 16106
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Earth",
+      "departDate": "1990-02-10",
+      "arrivalDate": "1990-12-08"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "1990-12-08",
+      "periapsisKm": 960
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "gaspra",
+      "departDate": "1990-12-08",
+      "arrivalDate": "1991-10-29"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "gaspra",
+      "toBody": "Earth",
+      "departDate": "1991-10-29",
+      "arrivalDate": "1992-12-08"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "1992-12-08",
+      "periapsisKm": 304
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "ida",
+      "departDate": "1992-12-08",
+      "arrivalDate": "1993-08-28"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "ida",
+      "toBody": "Jupiter",
+      "departDate": "1993-08-28",
+      "arrivalDate": "1995-12-07"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Galileo (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Galileo_(spacecraft)",
+      "localImage": "images/missions/galileo/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Space Shuttle / IUS",
+      "infoUrl": "https://en.wikipedia.org/wiki/STS-34",
+      "localImage": "images/missions/galileo/rocket.jpg"
+    }
+  }
+}

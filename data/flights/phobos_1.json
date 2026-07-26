@@ -1,0 +1,25 @@
+{
+  "key": "phobos_1",
+  "name": "Phobos 1",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1988-07-07",
+  "arrival": "1989-01-23",
+  "rocket": "Proton-K / Blok D-2",
+  "payload": "Phobos 1 (6,220 kg fueled)",
+  "status": "Lost in cruise",
+  "significance": "Phobos 1 was launched as the first of a pair of ambitious Soviet spacecraft designed to orbit Mars and land a hopper directly on its inner moon Phobos, aiming to determine the moon's composition and origin -- a question still debated today -- using an armory of remote-sensing and laser mass-spectrometry instruments. The mission ended just two months into its planned 200-day cruise: a single-character error in an uploaded ground command sequence inadvertently disabled the spacecraft's attitude-control thrusters, causing it to lose its solar lock and drain its batteries, with contact lost on 1988-09-02 and recovery attempts formally abandoned that November. Though it never returned science data, Phobos 1 became a cautionary tale in spaceflight operations about the fragility of command-sequence validation, influencing later ground-segment safeguards. Its sister craft Phobos 2 fared only marginally better -- reaching Mars orbit and returning the first close-up Phobos imagery before its own failure ended the mission weeks before the planned Phobos landing -- leaving the ambitious Phobos program's central goal of surface exploration unfulfilled until Japan's later Martian Moons eXploration (MMX) effort.",
+  "statusNote": "Direct Earth->Mars transfer, no gravity assists; launched 5 days before sister spacecraft Phobos 2. A single erroneous ground command uploaded around 1988-08-28 accidentally disabled the attitude-control thrusters, causing the spacecraft to lose its Sun-lock and drain its batteries; contact was lost 1988-09-02, and recovery attempts were formally abandoned in November 1988. The 'arrival' date shown here is an estimate (no exact planned arrival date is published) derived from the mission's stated ~200-day planned transit.",
+  "assets": {
+    "spacecraft": {
+      "title": "Phobos program",
+      "infoUrl": "https://en.wikipedia.org/wiki/Phobos_1",
+      "localImage": "images/missions/phobos_1/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  }
+}

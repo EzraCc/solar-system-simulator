@@ -1,0 +1,76 @@
+{
+  "key": "ulysses",
+  "name": "Ulysses",
+  "rocket": "Space Shuttle Discovery (STS-41) / IUS+PAM-S",
+  "payload": "Ulysses (371 kg at launch, incl. 33.5 kg hydrazine)",
+  "status": "Success",
+  "significance": "Every prior mission to the Sun -- and every planetary probe before it -- had observed the solar system from essentially the same narrow ecliptic plane, leaving the Sun's polar regions and the true three-dimensional shape of the heliosphere entirely unmapped. Ulysses solved this with an audacious piece of orbital mechanics: no realistic rocket could throw a spacecraft directly into an 80-degree-inclination solar orbit, so mission planners launched it on the highest-energy departure of its era -- a Space Shuttle plus a stacked Inertial Upper Stage and PAM-S solid motor -- simply to reach Jupiter, then used a single gravity-assist flyby to bend its path out of the ecliptic and drop it into a roughly six-year polar orbit around the Sun. Over three complete polar orbits spanning nearly two solar cycles, Ulysses discovered that fast, uniform solar wind streams out of the Sun's poles at roughly 750 km/s (versus the slower, gustier equatorial wind), produced the first three-dimensional map of the heliosphere, and during its final pass found the solar wind and polar magnetic field at their weakest levels of the Space Age. Nearly two decades after launch, no other mission has repeated this out-of-ecliptic vantage point, leaving Ulysses's polar dataset the sole ground-truth for how the Sun's wind and magnetic field vary with heliographic latitude.",
+  "statusNote": "Single Jupiter gravity-assist flyby (1992-02-08, altitude ~378,400 km above the cloud tops) bent the trajectory ~80 degrees out of the ecliptic into a long, highly-inclined polar heliocentric orbit -- the entire point of the flyby, not an incidental encounter. The post-flyby legs here are anchored to real recorded heliocentric positions from JPL Horizons' own reconstructed navigation solution (target -55) at scientifically meaningful dates -- first south polar pass, first perihelion, first north polar pass, a second (distant, non-perturbing) Jupiter approach in 2004 used only as a position anchor, and a third south polar pass -- rather than a single long-period ellipse, since real solar-wind drag and correction maneuvers mean the orbit drifts slightly over nearly two decades. The February 2004 Jupiter approach (1,683 Jupiter radii, ~0.8 AU) was upstream of Jupiter's magnetosphere and produced no measurable trajectory change, so it is not modeled as a gravity_assist leg. The flight is shown ending at the third south polar pass (2007-02-07); the mission continued in essentially the same orbit until controllers ended communications 2009-06-30, not separately modeled.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Jupiter",
+      "departDate": "1990-10-06",
+      "arrivalDate": "1992-02-08"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Jupiter",
+      "date": "1992-02-08",
+      "periapsisKm": 378400
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Jupiter",
+      "toBody": { "fixedPos": [-0.420, -0.293, -2.231] },
+      "departDate": "1992-02-08",
+      "arrivalDate": "1994-09-14",
+      "_comment": "1994-09-14: first south solar polar pass (real JPL Horizons position, target -55)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.420, -0.293, -2.231] },
+      "toBody": { "fixedPos": [1.243, -0.497, 0.0022] },
+      "departDate": "1994-09-14",
+      "arrivalDate": "1995-03-14",
+      "_comment": "1995-03-14: first perihelion after the Jupiter flyby (real JPL Horizons position)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [1.243, -0.497, 0.0022] },
+      "toBody": { "fixedPos": [-0.029, 0.476, 2.246] },
+      "departDate": "1995-03-14",
+      "arrivalDate": "1995-09-09",
+      "_comment": "1995-09-09: first north solar polar pass (real JPL Horizons position)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.029, 0.476, 2.246] },
+      "toBody": { "fixedPos": [-4.851, 2.105, 0.743] },
+      "departDate": "1995-09-09",
+      "arrivalDate": "2004-02-04",
+      "_comment": "2004-02-04: second, distant (non-perturbing) Jupiter approach, used only as a real position anchor -- no gravity_assist leg here"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-4.851, 2.105, 0.743] },
+      "toBody": { "fixedPos": [-0.454, -0.317, -2.311] },
+      "departDate": "2004-02-04",
+      "arrivalDate": "2007-02-07",
+      "_comment": "2007-02-07: third south solar polar pass (real JPL Horizons position) -- flight shown ending here, see statusNote"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Ulysses (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Ulysses_(spacecraft)",
+      "localImage": "images/missions/ulysses/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Space Shuttle / IUS",
+      "infoUrl": "https://en.wikipedia.org/wiki/STS-41",
+      "localImage": "images/missions/ulysses/rocket.jpg"
+    }
+  }
+}

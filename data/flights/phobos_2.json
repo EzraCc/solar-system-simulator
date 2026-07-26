@@ -1,0 +1,25 @@
+{
+  "key": "phobos_2",
+  "name": "Phobos 2",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1988-07-12",
+  "arrival": "1989-01-29",
+  "rocket": "Proton-K / Blok D-2",
+  "payload": "Phobos 2 (6,220 kg fueled)",
+  "status": "Lost near Mars",
+  "significance": "Phobos 2 was launched, alongside sister spacecraft Phobos 1, to orbit Mars and land a hopper directly on its inner moon Phobos, determining the moon's composition and origin through close-range imaging, spectroscopy, and in-situ sampling. Unlike Phobos 1 -- lost in cruise to a software/command error weeks after launch -- Phobos 2 reached Mars orbit and, over roughly two months, returned real science: 37 images of Phobos at resolutions down to 40 meters, tens of thousands of infrared spectra of the Martian surface, and the first thermal-mapping data hinting at Phobos's composition. On 1989-03-27, during final maneuvers to close to within tens of meters of Phobos ahead of its planned lander and hopper deployment, the spacecraft suffered a still not fully understood failure -- commonly attributed to an onboard computer malfunction that caused loss of attitude control and, in turn, loss of power -- and fell silent before either surface probe could be released. Together, the twin Phobos failures ended the Soviet Union's last interplanetary mission before its dissolution, but the real data Phobos 2 returned kept the scientific case for a Phobos sample-return alive for decades, directly motivating later Russian and Japanese efforts.",
+  "statusNote": "Direct Earth->Mars transfer, no gravity assists; launched 5 days after sister spacecraft Phobos 1, which was lost in cruise. Mars orbit insertion ~1989-01-29 (some sources give dates as early as 1989-01-21 for the initial insertion burn, with the final Phobos-synchronous science orbit reached by 1989-02-18). Returned 37 images of Phobos and tens of thousands of Mars spectra before contact was lost 1989-03-27 during final close-approach maneuvers, just before its planned lander/hopper deployment -- neither surface probe was ever released.",
+  "assets": {
+    "spacecraft": {
+      "title": "Phobos program",
+      "infoUrl": "https://en.wikipedia.org/wiki/Phobos_2",
+      "localImage": "images/missions/phobos_2/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  }
+}

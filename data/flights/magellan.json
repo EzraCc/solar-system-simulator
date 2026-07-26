@@ -1,0 +1,25 @@
+{
+  "key": "magellan",
+  "name": "Magellan",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1989-05-04",
+  "arrival": "1990-08-10",
+  "rocket": "Space Shuttle Atlantis (STS-30) / IUS",
+  "payload": "Magellan orbiter (3,445 kg at launch, 1,035 kg dry)",
+  "status": "Success",
+  "significance": "Venus's surface lies permanently hidden beneath a thick, opaque atmosphere of carbon dioxide and sulfuric-acid clouds, making synthetic-aperture radar the only means of seeing the planet's terrain in detail. Magellan was the first spacecraft launched toward another planet from a Space Shuttle, and it became the first mission to systematically radar-map an entire planetary surface from orbit, ultimately imaging roughly 98% of Venus at resolutions far exceeding any prior data. Its maps revealed a geologically young, overwhelmingly volcanic landscape -- vast lava plains, thousands of volcanoes, and evidence of planet-wide resurfacing rather than the plate tectonics seen on Earth. In its final year, Magellan pioneered aerobraking as an operational technique to reshape its orbit using atmospheric drag instead of propellant -- a method that became standard on later missions such as Mars Global Surveyor and Mars Reconnaissance Orbiter -- before mission controllers deliberately flew it into the Venusian atmosphere in 1994, the first intentional destructive de-orbit of an operating planetary spacecraft.",
+  "statusNote": "Deployed from Atlantis's payload bay and sent toward Venus by a two-stage Inertial Upper Stage (IUS) -- the originally planned Shuttle-Centaur upper stage was cancelled after the Challenger disaster, forcing a switch to the less powerful IUS. That, combined with a crowded post-Challenger Shuttle manifest (competing with Galileo for a launch slot), meant Magellan flew a long Type IV transfer -- 1.5 heliocentric orbits over roughly 15 months -- rather than the ~6-month direct transfer a more energetic departure could have flown. Venus orbit insertion 1990-08-10. Reached 98% radar coverage by September 1992, then aerobraked May-August 1993 to circularize its orbit (apoapsis reduced from 8,467 km to 540 km) without expending propellant. Mission ended with a deliberate, controlled atmospheric entry; last signal received 1994-10-13, 10:05 UTC.",
+  "assets": {
+    "spacecraft": {
+      "title": "Magellan (spacecraft)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Magellan_(spacecraft)",
+      "localImage": "images/missions/magellan/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Space Shuttle / IUS",
+      "infoUrl": "https://en.wikipedia.org/wiki/STS-30",
+      "localImage": "images/missions/magellan/rocket.jpg"
+    }
+  }
+}

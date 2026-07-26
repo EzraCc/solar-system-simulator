@@ -1,0 +1,25 @@
+{
+  "key": "mars_observer",
+  "name": "Mars Observer",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1992-09-25",
+  "arrival": "1993-08-21",
+  "rocket": "Commercial Titan III / TOS",
+  "payload": "Mars Observer (1,018 kg at launch)",
+  "status": "Orbit insertion failed",
+  "significance": "Mars Observer was NASA's first mission back to Mars in 17 years, designed to answer fundamental questions about the planet's geology, climate history, and interior structure through global mapping of its surface composition, topography, gravity, and magnetic field. Its eight instruments -- including a high-resolution camera, a laser altimeter, a thermal-emission spectrometer, and a gamma-ray spectrometer -- were built to compile the first truly global, systematic dataset of Mars in a generation. Just three days before its scheduled orbit-insertion burn in August 1993, the spacecraft fell silent during a routine propulsion-system pressurization sequence; an investigation board concluded the most probable cause was a ruptured fuel line that let hypergolic propellants mix and spin the spacecraft into a fault-protection mode that silenced its transmitter, and no contact was ever recovered. Rather than being wasted, Mars Observer's instrument designs became the backbone of Mars exploration for the next decade, reflown on Mars Global Surveyor, Mars Climate Orbiter, 2001 Mars Odyssey, and Mars Reconnaissance Orbiter -- making its loss one of the most scientifically consequential failures in NASA's planetary program.",
+  "statusNote": "Direct Earth->Mars transfer, no gravity assists. Contact was lost 1993-08-21 while ground controllers were preparing to pressurize the propulsion system ahead of the Mars orbit-insertion burn planned for 1993-08-24; commands went unanswered and no telemetry or signal was ever reestablished. The leading (never conclusively confirmed) hypothesis is a ruptured fuel-pressurization line that let propellants mix, spinning the spacecraft into a fault-protection mode that shut down its transmitter. As with Mars Climate Orbiter and Akatsuki, the (never-reached) orbit-insertion burn itself is outside this simulator's modeled scope.",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars Observer",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_Observer",
+      "localImage": "images/missions/mars_observer/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Commercial Titan III",
+      "infoUrl": "https://en.wikipedia.org/wiki/Commercial_Titan_III",
+      "localImage": "images/missions/mars_observer/rocket.jpg"
+    }
+  }
+}
