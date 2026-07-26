@@ -234,7 +234,42 @@
     wDeg0: 318.0634,                       // argument of perigee at J2000
     M0Deg: 115.3654                        // mean anomaly at J2000
   };
-  const MOON_META = { color: "#c9c9c9", radiusKm: 1737.4 };
+  const MOON_META = { color: "#c9c9c9", radiusKm: 1737.4, gmKm3S2: GM_MOON_KM3_S2 };
+
+  // Standalone (not frame-loop-scoped) Moon state, for use anywhere a leg
+  // needs the Moon's position/velocity at an arbitrary date -- Lambert-leg
+  // endpoints and gravity-assist flybys, the same way computeStateVector
+  // serves the Sun-orbiting planets. Mirrors the frame loop's own
+  // buildSatelliteAbs(MOON_ELEMENTS, earthState, ...) composition (Earth's
+  // heliocentric state + the Moon's Earth-relative offset) but callable at
+  // any t, not just "now". computeSatelliteOffset and computeStateVector
+  // are both plain functions of (elements, t) with no closure state, so
+  // this is safe to call from getBodyPositionAtDays/getGAChain even though
+  // it's declared far above them in the file (function declarations hoist).
+  function computeMoonStateAtDays(t) {
+    const earthState = computeStateVector(PLANET_ELEMENTS.Earth, t);
+    const sat = computeSatelliteOffset(MOON_ELEMENTS, t);
+    return {
+      pos: [earthState.pos[0] + sat.posAU[0], earthState.pos[1] + sat.posAU[1], earthState.pos[2] + sat.posAU[2]],
+      vel: [earthState.vel[0] + sat.velAU[0], earthState.vel[1] + sat.velAU[1], earthState.vel[2] + sat.velAU[2]],
+    };
+  }
+
+  // Resolve a gravity-assist leg's flyby body to { pos, vel } / { radiusKm,
+  // gmKm3S2 } -- almost always a Sun-orbiting planet (PLANET_ELEMENTS/
+  // PLANET_META), but the Moon is a real, physically legitimate flyby body
+  // too (Nozomi's actual 1998 departure used two lunar swingbys before its
+  // Earth departure burn) even though it orbits Earth, not the Sun, so it
+  // needs its own state/meta path rather than PLANET_ELEMENTS/PLANET_META
+  // lookups that would silently return undefined for it.
+  function getGAFlybyState(bodyKey, t) {
+    if (bodyKey === 'Moon') return computeMoonStateAtDays(t);
+    return computeStateVector(PLANET_ELEMENTS[bodyKey], t);
+  }
+  function getGAFlybyMeta(bodyKey) {
+    if (bodyKey === 'Moon') return { radiusKm: MOON_META.radiusKm, gmKm3S2: MOON_META.gmKm3S2 };
+    return PLANET_META[bodyKey];
+  }
 
   /* =========================================================================
      MARS'S MOONS: PHOBOS AND DEIMOS
@@ -1493,6 +1528,7 @@
     // here to keep this function's call signature uniform for every caller.
     if (bodyKey && typeof bodyKey === 'object' && bodyKey.fixedPos) return bodyKey.fixedPos;
     if (bodyKey === 'Sun' || bodyKey === 'Sol') return [0, 0, 0];
+    if (bodyKey === 'Moon') return computeMoonStateAtDays(t).pos;
     const lpMatch = bodyKey.match(/^([A-Za-z]+)_(L[1245])$/);
     if (lpMatch) {
       const planetName = lpMatch[1];
@@ -1944,8 +1980,9 @@
         const prevEl  = segs[segs.length - 1].elements;
         const velArr  = computeFlightVelocity(prevEl, tGA);
 
-        // Planet state at flyby time.
-        const pState = computeStateVector(PLANET_ELEMENTS[leg.body], tGA);
+        // Flyby body's state at flyby time (a planet, or -- e.g. Nozomi's
+        // real 1998 lunar swingbys -- the Moon).
+        const pState = getGAFlybyState(leg.body, tGA);
 
         // Look ahead to the next GA or Lambert arrival (for turn direction).
         let nextBodyPos = pState.pos, nextT = tGA + 180;
@@ -1957,12 +1994,12 @@
           }
           if (legs[j].type === 'gravity_assist') {
             nextT       = daysSinceJ2000(parseFlightDate(legs[j].date));
-            nextBodyPos = computeStateVector(PLANET_ELEMENTS[legs[j].body], nextT).pos;
+            nextBodyPos = getGAFlybyState(legs[j].body, nextT).pos;
             break;
           }
         }
 
-        const meta = PLANET_META[leg.body];
+        const meta = getGAFlybyMeta(leg.body);
         postGA = computeGADeparture(
           pState.pos, pState.vel, velArr,
           leg.periapsisKm || 500, meta.radiusKm, meta.gmKm3S2,
@@ -4233,6 +4270,7 @@
     const names = [];
     rawKeys.forEach((k) => {
       if (PLANET_ORDER.includes(k)) names.push(k);
+      else if (k === 'Moon') names.push('Moon');
       else if (SMALL_BODIES[k]) names.push(SMALL_BODIES[k].name);
     });
     return names;
@@ -4276,6 +4314,7 @@
       return { name: `${planet}–${lp}`, color: PLANET_META[planet] ? PLANET_META[planet].color : null };
     }
     if (PLANET_META[bodyRef]) return { name: bodyRef, color: PLANET_META[bodyRef].color };
+    if (bodyRef === 'Moon') return { name: 'Moon', color: MOON_META.color };
     if (SMALL_BODIES[bodyRef]) return { name: SMALL_BODIES[bodyRef].name, color: SMALL_BODIES[bodyRef].meta.color };
     if (bodyRef === 'Sol' || bodyRef === 'Sun') return { name: 'Sol', color: SUN_COLOR };
     return { name: String(bodyRef), color: null };

@@ -5,13 +5,39 @@
   "payload": "Nozomi orbiter (540 kg wet, 258 kg dry)",
   "status": "Orbit insertion failed",
   "significance": "Nozomi (Japanese for \"Hope\") was Japan's first interplanetary spacecraft and its first attempt at a Mars mission, developed to study how the thin Martian atmosphere and ionosphere are eroded by the solar wind -- a process central to understanding why Mars lost most of the water and atmosphere it likely once had. Carrying 14 instruments contributed by Japan, the US, Canada, Germany, and Sweden, it was designed for long-term, direct in-situ sampling of Mars's upper atmosphere and its interaction with charged solar-wind particles. A stuck valve during its critical December 1998 Earth-departure burn threw the spacecraft badly off course, and a solar-flare strike in 2002 later crippled its power, communications, and propellant-heating systems, forcing a four-year, twice-flyby trajectory rescue that ultimately could not restore enough function to fire the main engine at Mars. Though Nozomi flew past Mars in December 2003 without ever entering orbit, it proved Japan's capability to design and fly a complex, multi-gravity-assist interplanetary trajectory, and its propulsion and radiation-hardening lessons directly informed the more resilient design of JAXA's later Akatsuki Venus orbiter.",
-  "statusNote": "Most flyby-dense mission in this catalog. Launched 1998-07-03, then spent roughly six months looping through cislunar space using two lunar gravity assists (not modeled here -- lunar-relative flybys are out of scope pending this simulator's future planet-zoom feature) before a planned Earth departure burn on 1998-12-20. That burn's propellant valve malfunctioned, delivering roughly 1 km/s less delta-v than planned and leaving Nozomi unable to reach Mars on its original 1999 schedule. Recovery required two further, originally unplanned Earth gravity-assist flybys (2002-12-21 at ~29,500 km; 2003-06-19 at ~11,000 km) to rebuild the trajectory toward Mars, complicated by a solar-flare strike in April 2002 that damaged communications, power, and propellant-heater systems. Nozomi finally reached Mars on 2003-12-14, passing at roughly 1,000 km, but ground controllers' attempt to orient the spacecraft for the orbit-insertion burn failed, so the burn itself was never executed; the spacecraft continued on into an independent heliocentric orbit and the mission was formally terminated 2003-12-31. As with Akatsuki, the (never-attempted) insertion burn itself is outside this simulator's modeled scope -- the cislunar phase and the 1998-12-20 departure burn are compressed into a single initial Earth->Earth Lambert leg between their real, correct Earth positions, the same simplification this catalog already uses for other unmodeled mid-course maneuvers.",
+  "statusNote": "Most flyby-dense mission in this catalog: 5 gravity assists (2 lunar, 3 Earth). Launched 1998-07-03, then spent roughly six months looping through cislunar space using two lunar gravity assists to build up apogee before a planned Earth departure burn on 1998-12-20. Sources disagree on the exact lunar-swingby dates -- JAXA's own English mission page gives 1998-08-24 and 1998-12-08 (used here); Wikipedia and NASA's mission page instead give 1998-09-24 and 1998-12-18, exactly one month/ten days later for each. No published source gives a closest-approach altitude for either lunar pass, so both use a representative 5,000 km estimate rather than a confirmed figure -- the trajectory shape itself still anchors correctly to the Moon's and Earth's real positions on the real (JAXA) dates regardless, only the displayed 'periapsis' number and flyby deflection angle are approximate. The 1998-12-20 Earth departure burn's propellant valve malfunctioned, delivering roughly 1 km/s less delta-v than planned and leaving Nozomi unable to reach Mars on its original 1999 schedule; modeled here as a natural gravity assist since so little of the intended burn was actually delivered. Recovery required two further, originally unplanned Earth gravity-assist flybys (2002-12-21 at ~29,500 km; 2003-06-19 at ~11,000 km) to rebuild the trajectory toward Mars, complicated by a solar-flare strike in April 2002 that damaged communications, power, and propellant-heater systems. Nozomi finally reached Mars on 2003-12-14, passing at roughly 1,000 km, but ground controllers' attempt to orient the spacecraft for the orbit-insertion burn failed, so the burn itself was never executed; the spacecraft continued on into an independent heliocentric orbit and the mission was formally terminated 2003-12-31. As with Akatsuki, the (never-attempted) insertion burn itself is outside this simulator's modeled scope.",
   "legs": [
     {
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": "Moon",
       "departDate": "1998-07-03",
+      "arrivalDate": "1998-08-24"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Moon",
+      "date": "1998-08-24",
+      "periapsisKm": 5000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Moon",
+      "toBody": "Moon",
+      "departDate": "1998-08-24",
+      "arrivalDate": "1998-12-08"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Moon",
+      "date": "1998-12-08",
+      "periapsisKm": 5000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Moon",
+      "toBody": "Earth",
+      "departDate": "1998-12-08",
       "arrivalDate": "1998-12-20"
     },
     {
