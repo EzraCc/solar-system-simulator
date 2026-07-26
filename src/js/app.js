@@ -1978,31 +1978,35 @@
           drawFn = (t0, t1) => drawFlightArcByTime(seg.elements, t0, t1);
         }
       }
+      if (followsGA && !drawFn) {
+        // This leg's patched-conic fit was REJECTED (getGAChain's
+        // missTooLarge fallback -- see its own giant comment), meaning
+        // getSolvedLeg's plain 2-point Lambert solve is standing in for
+        // it. That solve DOES pass through the two real endpoints, but
+        // the ellipse/hyperbola shape connecting them over a long, often
+        // multi-revolution real gap can bulge wildly in the wrong
+        // direction -- confirmed via harness survey: 19 such legs across
+        // 12 missions in this catalog, several with e above 0.9 and one
+        // outright hyperbolic (New Horizons' post-Jupiter leg),
+        // reproducing exactly the "extends past Mars, arcs sharply out
+        // past Jupiter" artifact reported for Dawn's post-flyby leg.
+        // A straight line between the two endpoints (an earlier version
+        // of this fix) isn't a real fix either -- nothing coasts in a
+        // straight line that close to the Sun, so it just swaps one
+        // physically-impossible shape for another. Drawing nothing for
+        // this leg is the only honest option: this simulator doesn't
+        // know the real shape here, and no single stand-in shape is
+        // correct. The spacecraft's position marker (a separate code
+        // path, computeMultiLegPosition) still moves correctly; only
+        // this preview line is skipped.
+        return;
+      }
       if (!drawFn) {
         // First leg (pre-GA Lambert), or no GA at all: standard
         // eccentric-anomaly arc, which drawFlightArc can clip directly.
         const solved = getSolvedLeg(flightKey, i);
         legStart = solved.launchDays; legEnd = solved.arrivalDays;
-        if (followsGA) {
-          // This leg's patched-conic fit was REJECTED (getGAChain's
-          // missTooLarge fallback -- see its own giant comment), meaning
-          // getSolvedLeg's plain 2-point Lambert solve is standing in for
-          // it. That solve DOES pass through the two real endpoints, but
-          // the ellipse/hyperbola shape connecting them over a long,
-          // often multi-revolution real gap can bulge wildly in the
-          // wrong direction -- confirmed via harness survey: 19 such legs
-          // across 12 missions in this catalog, several with e above 0.9
-          // and one outright hyperbolic (New Horizons' post-Jupiter leg),
-          // reproducing exactly the "extends past Mars, arcs sharply out
-          // past Jupiter" artifact reported for Dawn's post-flyby leg. A
-          // straight dashed line between the two real endpoints is
-          // honest about what this simulator actually knows here (where
-          // the leg started and ended) without asserting a specific,
-          // often fictional, curved shape in between.
-          drawFn = (t0, t1) => drawFlightChord(solved.elements, t0, t1);
-        } else {
-          drawFn = (t0, t1) => drawFlightArc(solved, t0, t1);
-        }
+        drawFn = (t0, t1) => drawFlightArc(solved, t0, t1);
       }
 
       let drawStart = legStart, drawEnd = legEnd;
@@ -4319,26 +4323,6 @@
       if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
     }
     ctx.stroke();
-  }
-
-  // Straight dashed line between two real endpoint positions -- used by
-  // drawMultiLegArcs in place of drawFlightArc for a leg whose patched-conic
-  // fit was rejected (see that call site's comment): computeFlightPosition
-  // handles both bound (e<1) and hyperbolic (e>=1) elements correctly, so
-  // this works regardless of which kind the rejected fallback solve
-  // produced.
-  function drawFlightChord(elements, t0, t1) {
-    const p0 = computeFlightPosition({ elements }, t0);
-    const p1 = computeFlightPosition({ elements }, t1);
-    const [sx0, sy0] = worldToScreen(p0[0], p0[1], p0[2]);
-    const [sx1, sy1] = worldToScreen(p1[0], p1[1], p1[2]);
-    ctx.save();
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    ctx.moveTo(sx0, sy0);
-    ctx.lineTo(sx1, sy1);
-    ctx.stroke();
-    ctx.restore();
   }
 
   // Draws a satellite's orbit ellipse centered on a moving point (its
