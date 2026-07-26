@@ -3579,6 +3579,11 @@
       jumpToLaunch(jumpBtn.dataset.jumpToLaunch);
       return;
     }
+    const collapsibleHeading = e.target.closest(".lp-collapsible-heading");
+    if (collapsibleHeading) {
+      collapsibleHeading.parentElement.classList.toggle("lp-collapsed");
+      return;
+    }
     const link = e.target.closest(".lp-mission-link");
     if (!link) return;
     lockBody(null); // step 1: close whatever's currently open
@@ -4044,7 +4049,11 @@
     }
 
     if (!items) return "";
-    return `<div class="lp-section"><div class="lp-section-heading">Flight profile</div><div class="lp-timeline">${items}</div></div>`;
+    const itemCount = (items.match(/lp-timeline-item/g) || []).length;
+    // Starts collapsed: a multi-flyby mission's profile can run to a dozen
+    // entries, which otherwise buries "Destinations"/"Notes"/the asset
+    // gallery under a wall of text most visitors didn't ask to see yet.
+    return `<div class="lp-section lp-collapsed"><div class="lp-section-heading lp-collapsible-heading"><span class="lp-chevron"></span>Flight profile<span class="lp-collapsible-count">(${itemCount})</span></div><div class="lp-timeline">${items}</div></div>`;
   }
 
   function formatLockedPanelContent(b) {

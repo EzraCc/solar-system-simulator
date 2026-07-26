@@ -547,6 +547,26 @@
     text-transform: uppercase; letter-spacing: 0.04em;
     margin-bottom: 4px;
   }
+
+  /* Collapsible variant (currently just "Flight profile" -- see
+     flightProfileHtml in app.js, starts collapsed). Reuses the legend's
+     own chevron-toggle visual language (#legend-panel .layer-header) as a
+     fresh, unscoped pair of classes rather than sharing selectors, since
+     this lives in the locked panel, not the legend. */
+  .lp-collapsible-heading {
+    cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .lp-chevron {
+    display: inline-block; width: 7px; height: 7px;
+    border-right: 2px solid var(--text-dim); border-bottom: 2px solid var(--text-dim);
+    transform: rotate(45deg); transition: transform 0.18s ease;
+    flex-shrink: 0;
+  }
+  .lp-section.lp-collapsed .lp-chevron { transform: rotate(-45deg); }
+  .lp-collapsible-count {
+    font-weight: 400; text-transform: none; letter-spacing: 0;
+  }
   .lp-section-body {
     font-size: 12px; line-height: 1.5;
   }
@@ -566,6 +586,12 @@
      rows -- so the text ties back to what's actually on screen. */
   .lp-timeline {
     display: flex; flex-direction: column; gap: 7px;
+    overflow: hidden; max-height: 4000px; margin-top: 6px;
+    transition: max-height 0.2s ease, opacity 0.2s ease, margin-top 0.2s ease;
+    opacity: 1;
+  }
+  .lp-section.lp-collapsed .lp-timeline {
+    max-height: 0; opacity: 0; margin-top: 0;
   }
   .lp-timeline-item {
     display: flex; align-items: flex-start; gap: 7px;
