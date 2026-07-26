@@ -4706,18 +4706,24 @@
   //
   // Anchored to the CURRENT position, not an arbitrary start point: swept
   // 90 degrees of mean anomaly BEHIND where the spacecraft is right now
-  // through 270 degrees AHEAD (one full 360-degree loop, just weighted
-  // toward what's coming rather than centered/symmetric or starting from
-  // periapsis) -- so the recent-past and upcoming path both stay visually
+  // through 250 degrees AHEAD (340 degrees total, not the full 360 --
+  // closing it into a complete loop would leave no visible break, making
+  // it ambiguous whether this is one bounded revolution or just the
+  // planet-orbit-ellipse style continuous rings drawn everywhere else;
+  // trimming 20 degrees off the FAR end -- right where a full loop would
+  // otherwise rejoin the start -- leaves a small, deliberate gap there so
+  // it clearly reads as one loop, not a closed ring), weighted toward
+  // what's coming rather than centered/symmetric or starting from
+  // periapsis, so the recent-past and upcoming path both stay visually
   // intact around wherever it actually is, per the user's own call. Mean
   // anomaly (not eccentric or true anomaly) because it's the one that maps
-  // linearly to elapsed TIME, which is what "90 degrees ago" / "270
+  // linearly to elapsed TIME, which is what "90 degrees ago" / "250
   // degrees from now" actually means here; gmAU3Day2 is the mean motion's
   // own primary's GM (Sol for a heliocentric leg, the geocentric_orbit
   // leg's own primaryBody otherwise -- see getCurrentOrbitElements),
   // NOT always GM_SUN_AU3_DAY2.
   // Returns null (draws nothing) for e>=1 -- a hyperbolic/parabolic path
-  // never closes into a 360-degree loop, so there's no ellipse to show.
+  // never closes into a bounded loop, so there's no ellipse to show.
   function drawCurrentOrbitEllipse(el, centerAU, gmAU3Day2, daysSinceEpoch) {
     if (el.e >= 1) return null;
     centerAU = centerAU || [0, 0, 0];
@@ -4730,10 +4736,11 @@
       const xi = xw, yi = yw * cosI, zi = yw * sinI;
       return [xi * cosOm - yi * sinOm, xi * sinOm + yi * cosOm, zi];
     }
+    const TRAILING_DEG = 90, TOTAL_SWEEP_DEG = 340;
     const n = Math.sqrt(gmAU3Day2 / (el.a * el.a * el.a)); // rad/day
     const M_now   = el.M0 + n * (daysSinceEpoch - el.epochDays);
-    const M_start = M_now - Math.PI / 2;      // 90 degrees behind
-    const M_end   = M_now + 1.5 * Math.PI;    // 270 degrees ahead
+    const M_start = M_now - TRAILING_DEG * D2R;
+    const M_end   = M_now + (TOTAL_SWEEP_DEG - TRAILING_DEG) * D2R;
 
     const N = 180;
     const points = [];
