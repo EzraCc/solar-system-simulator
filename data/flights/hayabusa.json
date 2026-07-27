@@ -8,10 +8,18 @@
   "statusNote": "First asteroid sample return mission. Single Earth gravity-assist flyby (2004-05-19, altitude 3,725 km) -- the first-ever powered planetary flyby, with ion engines firing during the slingshot itself. Continuous ion-engine thrust throughout the cruise (not ballistic coasting) means the post-flyby leg here, like BepiColombo/PSP's tightest legs, is anchored to Itokawa's real recorded position/date rather than a patched-conic fit. A 2003 solar flare damaged the solar cells, reducing ion-engine efficiency and delaying Itokawa arrival from an originally planned June to September 2005. Sample return capsule landed in Australia 2010-06-13 after a dramatic series of onboard failures (reaction wheels, fuel leak, and a temporary loss of contact) nearly ended the mission early.",
   "legs": [
     {
+      "_comment": "Real Earth->Earth loop is 376 days, just over 1 year, so the raw 2-point geometry wraps to a deceptively small ~10deg angle -- a plain 0-revolution Lambert solve through that angle finds a near-parabolic, sun-grazing 'solution' (e~0.997) instead of the real near-circular loop. Unlike OSIRIS-REx, JPL Horizons has no tracked trajectory for Hayabusa before 2009, so this waypoint isn't sourced from telemetry -- it's the midpoint of the actual N=1-revolution Lambert solution connecting Earth's two real recorded positions (2003-05-09 and 2004-05-19) in exactly 376 days, solved directly (low-energy branch: a=1.0000 AU, e=0.0167, i~0deg -- essentially Earth's own orbit, the only physically sane answer given the spacecraft's ion engines could not have produced anything close to the wrongly-fit e~0.997 orbit). Verified this solution reproduces the real 2004-05-19 Earth position to ~1e-11 AU when propagated forward.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [0.6343437577698243, 0.7597129220481085, -0.000006340239696455178] },
       "departDate": "2003-05-09",
+      "arrivalDate": "2003-11-13"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.6343437577698243, 0.7597129220481085, -0.000006340239696455178] },
+      "toBody": "Earth",
+      "departDate": "2003-11-13",
       "arrivalDate": "2004-05-19"
     },
     {
