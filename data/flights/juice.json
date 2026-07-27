@@ -63,10 +63,25 @@
       "periapsisKm": 5000
     },
     {
+      "_comment": "Real JUICE trajectory (JPL Horizons, target -28, checked 2026-07) sweeps ~470 degrees around the Sun during this Earth->Earth loop -- more than one full lap, reaching a real aphelion of ~2.41 AU near 2027-11-23 (well past Mars, into the asteroid belt) before returning to Earth. A plain 2-point Lambert solve between the two Earth encounters can't distinguish that from a much shorter same-angle transfer, and produces an unconstrained a=1.86 AU / e=0.85 orbit (periapsis 0.28 AU, inside Mercury's orbit; apoapsis 3.43 AU) -- a real-looking but wrong bulge. Split through two real recorded waypoints so each third stays under 180 degrees of sweep, the same fix pattern used for this file's other two Earth->Earth legs above.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [-1.295249042665561, 0.4173113529973598, -0.00002575979781616868] },
       "departDate": "2026-09-29",
+      "arrivalDate": "2027-02-11"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-1.295249042665561, 0.4173113529973598, -0.00002575979781616868] },
+      "toBody": { "fixedPos": [1.084701233501064, -0.8712970044995029, 0.00006296324711279625] },
+      "departDate": "2027-02-11",
+      "arrivalDate": "2028-09-03"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [1.084701233501064, -0.8712970044995029, 0.00006296324711279625] },
+      "toBody": "Earth",
+      "departDate": "2028-09-03",
       "arrivalDate": "2029-01-18"
     },
     {
