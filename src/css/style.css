@@ -361,6 +361,74 @@
   }
   #stop-tracking-btn.visible { display: inline-block; }
 
+  /* Flight scrubber: video-style seek bar, shown whenever a flight is
+     selected -- see buildFlightScrubber/updateFlightScrubberPlayhead in
+     app.js. Deliberately its own fixed bar, NOT inside #locked-panel-body:
+     that panel is width-capped at 640px, can be closed while tracking
+     persists (selectedFlightKey survives independently of infoPanelVisible),
+     and goes full-screen on mobile -- none of which suit a control that
+     needs real width and must stay reachable regardless of panel state. */
+  #flight-scrubber-panel {
+    display: none; /* toggled via .visible in buildFlightScrubber */
+    position: fixed;
+    bottom: 90px; left: 50%; transform: translateX(-50%);
+    width: min(680px, calc(100vw - 32px));
+    flex-direction: column; gap: 6px;
+    /* Above #locked-panel (40) -- that panel is user-draggable on desktop
+       and could otherwise land on top of the scrubber; below #hover-tip
+       (50) so its tooltip still renders above the scrubber's own markers. */
+    z-index: 45;
+  }
+  #flight-scrubber-panel.visible { display: flex; }
+  #flight-scrubber-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 11px; color: var(--text-dim);
+  }
+  #flight-scrubber-title { color: var(--text-primary); font-weight: 600; font-size: 12px; }
+  #flight-scrubber-track { position: relative; height: 28px; cursor: pointer; touch-action: none; }
+  #flight-scrubber-track::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 50%;
+    height: 4px; margin-top: -2px; border-radius: 2px;
+    background: rgba(120, 150, 200, 0.25);
+  }
+  #flight-scrubber-fill {
+    position: absolute; left: 0; top: 50%; height: 4px; margin-top: -2px;
+    border-radius: 2px; opacity: 0.6; pointer-events: none; width: 0%;
+  }
+  #flight-scrubber-playhead {
+    position: absolute; top: 50%; left: 0%; width: 14px; height: 14px;
+    border-radius: 50%; border: 2px solid #fff; transform: translate(-50%, -50%);
+    cursor: grab; box-shadow: 0 0 4px rgba(0, 0, 0, 0.6); pointer-events: none;
+  }
+  #flight-scrubber-track.dragging #flight-scrubber-playhead { cursor: grabbing; }
+  #flight-scrubber-markers { position: absolute; inset: 0; }
+  .scrubber-marker {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 8px; height: 8px; cursor: pointer;
+    /* Padded invisible hit area, bigger than the visible dot -- keeps dots
+       small so nearby events don't visually merge, while still meeting a
+       reasonable touch target (same tension already balanced elsewhere,
+       e.g. hitTestPaths' isMobileLayout ? 28 : 10 click tolerance). */
+    padding: 10px; margin: -10px; background-clip: content-box;
+  }
+  .scrubber-marker--ga { border-radius: 50%; }
+  .scrubber-marker--loiter {
+    border-radius: 50%; background-color: transparent !important;
+    border: 2px dashed currentColor;
+  }
+  .scrubber-marker--orbit { border-radius: 2px; }
+  .scrubber-marker-range {
+    position: absolute; top: 50%; height: 8px; margin-top: -4px;
+    border-radius: 4px; opacity: 0.35; pointer-events: none;
+  }
+  /* A scripted maneuver demo drives simDate itself (demoWatchTick) and
+     already force-hides #locked-panel for the same reason (style below,
+     "body.demo-active #locked-panel") -- #demo-caption can also grow tall
+     enough on narrow/mobile screens to overlap the scrubber's own
+     top-anchored mobile position, so hide it outright rather than leave
+     it visible-but-disabled. */
+  body.demo-active #flight-scrubber-panel { display: none !important; }
+
   #locked-panel {
     position: fixed;
     display: none; /* toggled to "flex" in JS (updateLockedPanelVisibility) when a body is locked */
@@ -789,4 +857,17 @@
     flex-direction: column; gap: 6px; padding: 0;
   }
   body.mobile #camera-controls button { padding: 7px 10px; font-size: 12px; }
+
+  /* Anchored to the TOP on mobile rather than stacked onto the already-
+     crowded bottom-right column -- #bottom-right-controls + #camera-
+     controls already reach ~226-296px from the bottom there (see the
+     measured 226px comment above). 184px clears #scale-toggle-panel
+     (top:16px, right:16px, up to 3 rows) and #legend-drawer-toggle
+     (top:16px, left:16px, 44px) -- verified live via Playwright at
+     common mobile breakpoints (see mobile_verify.py). */
+  body.mobile #flight-scrubber-panel {
+    top: 184px; bottom: auto; left: 12px; right: 12px; transform: none;
+    width: auto;
+  }
+  body.mobile .scrubber-marker { padding: 14px; margin: -14px; }
 

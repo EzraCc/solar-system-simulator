@@ -2515,6 +2515,13 @@
   // whether to resume (it was actually playing) or leave things alone
   // (it was already paused for some other reason, e.g. manually).
   let autoPausedOnLock = false;
+  // Same idea, but for a flight-scrubber drag (see the FLIGHT SCRUBBER
+  // section below) -- kept as its own flag rather than reusing
+  // autoPausedOnLock, since the two auto-pauses can overlap (e.g. closing
+  // the locked panel mid-drag, or ending a drag while the panel happens to
+  // be open) and either one resuming unconditionally could yank playback
+  // out from under the other. See maybeResumeFromAutoPause.
+  let scrubberAutoPaused = false;
 
   // "broad" (default): a flight/small body shows whenever it's genuinely
   // in transit right now, independent of selection -- lets you casually
@@ -2804,9 +2811,19 @@
     } else if (prevPanelVisible && !newPanelVisible) {
       if (autoPausedOnLock) {
         autoPausedOnLock = false;
-        setPaused(false);
+        maybeResumeFromAutoPause();
       }
     }
+  }
+
+  // Shared resume gate for the two independent auto-pause mechanisms
+  // (locked-panel-open and flight-scrubber-drag) -- only actually resumes
+  // once NEITHER thinks it's the one holding playback paused, so closing
+  // the locked panel mid-scrubber-drag (or releasing a drag while the
+  // panel happens to be open) can't yank playback out from under whichever
+  // mechanism is still active.
+  function maybeResumeFromAutoPause() {
+    if (!autoPausedOnLock && !scrubberAutoPaused) setPaused(false);
   }
 
   document.getElementById("reset-speed").addEventListener("click", () => {
@@ -3147,6 +3164,7 @@
     focusSwitch.classList.toggle("on", true);
     selectFlight(demo.flightKey);
     autoPausedOnLock = false; // this is a deliberate play state, not an auto-pause to track/undo
+    scrubberAutoPaused = false;
 
     simDate = dateFromDaysSinceJ2000(demo.startDays);
     dateInput.value = dateInputValue(simDate);
@@ -3225,6 +3243,7 @@
     infoPanelVisible = snap.infoPanelVisible;
     updateLockedPanelVisibility();
     autoPausedOnLock = false;
+    scrubberAutoPaused = false;
 
     simDate = snap.simDate;
     dateInput.value = dateInputValue(simDate);
@@ -3744,6 +3763,7 @@
     if (!opts.preserveFlightSelection && selectedFlightKey !== null) {
       selectedFlightKey = null;
       buildFlightsLegend();
+      buildFlightScrubber();
     }
     updateLockedPanelVisibility();
     buildLegend(); // re-render so the accordion (moon rows) reflects the new focus
@@ -3784,6 +3804,7 @@
       syncPauseWithLockedPanel(prevPanelVisible, false);
       buildLegend();
       buildFlightsLegend();
+      buildFlightScrubber();
       updateLockedPanelVisibility();
       updateDocumentTitle();
       updateURLParams({ body: null, flight: null });
@@ -3806,6 +3827,7 @@
     // camera-follow code can track it exactly like any planet or moon.
     lockBody(raw.name, { toggleIfSame: false, preserveFlightSelection: true });
     buildFlightsLegend();
+    buildFlightScrubber();
     // Clicking is one of the two conditions ("clicked or encountered
     // during time manipulation") that should trigger the Lambert solve.
     // Doing it explicitly here, rather than waiting for the next frame's
@@ -4032,6 +4054,7 @@
     if (selectedFlightKey !== key) {
       selectedFlightKey = key;
       buildFlightsLegend();
+      buildFlightScrubber();
     }
     if (!isMultiLeg(raw)) getSolvedFlight(key);
   }
@@ -4404,26 +4427,83 @@
     return `<div class="lp-timeline-item">${dot}<span class="lp-timeline-text">${html}</span></div>`;
   }
 
-  // Chronological, per-leg breakdown of how a mission actually got where
-  // it went -- which planet was involved in each flyby and what kind of
-  // maneuver happened where. Built entirely from raw.legs (already the
-  // ground truth this simulator renders from) plus getGAEvents' real
-  // computed speed-before/after for each gravity_assist leg -- nothing
-  // here is hand-authored per mission.
-  function flightProfileHtml(flightKey) {
+  // Shared leg-walker: turns raw.legs into one entry per real EVENT,
+  // collapsing a run of consecutive geocentric_orbit legs around the same
+  // primary into one entry (Aditya-L1's 5 successive perigee-raising burns
+  // would otherwise read as 5 nearly-identical lines/markers). Both
+  // flightProfileHtml's prose timeline AND the flight-scrubber's event
+  // markers (buildScrubberEvents, below) consume this SAME walk rather
+  // than each re-parsing raw.legs separately -- letting the two views of
+  // "what happened on this flight" drift out of sync would be a real bug
+  // risk. dDays/aDays are both days-since-J2000; for an instantaneous leg
+  // (gravity_assist) they're equal. A plain lambert leg is included too
+  // (flightProfileHtml needs its coast text) -- callers that only want
+  // marker-worthy events filter it out themselves.
+  function buildLegEntries(flightKey) {
     const raw = FLIGHTS_RAW[flightKey];
-    if (!raw.legs || raw.legs.length === 0) return "";
+    if (!raw.legs || raw.legs.length === 0) return [];
     const legs = raw.legs;
     const gaByLegIndex = {};
     getGAEvents(flightKey).forEach((ev) => { gaByLegIndex[ev.legIndex] = ev; });
-    const isIon = ION_THRUST_MISSIONS.has(flightKey);
 
-    let items = "";
+    const entries = [];
+    let prevArrivalDays = daysSinceJ2000(parseFlightDate(legs[0].departDate || legs[0].date));
     let i = 0;
     while (i < legs.length) {
       const leg = legs[i];
 
       if (leg.type === 'lambert') {
+        const dDays = daysSinceJ2000(parseFlightDate(leg.departDate));
+        const aDays = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+        entries.push({ kind: 'lambert', legIndex: i, leg, dDays, aDays });
+        prevArrivalDays = aDays;
+        i++;
+
+      } else if (leg.type === 'gravity_assist') {
+        const d = daysSinceJ2000(parseFlightDate(leg.date));
+        entries.push({ kind: 'gravity_assist', legIndex: i, leg, ev: gaByLegIndex[i], dDays: d, aDays: d });
+        prevArrivalDays = d;
+        i++;
+
+      } else if (leg.type === 'geocentric_orbit') {
+        let j = i;
+        while (j < legs.length && legs[j].type === 'geocentric_orbit' && legs[j].primaryBody === leg.primaryBody) j++;
+        const last = legs[j - 1];
+        const dDays = daysSinceJ2000(parseFlightDate(leg.departDate));
+        const aDays = daysSinceJ2000(parseFlightDate(last.arrivalDate));
+        entries.push({ kind: 'geocentric_orbit', legIndexStart: i, legIndexEnd: j - 1,
+          firstLeg: leg, lastLeg: last, burnCount: j - i, dDays, aDays });
+        prevArrivalDays = aDays;
+        i = j;
+
+      } else if (leg.type === 'loiter') {
+        const aDays = daysSinceJ2000(parseFlightDate(leg.departure));
+        entries.push({ kind: 'loiter', legIndex: i, leg, dDays: prevArrivalDays, aDays });
+        prevArrivalDays = aDays;
+        i++;
+
+      } else {
+        i++;
+      }
+    }
+    return entries;
+  }
+
+  // Chronological, per-leg breakdown of how a mission actually got where
+  // it went -- which planet was involved in each flyby and what kind of
+  // maneuver happened where. Built entirely from buildLegEntries (already
+  // the ground truth this simulator renders from) plus getGAEvents' real
+  // computed speed-before/after for each gravity_assist leg -- nothing
+  // here is hand-authored per mission.
+  function flightProfileHtml(flightKey) {
+    const entries = buildLegEntries(flightKey);
+    if (entries.length === 0) return "";
+    const isIon = ION_THRUST_MISSIONS.has(flightKey);
+
+    let items = "";
+    entries.forEach((entry) => {
+      if (entry.kind === 'lambert') {
+        const leg = entry.leg;
         const from = describeLegBody(leg.fromBody);
         const to = describeLegBody(leg.toBody);
         const verb = isIon ? "Continuous ion-thrust cruise" : "Coast";
@@ -4432,11 +4512,10 @@
           text += " &mdash; engines fire gently the whole way, not just at the ends; the smooth arc shown here approximates that continuous push, not a literal coast.";
         }
         items += legTimelineItemHtml(to.color || from.color, text);
-        i++;
 
-      } else if (leg.type === 'gravity_assist') {
+      } else if (entry.kind === 'gravity_assist') {
+        const leg = entry.leg, ev = entry.ev;
         const body = describeLegBody(leg.body);
-        const ev = gaByLegIndex[i];
         let text = `Gravity assist at <strong>${body.name}</strong> (${leg.date.slice(0, 10)}, periapsis ${Math.round(leg.periapsisKm).toLocaleString()} km)`;
         if (ev && ev.speedOutKmS !== undefined) {
           const delta = ev.speedOutKmS - ev.speedInKmS;
@@ -4454,34 +4533,22 @@
           text += " &mdash; a real flyby, though the long coast that follows is beyond what this simulator's simplified model can precisely track, so an exact speed change isn't shown for this one";
         }
         items += legTimelineItemHtml(body.color, text);
-        i++;
 
-      } else if (leg.type === 'geocentric_orbit') {
-        // Collapse a run of consecutive geocentric_orbit legs around the
-        // same primary into one entry -- Aditya-L1's 5 successive perigee-
-        // raising burns would otherwise clutter the panel with 5 nearly
-        // identical lines.
-        let j = i;
-        while (j < legs.length && legs[j].type === 'geocentric_orbit' && legs[j].primaryBody === leg.primaryBody) j++;
-        const last = legs[j - 1];
+      } else if (entry.kind === 'geocentric_orbit') {
+        const leg = entry.firstLeg, last = entry.lastLeg;
         const primary = describeLegBody(leg.primaryBody);
-        const burnCount = j - i;
-        const text = burnCount > 1
-          ? `${burnCount}-burn orbit-raising sequence around ${primary.name}: ${Math.round(leg.periapsisKm).toLocaleString()}×${Math.round(leg.apoapsisKm).toLocaleString()} km &rarr; ${Math.round(last.periapsisKm).toLocaleString()}×${Math.round(last.apoapsisKm).toLocaleString()} km apogee (${leg.departDate.slice(0, 10)} &ndash; ${last.arrivalDate.slice(0, 10)}) &mdash; each pass through perigee, the engine fires again to raise the far side of the orbit a little further, cheaper than one large burn.`
+        const text = entry.burnCount > 1
+          ? `${entry.burnCount}-burn orbit-raising sequence around ${primary.name}: ${Math.round(leg.periapsisKm).toLocaleString()}×${Math.round(leg.apoapsisKm).toLocaleString()} km &rarr; ${Math.round(last.periapsisKm).toLocaleString()}×${Math.round(last.apoapsisKm).toLocaleString()} km apogee (${leg.departDate.slice(0, 10)} &ndash; ${last.arrivalDate.slice(0, 10)}) &mdash; each pass through perigee, the engine fires again to raise the far side of the orbit a little further, cheaper than one large burn.`
           : `Parking orbit around ${primary.name}: ${Math.round(leg.periapsisKm).toLocaleString()}×${Math.round(leg.apoapsisKm).toLocaleString()} km.`;
         items += legTimelineItemHtml(primary.color, text);
-        i = j;
 
-      } else if (leg.type === 'loiter') {
+      } else if (entry.kind === 'loiter') {
+        const leg = entry.leg;
         const loc = describeLegBody(leg.location);
         const text = `Extended stay at ${loc.name}${leg.departure ? ` (until ${leg.departure.slice(0, 10)})` : ""}.`;
         items += legTimelineItemHtml(loc.color, text);
-        i++;
-
-      } else {
-        i++;
       }
-    }
+    });
 
     if (!items) return "";
     const itemCount = (items.match(/lp-timeline-item/g) || []).length;
@@ -4490,6 +4557,199 @@
     // gallery under a wall of text most visitors didn't ask to see yet.
     return `<div class="lp-section lp-collapsed"><div class="lp-section-heading lp-collapsible-heading"><span class="lp-chevron"></span>Flight profile<span class="lp-collapsible-count">(${itemCount})</span></div><div class="lp-timeline">${items}</div></div>`;
   }
+
+  // Marker-worthy events for the flight scrubber -- same walk as
+  // flightProfileHtml, minus plain 'lambert' coasts (a coast IS the
+  // ordinary in-between state the scrubber's track already represents,
+  // not a marker-worthy event). Point events (gravity assists) get a
+  // single date; span events (orbit-raising sequences, loiters) get a
+  // [dDays, aDays] range for a shaded bar plus a marker at the midpoint.
+  function buildScrubberEvents(flightKey) {
+    return buildLegEntries(flightKey)
+      .filter((e) => e.kind !== 'lambert')
+      .map((e) => {
+        if (e.kind === 'gravity_assist') {
+          const body = describeLegBody(e.leg.body);
+          return { type: 'ga', dDays: e.dDays, aDays: e.aDays, color: body.color,
+            label: `Gravity assist at ${body.name} (${e.leg.date.slice(0, 10)})` };
+        }
+        if (e.kind === 'geocentric_orbit') {
+          const primary = describeLegBody(e.firstLeg.primaryBody);
+          const label = e.burnCount > 1
+            ? `${e.burnCount}-burn orbit-raising sequence around ${primary.name}`
+            : `Parking orbit around ${primary.name}`;
+          return { type: 'orbit', dDays: e.dDays, aDays: e.aDays, color: primary.color, label };
+        }
+        // loiter
+        const loc = describeLegBody(e.leg.location);
+        return { type: 'loiter', dDays: e.dDays, aDays: e.aDays, color: loc.color, label: `Extended stay at ${loc.name}` };
+      });
+  }
+
+  /* =========================================================================
+     FLIGHT SCRUBBER
+     Video-style seek bar for the currently selected flight: launch date at
+     one end, arrival/landing date at the other, event markers in between
+     (from buildScrubberEvents), and a playhead the user can drag -- or
+     click anywhere on the track, or click a marker directly -- to scrub
+     simDate within that flight's own window. Shown/rebuilt whenever
+     selectedFlightKey changes (same call sites buildFlightsLegend() already
+     runs from); the playhead position alone is refreshed every frame
+     (updateFlightScrubberPlayhead), since frame() repaints continuously
+     regardless of paused and already threads daysSinceEpoch through.
+  ========================================================================= */
+  const flightScrubberPanel    = document.getElementById("flight-scrubber-panel");
+  const flightScrubberTitle    = document.getElementById("flight-scrubber-title");
+  const flightScrubberDates    = document.getElementById("flight-scrubber-dates");
+  const flightScrubberTrack    = document.getElementById("flight-scrubber-track");
+  const flightScrubberFill     = document.getElementById("flight-scrubber-fill");
+  const flightScrubberMarkers  = document.getElementById("flight-scrubber-markers");
+  const flightScrubberPlayhead = document.getElementById("flight-scrubber-playhead");
+
+  function pctClamp(v) { return Math.max(0, Math.min(100, v)); }
+
+  // Full rebuild -- track bounds, title/date labels, and every event
+  // marker -- called whenever selectedFlightKey changes (a different
+  // flight means a different window and a different event list), never
+  // per-frame (see updateFlightScrubberPlayhead for the cheap per-frame
+  // part).
+  function buildFlightScrubber() {
+    flightScrubberPanel.classList.toggle("visible", !!selectedFlightKey);
+    flightScrubberMarkers.innerHTML = "";
+    if (!selectedFlightKey) return;
+    const key = selectedFlightKey;
+    const raw = FLIGHTS_RAW[key];
+    const { launchDays, arrivalDays } = getFlightDates(key);
+    const tof = arrivalDays - launchDays;
+    const accent = flightColor(key);
+    flightScrubberFill.style.background = accent;
+    flightScrubberPlayhead.style.background = accent;
+    flightScrubberTitle.textContent = raw.name;
+    const ep = flightEndpoints(raw);
+    flightScrubberDates.textContent = `${ep.launchDate.slice(0, 10)} → ${ep.arrival.slice(0, 10)}`;
+
+    buildScrubberEvents(key).forEach((ev) => {
+      const span = ev.aDays - ev.dDays;
+      if (tof > 0 && span > 0.5) {
+        // Span event (orbit-raising sequence, loiter): a shaded range
+        // behind the track showing how long it lasted.
+        const range = document.createElement("div");
+        range.className = "scrubber-marker-range";
+        const p1 = pctClamp((ev.dDays - launchDays) / tof * 100);
+        const p2 = pctClamp((ev.aDays - launchDays) / tof * 100);
+        range.style.left = p1 + "%";
+        range.style.width = Math.max(0, p2 - p1) + "%";
+        range.style.background = ev.color || "var(--text-dim)";
+        flightScrubberMarkers.appendChild(range);
+      }
+      const midDays = (ev.dDays + ev.aDays) / 2;
+      const pct = tof > 0 ? pctClamp((midDays - launchDays) / tof * 100) : 0;
+      const dot = document.createElement("div");
+      dot.className = "scrubber-marker scrubber-marker--" + (ev.type === 'ga' ? 'ga' : ev.type === 'orbit' ? 'orbit' : 'loiter');
+      dot.style.left = pct + "%";
+      if (ev.color) { dot.style.background = ev.color; dot.style.color = ev.color; }
+      // Jumping to a span event's exact start (not its midpoint) matches
+      // "jump to launch date"'s own convention of landing right where the
+      // named thing begins, rather than partway through it.
+      dot.dataset.jumpDays = String(ev.dDays);
+      dot.dataset.label = ev.label;
+      flightScrubberMarkers.appendChild(dot);
+    });
+    updateFlightScrubberPlayhead(daysSinceJ2000(simDate));
+  }
+
+  // Cheap, per-frame: just repositions the playhead/fill, no DOM rebuild.
+  // Clamps visually at 0%/100% when simDate is currently outside the
+  // flight's own window (the sim clock keeps running after a mission
+  // ends) -- this only affects passive display; an active drag is itself
+  // bounded by the track's physical ends (see daysFromPointerX).
+  function updateFlightScrubberPlayhead(daysSinceEpoch) {
+    if (!selectedFlightKey) return;
+    const { launchDays, arrivalDays } = getFlightDates(selectedFlightKey);
+    const tof = arrivalDays - launchDays;
+    const pct = tof > 0
+      ? pctClamp((daysSinceEpoch - launchDays) / tof * 100)
+      : (daysSinceEpoch < launchDays ? 0 : 100);
+    flightScrubberPlayhead.style.left = pct + "%";
+    flightScrubberFill.style.width = pct + "%";
+  }
+
+  function daysFromPointerX(clientX) {
+    const rect = flightScrubberTrack.getBoundingClientRect();
+    const frac = rect.width > 0 ? Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)) : 0;
+    const { launchDays, arrivalDays } = getFlightDates(selectedFlightKey);
+    return launchDays + frac * (arrivalDays - launchDays);
+  }
+
+  // Live visual update only -- does NOT touch the URL (matches the speed
+  // slider's own "input" listener, which never calls updateURLParams
+  // either). The URL is only written once, on pointerup, mirroring the
+  // Apply-date button's click handler.
+  function commitScrubberDate(days) {
+    simDate = dateFromDaysSinceJ2000(days);
+    dateInput.value = dateInputValue(simDate);
+    updateFlightScrubberPlayhead(daysSinceJ2000(simDate));
+  }
+
+  let scrubberDragging = false;
+  let scrubberTipTimeout = null;
+
+  flightScrubberTrack.addEventListener("pointerdown", (e) => {
+    if (!selectedFlightKey) return;
+    flightScrubberTrack.setPointerCapture(e.pointerId);
+    flightScrubberTrack.classList.add("dragging");
+    scrubberDragging = true;
+    if (!paused) {
+      scrubberAutoPaused = true;
+      setPaused(true);
+    }
+    const markerEl = e.target.closest(".scrubber-marker");
+    if (markerEl) {
+      commitScrubberDate(Number(markerEl.dataset.jumpDays));
+      // No hover on touch -- show the label briefly so tapping a marker
+      // still tells you what it was, then let it fade like a toast.
+      hoverTip.style.display = "block";
+      hoverTip.style.left = (e.clientX + 14) + "px";
+      hoverTip.style.top = (e.clientY + 14) + "px";
+      hoverTip.innerHTML = markerEl.dataset.label;
+      clearTimeout(scrubberTipTimeout);
+      scrubberTipTimeout = setTimeout(() => { hoverTip.style.display = "none"; }, 1500);
+    } else {
+      commitScrubberDate(daysFromPointerX(e.clientX));
+    }
+  });
+  flightScrubberTrack.addEventListener("pointermove", (e) => {
+    if (!scrubberDragging) return;
+    commitScrubberDate(daysFromPointerX(e.clientX));
+  });
+  function endScrubberDrag() {
+    if (!scrubberDragging) return;
+    scrubberDragging = false;
+    flightScrubberTrack.classList.remove("dragging");
+    updateURLParams({ date: dateInput.value });
+    if (scrubberAutoPaused) {
+      scrubberAutoPaused = false;
+      maybeResumeFromAutoPause();
+    }
+  }
+  flightScrubberTrack.addEventListener("pointerup", endScrubberDrag);
+  flightScrubberTrack.addEventListener("pointercancel", endScrubberDrag);
+
+  // Hover tooltip (desktop) -- delegated, same #hover-tip element and
+  // pattern as the canvas path-hover code (see handleHover), rather than
+  // a second bespoke tooltip element.
+  flightScrubberMarkers.addEventListener("mousemove", (e) => {
+    if (scrubberDragging) return;
+    const el = e.target.closest(".scrubber-marker");
+    if (!el) { hoverTip.style.display = "none"; return; }
+    hoverTip.style.display = "block";
+    hoverTip.style.left = (e.clientX + 14) + "px";
+    hoverTip.style.top = (e.clientY + 14) + "px";
+    hoverTip.innerHTML = el.dataset.label;
+  });
+  flightScrubberMarkers.addEventListener("mouseleave", () => {
+    if (!scrubberDragging) hoverTip.style.display = "none";
+  });
 
   function formatLockedPanelContent(b) {
     if (b.isFlight) {
@@ -5029,6 +5289,7 @@
     const daysSinceEpoch = daysSinceJ2000(simDate);
     updateFlightsLegendActiveState(daysSinceEpoch);
     updateSmallBodiesLegendActiveState(daysSinceEpoch);
+    updateFlightScrubberPlayhead(daysSinceEpoch);
 
     // ---- Pass 1: compute world positions for every body, BEFORE any
     // screen projection. This has to happen first so that, if a body is

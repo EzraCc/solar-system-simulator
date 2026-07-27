@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=22">
+<link rel="stylesheet" href="src/css/style.css?v=23">
 </head>
 <body>
 
@@ -130,6 +130,18 @@
   <div id="locked-panel-body"></div>
 </div>
 
+<div class="panel" id="flight-scrubber-panel">
+  <div id="flight-scrubber-header">
+    <span id="flight-scrubber-title"></span>
+    <span id="flight-scrubber-dates"></span>
+  </div>
+  <div id="flight-scrubber-track">
+    <div id="flight-scrubber-fill"></div>
+    <div id="flight-scrubber-markers"></div>
+    <div id="flight-scrubber-playhead"></div>
+  </div>
+</div>
+
 <div class="panel" id="camera-controls">
   <button id="reset-view-btn" title="Restore default rotation, zoom, and pan">Reset view</button>
   <button id="stop-tracking-btn" title="Stop following the locked body">Stop tracking</button>
@@ -159,6 +171,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=44"></script>
+<script src="src/js/app.js?v=45"></script>
 </body>
 </html>
