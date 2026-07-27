@@ -3944,6 +3944,20 @@
   }
 
   function handleHover(e) {
+    // This listener is bound on window (so hover keeps working during an
+    // active camera rotate/pan drag, see the mousemove listener above),
+    // which means it also fires for every mousemove over any DOM panel
+    // sitting on top of the canvas -- including the flight scrubber, which
+    // runs its OWN #hover-tip logic for its event markers (see the
+    // delegated mousemove listener on flightScrubberMarkers). Bail out
+    // here, BEFORE the locked-panel-open check below, rather than letting
+    // this canvas-only hit-test (which knows nothing about the marker DOM
+    // underneath the pointer) immediately clobber whatever the scrubber's
+    // own handler just set, in the same event dispatch -- the scrubber
+    // stays interactive/tooltip-able even while the info panel it belongs
+    // to is open (selecting a flight opens that panel by default), unlike
+    // a canvas hover preview of some OTHER, unrelated body.
+    if (e.target.closest && e.target.closest("#flight-scrubber-panel")) { hoveredPathEntry = null; return; }
     // Only suppressed while the panel is actually open (it visually covers
     // enough of the view that a hover preview underneath is pointless) --
     // tracking a body with the panel closed leaves the scene fully
@@ -4570,19 +4584,23 @@
       .map((e) => {
         if (e.kind === 'gravity_assist') {
           const body = describeLegBody(e.leg.body);
+          // Short "<Body> gravity assist" for the hover tip / tap-toast --
+          // the exact date is already implicit in where the marker sits on
+          // the track, and the full blow-by-blow (periapsis, speed change)
+          // is one click away in the Flight profile section.
           return { type: 'ga', dDays: e.dDays, aDays: e.aDays, color: body.color,
-            label: `Gravity assist at ${body.name} (${e.leg.date.slice(0, 10)})` };
+            label: `${body.name} gravity assist` };
         }
         if (e.kind === 'geocentric_orbit') {
           const primary = describeLegBody(e.firstLeg.primaryBody);
           const label = e.burnCount > 1
-            ? `${e.burnCount}-burn orbit-raising sequence around ${primary.name}`
-            : `Parking orbit around ${primary.name}`;
+            ? `${primary.name} orbit-raising sequence`
+            : `${primary.name} orbit insertion`;
           return { type: 'orbit', dDays: e.dDays, aDays: e.aDays, color: primary.color, label };
         }
         // loiter
         const loc = describeLegBody(e.leg.location);
-        return { type: 'loiter', dDays: e.dDays, aDays: e.aDays, color: loc.color, label: `Extended stay at ${loc.name}` };
+        return { type: 'loiter', dDays: e.dDays, aDays: e.aDays, color: loc.color, label: `${loc.name} loiter` };
       });
   }
 
@@ -4647,7 +4665,16 @@
       const dot = document.createElement("div");
       dot.className = "scrubber-marker scrubber-marker--" + (ev.type === 'ga' ? 'ga' : ev.type === 'orbit' ? 'orbit' : 'loiter');
       dot.style.left = pct + "%";
-      if (ev.color) { dot.style.background = ev.color; dot.style.color = ev.color; }
+      if (ev.color) {
+        dot.style.color = ev.color; // used by the loiter marker's dashed border (currentColor)
+        // Same "lit sphere" shading language the planets themselves use on
+        // the canvas (see drawBody's off-center-hotspot radial gradient) --
+        // a flat filled circle read as a generic bullet point; a bright
+        // highlight fading through the true color into a darkened rim
+        // reads as a small glowing body, tying each marker visually back
+        // to the real, matching-colored world it refers to.
+        dot.style.background = `radial-gradient(circle at 32% 32%, #ffffff, ${ev.color} 55%, ${hexDarken(ev.color, 0.4)} 100%)`;
+      }
       // Jumping to a span event's exact start (not its midpoint) matches
       // "jump to launch date"'s own convention of landing right where the
       // named thing begins, rather than partway through it.
@@ -4690,6 +4717,20 @@
     dateInput.value = dateInputValue(simDate);
     updateFlightScrubberPlayhead(daysSinceJ2000(simDate));
   }
+
+  // Reopens the locked info panel for the flight currently on the
+  // scrubber -- an easy way back into the details (significance, flight
+  // profile, destinations) after closing the panel to get it out of the
+  // way, without having to re-find and re-click the flight in the legend.
+  // Reuses selectFlight's own lockBody call verbatim: toggleIfSame is
+  // false, so this unconditionally reopens (lockedBodyName/infoPanelVisible
+  // already match this flight's tracked body whenever the scrubber itself
+  // is visible, so re-running it is a harmless no-op if the panel happens
+  // to already be open).
+  flightScrubberTitle.addEventListener("click", () => {
+    if (!selectedFlightKey) return;
+    lockBody(FLIGHTS_RAW[selectedFlightKey].name, { toggleIfSame: false, preserveFlightSelection: true });
+  });
 
   let scrubberDragging = false;
   let scrubberTipTimeout = null;

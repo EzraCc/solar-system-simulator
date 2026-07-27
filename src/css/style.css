@@ -384,7 +384,11 @@
     display: flex; justify-content: space-between; align-items: baseline;
     font-size: 11px; color: var(--text-dim);
   }
-  #flight-scrubber-title { color: var(--text-primary); font-weight: 600; font-size: 12px; }
+  /* Clicking it reopens the locked info panel (see the click listener in
+     app.js) -- an easy way back into the details after closing the panel
+     to get it out of the way. */
+  #flight-scrubber-title { color: var(--text-primary); font-weight: 600; font-size: 12px; cursor: pointer; }
+  #flight-scrubber-title:hover { text-decoration: underline; }
   #flight-scrubber-track { position: relative; height: 28px; cursor: pointer; touch-action: none; }
   #flight-scrubber-track::before {
     content: ""; position: absolute; left: 0; right: 0; top: 50%;
