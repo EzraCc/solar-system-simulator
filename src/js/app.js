@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "15";
+  const BUILD_VERSION = "16";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -4173,8 +4173,13 @@
         // panel is a known source of native browser IntersectionObserver
         // flakiness, and eager loading eliminates that whole class of
         // failure regardless of whether it was the actual cause here.
+        // Cache-bust the same way data/*.json fetches already do (BUILD_VERSION)
+        // -- these are plain static <img src> requests with no query param at
+        // all until now, so a browser could keep serving stale image bytes at
+        // an unchanged path indefinitely even after the real file on disk was
+        // replaced (found while swapping Akatsuki's spacecraft photo).
         const img = a.localImage
-          ? `<img src="data/${a.localImage}" alt="${a.title}">`
+          ? `<img src="data/${a.localImage}?v=${BUILD_VERSION}" alt="${a.title}">`
           : `<div class="lp-asset-noimg">${a.title}</div>`;
         // Caption (the asset's real title) and a visible attribution/
         // source line are both always-on text, not just an invisible
