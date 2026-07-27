@@ -1963,9 +1963,26 @@
           // -- always well-posed (it's anchored to the two real endpoint
           // positions and the real time-of-flight, independent of GA
           // history) -- rather than trusting a wild extrapolation.
+          //
+          // missTooLarge is checked in ABSOLUTE AU, not as a percentage of
+          // chordAU -- a catalog-wide survey (every isPatched=true leg's own
+          // propagated position vs. its own real declared endpoint) found
+          // the relative-to-chord version let genuinely bad fits through
+          // whenever the chord itself was long: JUICE's Aug2024->Jan2025
+          // leg missed its real target by 0.2554 AU (real, ~38M km) but
+          // that was still under the old 20%-of-chord bound because the
+          // chord itself was long enough, and the resulting arc rendered
+          // as a plausible-looking curve that simply didn't connect to the
+          // next leg -- a misleading "gap and jump" at the seam, worse than
+          // the honest empty-gap fallback below, since it looks connected
+          // until you check where it actually ends. The same survey found
+          // a clean split around 0.02-0.03 AU between fits that were
+          // genuinely close (imperceptible at any normal zoom) and fits
+          // that were not, regardless of chord length -- what matters for
+          // "does this look continuous" is the absolute miss, not its
+          // fraction of one particular leg's own chord.
           const el = stateVectorToElements(postGA.pos, postGA.vel);
-          const missTooLarge = postGA.missAU !== undefined &&
-                               postGA.missAU > Math.max(0.02, 0.2 * postGA.chordAU);
+          const missTooLarge = postGA.missAU !== undefined && postGA.missAU > 0.03;
           if (isFinite(el.a) && isFinite(el.e) && el.a !== 0 && !missTooLarge) {
             elements  = {
               a: el.a, e: el.e, i: el.i,
@@ -1974,8 +1991,28 @@
             };
             isPatched = true;
           } else {
-            elements  = getSolvedLeg(flightKey, i).elements;
-            isPatched = false;
+            // The patched (roll-angle) fit doesn't reach this leg's own
+            // real endpoint closely enough to trust. Before giving up and
+            // drawing nothing, try the plain Lambert solve instead -- it's
+            // ALWAYS anchored exactly on the real endpoint (that's what
+            // Lambert's problem guarantees), so if its own shape isn't
+            // itself degenerate, it's strictly better than either the
+            // rejected patched fit or an empty gap. Reserved for a plain
+            // fit that's clearly well-behaved (e < 0.85, comfortably below
+            // where a second catalog survey found the genuinely-wrong
+            // cases start, e.g. New Horizons' real post-Jupiter escape
+            // trajectory at e~1.4 or MESSENGER's near-parabolic early
+            // Mercury-approach legs at e~0.99) -- anything borderline or
+            // worse keeps the existing honest-gap behavior rather than
+            // risking a confidently-wrong bulging shape.
+            const plain = getSolvedLeg(flightKey, i).elements;
+            if (isFinite(plain.a) && isFinite(plain.e) && plain.e < 0.85) {
+              elements  = plain;
+              isPatched = true;
+            } else {
+              elements  = plain;
+              isPatched = false;
+            }
           }
           postGA = null;
         }
