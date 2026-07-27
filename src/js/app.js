@@ -4822,22 +4822,28 @@
   //
   // Anchored to the CURRENT position, not an arbitrary start point: swept
   // 90 degrees of mean anomaly BEHIND where the spacecraft is right now
-  // through 250 degrees AHEAD (340 degrees total, not the full 360 --
-  // closing it into a complete loop would leave no visible break, making
-  // it ambiguous whether this is one bounded revolution or just the
-  // planet-orbit-ellipse style continuous rings drawn everywhere else;
-  // trimming 20 degrees off the FAR end -- right where a full loop would
-  // otherwise rejoin the start -- leaves a small, deliberate gap there so
-  // it clearly reads as one loop, not a closed ring), weighted toward
-  // what's coming rather than centered/symmetric or starting from
-  // periapsis, so the recent-past and upcoming path both stay visually
-  // intact around wherever it actually is, per the user's own call. Mean
-  // anomaly (not eccentric or true anomaly) because it's the one that maps
-  // linearly to elapsed TIME, which is what "90 degrees ago" / "250
-  // degrees from now" actually means here; gmAU3Day2 is the mean motion's
-  // own primary's GM (Sol for a heliocentric leg, the geocentric_orbit
-  // leg's own primaryBody otherwise -- see getCurrentOrbitElements),
-  // NOT always GM_SUN_AU3_DAY2.
+  // through 300 degrees AHEAD (390 degrees total -- more than a full
+  // circle). Going past 360 is deliberate: the trailing 90 and leading 300
+  // together mean the last 30 degrees of the forward sweep retraces the
+  // same arc the trailing fade starts from, so as the spacecraft crosses a
+  // maneuver or gravity assist and the active leg's elements change, the
+  // new ellipse's forward sweep still reaches back far enough to visibly
+  // overlap where the old one's trail was -- letting a shift in aphelion/
+  // perihelion read as a change in an already-visible piece of the curve,
+  // not just an abrupt jump with no shared reference. The trailing 90 is
+  // drawn fading toward its far end (see TRAIL_FADE_STEPS below) rather
+  // than at full weight, both so it doesn't read as just another lap of a
+  // closed ring and so it stays visually secondary to the forward
+  // (solid, undiminished) projection, which is the part that actually
+  // anticipates what's coming. Weighted toward what's coming rather than
+  // centered/symmetric or starting from periapsis, so the recent-past and
+  // upcoming path both stay visually intact around wherever it actually
+  // is, per the user's own call. Mean anomaly (not eccentric or true
+  // anomaly) because it's the one that maps linearly to elapsed TIME,
+  // which is what "90 degrees ago" / "300 degrees from now" actually means
+  // here; gmAU3Day2 is the mean motion's own primary's GM (Sol for a
+  // heliocentric leg, the geocentric_orbit leg's own primaryBody otherwise
+  // -- see getCurrentOrbitElements), NOT always GM_SUN_AU3_DAY2.
   // Returns null (draws nothing) for e>=1 -- a hyperbolic/parabolic path
   // never closes into a bounded loop, so there's no ellipse to show.
   function drawCurrentOrbitEllipse(el, centerAU, gmAU3Day2, daysSinceEpoch) {
@@ -4852,17 +4858,11 @@
       const xi = xw, yi = yw * cosI, zi = yw * sinI;
       return [xi * cosOm - yi * sinOm, xi * sinOm + yi * cosOm, zi];
     }
-    const TRAILING_DEG = 90, TOTAL_SWEEP_DEG = 340;
+    const TRAILING_DEG = 90, FORWARD_DEG = 300;
     const n = Math.sqrt(gmAU3Day2 / (el.a * el.a * el.a)); // rad/day
-    const M_now   = el.M0 + n * (daysSinceEpoch - el.epochDays);
-    const M_start = M_now - TRAILING_DEG * D2R;
-    const M_end   = M_now + (TOTAL_SWEEP_DEG - TRAILING_DEG) * D2R;
+    const M_now = el.M0 + n * (daysSinceEpoch - el.epochDays);
 
-    const N = 180;
-    const points = [];
-    ctx.beginPath();
-    for (let k = 0; k <= N; k++) {
-      const M = M_start + (k / N) * (M_end - M_start);
+    function sampleAt(M) {
       // solveKepler normalizes M into [0, 2pi) internally, so it's already
       // correct for any M here regardless of sign/range -- each M maps to
       // its own definite (x,y), no "unwrap E to stay increasing" trick
@@ -4873,12 +4873,44 @@
       const xOrb = el.a * (Math.cos(E) - el.e);
       const yOrb = el.a * Math.sqrt(1 - el.e * el.e) * Math.sin(E);
       const [x, y, z] = rotate(xOrb, yOrb);
-      const [sx, sy] = worldToScreen(centerAU[0] + x, centerAU[1] + y, centerAU[2] + z);
-      points.push([sx, sy]);
+      return worldToScreen(centerAU[0] + x, centerAU[1] + y, centerAU[2] + z);
+    }
+
+    // Trailing portion: drawn as short segments with per-segment alpha
+    // (canvas has no per-vertex alpha on a single stroked path) ramping
+    // from faint at the oldest point up toward full weight approaching
+    // "now" -- a standard fading-tail technique, not a native stroke
+    // gradient (which would follow the path's bounding box, not its curve).
+    const TRAIL_FADE_STEPS = 48;
+    const trailPoints = [];
+    for (let k = 0; k <= TRAIL_FADE_STEPS; k++) {
+      const M = M_now - TRAILING_DEG * D2R * (1 - k / TRAIL_FADE_STEPS);
+      trailPoints.push(sampleAt(M));
+    }
+    const baseAlpha = ctx.globalAlpha;
+    for (let k = 0; k < TRAIL_FADE_STEPS; k++) {
+      const t = (k + 1) / TRAIL_FADE_STEPS; // 0 at the oldest end, 1 at "now"
+      ctx.globalAlpha = baseAlpha * (0.06 + 0.94 * t * t);
+      ctx.beginPath();
+      ctx.moveTo(trailPoints[k][0], trailPoints[k][1]);
+      ctx.lineTo(trailPoints[k + 1][0], trailPoints[k + 1][1]);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = baseAlpha;
+
+    // Forward portion: solid, full weight -- the part that actually
+    // anticipates an upcoming shift in aphelion/perihelion.
+    const FORWARD_STEPS = 160;
+    const fwdPoints = [];
+    ctx.beginPath();
+    for (let k = 0; k <= FORWARD_STEPS; k++) {
+      const [sx, sy] = sampleAt(M_now + FORWARD_DEG * D2R * (k / FORWARD_STEPS));
+      fwdPoints.push([sx, sy]);
       if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
     }
     ctx.stroke();
-    return points;
+
+    return trailPoints.concat(fwdPoints);
   }
 
   // Draws a satellite's orbit ellipse centered on a moving point (its
