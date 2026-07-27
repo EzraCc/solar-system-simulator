@@ -8,10 +8,18 @@
   "statusNote": "Asteroid sample return; extended mission to a second asteroid. Single Earth gravity-assist flyby (2017-09-22, closest approach 17,237 km above Antarctica) tilted the orbital plane to match Bennu's inclination -- a change that would have required more propellant than the spacecraft carried to achieve with thrusters alone. Bennu sample return to Earth 2023-09-24. Spacecraft renamed OSIRIS-APEX and extended to rendezvous with asteroid Apophis in 2029 -- not modeled here, this entry ends at the primary Bennu rendezvous (2018-12-03).",
   "legs": [
     {
+      "_comment": "Real Earth->Earth loop is ~379 days, just over 1 year, so the raw 2-point geometry wraps to a deceptively small ~13deg angle -- a plain 0-revolution Lambert solve through that angle finds a near-parabolic, sun-grazing 'solution' (e~0.995) instead of the real near-circular ~1 AU loop. Split through a real recorded midpoint (JPL Horizons target -64, 2017-03-09, checked 2026-07) so each half is anchored to an actual position instead of extrapolating the wrong revolution count.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [-0.8409, -0.6337, 0.002037] },
       "departDate": "2016-09-08",
+      "arrivalDate": "2017-03-09"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.8409, -0.6337, 0.002037] },
+      "toBody": "Earth",
+      "departDate": "2017-03-09",
       "arrivalDate": "2017-09-22"
     },
     {
