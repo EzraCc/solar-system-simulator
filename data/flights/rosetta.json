@@ -8,10 +8,25 @@
   "statusNote": "Comet orbiter and lander; most flyby-dense non-Mercury mission in this catalog. 4 gravity assists (3 Earth: 2005-03-04 at 1,954 km, 2007-11-13 at 5,700 km, 2009-11-13 at 2,481 km; 1 Mars: 2007-02-25 at 250 km, a deliberately very close/risky pass). Also flew close enough to image asteroids Steins (2008-09-05) and Lutetia (2010-07-10) during the already-planned coast between flybys -- incidental imaging passes, not gravity assists (neither asteroid has meaningful mass), so not modeled as separate legs. Entered deep-space hibernation 2011-06-08 partway through the final coast to save power at maximum solar distance, woke 2014-01-20, comet arrival 2014-08-06. Philae lander touchdown 2014-11-12 (bounced into shadow, limited operation). Mission ended with a controlled impact onto the comet 2016-09-30.",
   "legs": [
     {
+      "_comment": "Real Rosetta trajectory (JPL Horizons, target -226, checked 2026-07) sweeps ~355 degrees around the Sun during this first Earth->Earth loop -- close enough to a full lap that a plain 2-point Lambert solve misreads it as a ~2-degree short hop, producing a nonsensical near-parabolic a=1.12 AU / e=0.9999 orbit. Split through two real recorded positions so each third stays safely under 180 degrees of sweep.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [0.2294970952372984, -0.8669508984934584, 0.005633673056678643] },
       "departDate": "2004-03-02",
+      "arrivalDate": "2004-06-16"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.2294970952372984, -0.8669508984934584, 0.005633673056678643] },
+      "toBody": { "fixedPos": [0.7722944532841886, 0.7719348667963092, -0.006919573773955424] },
+      "departDate": "2004-06-16",
+      "arrivalDate": "2004-10-14"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.7722944532841886, 0.7719348667963092, -0.006919573773955424] },
+      "toBody": "Earth",
+      "departDate": "2004-10-14",
       "arrivalDate": "2005-03-04"
     },
     {

@@ -8,10 +8,25 @@
   "statusNote": "Orbital study of a metal-rich asteroid believed to be part of a planetesimal's core. Single Mars gravity-assist flyby, completed 2026-05-15 at 4,609 km altitude; this leg uses the patched-conic roll-angle solver (like BepiColombo/PSP), not a plain endpoint-anchored arc. Asteroid gravity capture expected 2029-07 (science orbit begins 2029-08); this file uses 2029-07-31 as a representative arrival date pending a firmer published one -- combined with the approximate date, the solved trajectory currently lands ~0.3 AU from Psyche's actual position at that date, larger than this simulator's other patched-conic legs. Worth revisiting once ESA/NASA publish a firmer encounter date closer to arrival.",
   "legs": [
     {
+      "_comment": "Real Psyche trajectory (JPL Horizons, target -255, checked 2026-07) sweeps close to a full lap (~345 degrees) around the Sun on this cruise to Mars, reaching ~2.6 AU near 2025-01 (past Mars, into the asteroid belt) before curving back in for the flyby -- close enough to 360 degrees that a plain 2-point Lambert solve misreads it as a small-angle short hop, producing an unconstrained a=1.92 AU / e=0.88 orbit. Split through two real recorded positions so each third stays under 180 degrees of sweep.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Mars",
+      "toBody": { "fixedPos": [-1.239530065099989, 1.193988469032059, 0.02787323631095128] },
       "departDate": "2023-10-13",
+      "arrivalDate": "2024-03-12"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-1.239530065099989, 1.193988469032059, 0.02787323631095128] },
+      "toBody": { "fixedPos": [-0.7733164626445336, -2.212482605987324, -0.01573504640488266] },
+      "departDate": "2024-03-12",
+      "arrivalDate": "2025-08-04"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.7733164626445336, -2.212482605987324, -0.01573504640488266] },
+      "toBody": "Mars",
+      "departDate": "2025-08-04",
       "arrivalDate": "2026-05-15"
     },
     {

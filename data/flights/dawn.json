@@ -21,10 +21,25 @@
       "periapsisKm": 549
     },
     {
+      "_comment": "Continuous ion thrust (not a coast) makes this leg's real shape a gradual outward spiral, not a single conic -- real Dawn trajectory (JPL Horizons, target -203, checked 2026-07) sweeps ~368 degrees around the Sun while climbing from 1.41 AU to 2.36 AU. A plain 2-point Lambert solve across the whole leg misread this as a 9-degree short hop, producing a nonsensical near-parabolic a=2.01 AU / e=0.997 orbit -- previously suppressed entirely (drew nothing) rather than show that. Split through two real recorded positions so each third is a much closer real-data-anchored approximation of the true spiral, the same technique already used for this file's other ion-thrust legs (see statusNote).",
       "type": "lambert",
       "fromBody": "Mars",
-      "toBody": "vesta",
+      "toBody": { "fixedPos": [0.8280028091059225, 1.282608767561954, -0.1160238888287148] },
       "departDate": "2009-02-17",
+      "arrivalDate": "2009-08-31"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.8280028091059225, 1.282608767561954, -0.1160238888287148] },
+      "toBody": { "fixedPos": [-1.959836790726072, -0.05022902103041463, 0.2292274075211131] },
+      "departDate": "2009-08-31",
+      "arrivalDate": "2010-06-27"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-1.959836790726072, -0.05022902103041463, 0.2292274075211131] },
+      "toBody": "vesta",
+      "departDate": "2010-06-27",
       "arrivalDate": "2011-07-16"
     },
     {

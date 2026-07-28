@@ -8,10 +8,25 @@
   "statusNote": "Jupiter interior, atmosphere, and magnetosphere study. Single Earth gravity assist (2013-10-09) following two deep-space maneuvers near aphelion (2012-08-30, 2012-09-14) that precisely targeted the flyby -- not separately modeled here, since this simulator's Lambert-leg endpoints already anchor directly to the real recorded flyby date/position, which is what those maneuvers were aiming for. Mission concluded 2025-09 with a planned deorbit into Jupiter's atmosphere after more than 9 years in Jovian orbit.",
   "legs": [
     {
+      "_comment": "Real Juno trajectory (JPL Horizons, target -61, checked 2026-07) sweeps ~422 degrees around the Sun during this Earth->Earth loop (reaching ~2.27 AU near 2012-08-30, past Mars) -- more than one full lap, which a plain 2-point Lambert solve misreads, producing an unconstrained a=1.78 AU / e=0.94 orbit. Split through two real recorded positions so each third stays under 180 degrees of sweep.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [-0.2383722638903083, 1.882664852616593, -0.001285316181157906] },
       "departDate": "2011-08-05",
+      "arrivalDate": "2012-03-03"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.2383722638903083, 1.882664852616593, -0.001285316181157906] },
+      "toBody": { "fixedPos": [-0.7124656947706344, -1.038672034464276, -0.0001065162436025542] },
+      "departDate": "2012-03-03",
+      "arrivalDate": "2013-06-11"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.7124656947706344, -1.038672034464276, -0.0001065162436025542] },
+      "toBody": "Earth",
+      "departDate": "2013-06-11",
       "arrivalDate": "2013-10-09"
     },
     {
