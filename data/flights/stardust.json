@@ -8,10 +8,25 @@
   "statusNote": "First comet sample-return mission. Single Earth gravity-assist flyby (2001-01-15, altitude 6,008 km) used for a plane change ahead of the Wild 2 encounter. Also imaged asteroid 5535 Annefrank at a distance of 3,079 km on 2002-11-02 during the already-planned coast, as a practice run for the flyby/imaging sequence -- an incidental pass with no meaningful mass for a gravity assist, so not modeled as its own leg, the same treatment Rosetta's Steins/Lutetia passes get. Sample return capsule landed in Utah 2006-01-15; the carrier spacecraft was then repurposed as Stardust-NExT for a bonus Tempel 1 flyby in 2011. Neither the return trip nor the extended mission are modeled here -- this flight is shown as remaining at Wild 2 after the primary encounter, the same convention Genesis uses for its L1 station-keeping.",
   "legs": [
     {
+      "_comment": "Real Stardust trajectory (JPL Horizons, target -29, checked 2026-07) sweeps ~334 degrees around the Sun during this first Earth->Earth loop, reaching ~1.9 AU (past Mars) near 2000-07 -- close enough to a full lap, combined with a long duration, that a plain 2-point Lambert solve across the whole leg misses the real intermediate path by 0.3-0.5 AU even though the endpoints and rough sweep angle look plausible. Split through two real recorded positions so each third stays safely inside the solver's reliable range.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [-0.5094738477994845, -1.473893167437114, 0.001136438365313224] },
       "departDate": "1999-02-07",
+      "arrivalDate": "1999-06-23"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.5094738477994845, -1.473893167437114, 0.001136438365313224] },
+      "toBody": { "fixedPos": [1.891182421851348, 0.07016976183754897, 0.0003157645701056217] },
+      "departDate": "1999-06-23",
+      "arrivalDate": "2000-07-17"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [1.891182421851348, 0.07016976183754897, 0.0003157645701056217] },
+      "toBody": "Earth",
+      "departDate": "2000-07-17",
       "arrivalDate": "2001-01-15"
     },
     {

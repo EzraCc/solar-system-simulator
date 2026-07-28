@@ -8,10 +8,25 @@
   "statusNote": "NASA's first spacecraft to orbit Mercury. 6 gravity assists across 3 bodies (1 Earth, 2 Venus, 3 Mercury) over 6.5 years before Mercury orbit insertion -- same architecture class as BepiColombo, just with a shorter flyby chain. Mission ended 2015-04-30 (planned impact into Mercury's surface after fuel depletion).",
   "legs": [
     {
+      "_comment": "Real MESSENGER trajectory (JPL Horizons, target -236, checked 2026-07) sweeps ~355 degrees around the Sun during this first Earth->Earth loop -- close enough to a full lap that a plain 2-point Lambert solve across the whole leg misses the real intermediate path by 0.2-0.3 AU even though the endpoints and near-360-degree sweep angle look plausible (a classic case of the shortWay/crossZ heuristic sitting right at its own fragile boundary). Split through two real recorded positions so each third stays safely inside the solver's reliable range.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [0.3548617363245062, 0.9848360533655366, 0.1015231172946237] },
       "departDate": "2004-08-03",
+      "arrivalDate": "2004-12-17"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.3548617363245062, 0.9848360533655366, 0.1015231172946237] },
+      "toBody": { "fixedPos": [-0.8981619893980407, -0.2023782754609413, -0.09029558130281322] },
+      "departDate": "2004-12-17",
+      "arrivalDate": "2005-04-16"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.8981619893980407, -0.2023782754609413, -0.09029558130281322] },
+      "toBody": "Earth",
+      "departDate": "2005-04-16",
       "arrivalDate": "2005-08-02"
     },
     {
@@ -34,10 +49,25 @@
       "periapsisKm": 2987
     },
     {
+      "_comment": "Same issue as the first Earth->Earth leg above: real trajectory sweeps ~353 degrees, a plain Lambert solve across the whole leg misses the real intermediate path by 0.3-0.7 AU. Split through two real recorded positions.",
       "type": "lambert",
       "fromBody": "Venus",
-      "toBody": "Venus",
+      "toBody": { "fixedPos": [0.6579318319961251, -0.5152066871134785, -0.1193044533472717] },
       "departDate": "2006-10-24",
+      "arrivalDate": "2007-02-02"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.6579318319961251, -0.5152066871134785, -0.1193044533472717] },
+      "toBody": { "fixedPos": [0.03810643300528857, 0.5486098637113428, 0.05019805601407263] },
+      "departDate": "2007-02-02",
+      "arrivalDate": "2007-04-13"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.03810643300528857, 0.5486098637113428, 0.05019805601407263] },
+      "toBody": "Venus",
+      "departDate": "2007-04-13",
       "arrivalDate": "2007-06-05"
     },
     {

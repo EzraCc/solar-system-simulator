@@ -8,10 +8,25 @@
   "statusNote": "Single Earth gravity-assist flyby (1998-01-23, altitude 540 km) used to reshape the trajectory toward Eros. Also imaged asteroid 253 Mathilde at a distance of 1,212 km on 1997-06-27 during the already-planned coast -- a deliberately targeted science pass, but Mathilde is far too low-mass to produce a meaningful gravity assist, so not modeled as its own leg, the same treatment Rosetta's Steins/Lutetia passes get. A rendezvous-burn abort on 1998-12-20 threw the spacecraft into safe mode and past Eros at 3,827 km instead of the planned arrival, costing 29 kg of propellant and delaying orbit insertion by over a year; a recovery burn on 1999-01-03 corrected course, and NEAR finally entered orbit around Eros on 2000-02-14. The mission ended with a historic soft landing on Eros (2001-02-12), the first landing on an asteroid by a spacecraft never designed to land.",
   "legs": [
     {
+      "_comment": "Real NEAR Shoemaker trajectory (JPL Horizons, target -93, checked 2026-07) sweeps ~317 degrees around the Sun during this first Earth->Earth loop, reaching ~2.1 AU (past Mars) near 1997-04 -- close enough to a full lap, combined with a long duration, that a plain 2-point Lambert solve across the whole leg misses the real intermediate path by 0.3-0.5 AU even though the endpoints and rough sweep angle look plausible. Split through two real recorded positions so each third stays safely inside the solver's reliable range.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": { "fixedPos": [-0.415156873682885, -1.431254135598242, 0.01912026021826231] },
       "departDate": "1996-02-17",
+      "arrivalDate": "1996-06-19"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.415156873682885, -1.431254135598242, 0.01912026021826231] },
+      "toBody": { "fixedPos": [1.979437117191265, 0.1393937521449606, -0.01535442745200508] },
+      "departDate": "1996-06-19",
+      "arrivalDate": "1997-06-29"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [1.979437117191265, 0.1393937521449606, -0.01535442745200508] },
+      "toBody": "Earth",
+      "departDate": "1997-06-29",
       "arrivalDate": "1998-01-23"
     },
     {
