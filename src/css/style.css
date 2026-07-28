@@ -300,6 +300,16 @@
      margin." */
   #scale-toggle-panel #orbit-view-toggle-label { display: none; }
   #scale-toggle-panel #orbit-view-toggle-label.visible { display: flex; }
+  /* Except inside the mobile settings dropdown (see body.mobile.settings-
+     open #scale-toggle-panel below): opening that menu is a deliberate
+     "show me my options" action, so hiding one based on unrelated state
+     (whether a flight happens to be selected right now) reads as a
+     glitch, not a feature -- the toggle is harmless to show unconditionally
+     since flipping orbitViewMode before anything's selected just pre-sets
+     the preference for whenever a flight next is (see orbitViewMode's own
+     comment in app.js). Three classes beats the bare-id rule above by
+     CSS's own tie-breaking (equal id count, more classes wins). */
+  body.mobile.settings-open #scale-toggle-panel #orbit-view-toggle-label { display: flex; }
 
   /* Hidden by default (desktop-hidden, mobile-hidden) -- body.mobile below
      shows it. Mirrors #legend-drawer-toggle's own icon-button styling
