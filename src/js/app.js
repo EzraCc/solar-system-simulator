@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "19";
+  const BUILD_VERSION = "20";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -600,18 +600,37 @@
     },
     braille: {
       name: 'Braille (9969)', type: 'asteroid',
-      elements: { a: 2.339484343556827, e: 0.4340700166133246, iDeg: 29.02096189309999,
-                  OmDeg: 241.8990690138807, wDeg: 356.1093437035709, M0Deg: 177.6926985712546,
-                  epochDays: 9655.5 },
+      // Re-epoched to the 1999-07-29 DS1 flyby date itself (JPL Horizons
+      // real position at that exact epoch) rather than a current best-fit
+      // epoch ~26 years away -- this simulator's pure two-body Keplerian
+      // propagation (no planetary-perturbation model) drifted enough over
+      // that gap to put the old epoch's position ~0.4 AU from where the
+      // real DS1 spacecraft was during the actual encounter. Only used by
+      // deep_space_1's own flyby leg (targetOfFlights below), so accuracy
+      // far from 1999 doesn't matter here.
+      elements: { a: 2.3417504323926273, e: 0.43354352275681435, iDeg: 28.94884114575071,
+                  OmDeg: 242.1583668801643, wDeg: 355.3586939698189, M0Deg: 1.676358559015,
+                  epochDays: -156.5 },
       // dimensionsKm: Deep Space 1 flyby / JPL SBDB tri-axial extent.
       meta: { color: '#8f8072', radiusKm: 0.64, dimensionsKm: [2.1, 1.0, 1.0], shapeNote: 'elongated, irregular shape' },
       targetOfFlights: ['deep_space_1'],
     },
     borrelly: {
       name: 'Borrelly (19P)', type: 'comet',
-      elements: { a: 3.606964684326838, e: 0.6379142835777641, iDeg: 29.3186623395529,
-                  OmDeg: 74.30084258786506, wDeg: 351.8616063839783, M0Deg: 312.1229200779977,
-                  epochDays: 7734.5 },
+      // Re-epoched to the 2001-09-22 DS1 flyby date itself (JPL Horizons
+      // target 90000304, the 2004-apparition orbital fit, which includes
+      // Borrelly's real non-gravitational (outgassing) acceleration model)
+      // rather than a current best-fit epoch ~20 years away. This
+      // simulator's own propagation is pure two-body Keplerian with no
+      // non-gravitational term, so for a comet like this one that error
+      // compounds badly the further the epoch is from the date actually
+      // needed -- the old epoch (2021) put Borrelly 1.14 AU away from
+      // where the real DS1 spacecraft was during the actual encounter.
+      // Only used by deep_space_1's own flyby leg (targetOfFlights below),
+      // so accuracy far from 2001 doesn't matter here.
+      elements: { a: 3.6113328780370355, e: 0.6239037119022925, iDeg: 30.32457234826719,
+                  OmDeg: 75.42471180451162, wDeg: 353.37492370239636, M0Deg: 1.0439936661823026,
+                  epochDays: 629.5 },
       // dimensionsKm: Deep Space 1 flyby-imaged nucleus -- one of the most
       // dramatically non-spherical cometary nuclei imaged, a "bowling pin"
       // shape.
