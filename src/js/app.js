@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "18";
+  const BUILD_VERSION = "19";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -2256,6 +2256,41 @@
       const pts = drawFn(drawStart, drawEnd);
       ctx.globalAlpha = 1.0;
       if (pts && pts.length) segments.push(pts);
+    });
+
+    // Loiter legs (a stay at a moving Lagrange point) aren't in
+    // lambertEntries above, but a real path exists for them too -- the
+    // point co-orbits the Sun with its parent planet, so a loiter of more
+    // than a few weeks sweeps a real, substantial arc (Chang'e 2's ~8-month
+    // Earth_L2 loiter sweeps ~240 degrees of Earth's own orbit; ESCAPADE's
+    // ~11-month loiter sweeps even more). Leaving it undrawn produced a
+    // visually wrong gap-and-jump between the leg before and the leg after
+    // -- unlike the Lambert-fit "honest gap" cases above, there's no
+    // uncertainty here: the Lagrange point's position is exactly
+    // computable at every moment (same getBodyPositionAtDays lookup the
+    // marker/position code already uses), so there's no reason to hide it.
+    getLegBoundaries(flightKey).forEach((b) => {
+      if (b.type !== 'loiter' || b.dDays === null) return;
+      let drawStart = b.dDays, drawEnd = b.aDays;
+      if (windowStart !== undefined) {
+        drawStart = Math.max(b.dDays, windowStart);
+        drawEnd   = Math.min(b.aDays, windowEnd);
+        if (drawStart >= drawEnd) return;
+      }
+      const N = 120;
+      const pts = [];
+      ctx.globalAlpha = 0.4 * alphaScale;
+      ctx.beginPath();
+      for (let k = 0; k <= N; k++) {
+        const t = drawStart + (k / N) * (drawEnd - drawStart);
+        const [X, Y, Z] = getBodyPositionAtDays(b.location, t);
+        const [sx, sy]  = worldToScreen(X, Y, Z);
+        pts.push([sx, sy]);
+        if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 1.0;
+      if (pts.length) segments.push(pts);
     });
 
     return segments;
