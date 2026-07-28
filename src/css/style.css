@@ -156,6 +156,20 @@
     transition: transform 0.25s ease;
   }
   body.mobile.drawer-open #legend-panel { transform: translateX(0); }
+
+  /* #scale-toggle-panel collapses behind the gear button on mobile instead
+     of showing natively, the same reasoning as the legend drawer above but
+     lighter-weight: this panel is small (a handful of toggles), so a
+     simple click-to-toggle dropdown is enough -- no backdrop or slide
+     animation needed, and the gear button stays visible (rather than
+     swapping for a backdrop like the legend drawer does) so tapping it
+     again is the obvious way to close it. Positioned BELOW the gear
+     button (not in its place) so the button stays reachable while open. */
+  body.mobile #settings-drawer-toggle { display: flex; }
+  body.mobile #scale-toggle-panel { display: none; }
+  body.mobile.settings-open #scale-toggle-panel {
+    display: flex; top: 68px; right: 16px; z-index: 64;
+  }
   #legend-panel::-webkit-scrollbar { width: 6px; }
   #legend-panel::-webkit-scrollbar-track { background: transparent; }
   #legend-panel::-webkit-scrollbar-thumb {
@@ -269,6 +283,21 @@
      margin." */
   #scale-toggle-panel #orbit-view-toggle-label { display: none; }
   #scale-toggle-panel #orbit-view-toggle-label.visible { display: flex; }
+
+  /* Hidden by default (desktop-hidden, mobile-hidden) -- body.mobile below
+     shows it. Mirrors #legend-drawer-toggle's own icon-button styling
+     (same size/corner treatment), positioned on the opposite top corner
+     since #scale-toggle-panel itself already lives there on desktop. */
+  #settings-drawer-toggle {
+    display: none;
+    position: fixed; right: 16px; top: 16px; z-index: 65;
+    width: 44px; height: 44px;
+    background: var(--panel-bg); border: 1px solid var(--panel-border);
+    border-radius: 10px; backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+    font-size: 18px; line-height: 1; color: var(--text-primary);
+    cursor: pointer;
+  }
 
   #size-compare-panel {
     right: 16px; top: 64px;
@@ -384,11 +413,24 @@
     display: flex; justify-content: space-between; align-items: baseline;
     font-size: 11px; color: var(--text-dim);
   }
+  #flight-scrubber-title-group { display: flex; align-items: baseline; gap: 8px; }
   /* Clicking it reopens the locked info panel (see the click listener in
      app.js) -- an easy way back into the details after closing the panel
      to get it out of the way. */
   #flight-scrubber-title { color: var(--text-primary); font-weight: 600; font-size: 12px; cursor: pointer; }
   #flight-scrubber-title:hover { text-decoration: underline; }
+  /* Only shown in "manual info panel" mode while the panel is closed (see
+     updateScrubberInfoButton in app.js) -- the title above does the same
+     thing, but a dedicated button is a much more discoverable affordance
+     for the specific case this mode exists for: reopening the panel isn't
+     implicit knowledge you're expected to already have. */
+  #flight-scrubber-open-info-btn {
+    display: none;
+    font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 10px;
+    background: var(--accent); color: #fff; border: none; cursor: pointer;
+  }
+  #flight-scrubber-open-info-btn.visible { display: inline-block; }
+  #flight-scrubber-open-info-btn:hover { opacity: 0.85; }
   #flight-scrubber-track { position: relative; height: 28px; cursor: pointer; touch-action: none; }
   #flight-scrubber-track::before {
     content: ""; position: absolute; left: 0; right: 0; top: 50%;
@@ -825,6 +867,7 @@
      mid-demo anyway (focused mode + the flight lock already declutter the
      scene), so it just gets out of the way instead of overlapping. */
   body.mobile.demo-active #legend-drawer-toggle { display: none; }
+  body.mobile.demo-active #settings-drawer-toggle { display: none; }
   body.mobile.demo-active #scale-toggle-panel { display: none; }
   body.mobile #demo-caption-text { font-size: 12px; }
   body.mobile #demo-exit-btn { padding: 8px 14px; font-size: 13px; }

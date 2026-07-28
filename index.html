@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=24">
+<link rel="stylesheet" href="src/css/style.css?v=25">
 </head>
 <body>
 
@@ -43,6 +43,12 @@
   <span class="drawer-toggle-bar"></span>
 </button>
 <div id="legend-backdrop"></div>
+
+<!-- Mobile-only: hidden on desktop (see body.mobile rules in style.css).
+     #scale-toggle-panel's own toggles show natively there; on mobile they
+     collapse behind this gear button instead, to keep this corner from
+     getting crowded as more toggles are added. -->
+<button id="settings-drawer-toggle" title="Settings" aria-label="Settings">⚙</button>
 
 <div class="panel" id="legend-panel">
   <div class="layer-group" id="planets-layer-group">
@@ -83,6 +89,10 @@
   <label id="orbit-view-toggle-label" title="Full path: the mission's entire trajectory. Current orbit: the one loop it's presently on -- a fading trail 90 degrees behind through a solid path 300 degrees ahead of where it is right now, overlapping slightly so a shift in aphelion/perihelion from a maneuver or gravity assist is easier to spot.">
     <div class="switch" id="orbit-view-switch"></div>
     <span>Current orbit only</span>
+  </label>
+  <label id="infobox-toggle-label" title="Auto: selecting a flight opens its info panel right away. Manual: selecting a flight shows its path and scrubber only -- use the button next to the flight timeline to open the info panel when you want it.">
+    <div class="switch" id="infobox-switch"></div>
+    <span>Manual info panel</span>
   </label>
   <button type="button" id="glossary-toggle">How do these missions get around?</button>
 </div>
@@ -132,7 +142,10 @@
 
 <div class="panel" id="flight-scrubber-panel">
   <div id="flight-scrubber-header">
-    <span id="flight-scrubber-title" title="Click to reopen the info panel"></span>
+    <span id="flight-scrubber-title-group">
+      <span id="flight-scrubber-title" title="Click to reopen the info panel"></span>
+      <button type="button" id="flight-scrubber-open-info-btn" title="Open the info panel">Show info</button>
+    </span>
     <span id="flight-scrubber-dates"></span>
   </div>
   <div id="flight-scrubber-track">
@@ -171,6 +184,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=50"></script>
+<script src="src/js/app.js?v=51"></script>
 </body>
 </html>

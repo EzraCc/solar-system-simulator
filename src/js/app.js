@@ -2565,6 +2565,17 @@
   // touching lockedBodyName; stopTrackingBtn -> lockBody(null) is the only
   // way to actually stop tracking.
   let infoPanelVisible = false;
+  // "auto" (default): selecting a flight opens its info panel immediately,
+  // same as every lockBody caller. "manual": selecting a flight leaves the
+  // panel closed -- just the path/scrubber -- so re-verifying a bunch of
+  // flights in a row doesn't mean closing the panel after every single
+  // click. Only gates flight selection's OWN auto-open (see lockBody's
+  // opts.respectInfoBoxMode); a plain body/moon lock always opens its
+  // panel regardless, since a body has no alternative "just show the path"
+  // view the way a flight's scrubber gives it. The scrubber title/button's
+  // own reopen action (reopenFlightInfoPanel) deliberately does NOT check
+  // this -- it's an explicit "open it now" click, not an automatic one.
+  let infoBoxMode = "auto"; // "auto" | "manual"
   let selectedFlightKey = null;
   let renderedBodies = []; // populated each frame: {name, sx, sy, screenR, pos, vel, ...}
   // Populated each frame alongside renderedBodies, from the exact screen
@@ -2990,6 +3001,17 @@
     orbitViewSwitch.classList.toggle("on", orbitViewMode === "current");
   });
 
+  const infoBoxSwitch = document.getElementById("infobox-switch");
+  const infoBoxToggleLabel = document.getElementById("infobox-toggle-label");
+  infoBoxToggleLabel.addEventListener("click", () => {
+    infoBoxMode = infoBoxMode === "auto" ? "manual" : "auto";
+    infoBoxSwitch.classList.toggle("on", infoBoxMode === "manual");
+    // "auto" is the default -- omit the param entirely, same reasoning as
+    // the focus toggle just above.
+    updateURLParams({ info: infoBoxMode === "manual" ? "manual" : null });
+    updateScrubberInfoButton();
+  });
+
   /* =========================================================================
      LEGEND DRAWER (mobile only -- see body.mobile rules in style.css)
      Desktop keeps the legend as an always-visible floating panel; on
@@ -3004,6 +3026,15 @@
   });
   legendBackdrop.addEventListener("click", () => {
     document.body.classList.remove("drawer-open");
+  });
+
+  // #scale-toggle-panel's mobile-collapsed form (see body.mobile rules in
+  // style.css) -- lighter-weight than the legend drawer above: no
+  // backdrop, the gear button itself stays visible and clicking it again
+  // is how you close it.
+  const settingsDrawerToggle = document.getElementById("settings-drawer-toggle");
+  settingsDrawerToggle.addEventListener("click", () => {
+    document.body.classList.toggle("settings-open");
   });
 
   /* =========================================================================
@@ -3314,6 +3345,7 @@
     // pre-demo panel state (it may have been closed while still tracking).
     infoPanelVisible = snap.infoPanelVisible;
     updateLockedPanelVisibility();
+    updateScrubberInfoButton();
     autoPausedOnLock = false;
     scrubberAutoPaused = false;
 
@@ -3783,6 +3815,11 @@
       sceneVisibilityMode = "focused";
       focusSwitch.classList.toggle("on", true);
     }
+    const info = params.get("info");
+    if (info === "manual") {
+      infoBoxMode = "manual";
+      infoBoxSwitch.classList.toggle("on", true);
+    }
     const date = params.get("date");
     if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
       setSimDateFromInputValue(date);
@@ -3820,7 +3857,11 @@
       }
     } else {
       lockedBodyName = name;
-      infoPanelVisible = true; // (re)opens the panel for the newly chosen target
+      // opts.respectInfoBoxMode is only ever set by selectFlight's own
+      // auto-open call below -- every other caller (a plain body/moon
+      // click, a "missions here"/"destinations" link, a URL-driven
+      // body= load) always opens the panel immediately, same as before.
+      infoPanelVisible = opts.respectInfoBoxMode ? (infoBoxMode === "auto") : true;
     }
     syncPauseWithLockedPanel(prevPanelVisible, infoPanelVisible);
     // Locking onto a body (a planet, moon, or Sol) is a sign attention
@@ -3897,7 +3938,10 @@
     // worldStates is populated with the spacecraft position each frame
     // (see the selectedFlightKey block below the moons section) so the
     // camera-follow code can track it exactly like any planet or moon.
-    lockBody(raw.name, { toggleIfSame: false, preserveFlightSelection: true });
+    // respectInfoBoxMode: this is specifically flight selection's own
+    // auto-open -- see infoBoxMode's own comment and lockBody's handling
+    // of this flag.
+    lockBody(raw.name, { toggleIfSame: false, preserveFlightSelection: true, respectInfoBoxMode: true });
     buildFlightsLegend();
     buildFlightScrubber();
     // Clicking is one of the two conditions ("clicked or encountered
@@ -4087,6 +4131,7 @@
     infoPanelVisible = false;
     syncPauseWithLockedPanel(prevPanelVisible, false);
     updateLockedPanelVisibility();
+    updateScrubberInfoButton();
   });
 
   // "Missions here" (missionsToHereHtml) and "Destinations"
@@ -4690,6 +4735,7 @@
   ========================================================================= */
   const flightScrubberPanel    = document.getElementById("flight-scrubber-panel");
   const flightScrubberTitle    = document.getElementById("flight-scrubber-title");
+  const flightScrubberOpenInfoBtn = document.getElementById("flight-scrubber-open-info-btn");
   const flightScrubberDates    = document.getElementById("flight-scrubber-dates");
   const flightScrubberTrack    = document.getElementById("flight-scrubber-track");
   const flightScrubberFill     = document.getElementById("flight-scrubber-fill");
@@ -4697,6 +4743,17 @@
   const flightScrubberPlayhead = document.getElementById("flight-scrubber-playhead");
 
   function pctClamp(v) { return Math.max(0, Math.min(100, v)); }
+
+  // Shows the "Show info" button only when it'd actually do something new:
+  // manual mode, a flight selected, and its panel not already open. Called
+  // from everywhere infoBoxMode/selectedFlightKey/infoPanelVisible can
+  // change -- buildFlightScrubber (covers selection changes), the
+  // locked-panel close button, the infoBoxMode toggle itself, and
+  // exitManeuverDemo's post-restore step.
+  function updateScrubberInfoButton() {
+    const show = infoBoxMode === "manual" && !!selectedFlightKey && !infoPanelVisible;
+    flightScrubberOpenInfoBtn.classList.toggle("visible", show);
+  }
 
   // Full rebuild -- track bounds, title/date labels, and every event
   // marker -- called whenever selectedFlightKey changes (a different
@@ -4706,7 +4763,7 @@
   function buildFlightScrubber() {
     flightScrubberPanel.classList.toggle("visible", !!selectedFlightKey);
     flightScrubberMarkers.innerHTML = "";
-    if (!selectedFlightKey) return;
+    if (!selectedFlightKey) { updateScrubberInfoButton(); return; }
     const key = selectedFlightKey;
     const raw = FLIGHTS_RAW[key];
     const { launchDays, arrivalDays } = getFlightDates(key);
@@ -4755,6 +4812,7 @@
       flightScrubberMarkers.appendChild(dot);
     });
     updateFlightScrubberPlayhead(daysSinceJ2000(simDate));
+    updateScrubberInfoButton();
   }
 
   // Cheap, per-frame: just repositions the playhead/fill, no DOM rebuild.
@@ -4794,15 +4852,21 @@
   // scrubber -- an easy way back into the details (significance, flight
   // profile, destinations) after closing the panel to get it out of the
   // way, without having to re-find and re-click the flight in the legend.
-  // Reuses selectFlight's own lockBody call verbatim: toggleIfSame is
+  // Deliberately does NOT pass respectInfoBoxMode -- this is an explicit
+  // "open it now" click (from the title, or the "Show info" button that
+  // only appears in manual mode once the panel's closed), not an automatic
+  // open, so it always opens regardless of infoBoxMode. toggleIfSame is
   // false, so this unconditionally reopens (lockedBodyName/infoPanelVisible
   // already match this flight's tracked body whenever the scrubber itself
   // is visible, so re-running it is a harmless no-op if the panel happens
   // to already be open).
-  flightScrubberTitle.addEventListener("click", () => {
+  function reopenFlightInfoPanel() {
     if (!selectedFlightKey) return;
     lockBody(FLIGHTS_RAW[selectedFlightKey].name, { toggleIfSame: false, preserveFlightSelection: true });
-  });
+    updateScrubberInfoButton();
+  }
+  flightScrubberTitle.addEventListener("click", reopenFlightInfoPanel);
+  flightScrubberOpenInfoBtn.addEventListener("click", reopenFlightInfoPanel);
 
   let scrubberDragging = false;
   let scrubberTipTimeout = null;
