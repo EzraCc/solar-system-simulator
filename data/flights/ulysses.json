@@ -47,8 +47,24 @@
     {
       "type": "lambert",
       "fromBody": { "fixedPos": [-0.029, 0.476, 2.246] },
-      "toBody": { "fixedPos": [-4.851, 2.105, 0.743] },
+      "toBody": { "fixedPos": [-1.520896508275177, 0.07809677133820375, -2.569522968550993] },
       "departDate": "1995-09-09",
+      "arrivalDate": "2000-08-13",
+      "_comment": "This 1995-09-09 -> 2004-02-04 coast sweeps ~440 degrees around the Sun (more than one full ~6.2yr polar orbit), which the 0-revolution-only Lambert solver misread as a short 77-degree hop, producing a wrong a=4.70 AU / e=0.88 orbit (10.2yr period, vs. the ~6.2yr period every other leg in this file agrees on). Split through two real recorded positions (JPL Horizons, target -55) so each third stays under 180 degrees of sweep."
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-1.520896508275177, 0.07809677133820375, -2.569522968550993] },
+      "toBody": { "fixedPos": [1.247100844067076, -0.4430776691206248, 0.2769881137298613] },
+      "departDate": "2000-08-13",
+      "arrivalDate": "2001-06-09",
+      "_comment": "2001-06-09: real second perihelion (JPL Horizons position, ~1.35 AU, matching this file's other legs' periapsis)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [1.247100844067076, -0.4430776691206248, 0.2769881137298613] },
+      "toBody": { "fixedPos": [-4.851, 2.105, 0.743] },
+      "departDate": "2001-06-09",
       "arrivalDate": "2004-02-04",
       "_comment": "2004-02-04: second, distant (non-perturbing) Jupiter approach, used only as a real position anchor -- no gravity_assist leg here"
     },
