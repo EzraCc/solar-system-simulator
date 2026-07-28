@@ -5048,9 +5048,31 @@
   // see at a glance where the (possibly still-moving) body actually is
   // relative to the now-stationary panel.
   let _lastLockedBodyForPanel = null;
+  // Separate from _lastLockedBodyForPanel: that one tracks CONTENT (title/
+  // body HTML), which should populate immediately on a new lock even while
+  // the panel is still hidden (manual info-box mode -- see infoBoxMode),
+  // so there's no flash of stale content the instant it's shown. Position
+  // can only be correctly computed once the panel is actually visible --
+  // getBoundingClientRect() on a display:none element returns a 0px-tall
+  // box, and since positioning is otherwise deliberately sticky (see
+  // lockedPanelPos's own comment -- it only recomputes on a genuinely new
+  // lock, to preserve a user's manual drag), computing it against that
+  // bogus zero height would freeze a wrong position that then persists
+  // even after the panel is later actually opened (reported: the "Show
+  // info" button, manual mode's way of opening a panel that was never
+  // auto-opened, placed the panel using whatever the tracked body's
+  // on-screen Y happened to be at SELECTION time, clamped as if the panel
+  // had zero height -- not a real "reposition for how it looks right
+  // now" the way clicking the flight in the legend already does in auto
+  // mode, where the panel is visible from the very first frame). Tracked
+  // separately so a still-pending position (infoPanelVisible false) is
+  // retried every frame without redundantly re-running the content-setting
+  // side (which would keep resetting scroll position for no reason).
+  let _lastPositionedBodyForPanel = null;
   function drawLockedPanelConnector() {
     if (!lockedBodyName) {
       _lastLockedBodyForPanel = null;
+      _lastPositionedBodyForPanel = null;
       lockedPanelPos = null;
       return;
     }
@@ -5069,6 +5091,10 @@
       // land. Easy to miss entirely for a new user who doesn't think to
       // scroll up on a panel that just visibly opened.
       lockedPanelBody.scrollTop = 0;
+      _lastLockedBodyForPanel = lockedBodyName;
+    }
+
+    if (lockedBodyName !== _lastPositionedBodyForPanel) {
       // Mobile: the panel is a full-screen modal, positioned entirely by
       // CSS (body.mobile #locked-panel { inset:0; ... }) -- setting
       // inline left/top here would win over that (inline styles beat
@@ -5092,7 +5118,8 @@
         lockedPanelPos = null;
         lockedPanel.style.left = "";
         lockedPanel.style.top = "";
-      } else {
+        _lastPositionedBodyForPanel = lockedBodyName;
+      } else if (infoPanelVisible) {
         const panelRect = lockedPanel.getBoundingClientRect();
         let px = b.sx + 20;
         let py = b.sy - panelRect.height / 2;
@@ -5101,8 +5128,14 @@
         lockedPanelPos = { x: px, y: py };
         lockedPanel.style.left = px + "px";
         lockedPanel.style.top = py + "px";
+        _lastPositionedBodyForPanel = lockedBodyName;
       }
-      _lastLockedBodyForPanel = lockedBodyName;
+      // else: desktop, not yet visible (manual info-box mode, panel not
+      // opened yet) -- left pending, retried each frame until
+      // infoPanelVisible flips true (e.g. via the "Show info" button or
+      // the scrubber title), at which point it positions using the
+      // tracked body's CURRENT on-screen position and the panel's real
+      // height, same as a fresh legend click would.
     }
 
     // Highlight ring around the tracked body -- kept on mobile too (cheap
