@@ -13,6 +13,23 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text-primary);
     overflow: hidden;
+    /* Mobile Safari/Chrome auto-boost small text in narrow scrollable
+       blocks (like #locked-panel-body's "why it matters" prose) based on
+       that element's width relative to the viewport at the moment it's
+       laid out -- recomputed on rotation, but not symmetrically, which is
+       why the locked panel's headers/data rows stayed tiny in portrait,
+       became readable after rotating to landscape (a wider viewport made
+       the heuristic back off), and then STAYED readable back in portrait
+       (the boosted value doesn't reset just because the viewport shrank
+       again). Disabling the heuristic entirely makes every element render
+       at exactly its CSS font-size regardless of viewport/orientation,
+       which is what every explicit font-size in this file already assumes.
+       Only actually does anything on mobile Safari/older Chrome; Chrome/
+       Firefox on desktop and the width=device-width viewport meta tag
+       already prevent the “tiny page zoomed out” case this is otherwise
+       meant to counteract, so this is unconditionally safe to set. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   #canvas-wrap { position: fixed; inset: 0; }
   /* touch-action: none hands ALL gesture handling to the canvas's own
