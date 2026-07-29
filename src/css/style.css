@@ -481,8 +481,20 @@
     /* Padded invisible hit area, bigger than the visible dot -- keeps dots
        small so nearby events don't visually merge, while still meeting a
        reasonable touch target (same tension already balanced elsewhere,
-       e.g. hitTestPaths' isMobileLayout ? 28 : 10 click tolerance). */
-    padding: 10px; margin: -10px; background-clip: content-box;
+       e.g. hitTestPaths' isMobileLayout ? 28 : 10 click tolerance).
+       Deliberately NO negative margin to compensate for the padding: under
+       this sheet's global box-sizing:border-box, 8px width can't fit 10px
+       padding on top of it, so the real rendered box clamps to 20x20 (all
+       padding, 0 content) -- transform:translate(-50%,-50%) already
+       resolves against that real 20px box and centers it correctly on its
+       own. A compensating negative margin here doesn't cancel that out (it
+       can't -- this element is position:absolute, entirely out of flow, so
+       margin has nothing to compensate FOR); it just applies a second,
+       redundant 10px shift on top of the transform's own, pushing the
+       visible dot a full 20px off from centered instead of 10px (found via
+       measuring a real marker's rendered bounding box: its RIGHT edge, not
+       its center, landed exactly on the intended date). */
+    padding: 10px; background-clip: content-box;
   }
   .scrubber-marker--ga { border-radius: 50%; }
   .scrubber-marker--loiter {
