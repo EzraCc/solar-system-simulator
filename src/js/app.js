@@ -2837,6 +2837,7 @@
 
   const speedSlider = document.getElementById("speed-slider");
   const speedReadout = document.getElementById("speed-readout");
+  const speedInput = document.getElementById("speed-input");
   const playPauseBtn = document.getElementById("playpause");
 
   function formatSpeed(mult) {
@@ -2852,6 +2853,24 @@
     return `${sign}${valueStr}x (${sign}${(EARTH_YEAR_DAYS / 365.25 * abs).toFixed(2)} yr/min)`;
   }
 
+  // Bare signed number, no "x"/"yr/min" suffix -- what the typed-entry
+  // field itself displays (formatSpeed's fuller text is for the adjacent
+  // read-only readout, not something you'd want to have to retype around).
+  function formatSpeedBare(mult) {
+    const sign = mult < 0 ? "-" : "";
+    const abs = Math.abs(mult);
+    const valueStr = abs >= 1 ? (Math.round(abs * 10) / 10).toString() : (Math.round(abs * 100) / 100).toString();
+    return sign + valueStr;
+  }
+
+  // Slider position <-> speedMultiplier is the same squared curve both
+  // directions -- kept as one pair of functions so typing a value and
+  // dragging the slider can never drift out of sync with each other.
+  function sliderValueForMultiplier(mult) {
+    const sign = mult < 0 ? -1 : 1;
+    return sign * Math.sqrt(Math.abs(mult)) * 100;
+  }
+
   function updateSpeedFromSlider() {
     // slider range -300..300 maps to multiplier via a curve giving fine
     // control near 0 and large range at extremes: mult = sign * (|v|/100)^2
@@ -2860,9 +2879,35 @@
     const norm = Math.abs(v) / 100; // 0..3
     speedMultiplier = sign * norm * norm; // 0..9, squared for fine low-end control
     speedReadout.textContent = formatSpeed(speedMultiplier);
+    speedInput.value = formatSpeedBare(speedMultiplier);
   }
   speedSlider.addEventListener("input", updateSpeedFromSlider);
   updateSpeedFromSlider();
+
+  // Direct typed entry -- "2" or "2x" or "-0.5" or "-0.5 yr/min" are all
+  // accepted (a trailing unit is parsed and ignored: this app's own
+  // convention already makes "Nx" and "N yr/min" the same number, see
+  // formatSpeed, so there's nothing left for a unit suffix to disambiguate).
+  // Unlike the slider (mechanically capped at -300..300, i.e. |mult|<=9),
+  // a typed value isn't clamped -- only the slider's own thumb position is,
+  // since typing doesn't have the slider's drag-precision reason for a cap.
+  function applySpeedInput() {
+    const raw = speedInput.value.trim().toLowerCase().replace(/\s*(x|yr\/min)\s*$/, "");
+    const parsed = Number(raw);
+    if (raw === "" || !Number.isFinite(parsed)) {
+      speedInput.value = formatSpeedBare(speedMultiplier); // revert on bad input
+      return;
+    }
+    speedMultiplier = parsed;
+    speedReadout.textContent = formatSpeed(speedMultiplier);
+    speedInput.value = formatSpeedBare(speedMultiplier);
+    speedSlider.value = Math.max(-300, Math.min(300, sliderValueForMultiplier(speedMultiplier)));
+    if (paused && speedMultiplier !== 0) setPaused(false);
+  }
+  speedInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { applySpeedInput(); speedInput.blur(); }
+  });
+  speedInput.addEventListener("blur", applySpeedInput);
 
   function setPaused(value) {
     paused = value;

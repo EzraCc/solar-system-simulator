@@ -109,6 +109,11 @@
   #time-panel .label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
   #speed-slider { flex: 1; }
   #speed-readout { font-size: 12px; min-width: 84px; text-align: right; color: var(--accent); }
+  #speed-input {
+    background: #0e1320; color: var(--text-primary); border: 1px solid var(--panel-border);
+    border-radius: 6px; padding: 4px 8px; font-family: inherit; font-size: 13px; width: 64px;
+  }
+  #speed-input:focus { border-color: #4a6fd4; outline: none; }
   #playpause {
     background: #16203a; color: var(--text-primary); border: 1px solid var(--panel-border);
     border-radius: 6px; padding: 6px 12px; cursor: pointer; font-family: inherit; font-size: 13px;

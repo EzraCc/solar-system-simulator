@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=28">
+<link rel="stylesheet" href="src/css/style.css?v=29">
 </head>
 <body>
 
@@ -112,6 +112,7 @@
       <input type="range" id="speed-slider" min="-300" max="300" value="100" step="1">
     </div>
     <div class="row">
+      <input type="text" id="speed-input" size="6" placeholder="2 or -0.5" title="Type a speed value (x, same number as yr/min) and press Enter">
       <button id="playpause">Pause</button>
       <button id="reset-speed">Reset speed</button>
     </div>
@@ -184,6 +185,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=53"></script>
+<script src="src/js/app.js?v=54"></script>
 </body>
 </html>
