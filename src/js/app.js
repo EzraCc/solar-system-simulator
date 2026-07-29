@@ -393,7 +393,7 @@
   ========================================================================= */
   const SMALL_BODIES = {
     '67P': {
-      name: 'Churyumov–Gerasimenko (67P)', type: 'comet',
+      name: 'Churyumov–Gerasimenko (67P)', types: ['comet'],
       elements: { a: 3.462249489765068, e: 0.6409081306555051, iDeg: 7.040294906760007,
                   OmDeg: 50.13557380441372, wDeg: 12.79824973415729, M0Deg: 8.859927418758764,
                   epochDays: 5760.5 },
@@ -407,7 +407,7 @@
       targetOfFlights: ['rosetta'],
     },
     bennu: {
-      name: 'Bennu (101955)', type: 'asteroid',
+      name: 'Bennu (101955)', types: ['asteroid'],
       elements: { a: 1.126391025894812, e: 0.2037450762416414, iDeg: 6.03494377024794,
                   OmDeg: 2.06086619569642, wDeg: 66.22306084084298, M0Deg: 101.703952002457,
                   epochDays: 4017.5 },
@@ -417,7 +417,7 @@
       targetOfFlights: ['osiris_rex'],
     },
     ryugu: {
-      name: 'Ryugu (162173)', type: 'asteroid',
+      name: 'Ryugu (162173)', types: ['asteroid'],
       elements: { a: 1.190918932477906, e: 0.1910730049967184, iDeg: 5.866442495106322,
                   OmDeg: 251.2897124408818, wDeg: 211.6089939475371, M0Deg: 62.34067433781601,
                   epochDays: 9655.5 },
@@ -429,7 +429,7 @@
       targetOfFlights: ['hayabusa2'],
     },
     didymos: {
-      name: 'Didymos (65803)', type: 'asteroid',
+      name: 'Didymos (65803)', types: ['asteroid'],
       elements: { a: 1.642709608529702, e: 0.3831233242624545, iDeg: 3.413876519313629,
                   OmDeg: 72.9858236207145, wDeg: 319.5807001349104, M0Deg: 260.8612886320632,
                   epochDays: 9655.5 },
@@ -441,7 +441,7 @@
       targetOfFlights: ['dart', 'hera'],
     },
     itokawa: {
-      name: 'Itokawa (25143)', type: 'asteroid',
+      name: 'Itokawa (25143)', types: ['asteroid'],
       elements: { a: 1.324052284342771, e: 0.2801776414987972, iDeg: 1.620940810523569,
                   OmDeg: 69.07449749929083, wDeg: 162.8409022415483, M0Deg: 170.653905937934,
                   epochDays: 9655.5 },
@@ -452,7 +452,7 @@
       targetOfFlights: ['hayabusa'],
     },
     vesta: {
-      name: 'Vesta (4)', type: 'asteroid',
+      name: 'Vesta (4)', types: ['asteroid'],
       elements: { a: 2.361365965127599, e: 0.09020374382834395, iDeg: 7.143925545058711,
                   OmDeg: 103.701293265032, wDeg: 151.4686478221564, M0Deg: 81.19015607686903,
                   epochDays: 9655.5 },
@@ -460,7 +460,10 @@
       targetOfFlights: ['dawn'],
     },
     ceres: {
-      name: 'Ceres (1)', type: 'asteroid',
+      // IAU-recognized dwarf planet since 2006, in addition to being the
+      // largest main-belt asteroid -- both classifications are real, hence
+      // two tags rather than picking one (see SMALL_BODY_TYPE_BADGES).
+      name: 'Ceres (1)', types: ['asteroid', 'dwarf_planet'],
       elements: { a: 2.765552595034094, e: 0.07969229514816586, iDeg: 10.58802780183462,
                   OmDeg: 80.24862682043221, wDeg: 73.29421453021587, M0Deg: 274.4193463761342,
                   epochDays: 9655.5 },
@@ -468,7 +471,7 @@
       targetOfFlights: ['dawn'],
     },
     tempel1: {
-      name: 'Tempel 1 (9P)', type: 'comet',
+      name: 'Tempel 1 (9P)', types: ['comet'],
       elements: { a: 3.146133758958915, e: 0.5097028326964878, iDeg: 10.4734281543904,
                   OmDeg: 68.75357468050096, wDeg: 179.1972753698572, M0Deg: 336.5854438553629,
                   epochDays: 5925.5 },
@@ -480,7 +483,7 @@
       targetOfFlights: ['deep_impact'],
     },
     psyche: {
-      name: 'Psyche (16)', type: 'asteroid',
+      name: 'Psyche (16)', types: ['asteroid'],
       elements: { a: 2.925720466462538, e: 0.1349324738201893, iDeg: 3.098749116151128,
                   OmDeg: 149.9753859305033, wDeg: 230.0326782748359, M0Deg: 79.76939505329617,
                   epochDays: 9655.5 },
@@ -492,7 +495,7 @@
       targetOfFlights: ['psyche'],
     },
     pluto: {
-      name: 'Pluto and Charon', type: 'dwarf_planet',
+      name: 'Pluto and Charon', types: ['dwarf_planet'],
       elements: { a: 39.58862938517124, e: 0.2518378778576892, iDeg: 17.14771140999114,
                   OmDeg: 110.2923840543057, wDeg: 113.7090015158565, M0Deg: 38.68366347318184,
                   epochDays: 6043.5 },
@@ -500,7 +503,7 @@
       targetOfFlights: ['new_horizons'],
     },
     toutatis: {
-      name: 'Toutatis (4179)', type: 'asteroid',
+      name: 'Toutatis (4179)', types: ['asteroid'],
       elements: { a: 2.543047155641573, e: 0.6246302247178447, iDeg: 0.4480836624628189,
                   OmDeg: 125.3654799655549, wDeg: 277.8615384113277, M0Deg: 125.5161576467994,
                   epochDays: 9655.5 },
@@ -511,7 +514,7 @@
       targetOfFlights: ['chunge2_toutatis'],
     },
     kamooalewa: {
-      name: 'Kamoʻoalewa (469219)', type: 'asteroid',
+      name: 'Kamoʻoalewa (469219)', types: ['asteroid'],
       elements: { a: 1.000810460069075, e: 0.1022387734111659, iDeg: 7.802609738007058,
                   OmDeg: 65.59324444474426, wDeg: 304.3632084517341, M0Deg: 243.3871507436424,
                   epochDays: 9655.5 },
@@ -519,7 +522,7 @@
       targetOfFlights: ['tianwen2'],
     },
     dinkinesh: {
-      name: 'Dinkinesh (152830)', type: 'asteroid',
+      name: 'Dinkinesh (152830)', types: ['asteroid'],
       elements: { a: 2.191768748791583, e: 0.1126817135846694, iDeg: 2.093117265661373,
                   OmDeg: 21.35270512523402, wDeg: 66.91637126596935, M0Deg: 29.60751779009531,
                   epochDays: 9655.5 },
@@ -527,7 +530,7 @@
       targetOfFlights: ['lucy'],
     },
     donaldjohanson: {
-      name: 'Donaldjohanson (52246)', type: 'asteroid',
+      name: 'Donaldjohanson (52246)', types: ['asteroid'],
       elements: { a: 2.383835831129859, e: 0.1868593763038477, iDeg: 4.425205239728406,
                   OmDeg: 262.7765342454273, wDeg: 212.8821499078564, M0Deg: 147.8525890028124,
                   epochDays: 9655.5 },
@@ -538,7 +541,7 @@
       targetOfFlights: ['lucy'],
     },
     eurybates: {
-      name: 'Eurybates (3548)', type: 'asteroid',
+      name: 'Eurybates (3548)', types: ['asteroid'],
       elements: { a: 5.217371617810976, e: 0.09059867172297777, iDeg: 8.05147293527498,
                   OmDeg: 43.5587275998936, wDeg: 28.69968222483612, M0Deg: 125.7480299363769,
                   epochDays: 9655.5 },
@@ -546,7 +549,7 @@
       targetOfFlights: ['lucy'],
     },
     polymele: {
-      name: 'Polymele (15094)', type: 'asteroid',
+      name: 'Polymele (15094)', types: ['asteroid'],
       elements: { a: 5.191514133435046, e: 0.09592245810512318, iDeg: 12.97735158439746,
                   OmDeg: 50.33105662992578, wDeg: 5.86529887136951, M0Deg: 143.4220008064438,
                   epochDays: 9655.5 },
@@ -554,7 +557,7 @@
       targetOfFlights: ['lucy'],
     },
     leucus: {
-      name: 'Leucus (11351)', type: 'asteroid',
+      name: 'Leucus (11351)', types: ['asteroid'],
       elements: { a: 5.312382832170665, e: 0.06495789797701287, iDeg: 11.54341670108032,
                   OmDeg: 251.0799335752079, wDeg: 162.4048390063255, M0Deg: 139.1721755085774,
                   epochDays: 9655.5 },
@@ -562,7 +565,7 @@
       targetOfFlights: ['lucy'],
     },
     orus: {
-      name: 'Orus (21900)', type: 'asteroid',
+      name: 'Orus (21900)', types: ['asteroid'],
       elements: { a: 5.123374239403683, e: 0.03672540559818106, iDeg: 8.468580378470353,
                   OmDeg: 258.5504431073313, wDeg: 182.7884930129634, M0Deg: 96.92267457127365,
                   epochDays: 9655.5 },
@@ -570,7 +573,7 @@
       targetOfFlights: ['lucy'],
     },
     patroclus: {
-      name: 'Patroclus (617)', type: 'asteroid',
+      name: 'Patroclus (617)', types: ['asteroid'],
       elements: { a: 5.205975165165407, e: 0.1391467941344403, iDeg: 22.06359067056119,
                   OmDeg: 44.34968895523391, wDeg: 308.8377264097742, M0Deg: 58.67543319923984,
                   epochDays: 9655.5 },
@@ -578,7 +581,7 @@
       targetOfFlights: ['lucy'],
     },
     annefrank: {
-      name: 'Annefrank (5535)', type: 'asteroid',
+      name: 'Annefrank (5535)', types: ['asteroid'],
       elements: { a: 2.212362295338773, e: 0.06320477836052894, iDeg: 4.247441129204184,
                   OmDeg: 120.5509750356931, wDeg: 9.553711836846162, M0Deg: 260.8814202465155,
                   epochDays: 9655.5 },
@@ -589,7 +592,7 @@
       targetOfFlights: ['stardust'],
     },
     wild2: {
-      name: 'Wild 2 (81P)', type: 'comet',
+      name: 'Wild 2 (81P)', types: ['comet'],
       elements: { a: 3.449745576963111, e: 0.5373989073846863, iDeg: 3.237004173608168,
                   OmDeg: 136.1102208500619, wDeg: 41.72523085114398, M0Deg: 187.5966814232084,
                   epochDays: 7263.5 },
@@ -599,7 +602,7 @@
       targetOfFlights: ['stardust'],
     },
     braille: {
-      name: 'Braille (9969)', type: 'asteroid',
+      name: 'Braille (9969)', types: ['asteroid'],
       // Re-epoched to the 1999-07-29 DS1 flyby date itself (JPL Horizons
       // real position at that exact epoch) rather than a current best-fit
       // epoch ~26 years away -- this simulator's pure two-body Keplerian
@@ -616,7 +619,7 @@
       targetOfFlights: ['deep_space_1'],
     },
     borrelly: {
-      name: 'Borrelly (19P)', type: 'comet',
+      name: 'Borrelly (19P)', types: ['comet'],
       // Re-epoched to the 2001-09-22 DS1 flyby date itself (JPL Horizons
       // target 90000304, the 2004-apparition orbital fit, which includes
       // Borrelly's real non-gravitational (outgassing) acceleration model)
@@ -638,7 +641,7 @@
       targetOfFlights: ['deep_space_1'],
     },
     eros: {
-      name: 'Eros (433)', type: 'asteroid',
+      name: 'Eros (433)', types: ['asteroid'],
       elements: { a: 1.458243716760167, e: 0.2228779627700761, iDeg: 10.82854410314273,
                   OmDeg: 304.2679713350896, wDeg: 178.9181319135911, M0Deg: 62.51145501986792,
                   epochDays: 9655.5 },
@@ -648,7 +651,7 @@
       targetOfFlights: ['near_shoemaker'],
     },
     gaspra: {
-      name: 'Gaspra (951)', type: 'asteroid',
+      name: 'Gaspra (951)', types: ['asteroid'],
       elements: { a: 2.209978353670737, e: 0.1737374595425464, iDeg: 4.10465496946464,
                   OmDeg: 252.9672913251979, wDeg: 130.0037637381037, M0Deg: 112.9508716440696,
                   epochDays: 9655.5 },
@@ -658,7 +661,7 @@
       targetOfFlights: ['galileo'],
     },
     ida: {
-      name: 'Ida (243)', type: 'asteroid',
+      name: 'Ida (243)', types: ['asteroid'],
       elements: { a: 2.863348031699649, e: 0.04610962795708528, iDeg: 1.130363094271507,
                   OmDeg: 323.5366609419851, wDeg: 113.2571826848795, M0Deg: 49.64769088009876,
                   epochDays: 9655.5 },
@@ -3518,6 +3521,15 @@
   // next to the name (full explanation on hover) flags anything unusual
   // without spending vertical space or inventing new groups every time a
   // body doesn't fit neatly in "asteroid."
+  //
+  // Every SMALL_BODIES entry carries a `types` array (not a single `type`)
+  // so a body can honestly hold more than one real classification at once
+  // -- Ceres is both an asteroid and an IAU dwarf planet, and a future
+  // Kuiper-belt addition would make Pluto/Charon dwarf-planet-and-KBO.
+  // Deliberately no entry here for the plain 'asteroid'/'comet' tags --
+  // they're the default, unremarkable case, so leaving them out of this
+  // map keeps the legend badge-free for the common case (see the comment
+  // above); only add an entry here for a genuinely notable classification.
   const SMALL_BODY_TYPE_BADGES = {
     dwarf_planet: { label: "DP", title: "Dwarf planet" },
   };
@@ -3540,10 +3552,17 @@
       const row = document.createElement("div");
       row.className = "row";
       row.style.cursor = "pointer";
-      const badge = SMALL_BODY_TYPE_BADGES[body.type];
-      const badgeHtml = badge
-        ? `<span class="body-type-badge" title="${badge.title}">${badge.label}</span>`
-        : "";
+      // A body can carry more than one real classification (e.g. Ceres is
+      // both an asteroid and an IAU dwarf planet -- see its own SMALL_BODIES
+      // comment) -- render one badge per tag that has a badge definition,
+      // not just the first. Plain "asteroid"/"comet" deliberately have no
+      // entry in SMALL_BODY_TYPE_BADGES (see that map's own comment) so the
+      // common case stays badge-free; only the "notable" tags show one.
+      const badgeHtml = body.types
+        .map((t) => SMALL_BODY_TYPE_BADGES[t])
+        .filter(Boolean)
+        .map((badge) => `<span class="body-type-badge" title="${badge.title}">${badge.label}</span>`)
+        .join("");
       row.innerHTML = `<span class="dot" style="background:${body.meta.color}"></span><span>${body.name}</span>${badgeHtml}`;
       // Locked by its display name, not the SMALL_BODIES key -- same
       // convention every other body (planets, moons) already uses, so the
