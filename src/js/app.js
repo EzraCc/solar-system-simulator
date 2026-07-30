@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "20";
+  const BUILD_VERSION = "21";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -4906,6 +4906,40 @@
     return entries;
   }
 
+  // Point-in-time, non-trajectory-affecting notable events on a flight --
+  // e.g. Ulysses' three unplanned comet-tail crossings, which happened
+  // mid-leg and have no bearing on the Lambert solve or the path actually
+  // flown. Kept as a separate top-level `milestones` array on the
+  // flight's own JSON (NOT inserted into `legs`) specifically so they
+  // can't interact with the trajectory/Lambert-solving/gravity-assist
+  // machinery in any way -- pure annotations layered onto an otherwise
+  // unaffected leg sequence. Each raw entry: { date, label, text } --
+  // label is the short marker/tooltip string, text is the fuller
+  // plain-English paragraph for the Flight profile section (same
+  // shape/style as every other entry there). Returns the same
+  // { kind, dDays, aDays } shape buildLegEntries' own entries use so
+  // buildTimelineEntries below can merge and sort the two chronologically
+  // without either consumer needing to know milestones exist as a
+  // separate source.
+  function getFlightMilestones(flightKey) {
+    const raw = FLIGHTS_RAW[flightKey];
+    return (raw.milestones || []).map((m) => {
+      const d = daysSinceJ2000(parseFlightDate(m.date));
+      return { kind: 'milestone', dDays: d, aDays: d, milestone: m };
+    });
+  }
+
+  // buildLegEntries + getFlightMilestones, merged into one chronological
+  // walk -- the single source both flightProfileHtml's prose timeline and
+  // buildScrubberEvents' scrubber markers consume, so a milestone shows up
+  // in the right place in both without two separate merge implementations
+  // drifting apart.
+  function buildTimelineEntries(flightKey) {
+    return buildLegEntries(flightKey)
+      .concat(getFlightMilestones(flightKey))
+      .sort((a, b) => a.dDays - b.dDays);
+  }
+
   // Chronological, per-leg breakdown of how a mission actually got where
   // it went -- which planet was involved in each flyby and what kind of
   // maneuver happened where. Built entirely from buildLegEntries (already
@@ -4913,7 +4947,7 @@
   // computed speed-before/after for each gravity_assist leg -- nothing
   // here is hand-authored per mission.
   function flightProfileHtml(flightKey) {
-    const entries = buildLegEntries(flightKey);
+    const entries = buildTimelineEntries(flightKey);
     if (entries.length === 0) return "";
     const isIon = ION_THRUST_MISSIONS.has(flightKey);
 
@@ -4964,6 +4998,10 @@
         const loc = describeLegBody(leg.location);
         const text = `Extended stay at ${loc.name}${leg.departure ? ` (until ${leg.departure.slice(0, 10)})` : ""}.`;
         items += legTimelineItemHtml(loc.color, text);
+
+      } else if (entry.kind === 'milestone') {
+        const m = entry.milestone;
+        items += legTimelineItemHtml(m.color || null, m.text);
       }
     });
 
@@ -4982,9 +5020,13 @@
   // single date; span events (orbit-raising sequences, loiters) get a
   // [dDays, aDays] range for a shaded bar plus a marker at the midpoint.
   function buildScrubberEvents(flightKey) {
-    return buildLegEntries(flightKey)
+    return buildTimelineEntries(flightKey)
       .filter((e) => e.kind !== 'lambert')
       .map((e) => {
+        if (e.kind === 'milestone') {
+          return { type: 'milestone', dDays: e.dDays, aDays: e.aDays,
+            color: e.milestone.color || '#a8e8ff', label: e.milestone.label };
+        }
         if (e.kind === 'gravity_assist') {
           const body = describeLegBody(e.leg.body);
           // Short "<Body> gravity assist" for the hover tip / tap-toast --
@@ -5105,7 +5147,7 @@
       const midDays = (ev.dDays + ev.aDays) / 2;
       const pct = tof > 0 ? pctClamp((midDays - launchDays) / tof * 100) : 0;
       const dot = document.createElement("div");
-      dot.className = "scrubber-marker scrubber-marker--" + (ev.type === 'ga' ? 'ga' : ev.type === 'orbit' ? 'orbit' : 'loiter');
+      dot.className = "scrubber-marker scrubber-marker--" + (ev.type === 'ga' ? 'ga' : ev.type === 'orbit' ? 'orbit' : ev.type === 'milestone' ? 'milestone' : 'loiter');
       dot.style.left = pct + "%";
       if (ev.color) {
         dot.style.color = ev.color; // used by the loiter marker's dashed border (currentColor)

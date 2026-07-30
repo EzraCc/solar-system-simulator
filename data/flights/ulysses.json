@@ -6,6 +6,26 @@
   "status": "Success",
   "significance": "Every prior mission to the Sun -- and every planetary probe before it -- had observed the solar system from essentially the same narrow ecliptic plane, leaving the Sun's polar regions and the true three-dimensional shape of the heliosphere entirely unmapped. Ulysses solved this with an audacious piece of orbital mechanics: no realistic rocket could throw a spacecraft directly into an 80-degree-inclination solar orbit, so mission planners launched it on the highest-energy departure of its era -- a Space Shuttle plus a stacked Inertial Upper Stage and PAM-S solid motor -- simply to reach Jupiter, then used a single gravity-assist flyby to bend its path out of the ecliptic and drop it into a roughly six-year polar orbit around the Sun. Over three complete polar orbits spanning nearly two solar cycles, Ulysses discovered that fast, uniform solar wind streams out of the Sun's poles at roughly 750 km/s (versus the slower, gustier equatorial wind), produced the first three-dimensional map of the heliosphere, and during its final pass found the solar wind and polar magnetic field at their weakest levels of the Space Age. Nearly two decades after launch, no other mission has repeated this out-of-ecliptic vantage point, leaving Ulysses's polar dataset the sole ground-truth for how the Sun's wind and magnetic field vary with heliographic latitude.",
   "statusNote": "Single Jupiter gravity-assist flyby (1992-02-08, altitude ~378,400 km above the cloud tops) bent the trajectory ~80 degrees out of the ecliptic into a long, highly-inclined polar heliocentric orbit -- the entire point of the flyby, not an incidental encounter. The post-flyby legs here are anchored to real recorded heliocentric positions from JPL Horizons' own reconstructed navigation solution (target -55) at scientifically meaningful dates -- first south polar pass, first perihelion, first north polar pass, a second (distant, non-perturbing) Jupiter approach in 2004 used only as a position anchor, and a third south polar pass -- rather than a single long-period ellipse, since real solar-wind drag and correction maneuvers mean the orbit drifts slightly over nearly two decades. The February 2004 Jupiter approach (1,683 Jupiter radii, ~0.8 AU) was upstream of Jupiter's magnetosphere and produced no measurable trajectory change, so it is not modeled as a gravity_assist leg. The flight is shown ending at the third south polar pass (2007-02-07); the mission continued in essentially the same orbit until controllers ended communications 2009-06-30, not separately modeled.",
+  "milestones": [
+    {
+      "date": "1996-05-01",
+      "label": "Crossed Comet Hyakutake's tail",
+      "color": "#a8e8ff",
+      "text": "On its way back toward the Sun, Ulysses unexpectedly flew through the ion tail of Comet Hyakutake (C/1996 B2) &mdash; even though the comet itself was millions of kilometers away. The encounter revealed the tail to be at least 3.8 AU long, far longer than anyone had measured a comet's tail to be before."
+    },
+    {
+      "date": "2000-10-19",
+      "label": "Crossed Comet McNaught-Hartley's tail",
+      "color": "#6fc8d8",
+      "text": "A second, equally unplanned encounter: a coronal mass ejection from the Sun swept up ions from Comet McNaught-Hartley (C/1999 T1) and carried them across Ulysses's path, letting its instruments sample cometary material without the spacecraft ever passing near the comet's actual nucleus."
+    },
+    {
+      "date": "2007-02-03",
+      "label": "Crossed Comet McNaught's tail",
+      "color": "#e0f5fa",
+      "text": "A third tail crossing, this time from Comet McNaught (C/2006 P1) &mdash; the &ldquo;Great Comet of 2007&rdquo; and the brightest comet in over 40 years &mdash; passing roughly 260 million km from the nucleus. Unlike the sped-up solar wind Ulysses found in Hyakutake's tail, this crossing saw the solar wind slow sharply, from around 700 km/s to under 400 km/s."
+    }
+  ],
   "legs": [
     {
       "type": "lambert",

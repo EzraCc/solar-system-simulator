@@ -555,6 +555,11 @@
     border: 2px dashed currentColor;
   }
   .scrubber-marker--orbit { border-radius: 2px; }
+  /* Diamond -- visually distinct from ga's circle, loiter's dashed
+     circle, and orbit's square, for a one-off notable event that isn't
+     any of those (e.g. Ulysses' comet tail crossings). Combines with the
+     base rule's own translate(-50%,-50%) rather than overriding it. */
+  .scrubber-marker--milestone { border-radius: 2px; transform: translate(-50%, -50%) rotate(45deg); }
   .scrubber-marker-range {
     position: absolute; top: 50%; height: 8px; margin-top: -4px;
     border-radius: 4px; opacity: 0.35; pointer-events: none;
