@@ -4018,8 +4018,17 @@
     // opened correctly but the full-path treatment never kicked in.
     if (hit && hit.isFlight) {
       selectFlight(hit.flightKey);
-    } else {
-      lockBody(hit ? hit.name : null, { toggleIfSame: true });
+    } else if (hit) {
+      lockBody(hit.name, { toggleIfSame: true });
+    } else if (lockedBodyName && infoPanelVisible) {
+      // Empty-space click with the panel open: dismiss it exactly like the
+      // panel's own X button (see closeInfoPanel) -- NOT lockBody(null),
+      // which would also clear lockedBodyName/selectedFlightKey and drop
+      // whatever was selected. "Click away to close" and "Stop tracking"
+      // are different gestures and shouldn't have the same effect; if
+      // nothing is locked, or the panel's already closed, there's nothing
+      // to do here at all.
+      closeInfoPanel();
     }
   });
 
@@ -4389,19 +4398,27 @@
   const lockedPanelClose = document.getElementById("locked-panel-close");
   const lockedPanelHeader = document.getElementById("locked-panel-header");
 
-  lockedPanelClose.addEventListener("click", () => {
-    // Hides the panel WITHOUT touching lockedBodyName -- camera tracking
-    // (and the highlight ring/connector) continues on whatever was
-    // selected. Especially important on mobile, where this panel is a
-    // full-screen modal: closing it to see the animation again shouldn't
-    // also lose your target. Use "Stop tracking" (camera-controls) to
-    // actually clear lockedBodyName.
+  // Hides the panel WITHOUT touching lockedBodyName/selectedFlightKey --
+  // camera tracking (and the highlight ring/connector, and the flight
+  // scrubber) continues on whatever was selected. Especially important on
+  // mobile, where this panel is a full-screen modal: closing it to see the
+  // animation again shouldn't also lose your target. Use "Stop tracking"
+  // (camera-controls) to actually clear lockedBodyName -- see its own
+  // comment: that's meant to be the ONLY way this happens. Shared by the
+  // panel's own close button and the canvas's empty-space click (clicking
+  // away from the panel to dismiss it is not the same gesture as
+  // deliberately clicking "Stop tracking," and shouldn't have the same
+  // effect -- it used to, via a plain lockBody(null) call, which silently
+  // violated that "only way" invariant and dropped a selected flight the
+  // moment its panel was dismissed by anything other than its own X).
+  function closeInfoPanel() {
     const prevPanelVisible = infoPanelVisible;
     infoPanelVisible = false;
     syncPauseWithLockedPanel(prevPanelVisible, false);
     updateLockedPanelVisibility();
     updateScrubberInfoButton();
-  });
+  }
+  lockedPanelClose.addEventListener("click", closeInfoPanel);
 
   // "Missions here" (missionsToHereHtml) and "Destinations"
   // (flightDestinationsHtml) links are rebuilt into lockedPanelBody's
@@ -5034,14 +5051,20 @@
 
   function pctClamp(v) { return Math.max(0, Math.min(100, v)); }
 
-  // Shows the "Show info" button only when it'd actually do something new:
-  // manual mode, a flight selected, and its panel not already open. Called
-  // from everywhere infoBoxMode/selectedFlightKey/infoPanelVisible can
-  // change -- buildFlightScrubber (covers selection changes), the
-  // locked-panel close button, the infoBoxMode toggle itself, and
-  // exitManeuverDemo's post-restore step.
+  // Shows the "Show info" button whenever it'd actually do something new:
+  // a flight selected, and its panel not currently open -- regardless of
+  // infoBoxMode. Originally gated to manual mode only, on the theory that
+  // auto mode's own auto-open made a dedicated reopen affordance
+  // unnecessary -- but auto mode's panel can still end up closed later
+  // (the X button, or an empty-space click, both deliberately leave
+  // selectedFlightKey/the scrubber in place -- see closeInfoPanel) with no
+  // other discoverable way back in besides clicking the scrubber's title
+  // text, which isn't obviously clickable. Called from everywhere
+  // infoBoxMode/selectedFlightKey/infoPanelVisible can change --
+  // buildFlightScrubber (covers selection changes), closeInfoPanel, the
+  // infoBoxMode toggle itself, and exitManeuverDemo's post-restore step.
   function updateScrubberInfoButton() {
-    const show = infoBoxMode === "manual" && !!selectedFlightKey && !infoPanelVisible;
+    const show = !!selectedFlightKey && !infoPanelVisible;
     flightScrubberOpenInfoBtn.classList.toggle("visible", show);
   }
 
@@ -5144,8 +5167,8 @@
   // way, without having to re-find and re-click the flight in the legend.
   // Deliberately does NOT pass respectInfoBoxMode -- this is an explicit
   // "open it now" click (from the title, or the "Show info" button that
-  // only appears in manual mode once the panel's closed), not an automatic
-  // open, so it always opens regardless of infoBoxMode. toggleIfSame is
+  // appears once the panel's closed -- see updateScrubberInfoButton), not
+  // an automatic open, so it always opens regardless of infoBoxMode. toggleIfSame is
   // false, so this unconditionally reopens (lockedBodyName/infoPanelVisible
   // already match this flight's tracked body whenever the scrubber itself
   // is visible, so re-running it is a harmless no-op if the panel happens
