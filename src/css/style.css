@@ -108,12 +108,27 @@
   #time-panel .row { display: flex; align-items: center; gap: 8px; }
   #time-panel .label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
   #speed-slider { flex: 1; }
-  #speed-readout { font-size: 12px; min-width: 84px; text-align: right; color: var(--accent); }
-  #speed-input {
-    background: #0e1320; color: var(--text-primary); border: 1px solid var(--panel-border);
-    border-radius: 6px; padding: 4px 8px; font-family: inherit; font-size: 13px; width: 64px;
+  /* Clickable readout chips (see startSpeedEdit in app.js) -- "1x" and
+     "1 (yr/min)" are always the same underlying number (this app defines
+     a year as exactly 365.25 days, so an "x" multiplier and a "yr/min"
+     rate are numerically identical), shown twice only so a user can click
+     whichever unit they're already thinking in without doing unit math
+     themselves. Only one is ever in edit mode at a time. */
+  .speed-field {
+    font-size: 12px; color: var(--accent); cursor: pointer;
+    border-bottom: 1px dotted var(--accent);
   }
-  #speed-input:focus { border-color: #4a6fd4; outline: none; }
+  .speed-field:hover { opacity: 0.8; }
+  .speed-field.disabled { cursor: not-allowed; opacity: 0.4; border-bottom-style: none; }
+  .speed-edit-input {
+    display: none;
+    background: #0e1320; color: var(--text-primary); border: 1px solid var(--panel-border);
+    border-radius: 6px; padding: 4px 8px; font-family: inherit; font-size: 13px; width: 56px;
+  }
+  .speed-edit-input.visible { display: inline-block; }
+  .speed-edit-input:focus { border-color: #4a6fd4; outline: none; }
+  #speed-go-btn { display: none; }
+  #speed-go-btn.visible { display: inline-block; }
   #playpause {
     background: #16203a; color: var(--text-primary); border: 1px solid var(--panel-border);
     border-radius: 6px; padding: 6px 12px; cursor: pointer; font-family: inherit; font-size: 13px;
@@ -975,8 +990,9 @@
     gap: 6px;
   }
   body.mobile #time-panel { min-width: 0; gap: 5px; }
-  body.mobile #time-panel .row { gap: 6px; }
-  body.mobile #speed-readout { min-width: 58px; font-size: 11px; }
+  body.mobile #time-panel .row { gap: 6px; flex-wrap: wrap; }
+  body.mobile .speed-field { font-size: 11px; }
+  body.mobile .speed-edit-input { width: 44px; padding: 3px 6px; }
   body.mobile #date-panel { gap: 6px; }
   body.mobile #date-panel input[type="date"] { font-size: 11px; padding: 3px 6px; }
   /* More specific than the general "bigger tap target" rule from phase 2

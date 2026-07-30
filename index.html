@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=33">
+<link rel="stylesheet" href="src/css/style.css?v=34">
 </head>
 <body>
 
@@ -110,13 +110,16 @@
   <div class="panel" id="time-panel">
     <div class="row">
       <span class="label">Speed</span>
-      <span id="speed-readout">1 yr / min</span>
+      <span class="speed-field" id="speed-field-x" tabindex="0" role="button" title="Click to type a speed">1x</span>
+      <input type="text" class="speed-edit-input" id="speed-edit-x" size="5">
+      <span class="speed-field" id="speed-field-yrmin" tabindex="0" role="button" title="Click to type a speed">1 (yr/min)</span>
+      <input type="text" class="speed-edit-input" id="speed-edit-yrmin" size="5">
+      <button id="speed-go-btn">Go</button>
     </div>
     <div class="row">
       <input type="range" id="speed-slider" min="-300" max="300" value="100" step="1">
     </div>
     <div class="row">
-      <input type="text" id="speed-input" size="6" placeholder="2 or -0.5" title="Type a speed value (x, same number as yr/min) and press Enter">
       <button id="playpause">Pause</button>
       <button id="reset-speed">Reset speed</button>
     </div>
@@ -201,6 +204,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=60"></script>
+<script src="src/js/app.js?v=61"></script>
 </body>
 </html>

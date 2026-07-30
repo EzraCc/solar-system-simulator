@@ -2940,31 +2940,35 @@
   });
 
   const speedSlider = document.getElementById("speed-slider");
-  const speedReadout = document.getElementById("speed-readout");
-  const speedInput = document.getElementById("speed-input");
+  const speedFieldX = document.getElementById("speed-field-x");
+  const speedFieldYrMin = document.getElementById("speed-field-yrmin");
+  const speedEditX = document.getElementById("speed-edit-x");
+  const speedEditYrMin = document.getElementById("speed-edit-yrmin");
+  const speedGoBtn = document.getElementById("speed-go-btn");
   const playPauseBtn = document.getElementById("playpause");
 
-  function formatSpeed(mult) {
-    if (mult === 0) return "paused";
-    const sign = mult < 0 ? "-" : "";
-    const abs = Math.abs(mult);
-    let valueStr;
-    if (abs >= 1) {
-      valueStr = (Math.round(abs * 10) / 10).toString();
-    } else {
-      valueStr = (Math.round(abs * 100) / 100).toString();
-    }
-    return `${sign}${valueStr}x (${sign}${(EARTH_YEAR_DAYS / 365.25 * abs).toFixed(2)} yr/min)`;
-  }
-
-  // Bare signed number, no "x"/"yr/min" suffix -- what the typed-entry
-  // field itself displays (formatSpeed's fuller text is for the adjacent
-  // read-only readout, not something you'd want to have to retype around).
+  // Bare signed number, no "x"/"yr/min" suffix -- what the edit inputs
+  // themselves show while being typed into.
   function formatSpeedBare(mult) {
     const sign = mult < 0 ? "-" : "";
     const abs = Math.abs(mult);
     const valueStr = abs >= 1 ? (Math.round(abs * 10) / 10).toString() : (Math.round(abs * 100) / 100).toString();
     return sign + valueStr;
+  }
+
+  // "1x" and "1 (yr/min)" are always the SAME number -- this app defines a
+  // year as exactly 365.25 days (EARTH_YEAR_DAYS), so an "x" multiplier and
+  // a "years simulated per real minute" rate are numerically identical.
+  // Both read-only chips are shown side by side purely so a user can click
+  // whichever unit they're already thinking in, with no conversion.
+  function speedFieldText(field, mult) {
+    const bare = formatSpeedBare(mult);
+    return field === 'x' ? `${bare}x` : `${bare} (yr/min)`;
+  }
+
+  function refreshSpeedFields() {
+    speedFieldX.textContent = speedFieldText('x', speedMultiplier);
+    speedFieldYrMin.textContent = speedFieldText('yrmin', speedMultiplier);
   }
 
   // Slider position <-> speedMultiplier is the same squared curve both
@@ -2982,36 +2986,100 @@
     const sign = v < 0 ? -1 : 1;
     const norm = Math.abs(v) / 100; // 0..3
     speedMultiplier = sign * norm * norm; // 0..9, squared for fine low-end control
-    speedReadout.textContent = formatSpeed(speedMultiplier);
-    speedInput.value = formatSpeedBare(speedMultiplier);
+    refreshSpeedFields();
   }
   speedSlider.addEventListener("input", updateSpeedFromSlider);
   updateSpeedFromSlider();
 
-  // Direct typed entry -- "2" or "2x" or "-0.5" or "-0.5 yr/min" are all
-  // accepted (a trailing unit is parsed and ignored: this app's own
-  // convention already makes "Nx" and "N yr/min" the same number, see
-  // formatSpeed, so there's nothing left for a unit suffix to disambiguate).
-  // Unlike the slider (mechanically capped at -300..300, i.e. |mult|<=9),
-  // a typed value isn't clamped -- only the slider's own thumb position is,
-  // since typing doesn't have the slider's drag-precision reason for a cap.
-  function applySpeedInput() {
-    const raw = speedInput.value.trim().toLowerCase().replace(/\s*(x|yr\/min)\s*$/, "");
-    const parsed = Number(raw);
-    if (raw === "" || !Number.isFinite(parsed)) {
-      speedInput.value = formatSpeedBare(speedMultiplier); // revert on bad input
-      return;
-    }
-    speedMultiplier = parsed;
-    speedReadout.textContent = formatSpeed(speedMultiplier);
-    speedInput.value = formatSpeedBare(speedMultiplier);
-    speedSlider.value = Math.max(-300, Math.min(300, sliderValueForMultiplier(speedMultiplier)));
-    if (paused && speedMultiplier !== 0) setPaused(false);
+  // Click-to-edit speed chips: clicking "1x" or "1 (yr/min)" swaps that
+  // one chip for a small text input (pre-filled, focused, selected) plus a
+  // shared Go button; the OTHER chip stays plain read-only text, so only
+  // one is ever editable at a time. Typed input accepts a bare number, an
+  // optional leading "-", and tolerates a trailing "x"/"yr/min"/"(yr/min)"
+  // being typed and ignored (parsed and thrown away -- both fields are the
+  // same number, so there's nothing left for a unit suffix to disambiguate).
+  //
+  // Deliberately Go/Enter-only for APPLYING a value -- blur alone cancels
+  // back to the current speed without applying. The previous design
+  // auto-applied on blur, which raced with whatever OTHER click had just
+  // stolen focus (blur fires before that element's own click handler): e.g.
+  // clicking Play while paused first blurred the field, whose blur handler
+  // called setPaused(false) to resume at the new speed, and THEN Play's own
+  // click handler ran setPaused(!paused) against the now-stale pre-blur
+  // "paused" value and immediately re-paused it -- needing a second Play
+  // click to actually take effect. An explicit, blur-independent commit
+  // (Go or Enter) has no such race: nothing else's click handler can run
+  // between a Go/Enter keypress and this function.
+  let speedEditingField = null; // null | 'x' | 'yrmin'
+  let speedFieldsDisabled = false; // see setDemoControlsDisabled
+
+  function fieldParts(field) {
+    return field === 'x'
+      ? { span: speedFieldX, input: speedEditX }
+      : { span: speedFieldYrMin, input: speedEditYrMin };
   }
-  speedInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { applySpeedInput(); speedInput.blur(); }
+
+  function startSpeedEdit(field) {
+    if (speedFieldsDisabled) return;
+    if (speedEditingField && speedEditingField !== field) endSpeedEdit(false);
+    speedEditingField = field;
+    const { span, input } = fieldParts(field);
+    span.style.display = "none";
+    input.value = formatSpeedBare(speedMultiplier);
+    input.classList.add("visible");
+    input.focus();
+    input.select();
+    speedGoBtn.classList.add("visible");
+  }
+
+  function endSpeedEdit(apply) {
+    if (!speedEditingField) return;
+    const { span, input } = fieldParts(speedEditingField);
+    if (apply) {
+      const raw = input.value.trim().toLowerCase().replace(/\s*(\(yr\/min\)|yr\/min|x)\s*$/, "");
+      const parsed = Number(raw);
+      // Unlike the slider (mechanically capped at -300..300, i.e.
+      // |mult|<=9), a typed value isn't clamped -- only the slider's own
+      // thumb position is, since typing doesn't have the slider's
+      // drag-precision reason for a cap.
+      if (raw !== "" && Number.isFinite(parsed)) {
+        speedMultiplier = parsed;
+        speedSlider.value = Math.max(-300, Math.min(300, sliderValueForMultiplier(speedMultiplier)));
+        if (paused && speedMultiplier !== 0) setPaused(false);
+      }
+    }
+    input.classList.remove("visible");
+    span.style.display = "";
+    speedGoBtn.classList.remove("visible");
+    speedEditingField = null;
+    refreshSpeedFields();
+  }
+
+  speedFieldX.addEventListener("click", () => startSpeedEdit('x'));
+  speedFieldYrMin.addEventListener("click", () => startSpeedEdit('yrmin'));
+  speedGoBtn.addEventListener("click", () => endSpeedEdit(true));
+  [speedEditX, speedEditYrMin].forEach((input) => {
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") endSpeedEdit(true);
+      else if (e.key === "Escape") endSpeedEdit(false);
+    });
   });
-  speedInput.addEventListener("blur", applySpeedInput);
+  // Click anywhere else (Play, the slider, the canvas, another panel...)
+  // cancels an in-progress edit rather than leaving its input stuck open
+  // forever -- without this, only Go/Enter/Escape/switching-fields ever
+  // closed it, and any other click (e.g. Play) had no idea speed-editing
+  // state existed at all. Excludes clicks on the two field spans
+  // themselves: their own listeners above already handle both starting a
+  // fresh edit and switching from one field to the other correctly: by
+  // the time this bubbles up here, startSpeedEdit has already begun the
+  // NEW edit, and this would otherwise immediately cancel it again.
+  document.addEventListener("click", (e) => {
+    if (!speedEditingField) return;
+    if (e.target === speedFieldX || e.target === speedFieldYrMin) return;
+    const { input } = fieldParts(speedEditingField);
+    if (e.target === input || e.target === speedGoBtn) return;
+    endSpeedEdit(false);
+  });
 
   function setPaused(value) {
     paused = value;
@@ -3479,6 +3547,16 @@
     playPauseBtn.disabled = disabled;
     editDateBtn.disabled = disabled;
     document.getElementById("reset-speed").disabled = disabled;
+    // The speed chips aren't real <input>/<button> elements (no native
+    // :disabled), so they get their own flag (checked in startSpeedEdit)
+    // plus a CSS class for the matching dimmed look. If a demo starts
+    // while a chip happens to be mid-edit, cancel that edit first --
+    // otherwise its Go button would keep working via the demo's own
+    // controls-disabled visual state.
+    if (disabled && speedEditingField) endSpeedEdit(false);
+    speedFieldsDisabled = disabled;
+    speedFieldX.classList.toggle("disabled", disabled);
+    speedFieldYrMin.classList.toggle("disabled", disabled);
   }
 
   function startManeuverDemo(typeKey) {
@@ -3508,7 +3586,7 @@
 
     const spanDays = demo.endDays - demo.startDays;
     speedMultiplier = spanDays * 60 / (DEMO_TARGET_SECONDS * EARTH_YEAR_DAYS);
-    speedReadout.textContent = formatSpeed(speedMultiplier);
+    refreshSpeedFields();
     setPaused(false);
     setDemoControlsDisabled(true);
 
