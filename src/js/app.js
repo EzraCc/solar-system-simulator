@@ -4913,6 +4913,27 @@
   const flightScrubberMarkers  = document.getElementById("flight-scrubber-markers");
   const flightScrubberPlayhead = document.getElementById("flight-scrubber-playhead");
 
+  // Blanket stop-propagation net for the whole panel, covering the header/
+  // title/Show-info-button area in addition to the track/markers (which
+  // have their own more specific handlers below). Note this panel itself
+  // is pointer-events:none in CSS -- only its genuinely interactive
+  // children (track, title, Show-info button) re-enable pointer-events
+  // and are reachable at all, so plain background/dead-space taps never
+  // reach this panel's DOM in the first place and correctly fall through
+  // to the canvas underneath (needed so a rotate/pan gesture that merely
+  // STARTS over this panel's dead space still reaches the canvas, since a
+  // touch sequence's move/end events always keep targeting wherever its
+  // start landed). For events that DO land on an interactive child, this
+  // listener stops them bubbling any further up past this panel, so a
+  // real click/tap on the track/title/button never also reaches a
+  // window/document-level listener and gets mistaken for a canvas
+  // interaction (body select, rotate-drag) underneath it. A bubble-phase
+  // listener here fires AFTER each child's own bubble-phase listener (if
+  // any), so this doesn't interfere with their handling.
+  ["pointerdown", "pointerup", "pointermove", "pointercancel", "click"].forEach((evt) => {
+    flightScrubberPanel.addEventListener(evt, (e) => e.stopPropagation());
+  });
+
   function pctClamp(v) { return Math.max(0, Math.min(100, v)); }
 
   // Shows the "Show info" button only when it'd actually do something new:
@@ -5044,6 +5065,14 @@
 
   flightScrubberTrack.addEventListener("pointerdown", (e) => {
     if (!selectedFlightKey) return;
+    // This panel sits fixed above the canvas -- a real click/tap here
+    // should never also reach the canvas's own body-select/rotate
+    // handling or the page's default touch gesture handling underneath,
+    // which bubbling could otherwise still allow even though the two
+    // elements aren't in an ancestor/descendant relationship with each
+    // other (both bubble independently up to window/document, where a
+    // broad-enough listener could still see either one).
+    e.stopPropagation();
     flightScrubberTrack.setPointerCapture(e.pointerId);
     flightScrubberTrack.classList.add("dragging");
     scrubberDragging = true;
@@ -5067,10 +5096,12 @@
     }
   });
   flightScrubberTrack.addEventListener("pointermove", (e) => {
+    e.stopPropagation();
     if (!scrubberDragging) return;
     commitScrubberDate(daysFromPointerX(e.clientX));
   });
-  function endScrubberDrag() {
+  function endScrubberDrag(e) {
+    if (e) e.stopPropagation();
     if (!scrubberDragging) return;
     scrubberDragging = false;
     flightScrubberTrack.classList.remove("dragging");
@@ -5087,6 +5118,7 @@
   // pattern as the canvas path-hover code (see handleHover), rather than
   // a second bespoke tooltip element.
   flightScrubberMarkers.addEventListener("mousemove", (e) => {
+    e.stopPropagation();
     if (scrubberDragging) return;
     const el = e.target.closest(".scrubber-marker");
     if (!el) { hoverTip.style.display = "none"; return; }
@@ -5095,7 +5127,8 @@
     hoverTip.style.top = (e.clientY + 14) + "px";
     hoverTip.innerHTML = el.dataset.label;
   });
-  flightScrubberMarkers.addEventListener("mouseleave", () => {
+  flightScrubberMarkers.addEventListener("mouseleave", (e) => {
+    e.stopPropagation();
     if (!scrubberDragging) hoverTip.style.display = "none";
   });
 

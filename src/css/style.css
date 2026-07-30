@@ -466,6 +466,26 @@
        and could otherwise land on top of the scrubber; below #hover-tip
        (50) so its tooltip still renders above the scrubber's own markers. */
     z-index: 45;
+    /* pointer-events:none by default: the panel's own background/padding
+       and non-interactive rows (header gaps, dates text) are dead space
+       that should be fully transparent to touch/click, letting a drag
+       that merely STARTS over the panel fall through to the canvas
+       underneath instead of being swallowed. This matters specifically
+       because touchmove/touchend for a gesture always keep targeting
+       whatever element the touchstart landed on (a fixed browser
+       behavior, not something stopPropagation can work around) -- if any
+       part of this panel claimed a touchstart that the user meant as the
+       start of a camera rotate/pan, the whole gesture would be stuck on
+       the panel and never reach the canvas's own rotate handling, which
+       is exactly what broke mobile rotate/scroll once this panel grew
+       large enough to commonly sit under a swipe's starting point.
+       pointer-events:auto is re-enabled individually on the elements
+       that ARE meant to be interactive (#flight-scrubber-track, the
+       title, the Show-info button) -- those still fully claim their own
+       gestures via touch-action:none + the stopPropagation() calls on
+       their pointer handlers in app.js, preventing clicks on THEM from
+       leaking through to canvas objects behind the panel. */
+    pointer-events: none;
   }
   #flight-scrubber-panel.visible { display: flex; }
   #flight-scrubber-header {
@@ -476,7 +496,7 @@
   /* Clicking it reopens the locked info panel (see the click listener in
      app.js) -- an easy way back into the details after closing the panel
      to get it out of the way. */
-  #flight-scrubber-title { color: var(--text-primary); font-weight: 600; font-size: 12px; cursor: pointer; }
+  #flight-scrubber-title { color: var(--text-primary); font-weight: 600; font-size: 12px; cursor: pointer; pointer-events: auto; }
   #flight-scrubber-title:hover { text-decoration: underline; }
   /* Only shown in "manual info panel" mode while the panel is closed (see
      updateScrubberInfoButton in app.js) -- the title above does the same
@@ -487,10 +507,11 @@
     display: none;
     font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 10px;
     background: var(--accent); color: #fff; border: none; cursor: pointer;
+    pointer-events: auto;
   }
   #flight-scrubber-open-info-btn.visible { display: inline-block; }
   #flight-scrubber-open-info-btn:hover { opacity: 0.85; }
-  #flight-scrubber-track { position: relative; height: 28px; cursor: pointer; touch-action: none; }
+  #flight-scrubber-track { position: relative; height: 28px; cursor: pointer; touch-action: none; pointer-events: auto; }
   #flight-scrubber-track::before {
     content: ""; position: absolute; left: 0; right: 0; top: 50%;
     height: 4px; margin-top: -2px; border-radius: 2px;
