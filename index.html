@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=29">
+<link rel="stylesheet" href="src/css/style.css?v=31">
 </head>
 <body>
 
@@ -94,6 +94,10 @@
     <div class="switch" id="infobox-switch"></div>
     <span>Manual info panel</span>
   </label>
+  <label id="free-camera-toggle-label" title="Off: the camera always recenters on whatever's locked/tracked. On: the camera holds still wherever you last put it -- drag/rotate/zoom freely -- even while something is locked, so you can keep a deliberately-chosen framing (e.g. for a screenshot) instead of it recentering on a moving target.">
+    <div class="switch" id="free-camera-switch"></div>
+    <span>Hold camera frame</span>
+  </label>
   <button type="button" id="glossary-toggle">How do these missions get around?</button>
 </div>
 
@@ -163,6 +167,18 @@
 
 <div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
 
+<!-- Scene Framing: a live readout of the camera state (zoom/rotation/
+     pan/tracking/date), for manually finding and noting down a specific
+     shot -- e.g. to reproduce later, or as the source of an eventual
+     embed URL's own camera params. Hidden by default, toggled by a
+     keyboard shortcut (backtick) -- see app.js. Not tied to any other
+     panel's visibility. -->
+<div class="panel" id="scene-framing-panel">
+  <div class="title">Scene Framing</div>
+  <div id="scene-framing-readout"></div>
+  <button type="button" id="scene-framing-copy">Copy as URL params</button>
+</div>
+
 <!-- General "how spacecraft get around" glossary -- independent of
      lockedBodyName/lockBody (see the JS wiring near the legend drawer's),
      so it doesn't touch auto-pause or camera tracking. -->
@@ -185,6 +201,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=55"></script>
+<script src="src/js/app.js?v=56"></script>
 </body>
 </html>

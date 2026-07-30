@@ -2642,6 +2642,21 @@
   // 360-degree orbit the spacecraft is presently on (see
   // getCurrentOrbitElements/drawCurrentOrbitEllipse).
   let orbitViewMode = "full"; // "full" | "current"
+  // "Hold frame": normally, locking onto a body force-overwrites camX/camY
+  // every frame so it stays centered (see the camera-follow block in
+  // frame()), and manual panning is disabled while locked for the same
+  // reason (see dragButtonIsPan's mousedown handler and the two-finger
+  // touchmove handler). When true, that force-follow is skipped entirely
+  // and manual panning re-enabled even while a body is locked -- lets the
+  // camera hold a fixed, deliberately-chosen framing regardless of what's
+  // tracked or how the scene evolves, which is what a specific shot (a
+  // screenshot, a scripted capture, an eventual embed) actually needs
+  // instead of the camera constantly recentering on a moving target.
+  let freeCameraMode = false;
+  // Whether the Scene Framing readout (below) is currently shown --
+  // independent of freeCameraMode itself; you can check the numbers
+  // without hold-frame on, or hold a frame without the readout open.
+  let sceneFramingVisible = false;
 
   // Absolute screen position of the locked panel -- set once when a new
   // body/flight is locked (see drawLockedPanelConnector's edge-detection),
@@ -2670,7 +2685,10 @@
   canvas.addEventListener("mousedown", (e) => {
     dragStartX = e.clientX; dragStartY = e.clientY;
     if (dragButtonIsPan(e)) {
-      if (lockedBodyName) return; // panning is meaningless while the camera is following a locked body
+      // Panning is meaningless while the camera is following a locked body
+      // -- UNLESS free-camera ("hold frame") mode is on, which is exactly
+      // what turns the force-follow off (see freeCameraMode's own comment).
+      if (lockedBodyName && !freeCameraMode) return;
       isPanning = true;
       camStartX = camX; camStartY = camY;
     } else {
@@ -2741,7 +2759,7 @@
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const dist = Math.hypot(dx, dy);
       pxPerAU = Math.max(2, Math.min(20000, touchStartPxPerAU * (dist / touchStartDist)));
-      if (!lockedBodyName) {
+      if (!lockedBodyName || freeCameraMode) {
         const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
         const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
         camX = camStartX + (midX - touchMidStartX);
@@ -2992,6 +3010,61 @@
       e.preventDefault();
       setPaused(!paused);
     }
+    // Backtick: toggle the Scene Framing readout. Not in the same
+    // conditional as Space above since it's unrelated to play/pause and
+    // needs its own guard (skip while the user is actually typing into a
+    // text field, e.g. the speed input or an editable date field, where a
+    // literal "`" character should just be typed, not treated as a
+    // shortcut).
+    if (e.key === "`" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+      e.preventDefault();
+      sceneFramingVisible = !sceneFramingVisible;
+      sceneFramingPanel.classList.toggle("visible", sceneFramingVisible);
+      if (sceneFramingVisible) updateSceneFramingPanel();
+    }
+  });
+
+  /* =========================================================================
+     SCENE FRAMING
+     Live readout of the camera state (zoom/rotation/pan/tracking/date) --
+     toggled via the backtick key (see keydown handler above), independent
+     of freeCameraMode ("Hold camera frame" toggle) itself. Exists so a
+     specific shot can be manually found and noted down/reproduced, e.g.
+     for a screenshot or a scripted capture.
+  ========================================================================= */
+  const sceneFramingPanel = document.getElementById("scene-framing-panel");
+  const sceneFramingReadout = document.getElementById("scene-framing-readout");
+  const sceneFramingCopyBtn = document.getElementById("scene-framing-copy");
+
+  // Cheap (just .textContent), called once per frame from frame() while
+  // the panel is visible -- gated on sceneFramingVisible there so it costs
+  // nothing while hidden, same convention updateFlightScrubberPlayhead
+  // already uses for its own cheap per-frame update.
+  function updateSceneFramingPanel() {
+    const yawDeg = (yaw * 180 / Math.PI).toFixed(1);
+    const pitchDeg = (pitch * 180 / Math.PI).toFixed(1);
+    sceneFramingReadout.textContent =
+      `zoom (pxPerAU): ${pxPerAU.toFixed(1)}\n` +
+      `yaw / pitch (deg): ${yawDeg} / ${pitchDeg}\n` +
+      `pan (camX, camY): ${camX.toFixed(0)}, ${camY.toFixed(0)}` +
+        (lockedBodyName && !freeCameraMode ? "  [not meaningful while tracking]" : "") + `\n` +
+      `tracking: ${lockedBodyName || "none"}\n` +
+      `hold frame: ${freeCameraMode ? "on" : "off"}\n` +
+      `date: ${dateInputValue(simDate)}`;
+  }
+
+  sceneFramingCopyBtn.addEventListener("click", () => {
+    const yawDeg = (yaw * 180 / Math.PI).toFixed(2);
+    const pitchDeg = (pitch * 180 / Math.PI).toFixed(2);
+    // URL-fragment form (not the full readout text) -- directly usable as
+    // query params, e.g. pasted onto the end of this page's own URL, or
+    // (once embedding exists) an embed src. Only includes what's actually
+    // reproducible: zoom/yaw/pitch/hold always are; camX/camY are omitted
+    // since they're meaningless while tracking (the common case) and get
+    // overwritten by camera-follow anyway unless hold=1.
+    const params = `zoom=${pxPerAU.toFixed(1)}&yaw=${yawDeg}&pitch=${pitchDeg}` +
+      (freeCameraMode ? `&hold=1` : ``);
+    navigator.clipboard.writeText(params).catch(() => {}); // clipboard access can be denied; failing silently is fine for a copy-convenience button
   });
 
   /* =========================================================================
@@ -3077,6 +3150,16 @@
     // the focus toggle just above.
     updateURLParams({ info: infoBoxMode === "manual" ? "manual" : null });
     updateScrubberInfoButton();
+  });
+
+  const freeCameraSwitch = document.getElementById("free-camera-switch");
+  const freeCameraToggleLabel = document.getElementById("free-camera-toggle-label");
+  freeCameraToggleLabel.addEventListener("click", () => {
+    freeCameraMode = !freeCameraMode;
+    freeCameraSwitch.classList.toggle("on", freeCameraMode);
+    // "off" is the default -- omit the param entirely, same reasoning as
+    // the other toggles above.
+    updateURLParams({ hold: freeCameraMode ? "1" : null });
   });
 
   /* =========================================================================
@@ -3902,6 +3985,11 @@
     if (info === "manual") {
       infoBoxMode = "manual";
       infoBoxSwitch.classList.toggle("on", true);
+    }
+    const hold = params.get("hold");
+    if (hold === "1") {
+      freeCameraMode = true;
+      freeCameraSwitch.classList.toggle("on", true);
     }
     const date = params.get("date");
     if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
@@ -5717,8 +5805,9 @@
     // panning is superseded (since it would be overwritten next frame
     // anyway; the pan gesture is disabled while locked, see mousedown
     // handler, so this isn't fighting the user, just keeping the maths
-    // consistent with what the UI actually allows).
-    if (lockedBodyName && worldStates[lockedBodyName]) {
+    // consistent with what the UI actually allows). Skipped entirely in
+    // free-camera ("hold frame") mode -- see freeCameraMode's own comment.
+    if (lockedBodyName && worldStates[lockedBodyName] && !freeCameraMode) {
       const lockedPos = worldStates[lockedBodyName].pos;
       const [rx, ry] = rotateWorld(lockedPos[0], lockedPos[1], lockedPos[2] || 0);
       // We want: viewW/2 + camX + rx*pxPerAU == viewW/2  =>  camX = -rx*pxPerAU
@@ -5726,6 +5815,10 @@
       camX = -rx * pxPerAU;
       camY = ry * pxPerAU;
     }
+
+    // After camera-follow above, so the readout reflects this frame's
+    // final camX/camY, not a stale value from before it was corrected.
+    if (sceneFramingVisible) updateSceneFramingPanel();
 
     // Orbit paths (drawn first, beneath bodies)
     renderedPaths = [];
