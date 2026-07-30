@@ -670,6 +670,66 @@
       meta: { color: '#8f8272', radiusKm: 16.0, dimensionsKm: [59.8, 25.4, 18.6], shapeNote: 'elongated, irregular shape' },
       targetOfFlights: ['galileo'],
     },
+    // The three comets Ulysses unexpectedly crossed the ion tail of --
+    // documented on Ulysses' own Wikipedia page/trajectory GIF, none ever
+    // imaged up close (all known only from their tails, not their nuclei),
+    // and all genuinely long-period/near-parabolic -- unlike every other
+    // comet above (67P, Wild 2, Borrelly, Tempel 1: bound, short-period,
+    // imaged nuclei), these needed the hyperbolic branch added to
+    // computeSmallBodyState (e>=1, a<0) and are drawn via the time-windowed
+    // drawSmallBodyArcByTime instead of drawSmallBodyOrbitEllipse -- there
+    // is no meaningful "whole orbit" to draw for a one-time visitor. Real
+    // elements all derived the same way as Borrelly/Braille's re-epoch
+    // fix: a JPL Horizons heliocentric state vector at the real crossing
+    // date, run through stateVectorToElements -- epochDays is the crossing
+    // date itself, and each reconstructs the source position AND velocity
+    // to ~1e-13 AU / ~1e-15 AU/day. crossingWindowDays gates both the dot's
+    // widened in-transit visibility and the arc's drawn time span (see
+    // isSmallBodyVisible) -- outside that window a near-parabolic comet's
+    // position is either physically meaningless at this scale or so far
+    // away it isn't worth rendering.
+    hyakutake: {
+      name: 'Hyakutake (C/1996 B2)', types: ['comet'],
+      // JPL Horizons heliocentric state vector, 1996-05-01 (the real
+      // crossing date -- Ulysses unexpectedly passed through this comet's
+      // ion tail, "revealing the tail to be at least 3.8 AU in length";
+      // this simulator's own Ulysses/comet separation at this date comes
+      // out to ~3.65 AU, matching). Near-parabolic (e~1.015).
+      elements: { a: -15.516281680420562, e: 1.0149162602402368, iDeg: 126.13899358609308,
+                  OmDeg: -170.78942186183025, wDeg: 132.13657721687588, M0Deg: -0.009771406798088477,
+                  epochDays: -1340 },
+      meta: { color: '#a8e8ff', radiusKm: 2.4 }, // nucleus never imaged; radius a literature estimate
+      targetOfFlights: ['ulysses'],
+      crossingWindowDays: 365,
+    },
+    mcnaught_hartley: {
+      name: 'McNaught-Hartley (C/1999 T1)', types: ['comet'],
+      // JPL Horizons heliocentric state vector, 2000-10-19 (cometary pickup
+      // ions detected at Ulysses on 2000-10-19/20, carried there by a
+      // coronal mass ejection). Effectively parabolic (e~1.0005).
+      elements: { a: -2280.6703921813205, e: 1.000515923783296, iDeg: 80.09283922195306,
+                  OmDeg: -177.35974282063773, wDeg: 344.5374853389215, M0Deg: -0.0004999568977696915,
+                  epochDays: 292 },
+      meta: { color: '#6fc8d8', radiusKm: 1.5 }, // nucleus never imaged; radius a literature estimate
+      targetOfFlights: ['ulysses'],
+      crossingWindowDays: 365,
+    },
+    mcnaught: {
+      name: 'McNaught (C/2006 P1)', types: ['comet'],
+      // JPL Horizons heliocentric state vector, 2007-02-03 (Ulysses' third
+      // and final tail crossing -- "the Great Comet of 2007", the brightest
+      // comet in over 40 years). Recovered as a very high-eccentricity
+      // ellipse (e~0.9994, a~287 AU) from this exact state vector rather
+      // than SBDB's rounded hyperbolic quick-look fit -- rendered the same
+      // time-windowed way as the other two regardless, since a 287 AU-wide
+      // closed ellipse isn't a meaningful "whole orbit" to draw either.
+      elements: { a: 287.1542384480255, e: 0.9993942612404899, iDeg: 78.0307515636233,
+                  OmDeg: -92.86977517043863, wDeg: 156.30241974327967, M0Deg: 0.004303083393894966,
+                  epochDays: 2590 },
+      meta: { color: '#e0f5fa', radiusKm: 3 }, // nucleus never imaged; radius a literature estimate
+      targetOfFlights: ['ulysses'],
+      crossingWindowDays: 365,
+    },
   };
 
   // Pluto-Charon: the solar system's only known "double dwarf planet" --
@@ -1113,18 +1173,41 @@
   function computeSmallBodyState(elements, t) {
     const a = elements.a, e = elements.e;
     const i = elements.iDeg * D2R, Om = elements.OmDeg * D2R, w = elements.wDeg * D2R;
-    const n = Math.sqrt(GM_SUN_AU3_DAY2 / (a * a * a)); // rad/day
-    const M = (elements.M0Deg * D2R) + n * (t - elements.epochDays);
-
-    const E = solveKepler(M, e);
-    const nu = 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2));
-    const r = a * (1 - e * Math.cos(E));
+    let nu, r, xOrbDot, yOrbDot, M;
+    if (e < 1) {
+      const n = Math.sqrt(GM_SUN_AU3_DAY2 / (a * a * a)); // rad/day
+      M = (elements.M0Deg * D2R) + n * (t - elements.epochDays);
+      const E = solveKepler(M, e);
+      nu = 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2), Math.sqrt(1 - e) * Math.cos(E / 2));
+      r = a * (1 - e * Math.cos(E));
+      const Edot = n / (1 - e * Math.cos(E));
+      xOrbDot = -a * Math.sin(E) * Edot;
+      yOrbDot = a * Math.sqrt(1 - e * e) * Math.cos(E) * Edot;
+    } else {
+      // Hyperbolic (e>=1, a<0 by convention -- see stateVectorToElements /
+      // computeFlightPosition's own hyperbolic branch, which this mirrors
+      // for position). Used by long-period comets like the three Ulysses
+      // flew through the tail of (SMALL_BODIES.hyakutake/mcnaught_hartley/
+      // mcnaught) -- unlike computeFlightPosition, this function also needs
+      // velocity (for the locked-panel speed readout), computed via the
+      // branch-agnostic p=a(1-e^2)/h relations rather than re-deriving a
+      // hyperbolic-anomaly-based xOrbDot/yOrbDot analogous to the E-based
+      // ones above (p stays positive for e>=1 since (1-e^2) flips sign the
+      // same way a<0 does -- simpler and less sign-error-prone here).
+      const n = Math.sqrt(GM_SUN_AU3_DAY2 / (-a * -a * -a)); // rad/day
+      M = (elements.M0Deg * D2R) + n * (t - elements.epochDays);
+      const H = solveKeplerHyperbolic(M, e);
+      nu = 2 * Math.atan2(Math.sqrt(e + 1) * Math.sinh(H / 2), Math.sqrt(e - 1) * Math.cosh(H / 2));
+      r = a * (1 - e * Math.cosh(H));
+      const p = a * (1 - e * e);
+      const h = Math.sqrt(GM_SUN_AU3_DAY2 * p);
+      const rDot = (h * e * Math.sin(nu)) / p;
+      const nuDot = h / (r * r);
+      xOrbDot = rDot * Math.cos(nu) - r * Math.sin(nu) * nuDot;
+      yOrbDot = rDot * Math.sin(nu) + r * Math.cos(nu) * nuDot;
+    }
     const xOrb = r * Math.cos(nu);
     const yOrb = r * Math.sin(nu);
-
-    const Edot = n / (1 - e * Math.cos(E));
-    const xOrbDot = -a * Math.sin(E) * Edot;
-    const yOrbDot = a * Math.sqrt(1 - e * e) * Math.cos(E) * Edot;
 
     const cosOm = Math.cos(Om), sinOm = Math.sin(Om);
     const cosW = Math.cos(w), sinW = Math.sin(w);
@@ -4166,6 +4249,21 @@
     if (sceneVisibilityMode === "focused") return isSmallBodyOrbitVisible(key);
     const body = SMALL_BODIES[key];
     if (lockedBodyName === body.name) return true;
+    // Long-period/one-time-encounter bodies (comet tail crossings, see
+    // crossingWindowDays on hyakutake/mcnaught_hartley/mcnaught) only make
+    // sense to show near their own crossing date -- unlike a bound,
+    // short-period target like Borrelly/Braille (fine across their whole
+    // targeting mission's span, since they keep orbiting normally the
+    // whole time), a near-parabolic/hyperbolic comet sits at a wildly
+    // wrong, often absurdly distant position for most of a multi-year
+    // mission's own span. Gated here (after the explicit-lock check above,
+    // so directly clicking the comet itself still always shows it) so it
+    // applies uniformly to every path below, not just the widened
+    // in-transit fallback.
+    if (body.crossingWindowDays != null &&
+        Math.abs(daysSinceEpoch - body.elements.epochDays) > body.crossingWindowDays) {
+      return false;
+    }
     for (const flightKey of body.targetOfFlights) {
       // A targetOfFlights entry can name a mission that isn't actually in
       // this build's manifest.json yet (or was pulled, e.g. a hyperbolic
@@ -5684,6 +5782,28 @@
     return points;
   }
 
+  // Same time-windowed-sampling pattern as drawFlightArcByTime, for a
+  // SMALL_BODIES entry instead of a flight leg -- used for long-period/
+  // near-parabolic comets (crossingWindowDays set, see hyakutake/
+  // mcnaught_hartley/mcnaught) in place of drawSmallBodyOrbitEllipse's
+  // closed-form full-ellipse sweep, which assumes a periodic, boundable
+  // orbit worth drawing in full. A one-time visitor doesn't have a
+  // meaningful "whole orbit" -- just the arc through its real crossing.
+  function drawSmallBodyArcByTime(elements, tStart, tEnd) {
+    const N = 300;
+    const points = [];
+    ctx.beginPath();
+    for (let k = 0; k <= N; k++) {
+      const t = tStart + (k / N) * (tEnd - tStart);
+      const [X, Y, Z] = computeSmallBodyState(elements, t).pos;
+      const [sx, sy]  = worldToScreen(X, Y, Z);
+      points.push([sx, sy]);
+      if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+    return points;
+  }
+
   function frame() {
     const now = performance.now();
     const dtMs = now - lastFrameTime;
@@ -5907,7 +6027,12 @@
     Object.entries(SMALL_BODIES).forEach(([key, body]) => {
       if (!isSmallBodyOrbitVisible(key)) return;
       ctx.strokeStyle = hexWithAlpha(body.meta.color, 0.35);
-      const pts = drawSmallBodyOrbitEllipse(body.elements);
+      // Long-period/near-parabolic comets (crossingWindowDays set) have no
+      // meaningful "whole orbit" to draw -- just the arc through their
+      // real crossing, sampled by time rather than swept by true anomaly.
+      const pts = body.crossingWindowDays != null
+        ? drawSmallBodyArcByTime(body.elements, body.elements.epochDays - body.crossingWindowDays, body.elements.epochDays + body.crossingWindowDays)
+        : drawSmallBodyOrbitEllipse(body.elements);
       renderedPaths.push({ name: body.name, color: body.meta.color, segments: [pts] });
     });
 
