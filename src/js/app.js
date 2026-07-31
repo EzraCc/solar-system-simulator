@@ -2763,15 +2763,33 @@
     return e.button === 2 || e.shiftKey;
   }
 
+  // Auto-enables free-camera ("Hold camera frame") mode the moment the
+  // user manually pans while a body is tracked and it's currently off --
+  // see freeCameraMode's own comment. Panning used to just be silently
+  // blocked in that case (any offset would be overwritten by the
+  // camera-follow block on the very next frame anyway), rather than doing
+  // what dragging the screen obviously means: "let me move the view
+  // myself now." Does exactly what clicking the toggle switch itself
+  // does, just triggered by the drag gesture instead of requiring the
+  // user to find and click a switch first. Deliberately NOT triggered by
+  // rotating (yaw/pitch) -- rotating while tracked already works fine
+  // without this (the follow block only ever touches camX/camY, so
+  // there's nothing fighting it), and orbiting the camera around a
+  // still-centered tracked body is itself a nice, expected way to look at
+  // it from different angles.
+  function enableFreeCameraFromPan() {
+    if (freeCameraMode) return;
+    freeCameraMode = true;
+    freeCameraSwitch.classList.toggle("on", true);
+    updateURLParams({ hold: "1" });
+  }
+
   canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
   canvas.addEventListener("mousedown", (e) => {
     dragStartX = e.clientX; dragStartY = e.clientY;
     if (dragButtonIsPan(e)) {
-      // Panning is meaningless while the camera is following a locked body
-      // -- UNLESS free-camera ("hold frame") mode is on, which is exactly
-      // what turns the force-follow off (see freeCameraMode's own comment).
-      if (lockedBodyName && !freeCameraMode) return;
+      if (lockedBodyName && !freeCameraMode) enableFreeCameraFromPan();
       isPanning = true;
       camStartX = camX; camStartY = camY;
     } else {
@@ -2829,25 +2847,19 @@
       pitch = pitchStart - dy * 0.006;
       pitch = Math.max(MIN_PITCH, Math.min(MAX_PITCH, pitch));
     } else if (e.touches.length === 2 && touchStartDist) {
-      // Panning while a body is locked/followed is meaningless -- the
-      // camera-follow code re-centers on the tracked body every frame
-      // regardless, so any pan offset here would just fight it. The
-      // mouse path (dragButtonIsPan's mousedown handler above) already
-      // skips starting a pan in that case; two-finger touch pan had no
-      // equivalent guard, so a pinch while locked used to silently
-      // accumulate a camX/camY offset that camera-follow immediately
-      // overrode anyway -- harmless but pointless. Still allow the pinch
-      // itself to zoom either way.
+      // Two-finger pan+zoom. See enableFreeCameraFromPan's own comment --
+      // a pan gesture while tracking auto-enables hold-frame instead of
+      // being silently absorbed by the camera-follow block re-centering
+      // on the very next frame. Zoom (pxPerAU) always applies either way.
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const dist = Math.hypot(dx, dy);
       pxPerAU = Math.max(2, Math.min(20000, touchStartPxPerAU * (dist / touchStartDist)));
-      if (!lockedBodyName || freeCameraMode) {
-        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-        camX = camStartX + (midX - touchMidStartX);
-        camY = camStartY + (midY - touchMidStartY);
-      }
+      if (lockedBodyName && !freeCameraMode) enableFreeCameraFromPan();
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      camX = camStartX + (midX - touchMidStartX);
+      camY = camStartY + (midY - touchMidStartY);
     }
   }, { passive: true });
   canvas.addEventListener("touchend", () => { isRotating = false; isPanning = false; touchStartDist = null; });
@@ -6301,16 +6313,37 @@
     // path the pointer is currently nearest to (see handleHover), wider
     // and translucent so it reads as "this is what a click here selects"
     // without permanently thickening every path and cluttering Broad mode.
+    //
+    // hoveredPathEntry is only ever (re)assigned from a mousemove event
+    // (handleHover), not every frame -- but this block runs every frame,
+    // and renderedPaths is rebuilt from scratch every frame too (fresh
+    // objects, see "renderedPaths = []" above), so hoveredPathEntry itself
+    // is a reference to a PAST frame's object whose .segments are frozen
+    // at wherever they were projected to at that moment. Drawing them
+    // directly would glow a stale, increasingly wrong screen location any
+    // time the camera moves without a new mousemove to refresh it -- most
+    // noticeably while auto-following a tracked body: the glow stays
+    // frozen near the mouse's last real position instead of following the
+    // hovered path to wherever it actually renders now. Re-find THIS
+    // frame's live entry for the same identity instead, and just use its
+    // segments; if it's no longer being rendered at all (e.g. visibility
+    // changed), drop the stale hover state entirely.
     if (hoveredPathEntry) {
-      ctx.save();
-      ctx.strokeStyle = hexWithAlpha(hoveredPathEntry.color, 0.35);
-      ctx.lineWidth = 6;
-      for (const seg of hoveredPathEntry.segments) {
-        ctx.beginPath();
-        seg.forEach(([x, y], k) => { if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
-        ctx.stroke();
+      const liveEntry = renderedPaths.find((p) =>
+        p.name === hoveredPathEntry.name && p.flightKey === hoveredPathEntry.flightKey);
+      if (liveEntry) {
+        ctx.save();
+        ctx.strokeStyle = hexWithAlpha(liveEntry.color, 0.35);
+        ctx.lineWidth = 6;
+        for (const seg of liveEntry.segments) {
+          ctx.beginPath();
+          seg.forEach(([x, y], k) => { if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+          ctx.stroke();
+        }
+        ctx.restore();
+      } else {
+        hoveredPathEntry = null;
       }
-      ctx.restore();
     }
 
     // Lagrange point diamond markers for the active multi-leg flight
