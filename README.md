@@ -48,7 +48,11 @@ reasons.
   asteroid and a dwarf planet).
 - **Scene Framing**: a free-camera mode that stops the camera
   auto-following the tracked body, plus a live zoom/rotation/tracking
-  readout — useful for lining up a specific shot or screenshot.
+  readout — useful for lining up a specific shot or screenshot. Manually
+  panning while a body is tracked turns this on automatically (the same
+  as toggling "Hold camera frame" by hand), since dragging the screen is
+  an unambiguous "let me control the view now"; rotating around a tracked
+  body works freely either way.
 - **Mobile support**: full touch input (rotate/pinch-zoom/pan), a
   slide-out legend drawer, and a full-screen info panel on small screens.
 - **URL permalinks** — see below.
