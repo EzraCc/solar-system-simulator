@@ -1,0 +1,55 @@
+{
+  "key": "stereo_a",
+  "name": "STEREO-A",
+  "rocket": "Delta II 7925-10L",
+  "payload": "STEREO-A observatory (620 kg at launch, incl. propellant)",
+  "status": "En Route",
+  "significance": "Solar flares and coronal mass ejections had only ever been photographed from Earth's own single vantage point, making it impossible to judge a CME's true 3D shape, speed, or whether it was actually headed for Earth until it arrived. STEREO solved this by launching two nearly identical observatories on a shared trajectory, then using a lunar gravity assist to split them into two different heliocentric orbits -- one drifting ahead of Earth, one trailing behind -- so their combined imagery could be triangulated into genuine stereoscopic, 3D views of solar activity, the same principle behind human binocular vision applied to the whole Sun. STEREO-A, the leading spacecraft, has spent nearly two decades pulling steadily further ahead of Earth, at one point reaching the far side of the Sun and providing full 360-degree solar coverage in combination with Earth-based observatories. Its data has been used operationally to give advance warning of Earth-directed space weather, and it directly imaged the entire Sun-to-Earth journey of a CME for the first time.",
+  "statusNote": "NASA mission, launched together with the identical STEREO-B (modeled as a separate flight here, since the two spacecraft diverged onto different real trajectories from the same launch). A shared multi-week Earth-orbit phasing sequence preceded the actual lunar encounter (on the fifth Earth orbit for STEREO-A) -- simplified here as a direct Earth-to-Moon lambert leg, the same approximation this catalog already uses for Nozomi's own lunar flybys, since the spacecraft's physical distance from Earth during that phasing was utterly negligible at the AU scale being modeled. The lunar flyby's exact periapsis altitude isn't published in the sources checked; 5,000 km is a round estimate, matching the same placeholder value used for Nozomi's lunar flybys. STEREO-A's real heliocentric drift orbit (semi-major axis ~0.966 AU, ~347-day period, leading Earth by ~21.65 degrees/year) is anchored through real recorded positions (JPL Horizons, target -234) roughly one orbit apart each -- close enough together that a single Lambert solve between them can't mistake the real multi-orbit drift for a short, wrong-shaped hop, the same technique used throughout this catalog for other long coasts. The mission has continued drifting steadily further ahead of Earth in essentially this same orbit for over a decade beyond where this flight is shown ending (2009-09-15) and remains operational; not modeled leg-by-leg for its full ongoing duration.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Moon",
+      "departDate": "2006-10-26",
+      "arrivalDate": "2006-12-15"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Moon",
+      "date": "2006-12-15",
+      "periapsisKm": 5000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Moon",
+      "toBody": { "fixedPos": [0.292868889602224, 0.9246582581594374, -0.001379333349987893] },
+      "departDate": "2006-12-15",
+      "arrivalDate": "2007-11-15",
+      "_comment": "2007-11-15: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.292868889602224, 0.9246582581594374, -0.001379333349987893] },
+      "toBody": { "fixedPos": [0.4445804179781052, 0.8593599236755199, -0.001034968940262895] },
+      "departDate": "2007-11-15",
+      "arrivalDate": "2008-10-15",
+      "_comment": "2008-10-15: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.4445804179781052, 0.8593599236755199, -0.001034968940262895] },
+      "toBody": { "fixedPos": [0.582706421731497, 0.7678290125666183, -0.0006713360303625115] },
+      "departDate": "2008-10-15",
+      "arrivalDate": "2009-09-15",
+      "_comment": "2009-09-15: real recorded heliocentric position (JPL Horizons, target -234) -- flight shown ending here, see statusNote"
+    }
+  ],
+  "assets": {
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.jpg"
+    }
+  }
+}

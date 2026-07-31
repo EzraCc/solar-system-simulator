@@ -4,6 +4,33 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-07-31 (continued) — Four more real missions: Venus Express, Solar Orbiter, STEREO-A/B
+
+- Audited the mission catalog for gaps against real spaceflight history back
+  to 1988 (the earliest mission already in the catalog) and added four
+  confirmed real missions that were missing: **Venus Express** (ESA, 2005,
+  Venus polar orbiter), **Solar Orbiter** (ESA/NASA, 2020, a chain of Venus
+  gravity assists progressively tilting its orbit out of the ecliptic to
+  image the Sun's poles — the same kind of trajectory story as Ulysses'),
+  and **STEREO-A/B** (NASA, 2006, twin solar observatories split by a lunar
+  gravity assist into heliocentric orbits leading and trailing Earth,
+  modeled as two separate flights since they diverged onto different real
+  trajectories from the same launch).
+- STEREO's near-1-year orbital period (347/387 days) turned out to be
+  right at the edge of a real trap: naive yearly-spaced position waypoints
+  would have swept just PAST a full revolution each leg, which the
+  sweep-angle-only geometry check this catalog's Lambert solver uses can't
+  tell apart from a much shorter, wrong-shaped hop (it's inherently
+  ambiguous mod 360 degrees). Verified empirically before committing to the
+  data: real JPL Horizons waypoints spaced safely under one orbital period
+  apart reproduce the real, published orbital periods to within ~0.6%.
+- Considered several more missions found during the audit (CONTOUR, a
+  failed 2002 comet mission; long-duration Sun-Earth L1 observatories
+  WIND/SOHO) and left them out as a deliberate scope call, not an omission.
+  Lunar-only missions (Chang'e, Chandrayaan, Clementine, etc.) remain
+  entirely out of scope for now, planned as a future expansion once
+  planet-level zoom exists.
+
 ## 2026-07-31 — Locking a body now actually filters flight paths; fixed a stale hover glow
 
 - Fixed locking a body (e.g. clicking Earth) doing nothing to narrow

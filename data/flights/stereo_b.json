@@ -1,0 +1,55 @@
+{
+  "key": "stereo_b",
+  "name": "STEREO-B",
+  "rocket": "Delta II 7925-10L",
+  "payload": "STEREO-B observatory (620 kg at launch, incl. propellant)",
+  "status": "Lost (2014)",
+  "significance": "STEREO-B was the trailing half of NASA's twin stereoscopic solar observatory: launched alongside the identical STEREO-A, then sent the opposite direction by its own later lunar gravity assist to drift behind Earth rather than ahead of it, so the pair's combined imagery could triangulate the true 3D shape and trajectory of coronal mass ejections for the first time, rather than the single, foreshortened view available from Earth alone. Together with STEREO-A the two spacecraft eventually reached opposite sides of the Sun, giving unprecedented full 360-degree simultaneous coverage of solar activity. STEREO-B's own run ended after less than eight years when a planned reset triggered an uncontrolled spin it never fully recovered from, but its data -- combined with STEREO-A's, still ongoing -- remains part of the foundation for how CMEs headed toward Earth are tracked and characterized today.",
+  "statusNote": "NASA mission, launched together with the identical STEREO-A (modeled as a separate flight here, since the two spacecraft diverged onto different real trajectories from the same launch, with STEREO-B needing an additional lunar orbit before its own gravity-assist encounter on 2007-01-21). A shared multi-week Earth-orbit phasing sequence preceded the actual lunar encounter -- simplified here as a direct Earth-to-Moon lambert leg, the same approximation this catalog already uses for Nozomi's own lunar flybys, since the spacecraft's physical distance from Earth during that phasing was utterly negligible at the AU scale being modeled. The lunar flyby's exact periapsis altitude isn't published in the sources checked; 5,000 km is a round estimate, matching the same placeholder value used for Nozomi's lunar flybys. STEREO-B's real heliocentric drift orbit (semi-major axis ~1.039 AU, ~387-day period, trailing Earth by ~22 degrees/year) is anchored through real recorded positions (JPL Horizons, target -235) roughly one orbit apart each -- close enough together that a single Lambert solve between them can't mistake the real multi-orbit drift for a short, wrong-shaped hop, the same technique used throughout this catalog for other long coasts. The flight is shown through 2010-02-19, well before STEREO-B actually lost contact (2014-10-01, during a planned reset that triggered an unrecoverable ~3 deg/second spin) -- the intervening years continued in essentially this same drifting orbit and aren't modeled leg-by-leg.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Moon",
+      "departDate": "2006-10-26",
+      "arrivalDate": "2007-01-21"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Moon",
+      "date": "2007-01-21",
+      "periapsisKm": 5000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Moon",
+      "toBody": { "fixedPos": [-0.2894602652099379, 0.9634546225231382, 0.003852425544358728] },
+      "departDate": "2007-01-21",
+      "arrivalDate": "2008-01-31",
+      "_comment": "2008-01-31: real recorded heliocentric position (JPL Horizons, target -235)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.2894602652099379, 0.9634546225231382, 0.003852425544358728] },
+      "toBody": { "fixedPos": [-0.0510804540037838, 1.008468918696073, 0.004602221123844576] },
+      "departDate": "2008-01-31",
+      "arrivalDate": "2009-02-09",
+      "_comment": "2009-02-09: real recorded heliocentric position (JPL Horizons, target -235)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.0510804540037838, 1.008468918696073, 0.004602221123844576] },
+      "toBody": { "fixedPos": [0.1913630647595026, 0.9948981042056949, 0.005078491006720718] },
+      "departDate": "2009-02-09",
+      "arrivalDate": "2010-02-19",
+      "_comment": "2010-02-19: real recorded heliocentric position (JPL Horizons, target -235) -- flight shown ending here, see statusNote"
+    }
+  ],
+  "assets": {
+    "rocket": {
+      "title": "Delta II",
+      "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
+      "localImage": "images/rockets/delta_ii.jpg"
+    }
+  }
+}

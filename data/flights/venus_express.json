@@ -1,0 +1,20 @@
+{
+  "key": "venus_express",
+  "name": "Venus Express",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "2005-11-09",
+  "arrival": "2006-04-11",
+  "rocket": "Soyuz-FG/Fregat",
+  "payload": "Venus Express orbiter (1,270 kg at launch, incl. propellant)",
+  "status": "Success",
+  "significance": "ESA's first mission to Venus was built to do something no prior Venus probe had attempted: watch the planet's atmosphere continuously, for years, rather than in the brief snapshots Venera, Pioneer Venus, and Magellan had managed. From a polar orbit, its seven instruments tracked cloud motion, temperature, and chemistry across the whole disk simultaneously, discovering a huge double atmospheric vortex circling the south pole, confirming that Venus's clouds still (as first seen by Mariner 10) circle the planet in only four days despite the solid planet's own 243-day rotation, and detecting an unexpected ozone layer high in the atmosphere in 2011. It also settled a long-standing question by confirming lightning on Venus -- more frequent than on Earth -- and built the first temperature map of the southern hemisphere. Nine years of continuous, same-instrument observation, far beyond its planned two-year mission, turned Venus Express's data into a working comparison case for how a world nearly Earth's twin in size ended up with a runaway greenhouse instead of a temperate climate.",
+  "statusNote": "Direct Earth-Venus transfer, no gravity assists -- three trajectory-correction maneuvers en route (2005-11-11, 2006-02-24, 2006-03-29) aren't separately modeled, the same simplification this catalog already uses for other missions' minor course trims. Venus orbit insertion (2006-04-11) initially captured into a highly elliptical 400x330,000 km, 9-day orbit; seven further burns over the following month lowered it to the operational 460x63,000 km, 24-hour polar orbit (periapsis near 80 deg N) by 2006-05-07 -- not modeled as separate legs, matching how this catalog treats other missions' post-arrival orbit-shaping sequences when the interesting story is the interplanetary transfer itself. Mission ended 2014-11-28 when the spacecraft lost contact after exhausting its propellant during a second aerobraking experiment; it re-entered Venus's atmosphere in late January/early February 2015.",
+  "assets": {
+    "rocket": {
+      "title": "Soyuz-FG",
+      "infoUrl": "https://en.wikipedia.org/wiki/Soyuz-FG",
+      "localImage": "images/rockets/soyuz_fg.jpg"
+    }
+  }
+}

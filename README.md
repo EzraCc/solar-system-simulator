@@ -1,6 +1,6 @@
 # Solar System Simulator
 
-A browser-based, real-physics 3D orbital mechanics visualizer covering 53
+A browser-based, real-physics 3D orbital mechanics visualizer covering 57
 real interplanetary missions — from Phobos 1 (1988) to MMX and Tianwen-2 —
 plus the full solar system (planets, major moons, dwarf planets, asteroids,
 and comets), rendered with a from-scratch Keplerian/Lambert physics engine.

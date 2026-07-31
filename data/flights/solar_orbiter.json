@@ -1,0 +1,122 @@
+{
+  "key": "solar_orbiter",
+  "name": "Solar Orbiter",
+  "rocket": "Atlas V 411",
+  "payload": "Solar Orbiter (1,800 kg at launch)",
+  "status": "En Route",
+  "significance": "Solar Orbiter was built to do what no prior solar mission could: get close-up, high-resolution images of the Sun's surface AND look down on its polar regions from well outside the ecliptic plane, at the same time. Ulysses had studied the Sun's poles in situ decades earlier but carried no camera capable of imaging them; Parker Solar Probe flies far closer to the Sun but stays confined near the ecliptic. Solar Orbiter instead uses a long chain of Venus gravity assists to progressively tilt its orbit out of the ecliptic while also tightening its perihelion to under a third of an AU, combining remote-sensing imagers with in-situ instruments sampling the same solar wind it is photographing the source of. Its early images already resolved 'campfires' -- small-scale coronal brightenings across the Sun's surface -- and it has directly linked specific solar wind streams measured in situ back to the coronal holes they visibly originated from, a connection previous missions could only infer indirectly.",
+  "statusNote": "ESA-led mission with NASA participation. Trajectory design uses repeated Venus gravity assists in resonant orbits to progressively raise orbital inclination out of the ecliptic (reaching 24 degrees by the end of the nominal mission, potentially 33 degrees in an extended mission) while also lowering perihelion toward roughly 0.29 AU -- a similar goal to Ulysses' single Jupiter flyby, achieved instead through many smaller repeated Venus encounters plus one early Earth flyby. Flybys after mid-2026 use ESA's published mission-design dates for the nominal and potential extended mission, not yet-observed telemetry.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "2020-02-10",
+      "arrivalDate": "2020-12-27"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2020-12-27",
+      "periapsisKm": 7500
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2020-12-27",
+      "arrivalDate": "2021-08-09"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2021-08-09",
+      "periapsisKm": 7995
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Earth",
+      "departDate": "2021-08-09",
+      "arrivalDate": "2021-11-27"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "2021-11-27",
+      "periapsisKm": 460
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "2021-11-27",
+      "arrivalDate": "2022-09-04"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2022-09-04",
+      "periapsisKm": 6000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2022-09-04",
+      "arrivalDate": "2025-02-18"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2025-02-18",
+      "periapsisKm": 379
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2025-02-18",
+      "arrivalDate": "2026-12-24"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2026-12-24",
+      "periapsisKm": 950
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2026-12-24",
+      "arrivalDate": "2028-03-18"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2028-03-18",
+      "periapsisKm": 350
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Venus",
+      "departDate": "2028-03-18",
+      "arrivalDate": "2030-09-03"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "2030-09-03",
+      "periapsisKm": 2650
+    }
+  ],
+  "assets": {
+    "rocket": {
+      "title": "Atlas V",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
+      "localImage": "images/rockets/atlas_v.png"
+    }
+  }
+}
