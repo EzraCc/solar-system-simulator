@@ -1019,16 +1019,49 @@
   }
   body.mobile #camera-controls button { padding: 7px 10px; font-size: 12px; }
 
-  /* Anchored to the TOP on mobile rather than stacked onto the already-
-     crowded bottom-right column -- #bottom-right-controls + #camera-
-     controls already reach ~226-296px from the bottom there (see the
-     measured 226px comment above). 184px clears #scale-toggle-panel
-     (top:16px, right:16px, up to 3 rows) and #legend-drawer-toggle
-     (top:16px, left:16px, 44px) -- verified live via Playwright at
-     common mobile breakpoints (see mobile_verify.py). */
+  /* Bottom-anchored, stacked directly above #camera-controls -- previously
+     top-anchored (184px, clearing the top toggle row), but that sat
+     directly over the main 3D view for the whole time a flight was
+     selected, right when the view is most likely to actually be in use.
+     Stacking it into the bottom column instead reclaims that entire top
+     band for the view, and nets a LARGER clear viewing area even though
+     the bottom column gets taller: selecting a flight always locks its
+     spacecraft too (see selectFlight), so #camera-controls is reliably in
+     its full 2-button state (68px) whenever the scrubber can be visible
+     at all -- no need to separately handle its collapsed 1-button height
+     here. 306px = #camera-controls' own bottom (226px, see its comment)
+     + its height (68px) + a 12px margin, verified against the real
+     rendered gap live in a browser (Playwright) rather than assumed.
+     Left/right unchanged (full width) -- deliberately NOT narrowed to
+     match the narrower right-anchored column below it, since the drag
+     track itself is more usable wider, and a full-width panel stacked
+     above a narrower one is a normal, unremarkable layout. */
   body.mobile #flight-scrubber-panel {
-    top: 184px; bottom: auto; left: 12px; right: 12px; transform: none;
+    top: auto; bottom: 306px; left: 12px; right: 12px; transform: none;
     width: auto;
   }
   body.mobile .scrubber-marker { padding: 14px; margin: -14px; }
+
+  /* Short landscape (phone-in-landscape, ~350-430px tall -- distinguished
+     from tablet landscape, which stays on the stacked-above layout above,
+     by height alone via this plain media query, since body.mobile.
+     landscape itself doesn't distinguish phone from tablet) has nowhere
+     near enough vertical room to also stack the scrubber above #camera-
+     controls + #bottom-right-controls: that column alone already reaches
+     up to ~378px in a 390px-tall viewport, and stacking the scrubber on
+     top of it collided with the top toggle row (#legend-drawer-toggle/
+     #settings-drawer-toggle) -- confirmed live via Playwright before
+     landing this rule. Landscape has the opposite problem portrait does
+     though: plenty of unused WIDTH (the button column is only ~300px of
+     an 800px+-wide screen). So here specifically, sit the scrubber to the
+     LEFT of that column instead of above it -- same bottom row, not a
+     new one. 336px = button column's own ~300px width + 12px margin +
+     24px gap, giving left+right anchors the same way the portrait rule
+     above does (no manual width calc needed). */
+  @media (max-height: 500px) {
+    body.mobile.landscape #flight-scrubber-panel {
+      top: auto; bottom: 12px; left: 12px; right: 336px; transform: none;
+      width: auto;
+    }
+  }
 

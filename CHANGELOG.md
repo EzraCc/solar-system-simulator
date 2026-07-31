@@ -4,6 +4,35 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-07-31 (continued) — Mobile flight scrubber moved out of the main view
+
+- The flight scrubber (playhead) was top-anchored on mobile, sitting
+  directly over the main 3D view for the entire time a flight was
+  selected -- right when the view is most likely to actually be in use.
+  Moved it into the bottom control column instead, stacked above "Reset
+  view"/"Stop tracking": since selecting a flight always locks its
+  spacecraft too, that column is reliably in its full 2-button height
+  whenever the scrubber can be visible at all, so no extra state handling
+  was needed to stack them correctly. Net effect is a LARGER clear
+  viewing area than before, not just a relocated block, since the old top
+  band is now fully reclaimed rather than just traded for a bottom one.
+- Phone-landscape specifically (~390px tall) didn't have room to also
+  stack the scrubber above that column without colliding with the top
+  toggle buttons -- confirmed live via Playwright before landing a fix,
+  not assumed. Landscape has the opposite problem portrait does (lots of
+  spare width, little height), so there specifically the scrubber sits to
+  the LEFT of the button column instead of above it, using a plain
+  `max-height` media query to distinguish phone-landscape from
+  tablet-landscape (which has plenty of room and keeps the stacked-above
+  layout).
+- Verified across all 5 of this project's standard mobile breakpoints
+  (iPhone SE, modern phone portrait/landscape, iPad Air portrait/
+  landscape): no overlaps between the scrubber and any other UI element,
+  fully within the viewport at each size. Also re-verified that an
+  earlier fix (touch gestures starting on the scrubber's own dead space
+  correctly passing through to the canvas underneath) still holds at the
+  new position. Full mobile_verify.py suite passes.
+
 ## 2026-07-31 (continued) — Coordinate reference planes + galactic-motion arrow at Sol
 
 - Added a new overlay shown only while Sol itself is locked: the three
