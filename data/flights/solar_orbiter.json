@@ -113,6 +113,11 @@
     }
   ],
   "assets": {
+    "spacecraft": {
+      "title": "Solar Orbiter",
+      "infoUrl": "https://en.wikipedia.org/wiki/Solar_Orbiter",
+      "localImage": "images/missions/solar_orbiter/spacecraft.jpg"
+    },
     "rocket": {
       "title": "Atlas V",
       "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",

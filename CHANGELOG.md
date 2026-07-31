@@ -30,6 +30,11 @@ published package), so entries are dated instead.
   Lunar-only missions (Chang'e, Chandrayaan, Clementine, etc.) remain
   entirely out of scope for now, planned as a future expansion once
   planet-level zoom exists.
+- Sourced real spacecraft photos (official ESA/NASA renderings, since
+  none of these four were ever photographed in flight) for all four new
+  missions, closing the gap this audit found: every mission in the
+  catalog now has both a spacecraft and a launch-vehicle image, with no
+  broken image references anywhere in the data.
 
 ## 2026-07-31 — Locking a body now actually filters flight paths; fixed a stale hover glow
 
