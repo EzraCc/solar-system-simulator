@@ -118,6 +118,31 @@
   const SUN_RADIUS_KM = 695700;
   const SUN_COLOR = "#ffd27a";
 
+  // Unit vector, in this app's own heliocentric ecliptic J2000 frame, for
+  // the real direction the solar system orbits the Milky Way's center at
+  // (~220 km/s) -- shown as a static reference arrow from Sol, see
+  // drawSolOverlay. This is NOT derived from the simulator's own physics:
+  // Sol sits fixed at the origin with zero velocity here (a heliocentric
+  // model has nothing else to define "the Sun's motion" against), so this
+  // is external astronomical data, not a computed quantity.
+  //
+  // Derivation: the direction of the Sun's galactic orbital motion is, by
+  // the definition of the IAU 1958 galactic coordinate system, galactic
+  // longitude l=90 deg, latitude b=0 deg (perpendicular to the direction
+  // of the galactic center at l=0, in the galactic plane, in the sense of
+  // rotation). Converted galactic -> equatorial J2000 using the standard
+  // IAU reference constants (north galactic pole RA 192.85948 deg / Dec
+  // 27.12825 deg, galactic longitude of the north celestial pole
+  // 122.93192 deg), giving RA ~21h12m, Dec ~+48.3 deg -- near the star
+  // Deneb in Cygnus, matching the commonly-cited description of this
+  // direction. Then rotated equatorial -> ecliptic J2000 by the mean
+  // obliquity (23.4392911 deg). Ecliptic latitude comes out to ~+59.6
+  // deg -- a useful sanity check on its own, since it confirms the well
+  // known fact that the galactic plane is inclined roughly 60 deg to the
+  // ecliptic (a direction lying IN the galactic plane should sit at high
+  // ecliptic latitude, and does).
+  const GALACTIC_MOTION_DIR_ECLIPTIC = [0.4941094278755832, -0.11099073358466072, 0.8622858750685893];
+
   const PLANET_ORDER = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"];
 
   /* =========================================================================
@@ -2502,6 +2527,93 @@
       ctx.setLineDash([]);
       ctx.restore();
     });
+  }
+
+  // Translucent filled quadrilateral for one of the three coordinate
+  // reference planes (see drawSolOverlay) -- toWorld(u, v) maps 2D
+  // in-plane coordinates to a 3D world position, so the same helper draws
+  // any of the three planes just by swapping which axis is held at 0.
+  // Orthographic projection (worldToScreen never uses depth for scale)
+  // means a flat square in 3D always projects to a flat quadrilateral in
+  // 2D, so a single fill() traces it correctly from any camera angle.
+  function drawReferencePlane(toWorld, halfExtentAU, color) {
+    const corners = [
+      toWorld(-halfExtentAU, -halfExtentAU), toWorld(halfExtentAU, -halfExtentAU),
+      toWorld(halfExtentAU, halfExtentAU), toWorld(-halfExtentAU, halfExtentAU),
+    ].map(([x, y, z]) => worldToScreen(x, y, z));
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.12;
+    ctx.beginPath();
+    corners.forEach(([sx, sy], k) => { if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy); });
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 0.35;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Draws a straight world-space arrow (line + a small 2D arrowhead at the
+  // tip) from `fromAU` toward `fromAU + dir*lengthAU`, with a text label
+  // past the tip. The arrowhead is built in SCREEN space from the
+  // projected shaft direction, not world space -- a 3D cone/wedge would
+  // foreshorten unpredictably under this app's rotation and isn't worth
+  // the complexity for a purely schematic indicator.
+  function drawWorldArrow(fromAU, dir, lengthAU, color, label) {
+    const tip = [fromAU[0] + dir[0]*lengthAU, fromAU[1] + dir[1]*lengthAU, fromAU[2] + dir[2]*lengthAU];
+    const [sx1, sy1] = worldToScreen(fromAU[0], fromAU[1], fromAU[2]);
+    const [sx2, sy2] = worldToScreen(tip[0], tip[1], tip[2]);
+    const ang = Math.atan2(sy2 - sy1, sx2 - sx1);
+    const headLen = 9;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(sx1, sy1);
+    ctx.lineTo(sx2, sy2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(sx2, sy2);
+    ctx.lineTo(sx2 - headLen*Math.cos(ang - Math.PI/7), sy2 - headLen*Math.sin(ang - Math.PI/7));
+    ctx.lineTo(sx2 - headLen*Math.cos(ang + Math.PI/7), sy2 - headLen*Math.sin(ang + Math.PI/7));
+    ctx.closePath();
+    ctx.fill();
+    if (label) {
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = ang > -Math.PI/2 && ang < Math.PI/2 ? 'left' : 'right';
+      ctx.fillText(label, sx2 + (ang > -Math.PI/2 && ang < Math.PI/2 ? 6 : -6), sy2 + 4);
+    }
+    ctx.restore();
+  }
+
+  // Shown only while Sol itself is locked: the three coordinate reference
+  // planes of this app's own heliocentric ecliptic J2000 frame (XY, the
+  // ecliptic itself; XZ; YZ), colored by the conventional X=red/Y=green/
+  // Z=blue axis scheme, plus a static arrow along
+  // GALACTIC_MOTION_DIR_ECLIPTIC showing the real direction the solar
+  // system orbits the galactic center -- a fixed astronomical fact, not
+  // something derived from Sol's own (deliberately zero, in this
+  // heliocentric model) velocity. Answers "what is 0 along each axis"
+  // visually: the three lines ARE the axes, meeting at the origin, which
+  // is exactly where Sol itself sits.
+  function drawSolOverlay() {
+    if (lockedBodyName !== "Sol") return;
+    const halfExtentAU = 3;
+    const axisLenAU = 3.6;
+    const AXIS_X_COLOR = "#ff6b6b", AXIS_Y_COLOR = "#5ce07a", AXIS_Z_COLOR = "#6ba3ff";
+
+    drawReferencePlane((u, v) => [u, v, 0], halfExtentAU, AXIS_Z_COLOR); // XY (ecliptic), normal = Z
+    drawReferencePlane((u, v) => [u, 0, v], halfExtentAU, AXIS_Y_COLOR); // XZ, normal = Y
+    drawReferencePlane((u, v) => [0, u, v], halfExtentAU, AXIS_X_COLOR); // YZ, normal = X
+
+    drawWorldArrow([0, 0, 0], [1, 0, 0], axisLenAU, AXIS_X_COLOR, "X (vernal equinox, J2000)");
+    drawWorldArrow([0, 0, 0], [0, 1, 0], axisLenAU, AXIS_Y_COLOR, "Y");
+    drawWorldArrow([0, 0, 0], [0, 0, 1], axisLenAU, AXIS_Z_COLOR, "Z (ecliptic north)");
+
+    drawWorldArrow([0, 0, 0], GALACTIC_MOTION_DIR_ECLIPTIC, axisLenAU, "#e8c15a", "Solar system's motion around the galactic center (~220 km/s)");
   }
 
   // Generic satellite position relative to its primary: returns the
@@ -6351,6 +6463,10 @@
 
     // SOI boundary circles for flyby planets in the active flight
     drawSOIOverlay(daysSinceEpoch);
+
+    // Coordinate reference planes + galactic-motion arrow, only while Sol
+    // itself is locked
+    drawSolOverlay();
 
     // ---- Pass 2: project everything to screen space now that the camera
     // (including any follow-correction above) is finalized for this frame.

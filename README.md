@@ -53,6 +53,11 @@ reasons.
   as toggling "Hold camera frame" by hand), since dragging the screen is
   an unambiguous "let me control the view now"; rotating around a tracked
   body works freely either way.
+- **Coordinate reference overlay**: clicking Sol shows the three XY/XZ/YZ
+  planes of this app's own coordinate system (see "Coordinate system"
+  below) plus a static arrow for the real direction the solar system
+  orbits the Milky Way's center — a fixed astronomical fact, not derived
+  from Sol's own (deliberately zero, in a heliocentric model) velocity.
 - **Mobile support**: full touch input (rotate/pinch-zoom/pan), a
   slide-out legend drawer, and a full-screen info panel on small screens.
 - **URL permalinks** — see below.
@@ -121,6 +126,30 @@ docs/                    Design specs for prior feature extensions
   elements at a given epoch and a `types` array (e.g.
   `['asteroid', 'dwarf_planet']` for Ceres) rather than a single fixed
   category.
+
+## Coordinate system
+
+Every position in this app is in a **heliocentric ecliptic J2000** frame —
+the standard used throughout real ephemeris data (JPL, Standish), not
+something invented for this project:
+
+- **Origin (0, 0, 0)**: the Sun's center, hardcoded fixed there. This is a
+  heliocentric model, not barycentric — the Sun doesn't move, not even
+  the small real wobble planetary gravity actually causes.
+- **Z = 0 plane**: the ecliptic (Earth's own orbital plane) at the
+  J2000.0 epoch (2000-01-01 12:00 TT). +Z points toward ecliptic north.
+- **X axis (0° longitude)**: the J2000.0 vernal equinox ("First Point of
+  Aries") — frozen at its year-2000 orientation rather than tracking the
+  real ~26,000-year precession, the standard convention modern ephemeris
+  data uses.
+- **Y axis**: 90° from X within the ecliptic plane, completing a
+  right-handed system.
+
+Click Sol in the app to see these three planes and axes drawn directly,
+along with a static arrow for the real direction the solar system orbits
+the Milky Way's center — a fixed astronomical fact (not derived from
+Sol's own velocity, which is exactly zero in this heliocentric model by
+construction).
 
 ## Physics notes
 

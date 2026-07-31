@@ -4,6 +4,25 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-07-31 (continued) — Coordinate reference planes + galactic-motion arrow at Sol
+
+- Added a new overlay shown only while Sol itself is locked: the three
+  XY/XZ/YZ reference planes of this app's own heliocentric ecliptic J2000
+  coordinate frame (colored by the conventional X=red/Y=green/Z=blue axis
+  scheme), plus a static arrow showing the real direction the solar
+  system orbits the Milky Way's center (~220 km/s). The arrow's direction
+  is external astronomical data, not something derived from the sim's own
+  physics — Sol sits fixed at the origin with exactly zero velocity in a
+  heliocentric model, so there's no in-model motion to compute an arrow
+  from. Direction verified via the standard IAU galactic-coordinate
+  conversion (RA ~21h12m, Dec ~+48.3°, near Deneb in Cygnus — matching
+  the commonly-cited description of this direction), landing at +59.6°
+  ecliptic latitude, consistent with the well-known ~60° tilt between the
+  galactic plane and the ecliptic.
+- Documented the coordinate system itself in the README (origin, axis
+  directions, what "J2000" freezes) — this overlay is the visual answer
+  to "what is 0 along each axis."
+
 ## 2026-07-31 (continued) — Four more real missions: Venus Express, Solar Orbiter, STEREO-A/B
 
 - Audited the mission catalog for gaps against real spaceflight history back
