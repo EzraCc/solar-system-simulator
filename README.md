@@ -71,11 +71,8 @@ reasons.
   **scroll** to zoom.
 - **Click** a body, orbit line, or flight path to select/track it.
 - **Space** to play/pause. Playback speed is adjustable via the slider, or
-  by clicking either the "Nx" or "N (yr/min)" readout to type a value
-  directly (e.g. `2`, `-0.5`) — both express the same number, since this
-  app defines a year as exactly 365.25 days, so there's nothing to convert
-  between them; they're shown as two clickable labels purely so you can
-  type in whichever unit you're already thinking in.
+  by clicking the "N yr/min" readout to type a value directly (e.g. `2`,
+  `-0.5`) — years of simulated time per real minute.
 - **`` ` `` (backtick)** toggles the Scene Framing readout.
 
 ## URL parameters

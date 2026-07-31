@@ -4,6 +4,17 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-07-31 (continued) — Simplified the speed control to one field
+
+- Replaced the two clickable "Nx"/"N (yr/min)" speed chips with a single
+  "N yr/min" field. They were always the same underlying number anyway
+  (this app defines a year as exactly 365.25 days), so having two
+  separately-editable copies of it added UI clutter and interaction
+  complexity (field-switching, exclusion rules for the click-away
+  handler) without adding anything a user could actually do differently.
+  Considerably simplified the underlying JS as a result -- no more
+  per-field state tracking, just one editable chip.
+
 ## 2026-07-31 (continued) — Clicking a body no longer shows its flights; mobile controls consolidated further
 
 - Clicking a plain body or small body (as opposed to clicking a flight,
