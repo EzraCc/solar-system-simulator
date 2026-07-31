@@ -2716,11 +2716,41 @@
   // full-screen modal. Widened to comfortably cover landscape tablet
   // widths generally (up to iPad Pro 12.9" landscape, ~1366px).
   const MOBILE_LAYOUT_QUERY = "(max-width: 820px), (pointer: coarse) and (max-width: 1366px)";
+
+  // Moves the actual #camera-controls DOM node into the speed row on
+  // mobile (folding "Reset view"/"Stop tracking" into the same row as the
+  // speed controls, freeing up the vertical space its own separate
+  // stacked block used to need), and back to its original spot -- right
+  // before #zoom-hint, its markup position in index.html -- on desktop.
+  // NOT done with CSS alone: .panel's backdrop-filter creates a new
+  // containing block for position:fixed descendants (a real, easy-to-miss
+  // CSS gotcha, not specific to this file), so simply nesting
+  // #camera-controls inside #time-panel (also a .panel) in the markup
+  // broke its desktop position -- position:fixed started resolving
+  // against that small panel instead of the viewport. Actually moving the
+  // node keeps desktop's copy outside any .panel-classed ancestor, same
+  // as it always was, while still letting mobile achieve genuine flex-row
+  // membership (needs to be a literal DOM child of the row to participate
+  // in its layout at all -- display:contents on #camera-controls itself,
+  // see its own CSS, makes its two buttons join that row directly once
+  // it's actually there).
+  const cameraControlsEl = document.getElementById("camera-controls");
+  const speedRowEl = document.getElementById("speed-row");
+  const zoomHintEl = document.getElementById("zoom-hint");
+  function relocateCameraControls() {
+    if (isMobileLayout) {
+      if (cameraControlsEl.parentElement !== speedRowEl) speedRowEl.appendChild(cameraControlsEl);
+    } else if (cameraControlsEl.parentElement !== zoomHintEl.parentElement || cameraControlsEl.nextElementSibling !== zoomHintEl) {
+      zoomHintEl.parentElement.insertBefore(cameraControlsEl, zoomHintEl);
+    }
+  }
+
   function updateMobileLayoutMode() {
     isMobileLayout = window.matchMedia(MOBILE_LAYOUT_QUERY).matches;
     isLandscapeMobile = isMobileLayout && window.matchMedia("(orientation: landscape)").matches;
     document.body.classList.toggle("mobile", isMobileLayout);
     document.body.classList.toggle("landscape", isLandscapeMobile);
+    relocateCameraControls();
   }
 
   function resize() {
@@ -4523,27 +4553,23 @@
   // flight on every frame, so it must never trigger the expensive Lambert
   // solve. Only date arithmetic happens here; the solve happens later,
   // only for flights this function actually returns true for.
+  // Deliberately does NOT key off lockedBodyName at all -- clicking a
+  // plain body/small body (as opposed to clicking a FLIGHT, or a
+  // "Missions here"/"Destinations" link, either of which calls
+  // selectFlight) is not itself a request to see anything's path.  Those
+  // links already surface exactly which missions relate to a body without
+  // needing the canvas to also auto-show their paths, and separates "what
+  // touches this body" (informational, in the panel) from "what's drawn
+  // right now" (deliberately either explicitly selected, or just
+  // genuinely happening) -- this used to also treat a locked body as an
+  // implicit filter/reveal (narrower in Broad mode, the ONLY way anything
+  // showed at all in Focused mode), which made clicking a body feel like
+  // it was doing two different, not-obviously-related things at once.
   function isFlightVisible(key, daysSinceEpoch) {
     if (selectedFlightKey === key) return true;
-    // Both branches below check the SAME thing when a body is locked --
-    // is this flight actually relevant to it (a flyby, an orbit-insertion/
-    // loiter stop, or its true final destination) -- via
-    // getFlightRelevantBodies, deliberately narrower than
-    // getFlightDestinations (which also counts the LAUNCH body, and is
-    // used for the info panel's own broader "Destinations" list where
-    // that's appropriate). Without this narrower check, "launched from
-    // Earth years ago, now cruising to Jupiter" would count as "relevant
-    // to Earth" just because Earth is almost every real mission's launch
-    // site -- locking Earth would then still show nearly everything
-    // currently in transit, which is exactly the "clicking Earth does
-    // nothing" bug this fixes. They only differ in what happens with
-    // NOTHING locked: Focused mode hides everything; Broad mode falls
-    // back to its own definition, "everything currently in transit."
-    if (sceneVisibilityMode === "focused") {
-      if (!lockedBodyName) return false;
-      return getFlightRelevantBodies(key).includes(lockedBodyName);
-    }
-    if (lockedBodyName && !getFlightRelevantBodies(key).includes(lockedBodyName)) return false;
+    // Focused mode: nothing else gets a "merely in transit" pass -- an
+    // explicit selection is the only way in.
+    if (sceneVisibilityMode === "focused") return false;
     const { launchDays, arrivalDays } = getFlightDates(key);
     return daysSinceEpoch >= launchDays && daysSinceEpoch <= arrivalDays;
   }
@@ -4978,36 +5004,6 @@
     // same display name "Earth", which a plain Set on rawKeys alone
     // wouldn't catch.
     const names = new Set();
-    rawKeys.forEach((k) => {
-      const name = resolveBodyKeyName(k);
-      if (name) names.add(name);
-    });
-    return [...names];
-  }
-
-  // Narrower than getFlightDestinations -- deliberately EXCLUDES the
-  // launch body, keeping only gravity-assist flybys, orbit-insertion/
-  // loiter stops, and the flight's TRUE final destination (via
-  // flightEndpoints, the same "real endpoint, not an intermediate
-  // waypoint" logic getMissionsToBody already uses). Used specifically
-  // for narrowing flight-PATH visibility when a body is locked (see
-  // isFlightVisible) -- "launched from Earth years ago, now cruising to
-  // Jupiter" shouldn't count as "relevant to Earth" the way an actual
-  // flyby or destination does, even though getFlightDestinations (used
-  // for the info panel's own "Destinations" list, where launch IS worth
-  // showing) rightly includes it there.
-  function getFlightRelevantBodies(key) {
-    const raw = FLIGHTS_RAW[key];
-    const rawKeys = new Set();
-    if (isMultiLeg(raw)) {
-      raw.legs.forEach((leg) => {
-        if (leg.type === 'gravity_assist') rawKeys.add(leg.body);
-        else if (leg.type === 'geocentric_orbit') rawKeys.add(leg.primaryBody);
-        else if (leg.type === 'loiter') rawKeys.add(leg.location);
-      });
-    }
-    rawKeys.add(flightEndpoints(raw).destinationBody);
-    const names = new Set(); // see getFlightDestinations' own comment on why by-name, not just by-raw-key
     rawKeys.forEach((k) => {
       const name = resolveBodyKeyName(k);
       if (name) names.add(name);

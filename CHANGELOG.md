@@ -4,6 +4,34 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-07-31 (continued) — Clicking a body no longer shows its flights; mobile controls consolidated further
+
+- Clicking a plain body or small body (as opposed to clicking a flight,
+  or a "Missions here"/"Destinations" link) no longer affects which
+  flight paths show on canvas at all. The rule is now simply: a flight
+  shows if it's explicitly selected, or (Broad mode only) if it's
+  currently in transit for the simulated date -- Focused mode shows only
+  what's explicitly selected, full stop. This replaces a change from
+  earlier the same day that made locking a body narrow (Broad) or reveal
+  (Focused, pre-existing before that change) related flight paths --
+  discovering and selecting a relevant mission is still fully possible
+  via the "Missions here"/"Destinations" links in a body's info panel,
+  it just no longer happens as an automatic side effect of merely
+  clicking the body itself. Removed the now-unused getFlightRelevantBodies.
+- Folded "Reset view"/"Stop tracking" into the same row as the speed
+  selector on mobile, removing their own separate stacked block entirely
+  and letting the flight scrubber (moved into the bottom column earlier
+  today) drop further toward the true bottom edge, freeing up more
+  viewing space still. Caught a real, easy-to-miss CSS gotcha before it
+  shipped: nesting #camera-controls directly in the markup broke its
+  desktop floating position, because `.panel`'s `backdrop-filter` creates
+  a new containing block for `position:fixed` descendants -- its
+  position:fixed started resolving against the small speed-row panel
+  instead of the viewport. Fixed by actually moving the DOM node via JS
+  at the mobile breakpoint (and back on return to desktop) instead of
+  relying on CSS alone, verified robust to repeated resize toggling
+  (exactly one node, correctly restored each time, zero console errors).
+
 ## 2026-07-31 (continued) — Mobile flight scrubber moved out of the main view
 
 - The flight scrubber (playhead) was top-anchored on mobile, sitting

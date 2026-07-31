@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=36">
+<link rel="stylesheet" href="src/css/style.css?v=38">
 </head>
 <body>
 
@@ -108,7 +108,19 @@
 
 <div id="bottom-right-controls">
   <div class="panel" id="time-panel">
-    <div class="row">
+    <!-- #camera-controls is moved INTO this row via JS (see
+         relocateCameraControls in app.js), on mobile only -- it can't just
+         live here in the markup: .panel's backdrop-filter creates a new
+         containing block for position:fixed descendants (a real, easy-to-
+         miss CSS gotcha), which broke #camera-controls' desktop floating
+         position the first time this was tried purely via CSS nesting
+         (its position:fixed started resolving against this small row
+         instead of the viewport). Moving the actual DOM node at the mobile
+         breakpoint sidesteps that entirely: on desktop it stays outside
+         any .panel-classed ancestor (its original spot, near
+         #flight-scrubber-panel), where position:fixed correctly escapes
+         to the viewport as intended. -->
+    <div class="row" id="speed-row">
       <span class="label">Speed</span>
       <span class="speed-field" id="speed-field-x" tabindex="0" role="button" title="Click to type a speed">1x</span>
       <input type="text" class="speed-edit-input" id="speed-edit-x" size="5">
@@ -204,6 +216,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=66"></script>
+<script src="src/js/app.js?v=68"></script>
 </body>
 </html>

@@ -1005,39 +1005,43 @@
     padding: 7px 10px; font-size: 12px;
   }
 
-  /* Stacked directly above #bottom-right-controls (both right-anchored)
-     rather than bottom-left -- measured in a live browser (Playwright):
-     bottom-right-controls' real height ranges 166.5px (idle) to 202.5px
-     (mid-date-edit, when the date row wraps to 2 lines on a narrow
-     screen); a bottom-left position at this width overlapped it
-     horizontally since bottom-right-controls is ~300px wide, most of
-     the screen on a narrow phone. 226px = 12px own margin + 202.5px
-     worst-case height + 12px margin, rounded up. */
-  body.mobile #camera-controls {
-    bottom: 226px; left: auto; right: 12px; top: auto; transform: none;
-    flex-direction: column; gap: 6px; padding: 0;
-  }
+  /* No longer its own floating panel on mobile -- folded directly into
+     #time-panel's speed row instead (see index.html's own comment on
+     where #camera-controls is now nested), so its two buttons wrap as
+     ordinary flex items of that row rather than needing their own
+     separately-positioned stacked block. display:contents removes
+     #camera-controls' own box entirely (no fixed position, no padding/
+     gap/background of its own) while leaving its CHILDREN's styling
+     (the button rule right below) completely unaffected -- descendant
+     selectors don't care what display value an ancestor has. Desktop is
+     untouched by any of this: #camera-controls keeps its own independent
+     position:fixed floating spot there regardless of its new DOM
+     parent, since fixed positioning always ignores the parent's layout
+     entirely, nested inside a row or not. */
+  body.mobile #camera-controls { display: contents; }
   body.mobile #camera-controls button { padding: 7px 10px; font-size: 12px; }
 
-  /* Bottom-anchored, stacked directly above #camera-controls -- previously
-     top-anchored (184px, clearing the top toggle row), but that sat
-     directly over the main 3D view for the whole time a flight was
-     selected, right when the view is most likely to actually be in use.
-     Stacking it into the bottom column instead reclaims that entire top
-     band for the view, and nets a LARGER clear viewing area even though
-     the bottom column gets taller: selecting a flight always locks its
-     spacecraft too (see selectFlight), so #camera-controls is reliably in
-     its full 2-button state (68px) whenever the scrubber can be visible
-     at all -- no need to separately handle its collapsed 1-button height
-     here. 306px = #camera-controls' own bottom (226px, see its comment)
-     + its height (68px) + a 12px margin, verified against the real
-     rendered gap live in a browser (Playwright) rather than assumed.
+  /* Bottom-anchored, stacked directly above #bottom-right-controls --
+     previously top-anchored (184px, clearing the top toggle row), but
+     that sat directly over the main 3D view for the whole time a flight
+     was selected, right when the view is most likely to actually be in
+     use. Stacking it into the bottom column instead reclaims that entire
+     top band for the view. Used to stack above #camera-controls
+     specifically (a separate block back then); #camera-controls folds
+     directly into #time-panel's own speed row now (display:contents, see
+     its own comment above), so the scrubber sits directly above
+     #bottom-right-controls instead -- one fewer block in the stack, and
+     a lower (closer to the true bottom edge) resting position as a
+     result. 240px = #bottom-right-controls' own bottom (12px) + its
+     worst-case real height (re-measured live via Playwright after
+     folding #camera-controls in -- the now-2-line-capable speed row
+     pushes this a little past the old pre-merge figure) + a 12px margin.
      Left/right unchanged (full width) -- deliberately NOT narrowed to
      match the narrower right-anchored column below it, since the drag
      track itself is more usable wider, and a full-width panel stacked
      above a narrower one is a normal, unremarkable layout. */
   body.mobile #flight-scrubber-panel {
-    top: auto; bottom: 306px; left: 12px; right: 12px; transform: none;
+    top: auto; bottom: 240px; left: 12px; right: 12px; transform: none;
     width: auto;
   }
   body.mobile .scrubber-marker { padding: 14px; margin: -14px; }
@@ -1045,22 +1049,24 @@
   /* Short landscape (phone-in-landscape, ~350-430px tall -- distinguished
      from tablet landscape, which stays on the stacked-above layout above,
      by height alone via this plain media query, since body.mobile.
-     landscape itself doesn't distinguish phone from tablet) has nowhere
-     near enough vertical room to also stack the scrubber above #camera-
-     controls + #bottom-right-controls: that column alone already reaches
-     up to ~378px in a 390px-tall viewport, and stacking the scrubber on
-     top of it collided with the top toggle row (#legend-drawer-toggle/
-     #settings-drawer-toggle) -- confirmed live via Playwright before
-     landing this rule. Landscape has the opposite problem portrait does
-     though: plenty of unused WIDTH (the button column is only ~300px of
+     landscape itself doesn't distinguish phone from tablet) doesn't have
+     enough vertical room to also stack the scrubber above
+     #bottom-right-controls in a 390px-tall viewport without colliding
+     with the top toggle row (#legend-drawer-toggle/#settings-drawer-
+     toggle) -- confirmed live via Playwright before landing this rule.
+     Landscape has the opposite problem portrait does
+     though: plenty of unused WIDTH (the button column is only ~350px of
      an 800px+-wide screen). So here specifically, sit the scrubber to the
      LEFT of that column instead of above it -- same bottom row, not a
-     new one. 336px = button column's own ~300px width + 12px margin +
-     24px gap, giving left+right anchors the same way the portrait rule
-     above does (no manual width calc needed). */
+     new one. 386px = button column's own real measured width (~349px,
+     grown from ~300px now that #camera-controls' two buttons wrap into
+     #time-panel's own speed row -- re-measured live via Playwright, not
+     reused from before the merge) + 12px margin + 24px gap, giving
+     left+right anchors the same way the portrait rule above does (no
+     manual width calc needed). */
   @media (max-height: 500px) {
     body.mobile.landscape #flight-scrubber-panel {
-      top: auto; bottom: 12px; left: 12px; right: 336px; transform: none;
+      top: auto; bottom: 12px; left: 12px; right: 386px; transform: none;
       width: auto;
     }
   }
