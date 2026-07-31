@@ -4401,16 +4401,25 @@
   // only for flights this function actually returns true for.
   function isFlightVisible(key, daysSinceEpoch) {
     if (selectedFlightKey === key) return true;
-    // Focused mode: no flight gets the "merely in transit" pass below --
-    // the only other way in is being a mission that targets whatever
-    // body/small body is currently locked (getFlightDestinations already
-    // walks a flight's legs for exactly this "what does it touch"
-    // question, reused here rather than re-implemented). Nothing locked
-    // and not selected means hidden, full stop.
+    // Both branches below check the SAME thing when a body is locked --
+    // is this flight actually relevant to it (a flyby, an orbit-insertion/
+    // loiter stop, or its true final destination) -- via
+    // getFlightRelevantBodies, deliberately narrower than
+    // getFlightDestinations (which also counts the LAUNCH body, and is
+    // used for the info panel's own broader "Destinations" list where
+    // that's appropriate). Without this narrower check, "launched from
+    // Earth years ago, now cruising to Jupiter" would count as "relevant
+    // to Earth" just because Earth is almost every real mission's launch
+    // site -- locking Earth would then still show nearly everything
+    // currently in transit, which is exactly the "clicking Earth does
+    // nothing" bug this fixes. They only differ in what happens with
+    // NOTHING locked: Focused mode hides everything; Broad mode falls
+    // back to its own definition, "everything currently in transit."
     if (sceneVisibilityMode === "focused") {
       if (!lockedBodyName) return false;
-      return getFlightDestinations(key).includes(lockedBodyName);
+      return getFlightRelevantBodies(key).includes(lockedBodyName);
     }
+    if (lockedBodyName && !getFlightRelevantBodies(key).includes(lockedBodyName)) return false;
     const { launchDays, arrivalDays } = getFlightDates(key);
     return daysSinceEpoch >= launchDays && daysSinceEpoch <= arrivalDays;
   }
@@ -4809,6 +4818,24 @@
   // since this list is the same for a mission that's already arrived and
   // one still en route (e.g. MMX, JUICE): both cases are "where this
   // flight's trajectory goes", not "where it has already been".
+  // Resolves a raw body-reference KEY, as it appears in flight leg JSON
+  // (a planet name, 'Moon', a SMALL_BODIES key, or a "Planet_L1"-style
+  // Lagrange-point reference -- same pattern describeLegBody matches), to
+  // the real display name lockedBodyName/SMALL_BODIES[key].name use.
+  // Anything else (a {fixedPos:[...]} waypoint object, an unrecognized
+  // key) resolves to null. Shared so a Lagrange-point loiter (e.g.
+  // ESCAPADE/Chang'e 2's "Earth_L2") resolves to its actual planet the
+  // same way everywhere this matters.
+  function resolveBodyKeyName(k) {
+    if (!k || typeof k !== 'string') return null;
+    if (PLANET_ORDER.includes(k)) return k;
+    if (k === 'Moon') return 'Moon';
+    if (SMALL_BODIES[k]) return SMALL_BODIES[k].name;
+    const lpMatch = k.match(/^([A-Za-z]+)_(L[1245])$/);
+    if (lpMatch && PLANET_ORDER.includes(lpMatch[1])) return lpMatch[1];
+    return null;
+  }
+
   function getFlightDestinations(key) {
     const raw = FLIGHTS_RAW[key];
     const rawKeys = new Set();
@@ -4821,13 +4848,47 @@
       rawKeys.add(raw.launchBody);
       rawKeys.add(raw.destinationBody);
     }
-    const names = [];
+    // Dedupe by resolved NAME, not just raw key -- e.g. a genuine Earth
+    // gravity-assist leg (raw key "Earth") and an Earth_L1/L2 loiter (raw
+    // key "Earth_L2") are different raw keys that both resolve to the
+    // same display name "Earth", which a plain Set on rawKeys alone
+    // wouldn't catch.
+    const names = new Set();
     rawKeys.forEach((k) => {
-      if (PLANET_ORDER.includes(k)) names.push(k);
-      else if (k === 'Moon') names.push('Moon');
-      else if (SMALL_BODIES[k]) names.push(SMALL_BODIES[k].name);
+      const name = resolveBodyKeyName(k);
+      if (name) names.add(name);
     });
-    return names;
+    return [...names];
+  }
+
+  // Narrower than getFlightDestinations -- deliberately EXCLUDES the
+  // launch body, keeping only gravity-assist flybys, orbit-insertion/
+  // loiter stops, and the flight's TRUE final destination (via
+  // flightEndpoints, the same "real endpoint, not an intermediate
+  // waypoint" logic getMissionsToBody already uses). Used specifically
+  // for narrowing flight-PATH visibility when a body is locked (see
+  // isFlightVisible) -- "launched from Earth years ago, now cruising to
+  // Jupiter" shouldn't count as "relevant to Earth" the way an actual
+  // flyby or destination does, even though getFlightDestinations (used
+  // for the info panel's own "Destinations" list, where launch IS worth
+  // showing) rightly includes it there.
+  function getFlightRelevantBodies(key) {
+    const raw = FLIGHTS_RAW[key];
+    const rawKeys = new Set();
+    if (isMultiLeg(raw)) {
+      raw.legs.forEach((leg) => {
+        if (leg.type === 'gravity_assist') rawKeys.add(leg.body);
+        else if (leg.type === 'geocentric_orbit') rawKeys.add(leg.primaryBody);
+        else if (leg.type === 'loiter') rawKeys.add(leg.location);
+      });
+    }
+    rawKeys.add(flightEndpoints(raw).destinationBody);
+    const names = new Set(); // see getFlightDestinations' own comment on why by-name, not just by-raw-key
+    rawKeys.forEach((k) => {
+      const name = resolveBodyKeyName(k);
+      if (name) names.add(name);
+    });
+    return [...names];
   }
 
   // Clickable list of this flight's destinations -- same .lp-mission-link
