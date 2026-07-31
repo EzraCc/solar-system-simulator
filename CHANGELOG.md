@@ -4,8 +4,43 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-07-31 — Locking a body now actually filters flight paths; fixed a stale hover glow
+
+- Fixed locking a body (e.g. clicking Earth) doing nothing to narrow
+  which flight paths show in Broad mode — every currently-in-transit
+  mission kept showing regardless of what was clicked, since only an
+  actual flight click (not a body click) narrowed anything. The obvious
+  fix (reuse the existing "ever touches this body" relevance check) didn't
+  actually help for Earth specifically once measured — nearly every real
+  mission launches from Earth, so that definition still matched all of
+  them. Added a genuinely narrower relevance check (gravity-assist
+  flybys, orbit-insertion/loiter stops, and the flight's true final
+  destination — deliberately excluding the launch body) so "launched from
+  Earth years ago, now cruising to Jupiter" no longer counts as "relevant
+  to Earth."
+- Fixed the hover preview glow (the widened stroke over whichever path
+  the mouse is nearest) freezing at a stale screen position once the
+  camera started auto-following a tracked body — hover state only
+  recomputes on an actual mousemove event, but the camera (and thus every
+  path's actual screen position) can keep moving on its own. The glow now
+  re-finds its target's live position every frame instead of drawing a
+  cached one from whenever the mouse last actually moved.
+- Manually dragging to pan while a body is tracked and "Hold camera
+  frame" is off now auto-enables hold-frame (the same effect as clicking
+  its toggle switch) instead of being silently blocked — dragging the
+  screen is an unambiguous "let me control the view now" signal. Rotating
+  is unaffected (it already worked fine while tracking, orbiting around
+  the tracked body).
+
 ## 2026-07-29 — Scene Framing, keyboard speed input, multi-tag small bodies, Ulysses' comets
 
+- Added a README and CHANGELOG (this file) — no top-level project
+  documentation existed before.
+- Redesigned the playback-speed control: instead of a separate text
+  field that needed an extra Play click to actually take effect (a real
+  blur/click race), the "Nx"/"N (yr/min)" readout itself is now
+  click-to-edit, with a Go button while editing and a click-away-to-cancel
+  fallback.
 - Added Ulysses' three comet tail crossings (Hyakutake, McNaught-Hartley,
   McNaught) as flight **milestones**: diamond markers on the scrubber plus
   a plain-English paragraph in the Flight Profile section, so a viewer can
