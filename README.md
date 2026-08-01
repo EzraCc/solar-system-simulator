@@ -30,7 +30,7 @@ reasons.
 
 ## Features
 
-- **53 real missions**, each with a physically solved trajectory, launch
+- **57 real missions**, each with a physically solved trajectory, launch
   vehicle, significance write-up, and (where available) real mission
   photography.
 - **Gravity-assist chains**: multi-flyby missions (BepiColombo's 9 flybys,

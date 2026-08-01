@@ -1,5 +1,18 @@
 # Visual/functional QA checklist
 
+> **STATUS (2026-08-01):** This was a single point-in-time QA pass from an
+> earlier stage of the project (references "38 missions" below; the catalog
+> is now 57 as of `data/flights/manifest.json`). The features under sections
+> 8–10 that were marked "NOT YET TESTED" here — gravity-assist chains, sample
+> returns, the size-comparison toggle, hover tooltips, resize handling, data
+> load edge cases — have all since been built on top of, exercised, and
+> individually verified (via ad-hoc Playwright checks) many times over across
+> later sessions per `CHANGELOG.md`, just not re-run through this specific
+> checklist format. Treat the pass/fail annotations below as stale rather than
+> current QA state; this file is not being kept up to date item-by-item going
+> forward — `CHANGELOG.md` is the authoritative record of what shipped and
+> was verified.
+
 Go through in order. For each item, confirm working / not working; for "not
 working," a screenshot in `debug/screenshots/` plus the date/locked-body
 shown is the fastest way to get it fixed.
@@ -67,7 +80,7 @@ not just "does it look like before."
 43. Every image in every panel actually loads (no broken-image icons) — this was a real bug (wrong path) already fixed, worth spot-checking a few since you mentioned going through the image folder yourself separately
 
 ## 8. Flights legend + trajectory rendering — NOT YET TESTED
-44. Flights list shows all 38 missions (including MMX); a flight currently in transit (check today's date) is visibly highlighted/lighter than the rest
+44. Flights list shows all 57 missions (including MMX); a flight currently in transit (check today's date) is visibly highlighted/lighter than the rest
 45. Selecting a flight draws its full trajectory arc(s) and a spacecraft marker at its current position (only while within its actual launch–arrival window)
 46. Simple direct-transfer missions (e.g. Curiosity, Mars Odyssey, MMX) show one clean arc from Earth to Mars
 47. **BepiColombo**: multi-flyby chain to Mercury renders without wild jumps; has a known, accepted physics limitation (ion thrust isn't modeled) — flag the date if something looks off so I can tell whether it matches that or is something new

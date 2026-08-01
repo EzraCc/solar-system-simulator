@@ -10,6 +10,23 @@ to Mercury), JUICE (4-flyby chain to Ganymede), ESCAPADE (L2 loiter + Earth flyb
 New Horizons (Jupiter flyby to Pluto), and all other missions that cannot be represented
 as a single Lambert arc.
 
+> **STATUS (2026-08-01): Implemented.** Both Tier 1 (chained Lambert arcs) and
+> Tier 2 (SOI-patched hyperbolic flybys) described below are live in
+> `src/js/app.js`, plus Lagrange points (Section 3) and the multi-leg schema
+> (Section 5). One deviation from this spec, better than what was originally
+> planned: rather than requiring an explicit `bPlaneAngleDeg` input per flyby
+> (Section 4, Tier 2, item 1), the actual implementation (`flybyGeometry` /
+> `vInfOutAtPhi` / `getGAChain`, ~`app.js:1843-2080`) numerically searches for
+> the roll angle that makes the outgoing velocity match the next leg's real
+> departure direction — so flight JSON only needs `periapsisKm` and a date,
+> not a separately-sourced b-plane angle. SOI overlay rendering
+> (`drawSOIOverlay`), Lagrange markers (`getLagrangePositions`, used by
+> ESCAPADE and Chang'e 2's Earth-Sun L2 loiters), `loiter` and
+> `deepspace_maneuver`/`geocentric_orbit` leg types are all implemented too.
+> Kept below as the as-built reference for this subsystem — treat divergences
+> between this doc and `app.js` as the doc being the imprecise one, not a
+> missing feature.
+
 ---
 
 ## 1. The Core Problem — Why Current Architecture Can't Handle These
@@ -559,7 +576,8 @@ const _lagrangeCache = {};
 
 ## 8. Implementation Order
 
-Recommended sequence for Claude Code:
+**All 8 steps below are done.** Recommended sequence for Claude Code (kept as
+historical record of the actual build order):
 
 1. **Add GM constants and SOI/Hill radii to PLANET_META** — pure data addition, no
    behavior change. Verified against the pre-computed table in Section 2.2.
@@ -595,6 +613,9 @@ correctly across the 7 flybys.
 ---
 
 ## 9. Reference Data — Priority Missions
+
+All three missions below are implemented (`data/flights/psp.json`,
+`data/flights/escapade.json`, `data/flights/bepicolombo.json`).
 
 ### Parker Solar Probe (NASA, 2018)
 7 Venus gravity assists over ~6 years. All dates confirmed from NASA mission timeline.

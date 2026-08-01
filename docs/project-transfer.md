@@ -5,6 +5,20 @@
 **Transferring to:** Claude Code or Cowork  
 **Purpose:** Full context, decision history, and current state for continued development
 
+> **STATUS (updated 2026-08-01): Historical/archival.** This document captures
+> the project's state as of the initial claude.ai→Claude Code transfer
+> (single-flight-arc model, 3 missions, no gravity assists). Nearly everything
+> in this file's own Section 7 backlog has since shipped — see the per-item
+> status notes added there, `docs/gravigram-spec.md` (now implemented), and
+> `CHANGELOG.md` for what actually happened. Sections 1–6, 8, and 9 below are
+> kept as-is for their still-accurate architectural/decision-rationale content
+> (Lambert solver flow, Y-flip convention, lazy-solve contract, etc.), but
+> file paths and line counts in Section 2 predate the `src/js/`, `src/css/`,
+> `data/flights/` reorganization — see the current `README.md` "Project
+> structure" section for the real layout. Section 10 (unrelated personal
+> research notes) and Section 11 (a session transcript path that no longer
+> exists on disk) have been removed as out of scope for this file.
+
 ---
 
 ## 1. What This Project Is
@@ -222,46 +236,42 @@ Both call `buildLegend()` via `lockBody()` when the locked body changes (to re-r
 
 ## 7. Backlog (Explicitly Queued Items)
 
-### 7.1 Parker Solar Probe (Flight)
+### 7.1 Parker Solar Probe (Flight) — ✅ DONE
 PSP's real trajectory uses 7 sequential Venus gravity-assist flybys over 7 years and 24 solar orbits. **Cannot be added as a single Lambert arc.** Queued for after a "gravgram" (gravity-assist chain visualization) feature is built. Do not attempt to add it as a simple flight.
 
-### 7.2 Flight Arc Color Legend by Type
+The gravigram feature (`docs/gravigram-spec.md`) is fully implemented — multi-leg
+schema, patched-conic gravity assists with real turn-angle geometry, and
+`data/flights/psp.json` exists in the catalog with all 7 Venus flybys.
+
+### 7.2 Flight Arc Color Legend by Type — still deliberately deferred
 All flight arcs are currently a single color (`#7fd99c`). A per-type color scheme was discussed and **deliberately deferred** — a small fixed palette won't scale to ~100 flights, and the flight taxonomy needed to define "type" hasn't been designed yet. Do not add ad-hoc per-flight colors without that taxonomy existing first.
 
-### 7.3 Missions Catalog (`interplanetary_missions.json`)
-A research artifact built this session cataloging 43 real-world interplanetary missions (10 fully verified from Batch 1, 33 first-pass). Lives at `interplanetary_missions.json` (delivered separately). This is the source-of-truth for future flight additions. Key fields: `verification_level` (`verified` vs `first_pass`), `model_compatibility` (`compatible`, `needs_expansion`, `unverified`), `trajectory_architecture`.
+No change since this was written — still true as of 2026-08-01, still no per-type
+color taxonomy. Remains valid guidance if this is revisited.
 
-### 7.4 Expansion Categories (from missions catalog)
-Before adding any of the missions below, the model needs the corresponding capability:
+### 7.3 Missions Catalog (`interplanetary_missions.json`) — ❌ REMOVED / superseded
+This standalone research artifact was never carried into the repo. `data/flights/manifest.json` is now the actual single source of truth for which missions are included (57 as of 2026-08-01), each backed by a real per-mission JSON file researched and verified individually at add-time rather than through a separate catalog file. Treat this section as historical only — there is no `interplanetary_missions.json` in this repo.
 
-| Expansion needed | Example missions |
+### 7.4 Expansion Categories (from missions catalog) — ✅ ALL DONE
+Every capability gap listed below has since been built and used:
+
+| Expansion needed | Status |
 |---|---|
-| Gravity-assist / multi-flyby chains | ESCAPADE, BepiColombo (9 flybys), JUICE (4 flybys), New Horizons (Jupiter flyby) |
-| Multi-target tours (no single arrival) | Lucy (7 asteroid targets), Dawn (Vesta then Ceres), OSIRIS-REx extended mission |
-| Absent target body types: asteroids | DART, Hera, Psyche, Lucy, Hayabusa, Hayabusa2, Rosetta |
-| Absent target body types: comets | Rosetta (67P), Deep Impact (Tempel 1) |
-| Absent target body types: specific moons | JUICE → Ganymede, Europa Clipper → Europa, Tianwen-4 → Callisto |
-| Absent target body types: dwarf planets | New Horizons → Pluto |
+| Gravity-assist / multi-flyby chains | ✅ Done — `docs/gravigram-spec.md`; BepiColombo, JUICE, New Horizons, ESCAPADE, Parker Solar Probe, Lucy, etc. all implemented |
+| Multi-target tours (no single arrival) | ✅ Done — Lucy (multiple asteroid targets), Dawn (Vesta then Ceres), OSIRIS-REx all in the catalog |
+| Absent target body types: asteroids | ✅ Done — DART, Hera, Psyche, Lucy, Hayabusa, Hayabusa2, Rosetta all present |
+| Absent target body types: comets | ✅ Done — Rosetta (67P), Deep Impact (Tempel 1), plus hyperbolic-orbit comets added for Ulysses (see `docs/gravigram-spec.md` Part B in the mutable-riding-church plan) |
+| Absent target body types: specific moons | ✅ Done — full Galilean/Saturnian/Uranian moon sets plus Triton implemented (`docs/satellite-addition-spec.md`) |
+| Absent target body types: dwarf planets | ✅ Done — Pluto/Charon (combined-GM binary system) and Ceres (dual `asteroid`+`dwarf_planet` tag) both present |
 
-### 7.5 Missions with Direct Transfers (Ready to Add When Desired)
-These are confirmed single-arc direct transfers with both endpoint planets already in the model. Just need a JSON file each:
+### 7.5 Missions with Direct Transfers — ✅ ALL ADDED
+Every mission in the original list below is now in `data/flights/manifest.json` as its own JSON file:
 
-| Mission | Agency | Route | Launch | Arrival |
-|---|---|---|---|---|
-| Mars Odyssey | NASA | Earth→Mars | 2001-04-07 | 2001-10-24 |
-| Spirit (MER-A) | NASA | Earth→Mars | 2003-06-10 | 2004-01-04 |
-| Opportunity (MER-B) | NASA | Earth→Mars | 2003-07-08 | 2004-01-25 |
-| Mars Express | ESA | Earth→Mars | 2003-06-02 | 2003-12-25 |
-| MRO | NASA | Earth→Mars | 2005-08-12 | 2006-03-10 |
-| Phoenix | NASA | Earth→Mars | 2007-08-04 | 2008-05-25 |
-| MAVEN | NASA | Earth→Mars | 2013-11-18 | 2014-09-22 |
-| InSight | NASA | Earth→Mars | 2018-05-05 | 2018-11-26 |
-| ExoMars TGO | ESA/Roscosmos | Earth→Mars | 2016-03-14 | 2016-10-19 |
-| Hope/Al-Amal | UAE | Earth→Mars | 2020-07-19 | 2021-02-09 |
-| Tianwen-1 | CNSA | Earth→Mars | 2020-07-23 | 2021-02-10 |
-| Mangalyaan | ISRO | Earth→Mars | 2013-11-05 | 2014-09-24 |
-
-**Note:** trajectory architecture for most of these is marked `unverified` in the catalog — they're *likely* direct transfers (Mars missions in this era almost universally are), but they haven't been individually confirmed the way Curiosity/Perseverance/Akatsuki were. Verify before adding if accuracy matters.
+Mars Odyssey, Spirit (MER-A), Opportunity (MER-B), Mars Express, MRO, Phoenix, MAVEN,
+InSight, ExoMars TGO, Hope/Al-Amal, Tianwen-1, Mangalyaan — all present and verified
+(Mangalyaan specifically uses the geocentric-orbit-raising leg type, not a plain
+direct arc, since its real trajectory includes an Earth-orbit-raising phase before
+translunar injection).
 
 ---
 
@@ -301,21 +311,8 @@ These tests were run during this session to verify specific physics claims. The 
 
 ---
 
-## 10. Pending Research / To-Do Items (Standing)
-
-These are from the user's standing notes and are not simulator-specific but carry context for the broader project:
-
-- **Comparative synthesis:** Infanticide inhibition window duration vs. gestation/lactation length across species. Hypothesis: inhibition window scales with reproductive investment period, not fixed at 60 days. Short paper; data exists in scattered comparative literature.
-- **Social touch guide companion projects pending:** (1) Intimate adult touch; (2) Grief/bereavement touch; (3) Elderly touch deprivation. Additions pending for main guide: self-touch, sleep contact, frequency guidance, male-to-male touch barriers.
-- **Prior Art Gate:** Applies before document production on any research/guide/framework project (not technical/implementation). Protocol: (1) state central claim in one sentence, (2) search adversarially, (3) confirm gap is real, report before building.
-- **Docebo certification:** In progress through Docebo University, motivated by job postings requiring it.
-- **Bespoke Hearts novella:** Four couples on a Northern European cruise, DDlg dynamic as central couple, full character backstories and scene-by-scene arc completed. Drafting brief built for Opus.
-
----
-
-## 11. Session Transcript Reference
-
-The full prior session transcript (covering Lambert solver implementation, satellite moons, sphere shading, and mission catalog research) is archived at:
-`/mnt/transcripts/2026-06-18-14-37-08-solar-sim-and-mission-catalog.txt`
-
-This contains the full text of all tool calls, results, and reasoning chains from the prior session including the Lambert solver derivation, numerical validation runs, and the full missions research session (Batch 1 verification passes, ISRO missions, verification recheck of Curiosity/Perseverance/Akatsuki).
+*(Former Section 10, "Pending Research / To-Do Items," and Section 11, "Session
+Transcript Reference," removed 2026-08-01: Section 10 was unrelated personal
+research notes with no connection to this codebase, and Section 11 pointed at
+`/mnt/transcripts/2026-06-18-14-37-08-solar-sim-and-mission-catalog.txt`, which
+no longer exists on disk. Neither belongs in this project's docs.)*

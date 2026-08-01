@@ -1041,7 +1041,14 @@
     top: auto; bottom: 240px; left: 12px; right: 12px; transform: none;
     width: auto;
   }
-  body.mobile .scrubber-marker { padding: 14px; margin: -14px; }
+  /* No negative margin here either -- same box-sizing:border-box conflict
+     as the desktop rule above (padding this large can't fit inside an 8px
+     box, so the real rendered box clamps to 36x36 and
+     transform:translate(-50%,-50%) alone already centers it correctly;
+     adding a compensating negative margin double-corrects and shifts the
+     visible dot 14px off its real date, same bug as the desktop rule this
+     mirrors, reintroduced here and caught during a docs audit). */
+  body.mobile .scrubber-marker { padding: 14px; }
 
   /* Short landscape (phone-in-landscape, ~350-430px tall -- distinguished
      from tablet landscape, which stays on the stacked-above layout above,

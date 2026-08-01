@@ -4,6 +4,37 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-08-01 — Fixed a reintroduced mobile scrubber-marker centering bug; updated design docs
+
+- Fixed `.scrubber-marker`'s mobile-only CSS rule
+  (`body.mobile .scrubber-marker`), which had reintroduced the exact
+  centering bug already fixed for desktop: `padding: 14px; margin: -14px;`
+  under this sheet's global `box-sizing: border-box` clamps the real
+  rendered box to 36x36 (padding can't fit inside an 8px box), and
+  `transform: translate(-50%, -50%)` alone already centers that real box
+  correctly -- the extra `margin: -14px` double-corrected, shifting every
+  gravity-assist/orbit-insertion/loiter marker on the mobile scrubber
+  14px off its true event date. Verified via direct measurement (Chromium,
+  390px viewport, BepiColombo's flybys): rendered marker center was 14.0px
+  off the marker's own `left` anchor before the fix, 0.0px off after.
+  Caught while auditing `docs/` against the current codebase, not reported
+  by the user.
+- Reviewed all three `docs/*.md` design specs plus `debug/checklist.md`
+  against the current codebase and marked them up to date: added status
+  banners to `docs/project-transfer.md` (now archival/historical -- its
+  backlog section is fully superseded, since every listed expansion
+  category and direct-transfer mission has since been added; removed two
+  sections of content unrelated to this project), `docs/gravigram-spec.md`
+  (now fully implemented -- Tier 1 chained-Lambert-arc and Tier 2
+  SOI-patched hyperbolic flybys are both live, plus Lagrange points and
+  the multi-leg schema), and `docs/satellite-addition-spec.md` (still a
+  living reference doc; its one remaining "not yet added" row, Charon, is
+  now done too). Updated `debug/checklist.md`'s stale mission count
+  (38 -> 57) and flagged its untested sections as since-exercised through
+  later development rather than through that specific checklist. Fixed a
+  real README.md inconsistency found in the process (intro paragraph said
+  57 missions, the Features bullet still said 53).
+
 ## 2026-07-31 (continued) — Simplified the speed control to one field
 
 - Replaced the two clickable "Nx"/"N (yr/min)" speed chips with a single

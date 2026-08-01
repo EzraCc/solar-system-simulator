@@ -12,6 +12,15 @@ made for existing satellites so new additions stay consistent.
 described in Section 8. New additions should follow the `OUTER_MOONS` pattern, not
 the named-constants pattern.
 
+> **STATUS (2026-08-01): Living reference document, still accurate.** Unlike
+> the other two `docs/` specs, this one isn't a single completed feature —
+> it's the standing checklist/decision-guide for *whenever* a new satellite
+> gets added, and remains the right doc to consult for that. All satellites
+> in Section 10's priority table are now implemented (see that section's own
+> status update) using exactly the patterns described here (`OUTER_MOONS` for
+> everything except the Moon/Phobos/Deimos/Pluto-Charon's legacy/combined-GM
+> cases). Keep this doc maintained going forward rather than archiving it.
+
 ---
 
 ## 1. The Complete Touch-Point Checklist
@@ -500,5 +509,11 @@ Based on the missions catalog (`interplanetary_missions.json`) and mission targe
 | Medium | Titan | Dragonfly (2028 launch, 2034 arrival) — **already implemented** |
 | Medium | Enceladus | Cassini target; no upcoming dedicated mission — **already implemented** |
 | Medium | Triton | New Horizons extended? No confirmed mission — **already implemented** |
-| Low | Charon | Only relevant once Pluto (dwarf planet) is added |
+| Low | Charon | **already implemented** — Pluto/Charon added as a combined-GM binary system (`GM_PLUTO_CHARON_KM3_S2`, ~`app.js:781`), not the legacy or `OUTER_MOONS` pattern, since Charon is ~12% of Pluto's mass (same "must use combined GM" case as noted in §2.3 below) |
 | Low | Phobos (detail) | MMX sample return (2026 launch); already in model at coarse level |
+
+**STATUS (2026-08-01):** All bodies in this table are now implemented — this
+was true for most rows even before this pass (see the inline "already
+implemented" notes original to this table), and Charon (the one remaining
+row) has since been added too. No outstanding moon/satellite additions are
+queued as of this writing.
