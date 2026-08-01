@@ -9,7 +9,10 @@
 > the project's state as of the initial claude.ai→Claude Code transfer
 > (single-flight-arc model, 3 missions, no gravity assists). Nearly everything
 > in this file's own Section 7 backlog has since shipped — see the per-item
-> status notes added there, `docs/gravigram-spec.md` (now implemented), and
+> status notes added there, `docs/gravigram-spec.md` (its gravity-assist
+> chain trajectory feature is implemented; note that doc's own name is a
+> misnomer — see its top banner, "gravigram" properly refers to an
+> unrelated, unbuilt net-force/momentum teaching visual), and
 > `CHANGELOG.md` for what actually happened. Sections 1–6, 8, and 9 below are
 > kept as-is for their still-accurate architectural/decision-rationale content
 > (Lambert solver flow, Y-flip convention, lazy-solve contract, etc.), but

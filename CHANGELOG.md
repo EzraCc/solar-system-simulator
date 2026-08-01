@@ -4,6 +4,30 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-08-01 (continued) — Fixed Solar Orbiter's first leg flying the wrong way
+
+- Fixed Solar Orbiter's Earth->Venus first leg (2020-02-10 to 2020-12-27),
+  which was rendering as a huge, wrong-shaped balloon out past 1.9 AU
+  (beyond Mars) instead of diving toward the Sun. Root cause: the real
+  trajectory on this leg sweeps just over 360 degrees of true anomaly (a
+  real perihelion dip to ~0.52 AU around 2020-06-10, then back out to
+  ~0.99 AU around 2020-08-09, confirmed against JPL Horizons target -144),
+  but this catalog's Lambert solver only ever finds the 0-revolution
+  solution -- given only the two endpoint positions and dates, it can't
+  tell a >360deg real sweep from that same angle minus 360, and silently
+  solved for the wrong (~83deg short-way) orbit instead. Same root cause
+  already diagnosed for other multi-flyby missions in this catalog
+  (BepiColombo's own leg 0 carries an identical fix and comment). Fixed
+  by splitting the single leg into three, through two real JPL Horizons
+  waypoints (2020-05-11 and 2020-08-09) as `fixedPos` boundaries, so each
+  piece's real sweep stays safely under 360 degrees. Verified all three
+  sub-legs reconstruct their real endpoints to ~1e-12 AU and produce
+  self-consistent orbital elements (a~0.752 AU, e~0.314 across all
+  three, as expected since it's physically one continuous real orbit),
+  and that the resulting r(t) profile now matches the real ~0.52 AU/
+  ~0.99 AU dip-and-rise instead of the wrong ~1.9 AU balloon.
+  Found via user report ("bad arc... first leg from earth to venus").
+
 ## 2026-08-01 — Fixed a reintroduced mobile scrubber-marker centering bug; updated design docs
 
 - Fixed `.scrubber-marker`'s mobile-only CSS rule

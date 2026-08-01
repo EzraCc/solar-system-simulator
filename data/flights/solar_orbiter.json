@@ -8,10 +8,49 @@
   "statusNote": "ESA-led mission with NASA participation. Trajectory design uses repeated Venus gravity assists in resonant orbits to progressively raise orbital inclination out of the ecliptic (reaching 24 degrees by the end of the nominal mission, potentially 33 degrees in an extended mission) while also lowering perihelion toward roughly 0.29 AU -- a similar goal to Ulysses' single Jupiter flyby, achieved instead through many smaller repeated Venus encounters plus one early Earth flyby. Flybys after mid-2026 use ESA's published mission-design dates for the nominal and potential extended mission, not yet-observed telemetry.",
   "legs": [
     {
+      "_comment": "Real Solar Orbiter trajectory on this leg dips to ~0.52 AU perihelion around 2020-06-10 then swings back out to ~0.99 AU around 2020-08-09 before heading to Venus -- a real >360deg (just over one full revolution) sweep in true anomaly, per JPL Horizons (target -144, checked 2026-08). A plain 2-point Lambert solve between the Feb and Dec endpoints misreads that mod-360 as an ~83deg short sweep, producing a wrong-direction orbit that balloons out to ~1.9 AU (past Mars) instead of diving toward the Sun. Split into three legs through two real recorded waypoints so each piece's sweep stays safely under 360deg and the solver can't misread it.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Venus",
+      "toBody": {
+        "fixedPos": [
+          -0.357967658860982,
+          -0.569056921353121,
+          0.02104861173895661
+        ]
+      },
       "departDate": "2020-02-10",
+      "arrivalDate": "2020-05-11"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.357967658860982,
+          -0.569056921353121,
+          0.02104861173895661
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.08000882618747737,
+          0.7903311993124672,
+          -0.02086343626000141
+        ]
+      },
+      "departDate": "2020-05-11",
+      "arrivalDate": "2020-08-09"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.08000882618747737,
+          0.7903311993124672,
+          -0.02086343626000141
+        ]
+      },
+      "toBody": "Venus",
+      "departDate": "2020-08-09",
       "arrivalDate": "2020-12-27"
     },
     {

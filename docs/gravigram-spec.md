@@ -10,22 +10,25 @@ to Mercury), JUICE (4-flyby chain to Ganymede), ESCAPADE (L2 loiter + Earth flyb
 New Horizons (Jupiter flyby to Pluto), and all other missions that cannot be represented
 as a single Lambert arc.
 
-> **STATUS (2026-08-01): Implemented.** Both Tier 1 (chained Lambert arcs) and
-> Tier 2 (SOI-patched hyperbolic flybys) described below are live in
-> `src/js/app.js`, plus Lagrange points (Section 3) and the multi-leg schema
-> (Section 5). One deviation from this spec, better than what was originally
-> planned: rather than requiring an explicit `bPlaneAngleDeg` input per flyby
-> (Section 4, Tier 2, item 1), the actual implementation (`flybyGeometry` /
-> `vInfOutAtPhi` / `getGAChain`, ~`app.js:1843-2080`) numerically searches for
-> the roll angle that makes the outgoing velocity match the next leg's real
-> departure direction — so flight JSON only needs `periapsisKm` and a date,
-> not a separately-sourced b-plane angle. SOI overlay rendering
-> (`drawSOIOverlay`), Lagrange markers (`getLagrangePositions`, used by
-> ESCAPADE and Chang'e 2's Earth-Sun L2 loiters), `loiter` and
-> `deepspace_maneuver`/`geocentric_orbit` leg types are all implemented too.
-> Kept below as the as-built reference for this subsystem — treat divergences
-> between this doc and `app.js` as the doc being the imprecise one, not a
-> missing feature.
+> **STATUS (2026-08-01), corrected:** This document uses "gravigram" as a
+> name for **gravity-assist chain trajectories** — patched-conic multi-flyby
+> paths, SOI radii, Lagrange points, the multi-leg flight schema. That
+> specific thing (Tier 1 chained Lambert arcs, Tier 2 SOI-patched hyperbolic
+> flybys via `flybyGeometry`/`vInfOutAtPhi`/`getGAChain` in `src/js/app.js`,
+> `drawSOIOverlay`, `getLagrangePositions`) genuinely is implemented — that
+> part of an earlier status note here was accurate.
+>
+> **But "gravigram" is not what the maintainer means by that word.** Per
+> direct correction (2026-08-01): a gravigram is meant to be **a teaching
+> visual showing net force/momentum from a combination of bodies' gravity**
+> — not a trajectory-chaining feature at all. That visual has not been
+> started; nothing in this document or in `app.js` builds it. Do not treat
+> anything in this file as progress toward "gravigram" going forward. This
+> document is kept because the gravity-assist-chain machinery it specs is
+> real and still the right reference for that subsystem — just mentally
+> substitute "gravity-assist chain trajectories" wherever it says
+> "gravigram" below, and look elsewhere (a new spec, not yet written) for
+> the actual gravigram feature.
 
 ---
 
