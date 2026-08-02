@@ -1546,7 +1546,7 @@
     if (!isMultiLeg(raw)) {
       const flight = getSolvedFlight(flightKey);
       if (daysSinceEpoch < flight.launchDays || daysSinceEpoch > flight.arrivalDays) return null;
-      return { elements: flight.elements, centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2 };
+      return { elements: flight.elements, centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2, legType: 'flat', legLabel: null };
     }
     const legs = raw.legs;
 
@@ -1556,16 +1556,27 @@
       const a = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
       if (daysSinceEpoch < d || daysSinceEpoch > a) continue;
       const meta = PLANET_META[leg.primaryBody];
-      if (!meta || !worldStates[leg.primaryBody]) return null;
+      if (!meta || !PLANET_ELEMENTS[leg.primaryBody]) return null;
       const el = geocentricLegElements(leg, meta.radiusKm);
       return {
         elements: { a: el.aKm / AU_KM, e: el.e, i: el.i, Om: el.Om, w: el.w, M0: el.M0, epochDays: el.epochDays },
-        centerAU: worldStates[leg.primaryBody].pos,
+        // Computed directly rather than read from the frame()-local
+        // `worldStates` cache (a real bug this function used to have --
+        // worldStates is a const local to frame()'s own body, and this
+        // function is a separate top-level sibling with no lexical access
+        // to it; reading it here silently threw a ReferenceError any time
+        // this branch was reached from outside an active frame() call,
+        // e.g. the "Current orbit only" toggle during Mangalyaan/
+        // Aditya-L1's real parking-orbit phase -- caught while building
+        // the hodograph dashboard, which also calls this function).
+        centerAU: computeStateVector(PLANET_ELEMENTS[leg.primaryBody], daysSinceEpoch).pos,
         // Same km/s^2 -> AU^3/day^2 conversion GM_SUN_AU3_DAY2 itself uses
         // (line ~45) -- mean motion around this leg's actual primary, not
         // the Sun, matters once "current orbit" needs to anchor its sweep
         // to elapsed time (see drawCurrentOrbitEllipse).
         gmAU3Day2: meta.gmKm3S2 * (SEC_PER_DAY * SEC_PER_DAY) / (AU_KM * AU_KM * AU_KM),
+        legType: 'geocentric_orbit', legLabel: `${leg.primaryBody} parking orbit`,
+        influenceBody: leg.primaryBody, // this leg's orbit is planetocentric, not heliocentric -- see getHodographElements
       };
     }
 
@@ -1577,7 +1588,10 @@
       const p0 = getBodyPositionAtDays(leg.location, daysSinceEpoch);
       const p1 = getBodyPositionAtDays(leg.location, daysSinceEpoch + 0.5);
       const vel = [(p1[0] - p0[0]) / 0.5, (p1[1] - p0[1]) / 0.5, (p1[2] - p0[2]) / 0.5];
-      return { elements: stateVectorToElements(p0, vel), centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2 };
+      return {
+        elements: stateVectorToElements(p0, vel), centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2,
+        legType: 'loiter', legLabel: `Parked at ${leg.location}`,
+      };
     }
 
     const hasGA = legs.some((l) => l.type === 'gravity_assist');
@@ -1587,17 +1601,149 @@
       for (const seg of segs) {
         if (daysSinceEpoch < seg.tStart || daysSinceEpoch > seg.tEnd) continue;
         const prevLeg = legs[seg.legIndex - 1];
+        const nextLeg = legs[seg.legIndex + 1];
         const followsGA = !!(prevLeg && prevLeg.type === 'gravity_assist');
         if (followsGA && !seg.isPatched) return null; // rejected fallback fit -- no reliable shape to show
-        return { elements: seg.elements, centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2 };
+        // Label the leg by its neighboring flybys so a dashboard/readout
+        // can explain WHY the shape just changed, not just that it did.
+        const prevGA = followsGA ? prevLeg.body : null;
+        const nextGA = (nextLeg && nextLeg.type === 'gravity_assist') ? nextLeg.body : null;
+        let legLabel;
+        if (prevGA && nextGA) legLabel = `Between ${prevGA} and ${nextGA} flybys`;
+        else if (nextGA) legLabel = `En route to ${nextGA} flyby`;
+        else if (prevGA) legLabel = `Cruising after ${prevGA} flyby`;
+        else legLabel = 'Interplanetary cruise';
+        return { elements: seg.elements, centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2, legType: 'lambert_ga', legLabel };
       }
     } else {
       for (const { leg, i } of lambertEntries) {
         const solved = getSolvedLeg(flightKey, i);
         if (daysSinceEpoch >= solved.launchDays && daysSinceEpoch <= solved.arrivalDays) {
-          return { elements: solved.elements, centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2 };
+          const bodyLabel = (b) => (typeof b === 'string' ? b : 'deep space');
+          return {
+            elements: solved.elements, centerAU: [0, 0, 0], gmAU3Day2: GM_SUN_AU3_DAY2,
+            legType: 'lambert', legLabel: `${bodyLabel(leg.fromBody)} → ${bodyLabel(leg.toBody)}`,
+          };
         }
       }
+    }
+    return null;
+  }
+
+  // Given a locked body's display name, resolve its raw satellite elements
+  // ({aKm, e, iDeg, OmDeg0, wDeg0, M0Deg, periodSiderealDays} -- confirmed
+  // identical shape across the Moon/Phobos/Deimos/Charon/Dimorphos legacy
+  // constants AND every OUTER_MOONS entry) plus its primary's display name.
+  // Returns null for anything that isn't a moon (planets/small bodies/Sol/
+  // flights are resolved elsewhere). Not the same as the per-frame
+  // `renderedBodies` records (which carry derived {pos,vel,a,e,i,...} for
+  // the CURRENT frame, not the raw {aKm, periodSiderealDays, ...} a
+  // hodograph needs to get mean motion right).
+  function resolveLockedMoonElements(name) {
+    if (name === "Moon") return { elements: MOON_ELEMENTS, primaryName: "Earth" };
+    if (name === "Phobos") return { elements: PHOBOS_ELEMENTS, primaryName: "Mars" };
+    if (name === "Deimos") return { elements: DEIMOS_ELEMENTS, primaryName: "Mars" };
+    if (name === "Charon") return { elements: CHARON_ELEMENTS, primaryName: "Pluto and Charon" };
+    if (name === "Dimorphos") return { elements: DIMORPHOS_ELEMENTS, primaryName: "Didymos (65803)" };
+    for (const planetName of Object.keys(OUTER_MOONS)) {
+      const m = OUTER_MOONS[planetName].find((x) => x.name === name);
+      if (m) return { elements: m.elements, primaryName: planetName };
+    }
+    return null;
+  }
+
+  // Resolves "what orbit is active right now" for whatever is currently
+  // locked/selected, uniformly for a flight or a plain body -- the single
+  // entry point the hodograph dashboard reads from. Only ever needs
+  // {a, e, M0, epochDays, n} (mean motion n, not i/Om/w) since the
+  // hodograph is drawn in the orbit's own perifocal frame, never rotated
+  // into 3D ecliptic. Returns:
+  //   null                                  -- nothing locked, or Sol
+  //   { empty: 'not-in-transit', ... }      -- flight outside its window
+  //   { empty: 'no-shape' }                 -- rejected GA fallback fit
+  //   { empty: 'loiter', legLabel }         -- parked at a Lagrange point
+  //   { title, legLabel, a, e, M0,
+  //     epochDays, n, gmAU3Day2, unitsAreKm } -- a real orbit to draw
+  //
+  // gmAU3Day2 is only meaningful/used for the hyperbolic branch of
+  // hodographCircle -- the elliptical branch derives everything from n
+  // directly, which matters because moons use an EMPIRICAL, not
+  // GM-derived, n (see computeSatelliteOffset's own comment ~app.js:245).
+  function getHodographElements(daysSinceEpoch) {
+    if (selectedFlightKey) {
+      const info = getCurrentOrbitElements(selectedFlightKey, daysSinceEpoch);
+      if (!info) {
+        const { launchDays, arrivalDays } = getFlightDates(selectedFlightKey);
+        if (daysSinceEpoch < launchDays || daysSinceEpoch > arrivalDays) {
+          return {
+            empty: 'not-in-transit',
+            launchDate: dateFromDaysSinceJ2000(launchDays).toISOString().slice(0, 10),
+            arrivalDate: dateFromDaysSinceJ2000(arrivalDays).toISOString().slice(0, 10),
+          };
+        }
+        return { empty: 'no-shape' };
+      }
+      if (info.legType === 'loiter') return { empty: 'loiter', legLabel: info.legLabel };
+      const el = info.elements;
+      const n = el.e < 1
+        ? Math.sqrt(info.gmAU3Day2 / (el.a * el.a * el.a))
+        : Math.sqrt(info.gmAU3Day2 / (-el.a * -el.a * -el.a));
+      return {
+        title: FLIGHTS_RAW[selectedFlightKey].name, legLabel: info.legLabel,
+        a: el.a, e: el.e, M0: el.M0, epochDays: el.epochDays, n,
+        gmAU3Day2: info.gmAU3Day2, unitsAreKm: false,
+        // 'Sol' for every leg type except geocentric_orbit (a real
+        // planetocentric parking orbit -- see that branch's own comment
+        // in getCurrentOrbitElements). NOTE: this does NOT yet cover the
+        // brief real window a gravity-assist leg spends inside the FLYBY
+        // body's own sphere of influence -- that's a genuinely different,
+        // planetocentric-hyperbolic hodograph this app doesn't compute
+        // yet (the existing flyby geometry only derives turn angle/exit
+        // velocity, not a full local orbital-element set to propagate a
+        // hodograph from). Flagged as real follow-up work, not silently
+        // approximated as heliocentric.
+        influenceBody: info.influenceBody || 'Sol',
+      };
+    }
+
+    if (!lockedBodyName || lockedBodyName === "Sol") return null;
+
+    if (PLANET_ELEMENTS[lockedBodyName]) {
+      const p = PLANET_ELEMENTS[lockedBodyName];
+      const T = daysSinceEpoch / DAYS_PER_CENTURY;
+      const a = p.a + p.aDot * T;
+      const e = p.e + p.eDot * T;
+      const varpi = (p.varpi + (p.varpiDot / 3600) * T) * D2R;
+      const L = (p.L + (p.LDot / 3600) * T) * D2R;
+      const n = Math.sqrt(GM_SUN_AU3_DAY2 / (a * a * a));
+      return {
+        title: lockedBodyName, legLabel: null,
+        a, e, M0: L - varpi, epochDays: daysSinceEpoch, n,
+        gmAU3Day2: GM_SUN_AU3_DAY2, unitsAreKm: false, influenceBody: 'Sol',
+      };
+    }
+
+    const moon = resolveLockedMoonElements(lockedBodyName);
+    if (moon) {
+      const n = 2 * Math.PI / moon.elements.periodSiderealDays; // empirical period, not GM-derived
+      return {
+        title: lockedBodyName, legLabel: `Orbiting ${moon.primaryName}`,
+        a: moon.elements.aKm, e: moon.elements.e, M0: moon.elements.M0Deg * D2R, epochDays: 0, n,
+        gmAU3Day2: null, unitsAreKm: true, influenceBody: moon.primaryName,
+      };
+    }
+
+    const sb = Object.values(SMALL_BODIES).find((b) => b.name === lockedBodyName);
+    if (sb) {
+      const el = sb.elements;
+      const n = el.e < 1
+        ? Math.sqrt(GM_SUN_AU3_DAY2 / (el.a * el.a * el.a))
+        : Math.sqrt(GM_SUN_AU3_DAY2 / (-el.a * -el.a * -el.a));
+      return {
+        title: lockedBodyName, legLabel: null,
+        a: el.a, e: el.e, M0: el.M0Deg * D2R, epochDays: el.epochDays, n,
+        gmAU3Day2: GM_SUN_AU3_DAY2, unitsAreKm: false, influenceBody: 'Sol',
+      };
     }
     return null;
   }
@@ -1834,6 +1980,70 @@
     const xw = xd*cosW - yd*sinW;
     const yw = xd*sinW + yd*cosW;
     return [xw*cosOm - yw*cosI*sinOm, xw*sinOm + yw*cosI*cosOm, yw*sinI];
+  }
+
+  /* =========================================================================
+     VELOCITY HODOGRAPH
+     For any 2-body Keplerian orbit (ellipse OR hyperbola), the velocity
+     vector's tip traces a perfect circle as the body moves along its orbit
+     -- radius R, centered at (0, e*R) in the orbit's own perifocal frame
+     (x = periapsis direction, y = 90deg ahead in the direction of motion).
+     Deliberately NOT reusing computeFlightVelocity above: that function
+     hardcodes GM_SUN_AU3_DAY2 into its own mean-motion term, which is
+     wrong for a geocentric_orbit parking leg (uses the primary planet's
+     GM) and meaningless for a moon (moons use an EMPIRICAL, not
+     GM-derived, mean motion -- see computeSatelliteOffset's own comment).
+     getHodographElements() resolves the right `n` for whatever is locked/
+     selected up front, so these two functions just consume it directly
+     and never touch GM except in the hyperbolic branch of the circle math.
+  ========================================================================= */
+
+  // Perifocal-frame velocity at time t -- the hodograph's live point.
+  // h: { a, e, M0, epochDays, n } as returned by getHodographElements.
+  function hodographVelocity(h, t) {
+    const { a, e, M0, epochDays, n } = h;
+    const M = M0 + n * (t - epochDays);
+    if (e < 1) {
+      const E = solveKepler(M, e);
+      const Edot = n / (1 - e * Math.cos(E));
+      return { vx: -a * Math.sin(E) * Edot, vy: a * Math.sqrt(1 - e * e) * Math.cos(E) * Edot };
+    }
+    const H = solveKeplerHyperbolic(M, e);
+    const Hdot = n / (e * Math.cosh(H) - 1);
+    return { vx: a * Math.sinh(H) * Hdot, vy: a * Math.sqrt(e * e - 1) * Math.cosh(H) * Hdot };
+  }
+
+  // The circle hodographVelocity's point traces over a full orbit.
+  // Elliptical branch (R = n*a/sqrt(1-e^2)) is algebraically identical to
+  // the textbook R=GM/h when n is GM-derived, but ALSO correct when n is
+  // an empirically-measured moon period -- this is why the elliptical
+  // branch never touches gmAU3Day2 at all. Only the hyperbolic branch
+  // (always GM-driven in this app -- flights/comets, never moons) needs it.
+  //
+  // Sign note: the hyperbolic branch's center is cy = -e*R, NOT +e*R like
+  // the elliptical branch -- verified empirically (live point plotted
+  // against both signs across 6 sample true/hyperbolic anomalies for a
+  // real hyperbolic comet; only -e*R landed the point on the circle to
+  // floating-point precision every time). This isn't a typo: this file's
+  // hyperbolic position/velocity parametrization (x=a(cosh H - e),
+  // y=a*sqrt(e^2-1)*sinh H, see hodographVelocity/computeFlightVelocity)
+  // traces the perifocal frame in the opposite rotational sense from the
+  // elliptical E-based parametrization (x=a(cos E - e), y=a*sqrt(1-e^2)*
+  // sin E) -- both are internally self-consistent (position and velocity
+  // always agree with each other, and the final 3D trajectory after the
+  // Om/w/i rotation comes out correct either way, which is why this never
+  // surfaced as a visible bug elsewhere), but it means the two branches'
+  // "positive y direction" don't match, so the hodograph's offset sign
+  // must flip to match whichever convention hodographVelocity used.
+  function hodographCircle(h) {
+    const { a, e, n, gmAU3Day2 } = h;
+    if (e < 1) {
+      const R = n * a / Math.sqrt(1 - e * e);
+      return { R, cx: 0, cy: e * R };
+    }
+    const hAng = Math.sqrt(gmAU3Day2 * a * (1 - e * e)); // a<0, 1-e^2<0 -> product positive
+    const R = gmAU3Day2 / hAng;
+    return { R, cx: 0, cy: -e * R };
   }
 
   // Given incoming hyperbolic excess velocity (AU/day, planet frame), return
@@ -2882,6 +3092,12 @@
   // independent of freeCameraMode itself; you can check the numbers
   // without hold-frame on, or hold a frame without the readout open.
   let sceneFramingVisible = false;
+
+  // Whether the full-viewport dashboard (velocity hodograph, first of
+  // eventually several widgets) is currently shown for whatever's
+  // locked/selected -- see openDashboard/closeDashboard near the locked-
+  // panel wiring below.
+  let dashboardVisible = false;
 
   // Absolute screen position of the locked panel -- set once when a new
   // body/flight is locked (see drawLockedPanelConnector's edge-detection),
@@ -4304,6 +4520,7 @@
   // this avoids the legend needing to duplicate the lock/unlock/visibility
   // logic that the canvas click handler already implements.
   function lockBody(name, opts) {
+    closeDashboard(); // any change of what's locked closes an open dashboard rather than trying to keep it in sync
     opts = opts || {};
     const prevPanelVisible = infoPanelVisible;
     if (name === null) {
@@ -4371,6 +4588,7 @@
   // applies uniformly to every lock/unlock, not something specific to
   // flight selection.)
   function selectFlight(key) {
+    closeDashboard(); // any change of what's selected closes an open dashboard rather than trying to keep it in sync
     if (selectedFlightKey === key) {
       // clicking the same flight again deselects it, mirroring lockBody's
       // toggle-on-same-click convention used elsewhere
@@ -4626,6 +4844,205 @@
   }
   lockedPanelClose.addEventListener("click", closeInfoPanel);
 
+  /* ---- Dashboard (full-viewport takeover; velocity hodograph is the
+     first widget) ---- */
+
+  const dashboardToggleBtn = document.getElementById("dashboard-toggle-btn");
+  const dashboardPanel = document.getElementById("dashboard-panel");
+  const dashboardPanelTitle = document.getElementById("dashboard-panel-title");
+  const dashboardPanelClose = document.getElementById("dashboard-panel-close");
+  const hodographCanvas = document.getElementById("hodograph-canvas");
+  const hodographCtx = hodographCanvas.getContext("2d");
+  const hodographReadout = document.getElementById("hodograph-readout");
+  const hodographEmptyState = document.getElementById("hodograph-empty-state");
+  const hodographInfluenceBody = document.getElementById("hodograph-influence-body");
+
+  // Mirrors the main canvas's own resize() (devicePixelRatio-aware sizing)
+  // -- needed since #hodograph-canvas is a second, independent Canvas2D
+  // surface with its own backing-store size, not something the main
+  // resize() touches. Called every frame from drawHodograph (cheap no-op
+  // below the resize threshold, via the last-known-size guard) rather
+  // than only once at open time, since the panel is still animating into
+  // place (translateY transition) right when it opens -- its final
+  // layout size isn't necessarily settled on the very first frame.
+  let _hodographCanvasLastW = 0, _hodographCanvasLastH = 0;
+  function resizeHodographCanvas() {
+    const rect = hodographCanvas.getBoundingClientRect();
+    if (rect.width === _hodographCanvasLastW && rect.height === _hodographCanvasLastH) return;
+    _hodographCanvasLastW = rect.width; _hodographCanvasLastH = rect.height;
+    const dpr = window.devicePixelRatio || 1;
+    hodographCanvas.width = Math.max(1, Math.round(rect.width * dpr));
+    hodographCanvas.height = Math.max(1, Math.round(rect.height * dpr));
+    hodographCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  // Desktop/laptop only for now -- mobile has enough screen-space pressure
+  // already (see the button's own visibility toggle in
+  // updateLockedPanelVisibility) that this needs a different treatment,
+  // deferred rather than cramming the current design in.
+  function openDashboard() {
+    if (isMobileLayout) return;
+    if (!lockedBodyName && !selectedFlightKey) return;
+    if (lockedBodyName === "Sol" && !selectedFlightKey) return; // no hodograph -- Sol's velocity is [0,0,0] by construction
+    dashboardVisible = true;
+    document.body.classList.add("dashboard-active");
+    // Only shift the scrubber up to clear the docked panel (see CSS) when
+    // there's actually a flight/scrubber to shift -- a plain locked body
+    // has no scrubber at all. Safe to read selectedFlightKey once here
+    // (not per-frame): closeDashboard() unconditionally fires on any
+    // lockBody/selectFlight call, so nothing can change what's selected
+    // while the dashboard stays open.
+    document.body.classList.toggle("dashboard-has-scrubber", !!selectedFlightKey);
+    dashboardPanelTitle.textContent = selectedFlightKey ? FLIGHTS_RAW[selectedFlightKey].name : lockedBodyName;
+    resizeHodographCanvas();
+  }
+  function closeDashboard() {
+    if (!dashboardVisible) return;
+    dashboardVisible = false;
+    document.body.classList.remove("dashboard-active", "dashboard-has-scrubber");
+  }
+  dashboardToggleBtn.addEventListener("click", () => { dashboardVisible ? closeDashboard() : openDashboard(); });
+  dashboardPanelClose.addEventListener("click", closeDashboard);
+  window.addEventListener("resize", () => {
+    if (dashboardVisible) resizeHodographCanvas();
+    // Dashboard is desktop/laptop only (see openDashboard's own comment).
+    // Registered after resize()'s own top-of-file listener (line ~2983),
+    // which updates isMobileLayout first -- listeners fire in
+    // registration order, so isMobileLayout is already current by here.
+    // Deliberately NOT done via updateMobileLayoutMode() itself: that
+    // function runs synchronously during initial bootstrap (resize()'s
+    // own unconditional call at the bottom of its setup block), well
+    // before dashboardToggleBtn/lockedPanel and everything else this
+    // needs even exist yet -- a real "Cannot access before
+    // initialization" crash caught live, not hypothetical.
+    if (isMobileLayout) {
+      dashboardToggleBtn.classList.remove("visible");
+      closeDashboard();
+    } else {
+      updateLockedPanelVisibility();
+    }
+  });
+
+  // Speed magnitude in km/s from a hodograph-space velocity component --
+  // vx/vy/the whole circle are drawn in whatever unit getHodographElements
+  // resolved them in (AU/day for GM-driven bodies, km/day for moons, see
+  // `unitsAreKm`), so only the READOUT text needs a real unit conversion;
+  // the drawing itself never needs to know or care which unit it's in.
+  function hodographSpeedKmS(vMag, unitsAreKm) {
+    return unitsAreKm ? (vMag / SEC_PER_DAY) : (vMag * AU_KM / SEC_PER_DAY);
+  }
+
+  function hodographEmptyMessage(h) {
+    if (!h) return "Nothing to show a hodograph for.";
+    if (h.empty === "not-in-transit") return `Not currently in transit\n(launches ${h.launchDate}, arrives ${h.arrivalDate})`;
+    if (h.empty === "no-shape") return "No reliable orbit shape available for this segment.";
+    if (h.empty === "loiter") return `${h.legLabel} — no meaningful orbital hodograph here.`;
+    return "No hodograph available right now.";
+  }
+
+  // The velocity hodograph: for any 2-body Keplerian orbit, the velocity
+  // vector's tip traces a perfect circle -- radius R = n*a/sqrt(1-e^2)
+  // (elliptical) or GM/h (hyperbolic), centered at (0, e*R) in the orbit's
+  // own perifocal frame (see hodographCircle's own comment for the sign
+  // subtlety on the hyperbolic branch). The line from the origin to the
+  // live point IS the instantaneous speed -- the single clearest teaching
+  // element here, since the circle itself never changes shape mid-orbit
+  // but that line's length visibly grows/shrinks as the point sweeps
+  // around it.
+  function drawHodograph(daysSinceEpoch) {
+    const h = getHodographElements(daysSinceEpoch);
+    if (!h || h.empty) {
+      hodographEmptyState.style.display = "flex";
+      hodographCanvas.style.display = "none";
+      hodographReadout.style.display = "none";
+      hodographEmptyState.textContent = hodographEmptyMessage(h);
+      hodographInfluenceBody.textContent = "";
+      return;
+    }
+    hodographEmptyState.style.display = "none";
+    hodographCanvas.style.display = "block";
+    hodographReadout.style.display = "block";
+    hodographInfluenceBody.textContent = h.influenceBody;
+    resizeHodographCanvas(); // see its own comment -- must run AFTER display is set to "block" and the readout populated on a prior call, so clientHeight reflects final layout
+
+    const circ = hodographCircle(h);
+    const pt = hodographVelocity(h, daysSinceEpoch);
+
+    const w = hodographCanvas.clientWidth, viewH = hodographCanvas.clientHeight;
+    hodographCtx.clearRect(0, 0, w, viewH);
+    if (w < 10 || viewH < 10) return; // not laid out yet (first-frame race)
+
+    // Fit the circle AND the origin (always drawn, since the origin/
+    // speed-line is the whole point) with margin for axis labels. Margin
+    // shrinks (down to a hard floor of 4px, never negative) on a cramped
+    // canvas rather than assuming 36px always fits -- a short/phone-
+    // landscape mobile viewport can leave the canvas only ~30px tall,
+    // and a fixed margin bigger than half the canvas would make `scale`
+    // negative, which crashes ctx.arc with a "negative radius" error
+    // (caught live via Playwright, not hypothetical).
+    const minX = Math.min(-circ.R, 0), maxX = Math.max(circ.R, 0);
+    const minY = Math.min(circ.cy - circ.R, 0), maxY = Math.max(circ.cy + circ.R, 0);
+    const margin = Math.max(4, Math.min(36, w / 4, viewH / 4));
+    const scale = Math.min((w - margin * 2) / (maxX - minX || 1), (viewH - margin * 2) / (maxY - minY || 1));
+    const originX = w / 2 - ((minX + maxX) / 2) * scale;
+    const originY = viewH / 2 + ((minY + maxY) / 2) * scale; // +vy draws upward, matching worldToScreen's own Y-flip convention
+    const toScreen = (vx, vy) => [originX + vx * scale, originY - vy * scale];
+
+    // Axes through the origin.
+    hodographCtx.strokeStyle = "rgba(255,255,255,0.15)";
+    hodographCtx.lineWidth = 1;
+    hodographCtx.beginPath();
+    hodographCtx.moveTo(0, originY); hodographCtx.lineTo(w, originY);
+    hodographCtx.moveTo(originX, 0); hodographCtx.lineTo(originX, viewH);
+    hodographCtx.stroke();
+
+    // The circle itself.
+    const [ccx, ccy] = toScreen(circ.cx, circ.cy);
+    hodographCtx.strokeStyle = "#6ba3ff";
+    hodographCtx.lineWidth = 1.5;
+    hodographCtx.beginPath();
+    hodographCtx.arc(ccx, ccy, circ.R * scale, 0, 2 * Math.PI);
+    hodographCtx.stroke();
+
+    // Origin marker ("v=0").
+    hodographCtx.fillStyle = "rgba(255,255,255,0.5)";
+    hodographCtx.beginPath();
+    hodographCtx.arc(originX, originY, 2.5, 0, 2 * Math.PI);
+    hodographCtx.fill();
+    hodographCtx.font = "11px sans-serif";
+    hodographCtx.fillText("v = 0", originX + 6, originY - 6);
+
+    // Speed line (origin -> live point) -- its length IS the current speed.
+    const [px, py] = toScreen(pt.vx, pt.vy);
+    hodographCtx.strokeStyle = "#e8c15a";
+    hodographCtx.lineWidth = 1.5;
+    hodographCtx.beginPath();
+    hodographCtx.moveTo(originX, originY);
+    hodographCtx.lineTo(px, py);
+    hodographCtx.stroke();
+
+    // Live point.
+    hodographCtx.fillStyle = "#e8c15a";
+    hodographCtx.beginPath();
+    hodographCtx.arc(px, py, 4, 0, 2 * Math.PI);
+    hodographCtx.fill();
+
+    // Readout: current speed, e, periapsis/apoapsis speed. |cy| +/- R are
+    // the farthest/nearest points on the circle from the origin -- always
+    // correct regardless of which branch's sign convention cy came from.
+    // Kept deliberately terse -- this overlays a 240px-square widget card,
+    // not the full-width panel the original full-viewport design had room
+    // for.
+    const speedKmS = hodographSpeedKmS(Math.hypot(pt.vx, pt.vy), h.unitsAreKm);
+    const periapsisKmS = hodographSpeedKmS(Math.abs(circ.cy) + circ.R, h.unitsAreKm);
+    const peakLine = h.e < 1
+      ? `peri ${periapsisKmS.toFixed(1)} / apo ${hodographSpeedKmS(Math.abs(Math.abs(circ.cy) - circ.R), h.unitsAreKm).toFixed(1)} km/s`
+      : `peri ${periapsisKmS.toFixed(1)} km/s`;
+    const lines = [`${speedKmS.toFixed(2)} km/s`, `e = ${h.e.toFixed(3)} · ${peakLine}`];
+    if (h.legLabel) lines.push(h.legLabel);
+    hodographReadout.innerHTML = lines.map((l) => `<div>${l}</div>`).join("");
+  }
+
   // "Missions here" (missionsToHereHtml) and "Destinations"
   // (flightDestinationsHtml) links are rebuilt into lockedPanelBody's
   // innerHTML each time the panel's content is (re)rendered (see
@@ -4764,6 +5181,14 @@
     // way to fully clear lockedBodyName once the panel's own close button
     // no longer does that.
     stopTrackingBtn.classList.toggle("visible", !!lockedBodyName);
+    // Same "reachable independent of the info panel's own open/closed
+    // state" reasoning as Stop tracking above, plus: hidden outright
+    // (not just disabled) on mobile -- see openDashboard's own comment on
+    // why this feature is desktop/laptop-only for now -- and for Sol,
+    // whose velocity is [0,0,0] by construction in this heliocentric
+    // model, so a hodograph is meaningless for it.
+    dashboardToggleBtn.classList.toggle("visible", !!lockedBodyName && lockedBodyName !== "Sol" && !isMobileLayout);
+    if (isMobileLayout) closeDashboard();
   }
 
   // Rocket/spacecraft/lander thumbnail row for a flight's locked panel.
@@ -6265,6 +6690,11 @@
     // After camera-follow above, so the readout reflects this frame's
     // final camX/camY, not a stale value from before it was corrected.
     if (sceneFramingVisible) updateSceneFramingPanel();
+    // Cheap no-op when closed (dashboardVisible false) -- same lazy-cost
+    // gating pattern as the Scene Framing readout above. The main canvas
+    // keeps rendering underneath regardless (frame() is never gated on
+    // panel visibility), so this needs no pause/resume logic of its own.
+    if (dashboardVisible) drawHodograph(daysSinceEpoch);
 
     // Orbit paths (drawn first, beneath bodies)
     renderedPaths = [];
@@ -6566,7 +6996,19 @@
       }
     }
 
-    bodies.sort((a, b) => a.rz - b.rz); // consistent depth ordering: whichever rotated side currently faces the viewer (larger rz) is drawn last, on top
+    // Consistent depth ordering: whichever rotated side currently faces the
+    // viewer is drawn last, on top. This is SMALLER rz, not larger --
+    // verified against real astronomical fact (not just internal self-
+    // consistency, which the previous `a.rz - b.rz` direction also had,
+    // making this bug easy to miss): at yaw=4.13deg/pitch=78.72deg, on
+    // 2022-05-31 Mercury sits in front of Sol (rz=-0.46) and was rendered
+    // hidden behind it under the old ascending sort; on 2024-03-18 Mercury
+    // sits behind Sol (rz=+0.30) and was rendered in front of it. Both
+    // were backwards -- `rotateWorld`'s pitch rotation is a proper,
+    // sign-consistent rotation with no inherent flip (confirmed
+    // separately), so this was a real, orientation-independent inversion
+    // in the sort direction itself, not a case-by-case edge condition.
+    bodies.sort((a, b) => b.rz - a.rz);
 
     renderedBodies = [];
     bodies.forEach((b) => {

@@ -4,6 +4,51 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-08-02 — Fixed a real body-occlusion depth bug; added a velocity-hodograph dashboard
+
+- **Fixed a real, longstanding depth-sorting bug**: near edge-on camera
+  angles, bodies that should occlude Sol (sitting between it and the
+  viewer) were rendering hidden behind it, and bodies that should be
+  hidden behind Sol were rendering in front of it -- backwards in both
+  directions. Root cause: `bodies.sort((a,b) => a.rz - b.rz)` drew
+  ascending-`rz` last (on top), but `rz`'s actual sign (from
+  `rotateWorld`'s pitch rotation) means the OPPOSITE -- smaller `rz` is
+  closer to the viewer. This wasn't visible in every view because the
+  bug was internally self-consistent (the sort always matched its own,
+  backwards, stated convention), so a superficial check couldn't catch
+  it -- it only became visible once real astronomical fact was used as
+  ground truth. Confirmed and fixed against two independent real
+  repro cases the user provided (camera yaw=4.13/pitch=78.72, dates
+  2022-05-31 and 2024-03-18): both were backwards before the fix,
+  correct after. Verified via direct pixel sampling at each body's exact
+  predicted screen position (not just re-reading the same sort's own
+  output), and re-checked across a full 88-day Mercury orbital cycle at
+  a second camera angle with no remaining discrepancy.
+- **Added a velocity-hodograph dashboard**: for a locked body or selected
+  flight (desktop/laptop only for now -- mobile needs a different
+  treatment, deferred), a "Dashboard" button in the camera-controls row
+  slides up a small panel alongside the still-visible, still-interactive
+  scene (not a takeover) showing the classic orbital-mechanics plot of
+  the velocity vector's tip, which traces a perfect circle for any
+  2-body Keplerian orbit no matter how eccentric the position-space path
+  is. Shows the body this orbit's velocity is measured relative to
+  ("orbiting Sol" today for almost everything; a moon's is relative to
+  its planet) -- designed for that reference body to eventually be
+  switchable once a flyby's own local (planetocentric) sphere-of-
+  influence hodograph is supported, not implemented yet. For a flight,
+  the scrubber shifts up to stay usable alongside the open dashboard, so
+  gravity-assist reshaping of the circle can be watched live while
+  scrubbing through a flyby. Along the way, fixed a real pre-existing
+  bug this surfaced: `getCurrentOrbitElements`'s `geocentric_orbit`
+  branch read a variable local to `frame()`'s own body from a sibling
+  top-level function, throwing a `ReferenceError` any time it was
+  reached outside an active frame() call (e.g. Mangalyaan/Aditya-L1's
+  real parking-orbit phase via the "Current orbit only" toggle).
+- This directly supersedes an earlier same-day attempt at a full-
+  viewport takeover version of this dashboard, corrected after direct
+  user feedback that it covered too much of the view and its toggle
+  button was buried inside the info panel rather than always reachable.
+
 ## 2026-08-01 (continued) — Fixed Solar Orbiter's first leg flying the wrong way
 
 - Fixed Solar Orbiter's Earth->Venus first leg (2020-02-10 to 2020-12-27),

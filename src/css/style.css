@@ -460,6 +460,10 @@
     display: none; /* shown only while a body is locked */
   }
   #stop-tracking-btn.visible { display: inline-block; }
+  #dashboard-toggle-btn {
+    display: none; /* shown only while a body/flight is locked, on desktop, and it isn't Sol */
+  }
+  #dashboard-toggle-btn.visible { display: inline-block; }
 
   /* Flight scrubber: video-style seek bar, shown whenever a flight is
      selected -- see buildFlightScrubber/updateFlightScrubberPlayhead in
@@ -630,6 +634,99 @@
     cursor: pointer; font-size: 16px; line-height: 1; padding: 0 4px;
   }
   #locked-panel-close:hover { color: var(--text-primary); }
+
+  /* Slides up from the bottom edge alongside the still-visible, still-
+     interactive scene -- NOT a takeover like #locked-panel's mobile
+     full-screen mode or #glossary-panel. Toggled from #dashboard-toggle-
+     btn in #camera-controls (desktop/laptop only -- see that button's own
+     comment). Animates via `bottom` (not a transform) so its resting
+     position can clear #camera-controls (bottom:40px + its own ~46px
+     height) instead of sitting underneath it -- confirmed live via
+     Playwright that a naive bottom:0 placement hid Reset view/Stop
+     tracking/this dashboard toggle itself behind the panel. `bottom`
+     starts far enough negative that the whole panel (up to ~340px tall)
+     is off-screen below the viewport, not just its own height, since
+     it's no longer anchored flush to the true bottom edge.
+     pointer-events:none while hidden so that off-screen space isn't
+     click-blocking. */
+  #dashboard-panel {
+    position: fixed;
+    left: 50%; bottom: -400px;
+    transform: translateX(-50%);
+    transition: bottom 0.22s ease-out;
+    pointer-events: none;
+    flex-direction: column;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    max-height: 340px;
+    border-radius: 10px 10px 0 0;
+    padding-bottom: 14px;
+    z-index: 46; /* just above #flight-scrubber-panel's 45 */
+  }
+  body.dashboard-active #dashboard-panel {
+    bottom: 90px; /* clears #camera-controls */
+    pointer-events: auto;
+  }
+
+  #dashboard-panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; margin-bottom: 8px;
+  }
+  #dashboard-panel-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 700; font-size: 16px; letter-spacing: 0.01em; color: #ffffff;
+  }
+  #dashboard-panel-close {
+    background: transparent; border: none; color: var(--text-dim);
+    cursor: pointer; font-size: 18px; line-height: 1; padding: 2px 6px;
+  }
+  #dashboard-panel-close:hover { color: var(--text-primary); }
+
+  /* Row of widget cards -- currently just #hodograph-widget, but built to
+     hold more (a "gravigram" net-force view is planned) without needing
+     restructuring: each new widget is just another same-shaped card
+     appended here. */
+  #dashboard-widgets { display: flex; gap: 12px; }
+  .dashboard-widget {
+    position: relative; /* anchors #hodograph-readout's overlay chip */
+    width: 240px; height: 240px;
+    display: flex; flex-direction: column;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 8px;
+  }
+  .dashboard-widget-header {
+    display: flex; flex-direction: column; flex-shrink: 0; margin-bottom: 4px;
+  }
+  .dashboard-widget-title { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+  .dashboard-widget-subtitle { font-size: 11px; color: var(--text-dim); }
+
+  #hodograph-canvas { flex: 1; width: 100%; min-height: 0; }
+  /* Compact overlay (not a block below the canvas -- there's no room for
+     that in a 240px-square card), top-left corner, own translucent chip
+     so it stays legible over the circle/axes drawn underneath it. */
+  #hodograph-readout {
+    position: absolute; left: 18px; top: 44px;
+    background: rgba(5,7,13,0.72); border-radius: 4px; padding: 3px 6px;
+    font-size: 10.5px; line-height: 1.5; color: var(--text-dim);
+    pointer-events: none; max-width: 200px;
+  }
+  #hodograph-empty-state {
+    display: none; flex: 1; align-items: center; justify-content: center;
+    text-align: center; color: var(--text-dim); font-size: 11px; padding: 8px;
+  }
+
+  /* Shifted up to clear the docked panel only while BOTH are actually
+     showing (a flight selected AND the dashboard open) -- .dashboard-
+     has-scrubber is set in JS (openDashboard) precisely when there's a
+     real scrubber to avoid colliding with; a plain locked body has no
+     scrubber at all (#flight-scrubber-panel stays display:none
+     regardless), so this rule doing nothing in that case is fine either
+     way, but keeping it scoped this tightly documents the real intent.
+     410px = the panel's own resting bottom (90px, clears #camera-
+     controls) + its real measured height (~300px) + a small gap. */
+  body.dashboard-has-scrubber #flight-scrubber-panel { bottom: 410px; }
 
   /* Mobile: full-screen modal, same in both orientations -- a partial
      bottom sheet/sidebar (the previous design) still didn't have room

@@ -58,6 +58,14 @@ reasons.
   below) plus a static arrow for the real direction the solar system
   orbits the Milky Way's center — a fixed astronomical fact, not derived
   from Sol's own (deliberately zero, in a heliocentric model) velocity.
+- **Dashboard (desktop/laptop only for now)**: a "Dashboard" button
+  (appears once a body or flight is locked, next to Reset view/Stop
+  tracking) slides up a small panel alongside the still-visible scene.
+  First widget: a velocity hodograph — the classic orbital-mechanics plot
+  of the velocity vector's tip, which traces a perfect circle for any
+  2-body Keplerian orbit no matter how eccentric the position-space path
+  is, labeled with which body that velocity is measured relative to
+  (Sol, almost always, today). Built to hold more widgets later.
 - **Mobile support**: full touch input (rotate/pinch-zoom/pan), a
   slide-out legend drawer, and a full-screen info panel on small screens.
 - **URL permalinks** — see below.

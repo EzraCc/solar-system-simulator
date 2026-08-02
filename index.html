@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=40">
+<link rel="stylesheet" href="src/css/style.css?v=42">
 </head>
 <body>
 
@@ -158,6 +158,40 @@
   <div id="locked-panel-body"></div>
 </div>
 
+<!-- Slides up from the bottom edge alongside the still-visible/still-
+     interactive solar system view -- NOT a takeover of the main view like
+     every other modal-ish panel in this file (#locked-panel on mobile,
+     #glossary-panel). Desktop/laptop only for now (see isMobileLayout
+     gating in app.js on #dashboard-toggle-btn, in #camera-controls below)
+     -- mobile has enough screen-space pressure already that this needs
+     its own, different treatment, deferred for later.
+     #dashboard-widgets is a row so more widgets (a "gravigram" net-force
+     view is planned) can slot in later without restructuring -- currently
+     holds just #hodograph-widget. -->
+<div class="panel" id="dashboard-panel">
+  <div id="dashboard-panel-header">
+    <span id="dashboard-panel-title"></span>
+    <button id="dashboard-panel-close" title="Close">&times;</button>
+  </div>
+  <div id="dashboard-widgets">
+    <div class="dashboard-widget" id="hodograph-widget">
+      <div class="dashboard-widget-header">
+        <span class="dashboard-widget-title">Velocity Hodograph</span>
+        <!-- The body this orbit's velocity/GM is measured relative to --
+             Sol for almost everything today, but a moon's hodograph is
+             relative to its planet, and a geocentric parking-orbit leg
+             is relative to Earth (or whichever planet), so this is a
+             real per-object field, not a hardcoded "Sol" label, even
+             though Sol is what it'll show most of the time right now. -->
+        <span class="dashboard-widget-subtitle">orbiting <span id="hodograph-influence-body"></span></span>
+      </div>
+      <canvas id="hodograph-canvas"></canvas>
+      <div id="hodograph-readout"></div>
+      <div id="hodograph-empty-state"></div>
+    </div>
+  </div>
+</div>
+
 <div class="panel" id="flight-scrubber-panel">
   <div id="flight-scrubber-header">
     <span id="flight-scrubber-title-group">
@@ -176,6 +210,10 @@
 <div class="panel" id="camera-controls">
   <button id="reset-view-btn" title="Restore default rotation, zoom, and pan">Reset view</button>
   <button id="stop-tracking-btn" title="Stop following the locked body">Stop tracking</button>
+  <!-- Desktop/laptop only (see isMobileLayout gating in app.js) -- hidden
+       entirely on mobile, not just disabled, until mobile gets its own
+       treatment for this. -->
+  <button id="dashboard-toggle-btn" title="Open the dashboard (velocity hodograph)">Dashboard</button>
 </div>
 
 <div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
@@ -214,6 +252,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=70"></script>
+<script src="src/js/app.js?v=73"></script>
 </body>
 </html>
