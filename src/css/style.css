@@ -658,7 +658,7 @@
     flex-direction: column;
     width: max-content;
     max-width: calc(100vw - 32px);
-    max-height: 340px;
+    max-height: 380px;
     border-radius: 10px 10px 0 0;
     padding-bottom: 14px;
     z-index: 46; /* just above #flight-scrubber-panel's 45 */
@@ -688,8 +688,12 @@
      appended here. */
   #dashboard-widgets { display: flex; gap: 12px; }
   .dashboard-widget {
-    position: relative; /* anchors #hodograph-readout's overlay chip */
-    width: 240px; height: 240px;
+    /* Taller than wide, not square -- a square card left no room for the
+       readout text without it overlapping the circle (flagged directly:
+       "text on speed and e values that overlap the circle"). The extra
+       height is dedicated, non-overlapping space for #hodograph-readout
+       below the canvas rather than an overlay on top of it. */
+    width: 240px; height: 320px;
     display: flex; flex-direction: column;
     background: rgba(255,255,255,0.03);
     border: 1px solid var(--panel-border);
@@ -703,14 +707,9 @@
   .dashboard-widget-subtitle { font-size: 11px; color: var(--text-dim); }
 
   #hodograph-canvas { flex: 1; width: 100%; min-height: 0; }
-  /* Compact overlay (not a block below the canvas -- there's no room for
-     that in a 240px-square card), top-left corner, own translucent chip
-     so it stays legible over the circle/axes drawn underneath it. */
   #hodograph-readout {
-    position: absolute; left: 18px; top: 44px;
-    background: rgba(5,7,13,0.72); border-radius: 4px; padding: 3px 6px;
-    font-size: 10.5px; line-height: 1.5; color: var(--text-dim);
-    pointer-events: none; max-width: 200px;
+    flex-shrink: 0; padding-top: 6px;
+    font-size: 11px; line-height: 1.5; color: var(--text-dim);
   }
   #hodograph-empty-state {
     display: none; flex: 1; align-items: center; justify-content: center;
@@ -724,9 +723,11 @@
      scrubber at all (#flight-scrubber-panel stays display:none
      regardless), so this rule doing nothing in that case is fine either
      way, but keeping it scoped this tightly documents the real intent.
-     410px = the panel's own resting bottom (90px, clears #camera-
-     controls) + its real measured height (~300px) + a small gap. */
-  body.dashboard-has-scrubber #flight-scrubber-panel { bottom: 410px; }
+     490px = the panel's own resting bottom (90px, clears #camera-
+     controls) + its real measured height (now ~370px, taller since the
+     hodograph widget's own card grew from a square to make room for its
+     readout text) + a small gap. */
+  body.dashboard-has-scrubber #flight-scrubber-panel { bottom: 490px; }
 
   /* Mobile: full-screen modal, same in both orientations -- a partial
      bottom sheet/sidebar (the previous design) still didn't have room

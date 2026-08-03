@@ -4,6 +4,30 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-08-03 — Hodograph: added a real velocity scale, fixed text overlapping the circle
+
+- The hodograph circle was auto-fit to the widget every time, which made
+  every body's circle come out roughly the same on-screen diameter
+  regardless of its real speed -- flagged directly: Mercury's and
+  Saturn's hodographs looked like the same magnitude despite a real ~6x
+  speed difference, and the only way to tell them apart was to watch how
+  fast the dot moved. Standard hodograph diagrams solve this with a
+  labeled velocity scale rather than a shared/fixed pixel-per-km/s ratio
+  across every diagram (which would make small-body circles too tiny to
+  read); added that: concentric tick rings centered on the origin (v=0,
+  since distance from there is speed) at a "nice" round km/s spacing
+  chosen per body, each labeled, plus a readout line stating the ring
+  spacing. Mercury now reads "rings every 20 km/s", Saturn "rings every
+  5 km/s" -- same circle size, correctly different real scale, readable
+  directly from the picture instead of requiring you to watch it.
+- Fixed the speed/eccentricity readout text overlapping the circle: it
+  was an absolutely-positioned overlay chip on top of the canvas, which
+  collided with the circle once the circle got big enough to matter.
+  Moved to normal document flow below the canvas instead, and made the
+  widget card taller (not square) to fit that without shrinking the
+  circle further. Also left a bit more empty margin around the circle
+  itself so it no longer runs edge-to-edge.
+
 ## 2026-08-02 — Fixed a real body-occlusion depth bug; added a velocity-hodograph dashboard
 
 - **Fixed a real, longstanding depth-sorting bug**: near edge-on camera

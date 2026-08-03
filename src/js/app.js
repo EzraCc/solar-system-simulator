@@ -4931,6 +4931,23 @@
   function hodographSpeedKmS(vMag, unitsAreKm) {
     return unitsAreKm ? (vMag / SEC_PER_DAY) : (vMag * AU_KM / SEC_PER_DAY);
   }
+  // Inverse of the above -- a km/s value back into whatever native unit
+  // (AU/day or km/day) the current hodograph's circle/scale math is in,
+  // needed to convert a chosen tick VALUE (km/s) into a pixel RADIUS.
+  function hodographKmSToNative(kmS, unitsAreKm) {
+    return unitsAreKm ? (kmS * SEC_PER_DAY) : (kmS * SEC_PER_DAY / AU_KM);
+  }
+  // A "nice" round tick spacing (1/2/5 x10^n) close to maxValue/targetCount
+  // -- standard axis-labeling approach so gridlines land on readable
+  // numbers (10, 20, 50 km/s) instead of arbitrary fractions.
+  function niceTickStep(maxValue, targetCount) {
+    if (!(maxValue > 0)) return 1;
+    const raw = maxValue / targetCount;
+    const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const norm = raw / mag;
+    const niceNorm = norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10;
+    return niceNorm * mag;
+  }
 
   function hodographEmptyMessage(h) {
     if (!h) return "Nothing to show a hodograph for.";
@@ -4973,16 +4990,22 @@
     if (w < 10 || viewH < 10) return; // not laid out yet (first-frame race)
 
     // Fit the circle AND the origin (always drawn, since the origin/
-    // speed-line is the whole point) with margin for axis labels. Margin
-    // shrinks (down to a hard floor of 4px, never negative) on a cramped
-    // canvas rather than assuming 36px always fits -- a short/phone-
-    // landscape mobile viewport can leave the canvas only ~30px tall,
-    // and a fixed margin bigger than half the canvas would make `scale`
-    // negative, which crashes ctx.arc with a "negative radius" error
-    // (caught live via Playwright, not hypothetical).
+    // speed-line is the whole point) with margin for axis/tick labels.
+    // Margin shrinks (down to a hard floor of 4px, never negative) on a
+    // cramped canvas rather than assuming a fixed value always fits -- a
+    // short/phone-landscape mobile viewport can leave the canvas only
+    // ~30px tall, and a fixed margin bigger than half the canvas would
+    // make `scale` negative, which crashes ctx.arc with a "negative
+    // radius" error (caught live via Playwright, not hypothetical).
+    // Also deliberately leaves the circle short of the canvas edges (not
+    // just enough for tick labels) -- a circle that always fills the
+    // frame regardless of the body's real speed was flagged as
+    // misleading (Mercury and Saturn rendered as literally the same
+    // diameter); the tick rings below are the actual fix for that, but
+    // a bit of visible empty margin also just reads as "not maxed out."
     const minX = Math.min(-circ.R, 0), maxX = Math.max(circ.R, 0);
     const minY = Math.min(circ.cy - circ.R, 0), maxY = Math.max(circ.cy + circ.R, 0);
-    const margin = Math.max(4, Math.min(36, w / 4, viewH / 4));
+    const margin = Math.max(4, Math.min(46, w / 4, viewH / 4));
     const scale = Math.min((w - margin * 2) / (maxX - minX || 1), (viewH - margin * 2) / (maxY - minY || 1));
     const originX = w / 2 - ((minX + maxX) / 2) * scale;
     const originY = viewH / 2 + ((minY + maxY) / 2) * scale; // +vy draws upward, matching worldToScreen's own Y-flip convention
@@ -4995,6 +5018,31 @@
     hodographCtx.moveTo(0, originY); hodographCtx.lineTo(w, originY);
     hodographCtx.moveTo(originX, 0); hodographCtx.lineTo(originX, viewH);
     hodographCtx.stroke();
+
+    // Scale rings, centered on the ORIGIN (v=0) not the circle -- distance
+    // from the origin is speed, so these are what actually make speed
+    // readable as a number from the picture itself, not just relative
+    // circle size (which is auto-fit per body and so, on its own, made
+    // Mercury's and Saturn's hodographs look like the same magnitude
+    // despite a ~5x real speed difference -- flagged directly by the
+    // user). Spacing is a "nice" round km/s number close to a 3-ring fit
+    // against the circle's own farthest point from the origin.
+    const farKmS = hodographSpeedKmS(Math.abs(circ.cy) + circ.R, h.unitsAreKm);
+    const tickStepKmS = niceTickStep(farKmS, 3);
+    hodographCtx.strokeStyle = "rgba(255,255,255,0.12)";
+    hodographCtx.fillStyle = "rgba(255,255,255,0.4)";
+    hodographCtx.font = "9px sans-serif";
+    hodographCtx.lineWidth = 1;
+    for (let tick = tickStepKmS; tick <= farKmS * 1.05; tick += tickStepKmS) {
+      const rPx = hodographKmSToNative(tick, h.unitsAreKm) * scale;
+      hodographCtx.beginPath();
+      hodographCtx.arc(originX, originY, rPx, 0, 2 * Math.PI);
+      hodographCtx.stroke();
+      // Label along a diagonal so it rarely collides with the axes, the
+      // speed line, or the "v = 0" label near the origin itself.
+      const lx = originX + rPx * Math.SQRT1_2, ly = originY - rPx * Math.SQRT1_2;
+      hodographCtx.fillText(`${tick.toFixed(tickStepKmS < 1 ? 1 : 0)}`, lx + 3, ly - 3);
+    }
 
     // The circle itself.
     const [ccx, ccy] = toScreen(circ.cx, circ.cy);
@@ -5027,18 +5075,24 @@
     hodographCtx.arc(px, py, 4, 0, 2 * Math.PI);
     hodographCtx.fill();
 
-    // Readout: current speed, e, periapsis/apoapsis speed. |cy| +/- R are
-    // the farthest/nearest points on the circle from the origin -- always
-    // correct regardless of which branch's sign convention cy came from.
-    // Kept deliberately terse -- this overlays a 240px-square widget card,
-    // not the full-width panel the original full-viewport design had room
-    // for.
+    // Readout: current speed, e, periapsis/apoapsis speed, and the ring
+    // spacing (so the on-canvas tick labels' unit is stated once rather
+    // than repeated at every ring). |cy| +/- R are the farthest/nearest
+    // points on the circle from the origin -- always correct regardless
+    // of which branch's sign convention cy came from. Lives in its own
+    // block below the canvas now (not an overlay on top of it) -- the
+    // overlay version was flagged as overlapping the circle itself once
+    // the circle got large enough to matter.
     const speedKmS = hodographSpeedKmS(Math.hypot(pt.vx, pt.vy), h.unitsAreKm);
     const periapsisKmS = hodographSpeedKmS(Math.abs(circ.cy) + circ.R, h.unitsAreKm);
     const peakLine = h.e < 1
       ? `peri ${periapsisKmS.toFixed(1)} / apo ${hodographSpeedKmS(Math.abs(Math.abs(circ.cy) - circ.R), h.unitsAreKm).toFixed(1)} km/s`
       : `peri ${periapsisKmS.toFixed(1)} km/s`;
-    const lines = [`${speedKmS.toFixed(2)} km/s`, `e = ${h.e.toFixed(3)} · ${peakLine}`];
+    const lines = [
+      `${speedKmS.toFixed(2)} km/s`,
+      `e = ${h.e.toFixed(3)} · ${peakLine}`,
+      `rings every ${tickStepKmS.toFixed(tickStepKmS < 1 ? 1 : 0)} km/s`,
+    ];
     if (h.legLabel) lines.push(h.legLabel);
     hodographReadout.innerHTML = lines.map((l) => `<div>${l}</div>`).join("");
   }
