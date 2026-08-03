@@ -1496,6 +1496,28 @@
     return [X, Y, Z]; // km
   }
 
+  // Velocity twin of computeGeocentricOffsetKm, same elements/units -- the
+  // standard perifocal-frame Kepler velocity (mirrors computeFlightVelocity's
+  // own elliptical branch verbatim, just in km/day instead of AU/day and
+  // around a planet's GM instead of the Sun's), rotated to the same
+  // inertial frame computeGeocentricOffsetKm's position uses. Needed for
+  // the hodograph dashboard's Sol-relative option on a geocentric_orbit
+  // leg (see computeGeocentricOrbitSolFrame) -- until now nothing needed
+  // this leg TYPE's own local velocity, only its position (for drawing).
+  function computeGeocentricOffsetVelocityKmDay(elements, t, gmKm3Day2) {
+    const n = Math.sqrt(gmKm3Day2 / (elements.aKm * elements.aKm * elements.aKm));
+    const M = elements.M0 + n * (t - elements.epochDays);
+    const E = solveKepler(M, elements.e);
+    const Edot = n / (1 - elements.e * Math.cos(E));
+    const xd = -elements.aKm * Math.sin(E) * Edot;
+    const yd = elements.aKm * Math.sqrt(1 - elements.e * elements.e) * Math.cos(E) * Edot;
+    const cosOm = Math.cos(elements.Om), sinOm = Math.sin(elements.Om);
+    const cosW  = Math.cos(elements.w),  sinW  = Math.sin(elements.w);
+    const cosI  = Math.cos(elements.i),  sinI  = Math.sin(elements.i);
+    const xw = xd * cosW - yd * sinW, yw = xd * sinW + yd * cosW;
+    return [xw * cosOm - yw * cosI * sinOm, xw * sinOm + yw * cosI * cosOm, yw * sinI]; // km/day
+  }
+
   // Build the { aKm, e, i, Om, w, M0, epochDays } element set for one
   // geocentric_orbit leg from its JSON fields (periapsisKm/apoapsisKm as
   // ALTITUDES above the primary's surface -- same convention as a
@@ -1669,7 +1691,57 @@
   // hodographCircle -- the elliptical branch derives everything from n
   // directly, which matters because moons use an EMPIRICAL, not
   // GM-derived, n (see computeSatelliteOffset's own comment ~app.js:245).
-  function getHodographElements(daysSinceEpoch) {
+  // Sol-relative option for a geocentric_orbit leg (the toggle's stretch
+  // deliverable): combine the leg's own local (planetocentric) position/
+  // velocity with the primary planet's own heliocentric state, then re-fit
+  // orbital elements around the SUN instead of the planet -- the same
+  // combine-then-refit pattern computeGADeparture already uses for a
+  // post-flyby heliocentric orbit. `info` is whatever getCurrentOrbitElements
+  // already returned for this instant (elements in AU, planet-centered);
+  // reconstructed into km here only because computeGeocentricOffsetKm/
+  // computeGeocentricOffsetVelocityKmDay both work in km, matching every
+  // other geocentric_orbit call site in this file.
+  function computeGeocentricOrbitSolFrame(info, daysSinceEpoch) {
+    const elKm = {
+      aKm: info.elements.a * AU_KM, e: info.elements.e, i: info.elements.i,
+      Om: info.elements.Om, w: info.elements.w, M0: info.elements.M0, epochDays: info.elements.epochDays,
+    };
+    const gmKm3Day2 = info.gmAU3Day2 * AU_KM * AU_KM * AU_KM;
+    const offsetPosKm = computeGeocentricOffsetKm(elKm, daysSinceEpoch, gmKm3Day2);
+    const offsetVelKmDay = computeGeocentricOffsetVelocityKmDay(elKm, daysSinceEpoch, gmKm3Day2);
+    const primaryState = computeStateVector(PLANET_ELEMENTS[info.influenceBody], daysSinceEpoch);
+    const rAU = [0, 1, 2].map((k) => info.centerAU[k] + offsetPosKm[k] / AU_KM);
+    const vAUday = [0, 1, 2].map((k) => primaryState.vel[k] + offsetVelKmDay[k] / AU_KM);
+    const el = stateVectorToElements(rAU, vAUday);
+    const n = el.e < 1
+      ? Math.sqrt(GM_SUN_AU3_DAY2 / (el.a * el.a * el.a))
+      : Math.sqrt(GM_SUN_AU3_DAY2 / (-el.a * -el.a * -el.a));
+    return {
+      title: FLIGHTS_RAW[selectedFlightKey].name, legLabel: `${info.legLabel} (Sol-relative)`,
+      a: el.a, e: el.e, M0: el.M, epochDays: daysSinceEpoch, n,
+      gmAU3Day2: GM_SUN_AU3_DAY2, unitsAreKm: false, influenceBody: 'Sol',
+    };
+  }
+
+  function getHodographElements(daysSinceEpoch, frameKey) {
+    if (frameKey === 'sol' && selectedFlightKey) {
+      const info = getCurrentOrbitElements(selectedFlightKey, daysSinceEpoch);
+      if (info && info.legType === 'geocentric_orbit') return computeGeocentricOrbitSolFrame(info, daysSinceEpoch);
+      return { empty: 'no-shape' };
+    }
+    if (frameKey && frameKey !== 'default' && frameKey.startsWith('flyby:') && selectedFlightKey) {
+      const legIndex = Number(frameKey.slice(6));
+      const w = getGaSoiWindows(selectedFlightKey).find((x) => x.legIndex === legIndex);
+      const bounds = w && getGaSoiDisplayBounds(w);
+      if (w && daysSinceEpoch >= bounds.start && daysSinceEpoch <= bounds.end) {
+        return {
+          title: FLIGHTS_RAW[selectedFlightKey].name, legLabel: `${w.body} flyby (local)`,
+          a: w.aLocalAU, e: w.eHyp, M0: 0, epochDays: w.epochDays, n: w.n,
+          gmAU3Day2: w.gmAU3Day2, unitsAreKm: false, influenceBody: w.body,
+        };
+      }
+      return { empty: 'no-shape' };
+    }
     if (selectedFlightKey) {
       const info = getCurrentOrbitElements(selectedFlightKey, daysSinceEpoch);
       if (!info) {
@@ -2077,7 +2149,16 @@
     const e1    = v3unit(v3cross(vUnit, ref));
     const e2    = v3cross(vUnit, e1); // unit already: vUnit ⟂ e1, both unit
 
-    return { delta, e1, e2, turnAngleDeg: delta * 180 / Math.PI };
+    // eHyp/rPeriKm: the local hyperbola's own real eccentricity/periapsis,
+    // exposed (not just used internally for delta above) so a SOI-relative
+    // hodograph can be drawn for this flyby -- see computeGaSoiWindow. This
+    // is exact real hyperbolic-flyby geometry from periapsisKm + the real
+    // v_inf alone, independent of whether the SURROUNDING heliocentric
+    // roll-angle fit (computeGADeparture's own evalPhi search) later gets
+    // accepted or rejected by getGAChain's missTooLarge check -- it stays
+    // correct even on legs where that outer fit is known-unreliable
+    // (BepiColombo, PSP; see getGAChain's own long comment on why).
+    return { delta, e1, e2, turnAngleDeg: delta * 180 / Math.PI, eHyp: e_hyp, rPeriKm: r_peri };
   }
 
   // Outgoing V_inf at roll angle phi (radians) around the incoming asymptote.
@@ -2202,7 +2283,50 @@
       // getGAChain uses these to decide whether to trust this fit at all.
       missAU: finalD,
       chordAU: v3norm(v3sub(nextBodyPos, posGA)),
+      // Forwarded from flybyGeometry -- the LOCAL hyperbola's own real
+      // eccentricity/periapsis, for a SOI-relative hodograph. Real
+      // regardless of missAU/whether this outer heliocentric fit gets
+      // accepted (see flybyGeometry's own comment on eHyp/rPeriKm).
+      eHyp: geom.eHyp, rPeriKm: geom.rPeriKm,
     };
+  }
+
+  // Real SOI entry/exit time bounds (days since J2000) for one flyby's own
+  // LOCAL planetocentric hyperbola -- the actual real window during which
+  // that body's gravity (not the Sun's) dominates local dynamics, used to
+  // decide when a SOI-relative hodograph is physically meaningful to show
+  // at all (see getGaSoiWindows/getHodographFrameOptions). Periapsis
+  // passage is fixed at tGA (this catalog's own established convention:
+  // the real burn/closest-approach happens exactly at a gravity_assist
+  // leg's own recorded date), so M0=0 there by definition; entry/exit are
+  // symmetric about it since an unpowered hyperbolic flyby is symmetric
+  // about its own periapsis.
+  //
+  // eHyp/rPeriKm: from flybyGeometry (via computeGADeparture's forwarded
+  // fields), real hyperbolic-flyby geometry from periapsisKm + real
+  // v_inf alone. soiRadiusAU: PLANET_META[body].soiRadiusAU -- callers
+  // MUST guard for bodies with none (the Moon; MOON_META has no SOI
+  // field, since Earth's own SOI dominates near it, not a separate lunar
+  // one in this simplified patched-conic model).
+  function computeGaSoiWindow(eHyp, rPeriKm, soiRadiusAU, gmPlanetAU3Day2, tGA) {
+    if (!(eHyp > 1) || !soiRadiusAU) return null; // no real v_inf, or a body with no SOI modeled
+    const soiRadiusKm = soiRadiusAU * AU_KM;
+    if (rPeriKm >= soiRadiusKm) return null; // degenerate (periapsis outside its own SOI) -- not expected with real data
+    const aLocalAU = -(rPeriKm / (eHyp - 1)) / AU_KM; // a<0, this file's hyperbolic convention (see stateVectorToElements)
+    const n = Math.sqrt(gmPlanetAU3Day2 / (-aLocalAU * -aLocalAU * -aLocalAU)); // rad/day
+    const p = rPeriKm * (1 + eHyp); // semi-latus rectum, km (p = a(1-e^2), rearranged to avoid the near-cancellation in a*(1-e^2) directly)
+    const cosNu = (p / soiRadiusKm - 1) / eHyp;
+    const nu = Math.acos(Math.max(-1, Math.min(1, cosNu))); // domain-clamped, matches stateVectorToElements' own style
+    // True anomaly -> hyperbolic anomaly, same formula stateVectorToElements
+    // already uses (reused verbatim, not re-derived): tanh(H/2) =
+    // sqrt((e-1)/(e+1)) * tan(nu/2). Clamped away from +-1 for float safety
+    // only -- exact math never reaches the asymptote for a finite SOI radius.
+    const tanhArg = Math.max(-1 + 1e-9, Math.min(1 - 1e-9,
+      Math.sqrt((eHyp - 1) / (eHyp + 1)) * Math.tan(nu / 2)));
+    const H = 2 * Math.atanh(tanhArg);
+    const M = eHyp * Math.sinh(H) - H; // outbound branch (nu>0), so M>0
+    const dt = M / n; // days from periapsis to the SOI boundary
+    return { aLocalAU, eHyp, n, gmAU3Day2: gmPlanetAU3Day2, epochDays: tGA, tStart: tGA - dt, tEnd: tGA + dt };
   }
 
   // Cache: flightKey → segment array built by getGAChain().
@@ -2220,6 +2344,76 @@
   function getGAEvents(flightKey) {
     if (!_gaEventsCache[flightKey]) getGAChain(flightKey);
     return _gaEventsCache[flightKey] || [];
+  }
+
+  // Real SOI-transit windows, one per gravity_assist leg that has one
+  // (Moon flybys and degenerate-v_inf cases have none) -- side effect of
+  // getGAChain, same caching precedent as getGAEvents above.
+  function getGaSoiWindows(flightKey) {
+    return getGAEvents(flightKey).map((ev) => ev.soiWindow).filter(Boolean);
+  }
+
+  // A real SOI transit can be very short -- some of BepiColombo's real
+  // Mercury flybys last under an hour of sim time. At typical/fast
+  // playback speeds (1 yr/min is ~6 sim-days per real second) the second
+  // hodograph widget showing that encounter would flash on and off in a
+  // fraction of a real second, easy to miss entirely. This pads the
+  // real physics window (unchanged, still what's ACTUALLY used to derive
+  // the local orbit -- see computeGaSoiWindow) with a symmetric lead-in/
+  // hold-after margin, sized so the widget stays visible for at least
+  // HODOGRAPH_SOI_MIN_VISIBLE_SECONDS of real wall-clock time regardless
+  // of how fast sim time is currently moving. Mathematically fine to
+  // evaluate the local hyperbola's own hodograph slightly outside the
+  // "real" SOI boundary -- the circle is exact for the entire hyperbola,
+  // not just the portion physically inside the SOI (verified: sampled
+  // points well outside a real window still land on the predicted
+  // circle to floating-point precision) -- so no clamping is needed,
+  // just a wider gate on when to show it. No padding while paused: sim
+  // time isn't advancing, so there's no flash risk, and the user can
+  // already dwell on the real window for as long as they want by not
+  // un-pausing.
+  const HODOGRAPH_SOI_MIN_VISIBLE_SECONDS = 4;
+  // Typed playback speed (unlike the slider, capped at |mult|<=9) is
+  // genuinely unbounded -- capping the pad itself keeps an extreme typed
+  // speed (thousands of yr/min) from ballooning the display window into
+  // an adjacent leg or flyby, which would make two flyby-local frames
+  // valid at once (only one can actually be shown -- see the per-frame
+  // draw call site). 20 days each side is already far more lead-in/hold
+  // than any real encounter here needs at sane speeds.
+  const HODOGRAPH_SOI_MAX_PAD_DAYS = 20;
+  function getGaSoiDisplayBounds(w) {
+    if (paused || speedMultiplier === 0) return { start: w.tStart, end: w.tEnd };
+    const daysPerRealSecond = Math.abs(speedMultiplier) * EARTH_YEAR_DAYS / 60;
+    const windowDays = w.tEnd - w.tStart;
+    const minDays = HODOGRAPH_SOI_MIN_VISIBLE_SECONDS * daysPerRealSecond;
+    const padDays = Math.min(HODOGRAPH_SOI_MAX_PAD_DAYS, Math.max(0, (minDays - windowDays) / 2));
+    return { start: w.tStart - padDays, end: w.tEnd + padDays };
+  }
+
+  // What reference frame(s) the hodograph can currently show: the always-
+  // present primary (Sol, or whatever influenceBody the default frame
+  // resolves to) plus zero or more flyby-local frames that are only valid
+  // while daysSinceEpoch sits inside that flyby's (speed-padded, see
+  // getGaSoiDisplayBounds) SOI transit window.
+  function getHodographFrameOptions(daysSinceEpoch) {
+    const base = getHodographElements(daysSinceEpoch, 'default');
+    const primary = { key: 'default', label: (base && base.influenceBody) || 'Sol' };
+    const extras = [];
+    if (selectedFlightKey && isMultiLeg(FLIGHTS_RAW[selectedFlightKey])) {
+      for (const w of getGaSoiWindows(selectedFlightKey)) {
+        const bounds = getGaSoiDisplayBounds(w);
+        if (daysSinceEpoch >= bounds.start && daysSinceEpoch <= bounds.end) {
+          extras.push({ key: `flyby:${w.legIndex}`, label: w.body });
+        }
+      }
+      // Body-orbit case (geocentric_orbit): the spacecraft never leaves its
+      // primary's SOI during this leg type by definition, so no window-
+      // gating needed here, unlike the flyby case above -- valid for the
+      // entire leg duration.
+      const info = getCurrentOrbitElements(selectedFlightKey, daysSinceEpoch);
+      if (info && info.legType === 'geocentric_orbit') extras.push({ key: 'sol', label: 'Sol' });
+    }
+    return { primary, extras };
   }
 
   // Build (or return cached) the patched-conic segment chain for a multi-leg
@@ -2412,11 +2606,23 @@
           leg.periapsisKm || 500, meta.radiusKm, meta.gmKm3S2,
           nextBodyPos, nextT, tGA
         );
+        // Real SOI-relative hodograph window for this flyby, if this body
+        // has one modeled (PLANET_META has soiRadiusAU; the Moon does
+        // not -- see computeGaSoiWindow's own comment). Set unconditionally
+        // here, not deferred like speedOutKmS below: eHyp/rPeriKm are real
+        // hyperbolic-flyby geometry from periapsisKm + real v_inf alone,
+        // independent of whether the outer heliocentric roll-angle fit
+        // later gets accepted or rejected by the isPatched/missTooLarge
+        // check further up this function.
+        const gmPlanetAU3Day2 = meta.gmKm3S2 * (SEC_PER_DAY * SEC_PER_DAY) / (AU_KM * AU_KM * AU_KM);
+        const soiWindow = computeGaSoiWindow(postGA.eHyp, postGA.rPeriKm, meta.soiRadiusAU, gmPlanetAU3Day2, tGA);
+        if (soiWindow) { soiWindow.body = leg.body; soiWindow.legIndex = i; }
         pendingGaEvent = {
           legIndex: i, body: leg.body, date: leg.date, periapsisKm: leg.periapsisKm,
           speedInKmS: v3norm(velArr) * AU_KM / SEC_PER_DAY,
           speedOutKmS: undefined, // filled in once the next lambert leg settles on real elements
           aBeforeAU: prevEl.a, eBefore: prevEl.e,
+          eHyp: postGA.eHyp, rPeriKm: postGA.rPeriKm, soiWindow,
         };
         gaEvents.push(pendingGaEvent);
       }
@@ -3098,6 +3304,15 @@
   // locked/selected -- see openDashboard/closeDashboard near the locked-
   // panel wiring below.
   let dashboardVisible = false;
+  // Which reference frame the PRIMARY hodograph widget draws -- 'default'
+  // (Sol, or whatever influenceBody the leg resolves to) or a toggled
+  // alternate for a body-orbit leg (geocentric_orbit; see the toggle UI
+  // near drawHodograph). The second widget (flyby SOI transit) never uses
+  // this -- it's fully derived from daysSinceEpoch each frame instead,
+  // since a toggle would force picking one view during the one moment
+  // comparing both is the interesting part. Reset on close so a stale
+  // choice from one flight doesn't leak into the next.
+  let hodographFrameKey = 'default';
 
   // Absolute screen position of the locked panel -- set once when a new
   // body/flight is locked (see drawLockedPanelConnector's edge-detection),
@@ -4851,29 +5066,43 @@
   const dashboardPanel = document.getElementById("dashboard-panel");
   const dashboardPanelTitle = document.getElementById("dashboard-panel-title");
   const dashboardPanelClose = document.getElementById("dashboard-panel-close");
-  const hodographCanvas = document.getElementById("hodograph-canvas");
-  const hodographCtx = hodographCanvas.getContext("2d");
-  const hodographReadout = document.getElementById("hodograph-readout");
-  const hodographEmptyState = document.getElementById("hodograph-empty-state");
-  const hodographInfluenceBody = document.getElementById("hodograph-influence-body");
+  // Two independent widget cards sharing the same draw/resize logic: the
+  // primary (always-on, Sol-relative by default) and a second one shown
+  // only during a real gravity-assist SOI transit (see
+  // getHodographFrameOptions). Each bundles its own Canvas2D surface plus
+  // last-known-size cache -- the two canvases are independent backing
+  // stores, not something a single cache could share.
+  function makeHodographWidget(suffix) {
+    const canvas = document.getElementById(`hodograph-canvas${suffix}`);
+    return {
+      canvas, ctx: canvas.getContext("2d"),
+      readout: document.getElementById(`hodograph-readout${suffix}`),
+      emptyState: document.getElementById(`hodograph-empty-state${suffix}`),
+      influenceBody: document.getElementById(`hodograph-influence-body${suffix}`),
+      widgetEl: document.getElementById(`hodograph-widget${suffix}`),
+      lastW: 0, lastH: 0,
+    };
+  }
+  const hodographWidget1 = makeHodographWidget("");
+  const hodographWidget2 = makeHodographWidget("-2");
+  const hodographFrameToggle = document.getElementById("hodograph-frame-toggle");
 
   // Mirrors the main canvas's own resize() (devicePixelRatio-aware sizing)
-  // -- needed since #hodograph-canvas is a second, independent Canvas2D
+  // -- needed since each hodograph canvas is an independent Canvas2D
   // surface with its own backing-store size, not something the main
   // resize() touches. Called every frame from drawHodograph (cheap no-op
   // below the resize threshold, via the last-known-size guard) rather
   // than only once at open time, since the panel is still animating into
   // place (translateY transition) right when it opens -- its final
   // layout size isn't necessarily settled on the very first frame.
-  let _hodographCanvasLastW = 0, _hodographCanvasLastH = 0;
-  function resizeHodographCanvas() {
-    const rect = hodographCanvas.getBoundingClientRect();
-    if (rect.width === _hodographCanvasLastW && rect.height === _hodographCanvasLastH) return;
-    _hodographCanvasLastW = rect.width; _hodographCanvasLastH = rect.height;
+  function resizeHodographCanvas(widget) {
+    const rect = widget.canvas.getBoundingClientRect();
+    if (rect.width === widget.lastW && rect.height === widget.lastH) return;
+    widget.lastW = rect.width; widget.lastH = rect.height;
     const dpr = window.devicePixelRatio || 1;
-    hodographCanvas.width = Math.max(1, Math.round(rect.width * dpr));
-    hodographCanvas.height = Math.max(1, Math.round(rect.height * dpr));
-    hodographCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    widget.canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    widget.canvas.height = Math.max(1, Math.round(rect.height * dpr));
+    widget.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   // Desktop/laptop only for now -- mobile has enough screen-space pressure
@@ -4894,17 +5123,20 @@
     // while the dashboard stays open.
     document.body.classList.toggle("dashboard-has-scrubber", !!selectedFlightKey);
     dashboardPanelTitle.textContent = selectedFlightKey ? FLIGHTS_RAW[selectedFlightKey].name : lockedBodyName;
-    resizeHodographCanvas();
+    resizeHodographCanvas(hodographWidget1);
   }
   function closeDashboard() {
     if (!dashboardVisible) return;
     dashboardVisible = false;
+    hodographFrameKey = 'default';
+    hodographFrameToggle.innerHTML = '';
+    _hodographToggleSig = null;
     document.body.classList.remove("dashboard-active", "dashboard-has-scrubber");
   }
   dashboardToggleBtn.addEventListener("click", () => { dashboardVisible ? closeDashboard() : openDashboard(); });
   dashboardPanelClose.addEventListener("click", closeDashboard);
   window.addEventListener("resize", () => {
-    if (dashboardVisible) resizeHodographCanvas();
+    if (dashboardVisible) resizeHodographCanvas(hodographWidget1);
     // Dashboard is desktop/laptop only (see openDashboard's own comment).
     // Registered after resize()'s own top-of-file listener (line ~2983),
     // which updates isMobileLayout first -- listeners fire in
@@ -4957,6 +5189,44 @@
     return "No hodograph available right now.";
   }
 
+  // Renders (or hides) the primary widget's reference-frame toggle -- only
+  // relevant for a body-orbit leg (geocentric_orbit) that offers more than
+  // one valid frame, e.g. planet-relative vs Sol-relative. The flyby SOI-
+  // transit case never populates this (getHodographFrameOptions' extras
+  // there are all 'flyby:'-prefixed and drive the SECOND widget instead --
+  // see the per-frame call site). Rebuilds the DOM only when the actual
+  // set of offered keys changes (cheap no-op most frames); the active-
+  // state highlight updates every frame regardless, since that's just a
+  // class toggle.
+  let _hodographToggleSig = null;
+  function updateHodographFrameToggle(options) {
+    const nonFlybyExtras = options.extras.filter((o) => !o.key.startsWith('flyby:'));
+    if (nonFlybyExtras.length === 0) {
+      if (_hodographToggleSig !== null) {
+        hodographFrameToggle.innerHTML = '';
+        _hodographToggleSig = null;
+      }
+      return;
+    }
+    const all = [options.primary, ...nonFlybyExtras];
+    const sig = all.map((o) => o.key).join('|');
+    if (sig !== _hodographToggleSig) {
+      _hodographToggleSig = sig;
+      hodographFrameToggle.innerHTML = '';
+      all.forEach((opt) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'hodograph-frame-btn';
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => { hodographFrameKey = opt.key; });
+        hodographFrameToggle.appendChild(btn);
+      });
+    }
+    Array.from(hodographFrameToggle.children).forEach((btn, i) => {
+      btn.classList.toggle('active', all[i].key === hodographFrameKey);
+    });
+  }
+
   // The velocity hodograph: for any 2-body Keplerian orbit, the velocity
   // vector's tip traces a perfect circle -- radius R = n*a/sqrt(1-e^2)
   // (elliptical) or GM/h (hyperbolic), centered at (0, e*R) in the orbit's
@@ -4966,8 +5236,10 @@
   // element here, since the circle itself never changes shape mid-orbit
   // but that line's length visibly grows/shrinks as the point sweeps
   // around it.
-  function drawHodograph(daysSinceEpoch) {
-    const h = getHodographElements(daysSinceEpoch);
+  function drawHodograph(daysSinceEpoch, widget, frameKey) {
+    const { canvas: hodographCanvas, ctx: hodographCtx, readout: hodographReadout,
+      emptyState: hodographEmptyState, influenceBody: hodographInfluenceBody } = widget;
+    const h = getHodographElements(daysSinceEpoch, frameKey);
     if (!h || h.empty) {
       hodographEmptyState.style.display = "flex";
       hodographCanvas.style.display = "none";
@@ -4980,7 +5252,7 @@
     hodographCanvas.style.display = "block";
     hodographReadout.style.display = "block";
     hodographInfluenceBody.textContent = h.influenceBody;
-    resizeHodographCanvas(); // see its own comment -- must run AFTER display is set to "block" and the readout populated on a prior call, so clientHeight reflects final layout
+    resizeHodographCanvas(widget); // see its own comment -- must run AFTER display is set to "block" and the readout populated on a prior call, so clientHeight reflects final layout
 
     const circ = hodographCircle(h);
     const pt = hodographVelocity(h, daysSinceEpoch);
@@ -6748,7 +7020,23 @@
     // gating pattern as the Scene Framing readout above. The main canvas
     // keeps rendering underneath regardless (frame() is never gated on
     // panel visibility), so this needs no pause/resume logic of its own.
-    if (dashboardVisible) drawHodograph(daysSinceEpoch);
+    if (dashboardVisible) {
+      const frameOpts = getHodographFrameOptions(daysSinceEpoch);
+      updateHodographFrameToggle(frameOpts);
+      drawHodograph(daysSinceEpoch, hodographWidget1, hodographFrameKey);
+      // The second widget is fully derived from daysSinceEpoch each frame
+      // (no stored selection state) -- it shows the flyby body's local
+      // frame exactly while a real SOI transit window is active, and
+      // never otherwise. At most one extra is possible at a time with
+      // this catalog's leg spacing (see getHodographFrameOptions).
+      const flybyExtras = frameOpts.extras.filter((o) => o.key.startsWith('flyby:'));
+      if (flybyExtras.length > 0) {
+        hodographWidget2.widgetEl.style.display = "flex";
+        drawHodograph(daysSinceEpoch, hodographWidget2, flybyExtras[0].key);
+      } else {
+        hodographWidget2.widgetEl.style.display = "none";
+      }
+    }
 
     // Orbit paths (drawn first, beneath bodies)
     renderedPaths = [];

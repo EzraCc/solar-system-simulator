@@ -4,6 +4,48 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-08-03 (continued) — Hodograph: sphere-of-influence-relative frames during gravity assists and body orbits
+
+- The hodograph dashboard always showed one Sol-relative circle, even
+  during a real gravity-assist flyby -- the exact moment a Sphere of
+  Influence (SOI) is physically doing something interesting (the
+  spacecraft's velocity relative to the flyby body is a second, genuinely
+  real two-body problem, distinct from its heliocentric cruise). Added
+  real SOI-transit windows (`computeGaSoiWindow`): entry/exit time
+  bounds derived from each flyby's own local hyperbolic geometry
+  (`flybyGeometry` now also returns `eHyp`/`rPeriKm`), not an arbitrary
+  distance heuristic.
+- **During a real flyby SOI transit**, a second hodograph widget card
+  now appears alongside the first, showing the flyby body's own local
+  (planetocentric, hyperbolic) circle live -- both visible at once,
+  since forcing a single view is wrong right when comparing both is
+  most interesting. Fully derived from the current date each frame, no
+  stored selection state. Verified against BepiColombo's real Venus/
+  Mercury encounters and Lucy's real Earth flybys; confirmed Nozomi's
+  lunar swingbys correctly produce no SOI window (the Moon has no
+  modeled sphere of influence) rather than crashing.
+- **During a body-orbit leg** (a real `geocentric_orbit` parking/
+  apogee-raising phase, e.g. Mangalyaan's real pre-TMI orbit-raising
+  campaign), the primary widget now offers a small toggle between the
+  existing planet-relative view and a new Sol-relative one -- the
+  spacecraft's local planetocentric velocity combined with its primary
+  planet's own heliocentric state, refit into instantaneous heliocentric
+  orbital elements the same way a post-flyby heliocentric orbit is
+  already derived elsewhere in this file. A toggle fits this case better
+  than a second card: the leg is long and mostly static, not a brief
+  moment worth comparing side by side.
+- Some real SOI transits are very short (several of BepiColombo's real
+  Mercury flybys last under an hour of sim time) -- at the default 1
+  yr/min playback speed the second widget would have appeared and
+  vanished in a fraction of a real second, easy to miss entirely. Added
+  a speed-aware lead-in/hold-after pad around the real window so it
+  stays visible for at least ~4 real seconds regardless of current
+  playback speed (capped so an extreme typed speed can't balloon it
+  into an adjacent leg); no padding while paused, since the real window
+  is already exact and the user controls dwell time themselves. Measured
+  live: previously flashed for well under a real second at 1 yr/min, now
+  holds for ~4 seconds.
+
 ## 2026-08-03 — Hodograph: added a real velocity scale, fixed text overlapping the circle
 
 - The hodograph circle was auto-fit to the widget every time, which made

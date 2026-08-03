@@ -66,6 +66,11 @@ reasons.
   2-body Keplerian orbit no matter how eccentric the position-space path
   is, labeled with which body that velocity is measured relative to
   (Sol, almost always, today). Built to hold more widgets later.
+  During a real gravity-assist flyby's sphere-of-influence transit, a
+  second widget appears alongside the first showing the flyby body's own
+  local (planetocentric) hodograph live; during a body-orbit leg (a
+  parking/apogee-raising phase), a small toggle instead switches the
+  primary widget between planet-relative and Sol-relative.
 - **Mobile support**: full touch input (rotate/pinch-zoom/pan), a
   slide-out legend drawer, and a full-screen info panel on small screens.
 - **URL permalinks** — see below.

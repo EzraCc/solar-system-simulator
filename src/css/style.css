@@ -706,15 +706,40 @@
   .dashboard-widget-title { font-size: 12px; font-weight: 600; color: var(--text-primary); }
   .dashboard-widget-subtitle { font-size: 11px; color: var(--text-dim); }
 
-  #hodograph-canvas { flex: 1; width: 100%; min-height: 0; }
-  #hodograph-readout {
+  /* Body-orbit reference-frame toggle -- empty/not rendered most of the
+     time (see #hodograph-frame-toggle's own comment in index.html).
+     Pill buttons styled after #flight-scrubber-open-info-btn, this file's
+     one existing small-pill precedent. */
+  #hodograph-frame-toggle { display: flex; gap: 4px; margin-top: 4px; }
+  .hodograph-frame-btn {
+    font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
+    background: rgba(255,255,255,0.08); color: var(--text-dim);
+    border: 1px solid transparent; cursor: pointer;
+  }
+  .hodograph-frame-btn:hover { background: rgba(255,255,255,0.14); }
+  .hodograph-frame-btn.active {
+    background: var(--accent); color: #fff;
+  }
+
+  /* Class-based (not ID) so the same rules apply to both #hodograph-widget
+     and #hodograph-widget-2 -- the second card (flyby-local frame, shown
+     only during a real SOI transit) is an identical structure with its
+     own IDs for JS to grab, sharing this styling. */
+  .hodograph-canvas { flex: 1; width: 100%; min-height: 0; }
+  .hodograph-readout {
     flex-shrink: 0; padding-top: 6px;
     font-size: 11px; line-height: 1.5; color: var(--text-dim);
   }
-  #hodograph-empty-state {
+  .hodograph-empty-state {
     display: none; flex: 1; align-items: center; justify-content: center;
     text-align: center; color: var(--text-dim); font-size: 11px; padding: 8px;
   }
+
+  /* Hidden by default -- shown only while daysSinceEpoch sits inside a
+     real gravity-assist SOI transit window (see getHodographFrameOptions
+     in app.js). display is toggled directly from JS each frame, same
+     pattern as the primary widget's own canvas/readout/empty-state. */
+  #hodograph-widget-2 { display: none; }
 
   /* Shifted up to clear the docked panel only while BOTH are actually
      showing (a flight selected AND the dashboard open) -- .dashboard-

@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=43">
+<link rel="stylesheet" href="src/css/style.css?v=44">
 </head>
 <body>
 
@@ -184,10 +184,33 @@
              real per-object field, not a hardcoded "Sol" label, even
              though Sol is what it'll show most of the time right now. -->
         <span class="dashboard-widget-subtitle">orbiting <span id="hodograph-influence-body"></span></span>
+        <!-- Body-orbit legs only (e.g. a geocentric parking-orbit phase):
+             lets the primary widget switch between planet-relative and
+             Sol-relative. Empty/hidden otherwise -- populated per-frame
+             from getHodographFrameOptions' non-flyby extras. The flyby
+             SOI-transit case (see #hodograph-widget-2) never populates
+             this; that case shows a second card instead of a toggle,
+             since forcing one view is wrong right when comparing both is
+             most interesting. -->
+        <div id="hodograph-frame-toggle"></div>
       </div>
-      <canvas id="hodograph-canvas"></canvas>
-      <div id="hodograph-readout"></div>
-      <div id="hodograph-empty-state"></div>
+      <canvas id="hodograph-canvas" class="hodograph-canvas"></canvas>
+      <div id="hodograph-readout" class="hodograph-readout"></div>
+      <div id="hodograph-empty-state" class="hodograph-empty-state"></div>
+    </div>
+    <!-- Second card: appears only during a real gravity-assist SOI transit,
+         showing the flyby body's own local (planetocentric, hyperbolic)
+         hodograph alongside the primary Sol-relative one -- see
+         getHodographFrameOptions in app.js. Hidden by default; JS toggles
+         display each frame. -->
+    <div class="dashboard-widget" id="hodograph-widget-2">
+      <div class="dashboard-widget-header">
+        <span class="dashboard-widget-title">Velocity Hodograph</span>
+        <span class="dashboard-widget-subtitle">orbiting <span id="hodograph-influence-body-2"></span></span>
+      </div>
+      <canvas id="hodograph-canvas-2" class="hodograph-canvas"></canvas>
+      <div id="hodograph-readout-2" class="hodograph-readout"></div>
+      <div id="hodograph-empty-state-2" class="hodograph-empty-state"></div>
     </div>
   </div>
 </div>
@@ -252,6 +275,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=74"></script>
+<script src="src/js/app.js?v=75"></script>
 </body>
 </html>
