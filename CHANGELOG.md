@@ -45,6 +45,22 @@ published package), so entries are dated instead.
   is already exact and the user controls dwell time themselves. Measured
   live: previously flashed for well under a real second at 1 yr/min, now
   holds for ~4 seconds.
+- That padding fix wasn't enough on its own -- flagged directly: the
+  point "sits on (0,+) for a moment then jumps to (0,-) and
+  disappears." Numerically confirmed why: a flyby's SOI radius is
+  usually far bigger than its periapsis passage, so the spacecraft's
+  velocity direction is already nearly at its asymptotic v-infinity by
+  the time it geometrically crosses the SOI boundary -- mean anomaly is
+  already huge there, so stretching the SAME mean-anomaly range across
+  more calendar time (the first fix) just left the point sitting still
+  for longer, not moving more smoothly. Re-parametrized by TRUE anomaly
+  instead, which has no such saturation -- the hodograph's circle angle
+  is exactly affine in true anomaly (verified numerically against this
+  file's own hyperbolic sign convention), so sweeping it linearly
+  across the full padded window gives a genuinely smooth, watchable
+  turn instead of a near-instant jump. Only applies during active
+  playback; a paused/manually-scrubbed date still shows the exact real,
+  undilated physics.
 
 ## 2026-08-03 — Hodograph: added a real velocity scale, fixed text overlapping the circle
 

@@ -1734,9 +1734,71 @@
       const w = getGaSoiWindows(selectedFlightKey).find((x) => x.legIndex === legIndex);
       const bounds = w && getGaSoiDisplayBounds(w);
       if (w && daysSinceEpoch >= bounds.start && daysSinceEpoch <= bounds.end) {
+        // While paused (or stepped to 0x), there's no padding at all (see
+        // getGaSoiDisplayBounds) -- show the exact real, undilated physics
+        // so a manually-scrubbed date always reflects the true velocity at
+        // that instant. The dilation below only kicks in during active
+        // playback, where it's solving a real visibility problem, not
+        // redefining what "the hodograph at date X" means.
+        if (paused || speedMultiplier === 0) {
+          return {
+            title: FLIGHTS_RAW[selectedFlightKey].name, legLabel: `${w.body} flyby (local)`,
+            a: w.aLocalAU, e: w.eHyp, M0: 0, epochDays: w.epochDays, n: w.n,
+            gmAU3Day2: w.gmAU3Day2, unitsAreKm: false, influenceBody: w.body,
+          };
+        }
+        // Display-time dilation: the real turn only takes a small fraction
+        // of the padded display window (see getGaSoiDisplayBounds) -- far
+        // from periapsis the local velocity direction is asymptotically
+        // constant (that's what v_infinity means), so evaluating the REAL
+        // Kepler timescale here would spend nearly all the widget's
+        // visible lifetime sitting motionless at one of the two
+        // asymptotes, with the entire turn compressed into a near-instant
+        // jump around periapsis. Confirmed numerically: for BepiColombo's
+        // real 2021-10-01 Mercury flyby at 1 yr/min, ~95% of a 4-second
+        // display window showed a barely-moving point, with the whole
+        // ~260deg turn happening in about 0.2 real seconds.
+        //
+        // A first attempt swept MEAN anomaly linearly across the display
+        // window instead -- didn't work, and re-checking the numbers
+        // showed why: for an encounter whose SOI radius is huge relative
+        // to its periapsis passage (true here, and true of most real
+        // flybys), mean anomaly is ALREADY enormous by the time the
+        // spacecraft reaches the real SOI boundary -- the hyperbolic
+        // anomaly has already saturated near its own asymptote at that
+        // point, so stretching the SAME mean-anomaly range across more
+        // calendar time just makes the widget sit still for longer, not
+        // move more smoothly.
+        //
+        // TRUE anomaly doesn't have this problem: the hodograph's circle
+        // angle is exactly affine in true anomaly (a classical property
+        // of the hodograph itself -- verified numerically against this
+        // file's own H-based hyperbolic convention: circle angle =
+        // -90deg - nu, to within floating-point precision, no saturation
+        // anywhere in nu's own bounded range). So sweep nu linearly from
+        // -nuSoi to +nuSoi across the display window instead, then
+        // convert back to a mean anomaly for THIS instant only (same
+        // nu -> H -> M formula computeGaSoiWindow already uses) so the
+        // existing M0/epochDays/n-based hodographVelocity still produces
+        // the right point -- epochDays is pinned to daysSinceEpoch itself
+        // (this element set is freshly rebuilt every frame at the same t
+        // it will immediately be evaluated at, same as every other
+        // getHodographElements branch), so only this single instant needs
+        // to be correct, not a time range. NOT physically real within the
+        // real SOI window itself (true nu(t) isn't linear in t -- that's
+        // exactly the "sits, then rushes" behavior being smoothed away
+        // here), which is why this whole branch is skipped above whenever
+        // there's no visibility problem to solve.
+        const span = bounds.end - bounds.start;
+        const p = (daysSinceEpoch - bounds.start) / span;
+        const nuDisplay = -w.nuSoi + p * (2 * w.nuSoi);
+        const tanhArg = Math.max(-1 + 1e-9, Math.min(1 - 1e-9,
+          Math.sqrt((w.eHyp - 1) / (w.eHyp + 1)) * Math.tan(nuDisplay / 2)));
+        const Hdisplay = 2 * Math.atanh(tanhArg);
+        const Mdisplay = w.eHyp * Math.sinh(Hdisplay) - Hdisplay;
         return {
           title: FLIGHTS_RAW[selectedFlightKey].name, legLabel: `${w.body} flyby (local)`,
-          a: w.aLocalAU, e: w.eHyp, M0: 0, epochDays: w.epochDays, n: w.n,
+          a: w.aLocalAU, e: w.eHyp, M0: Mdisplay, epochDays: daysSinceEpoch, n: w.n,
           gmAU3Day2: w.gmAU3Day2, unitsAreKm: false, influenceBody: w.body,
         };
       }
@@ -2326,7 +2388,15 @@
     const H = 2 * Math.atanh(tanhArg);
     const M = eHyp * Math.sinh(H) - H; // outbound branch (nu>0), so M>0
     const dt = M / n; // days from periapsis to the SOI boundary
-    return { aLocalAU, eHyp, n, gmAU3Day2: gmPlanetAU3Day2, epochDays: tGA, tStart: tGA - dt, tEnd: tGA + dt };
+    // nu (true anomaly magnitude at the real SOI boundary) is kept
+    // alongside M/n/dt -- not used for the window bounds themselves, but
+    // needed by getHodographElements' display-time dilation (see its own
+    // comment): for a wide-SOI/close-periapsis encounter like this one,
+    // M is already huge at the real boundary (H saturates fast), so
+    // sweeping M linearly to stretch the display doesn't actually spread
+    // the VISUAL motion out -- true anomaly is the parametrization that's
+    // exactly linear in hodograph circle angle, with no such saturation.
+    return { aLocalAU, eHyp, n, gmAU3Day2: gmPlanetAU3Day2, epochDays: tGA, tStart: tGA - dt, tEnd: tGA + dt, nuSoi: nu };
   }
 
   // Cache: flightKey → segment array built by getGAChain().
