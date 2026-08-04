@@ -4,6 +4,24 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-08-03 (continued) — Fixed NEAR Shoemaker's post-Earth-flyby arc ballooning to 3.2 AU
+
+- Flagged directly: NEAR Shoemaker's path looked wrong after its Earth
+  gravity assist. Root cause matched the Solar Orbiter first-leg bug
+  fixed earlier this session: real NEAR Shoemaker (JPL Horizons, target
+  -93) sweeps ~467 degrees around the Sun between the 1998-01-23 Earth
+  flyby and 2000-02-14 Eros orbit insertion -- more than a full
+  revolution, since NEAR spent over a year in a near-Eros-like orbit
+  working through the real 1998-12-20 rendezvous-burn abort and
+  1999-01-03 recovery burn. A single 2-point Lambert solve across that
+  whole span can't distinguish a >360deg sweep from a much shorter one,
+  and picked a badly wrong orbit shape -- ballooning out to ~3.2 AU
+  (past Mars) instead of tracking Eros's own orbit (max ~1.78 AU).
+  Fixed the same way: split into three legs through two real Horizons
+  waypoints (1998-09-20, 1999-07-17). Verified against the real
+  ephemeris across the whole span -- was off by 1.5+ AU at points,
+  now matches to within 0.01 AU throughout.
+
 ## 2026-08-03 (continued) — Hodograph: sphere-of-influence-relative frames during gravity assists and body orbits
 
 - The hodograph dashboard always showed one Sol-relative circle, even

@@ -36,10 +36,25 @@
       "periapsisKm": 540
     },
     {
+      "_comment": "Real NEAR Shoemaker trajectory (JPL Horizons, target -93, checked 2026-08) sweeps ~467 degrees around the Sun between the Earth flyby and Eros orbit insertion -- more than a full revolution, since NEAR spent over a year in a near-Eros-like orbit working through the 1998-12-20 rendezvous-burn abort and 1999-01-03 recovery burn (see statusNote). A single 2-point Lambert solve across the whole span can't tell that apart from a much shorter, wildly wrong sweep -- it balloons out to ~3.2 AU (past Eros's real ~1.78 AU aphelion) instead of tracking Eros's own orbit. Split through two real recorded positions, same fix as this file's own first leg above.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "eros",
+      "toBody": { "fixedPos": [0.5336558127331366, -1.633993621121400, -0.07841500956921003] },
       "departDate": "1998-01-23",
+      "arrivalDate": "1998-09-20"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.5336558127331366, -1.633993621121400, -0.07841500956921003] },
+      "toBody": { "fixedPos": [0.4639388538419512, 1.122890523271491, 0.1945284236333465] },
+      "departDate": "1998-09-20",
+      "arrivalDate": "1999-07-17"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.4639388538419512, 1.122890523271491, 0.1945284236333465] },
+      "toBody": "eros",
+      "departDate": "1999-07-17",
       "arrivalDate": "2000-02-14"
     }
   ],
