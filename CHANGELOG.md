@@ -4,6 +4,59 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-08-03 (continued) — Trajectory-bug prevention: a permanent verify hook, a catalog-wide screening tool, and a real Dawn path gap fixed
+
+- After finding the same class of bug twice in one session (Solar Orbiter,
+  then NEAR Shoemaker below), asked directly: what stops this from being
+  a recurring manual spot-check? Root cause: `solveLambertUniversal`
+  (`app.js`) only ever solves a ZERO-revolution transfer -- given two
+  positions and a time of flight, it always finds *some* orbit assuming
+  less than one full lap around the Sun. If the real spacecraft took
+  more than one lap, the solver doesn't error, it silently returns a
+  different, wrong orbit that still satisfies the same endpoints and
+  time-of-flight. Nothing about the math signals this happened; only
+  the shape is wrong.
+- Added a small, permanent `window.__VERIFY__` hook (`app.js`, end of
+  `bootstrap()`) exposing the handful of pure functions verification
+  tooling needs (`getSolvedLeg`, `getGAChain`, `computeFlightPosition`,
+  etc.) -- replaces the fragile, repeated-all-session pattern of hand-
+  copying `app.js` and regex-injecting a throwaway debug hook before
+  every check. Read-only, no side effects, not reachable without
+  deliberately scripting against the page.
+- New `tools/check_lambert_sweep.py`: scans every Lambert leg in the
+  full 57-mission catalog, flags any where the transfer duration
+  approaches or exceeds the solved orbit's own natural period -- the
+  regime where a zero-revolution assumption becomes doubtful. Flagged
+  55 of 161 legs at first pass. Important limitation documented in the
+  script itself: this is a screening heuristic, not a verifier -- many
+  real multi-gravity-assist missions (PSP, BepiColombo, JUICE, Rosetta,
+  Solar Orbiter) legitimately fly long, resonant, near-one-lap coast
+  legs by design, and look identical to a genuine bug from inside the
+  app. Confirming one requires cross-checking against real ephemeris,
+  same as the two bugs below were found. Documented in `tools/README.md`
+  as a required step when adding/editing multi-leg Lambert data going
+  forward; the other 53 flagged legs remain an open backlog to check
+  incrementally rather than a claim they're all bugs.
+- **Fixed a real, distinct issue this surfaced while investigating**:
+  Dawn's path looked visibly "separated" -- two disconnected loops with
+  a gap between them. Verified this was NOT the zero-revolution bug
+  (each of Dawn's own legs is individually a correct, smoothly-growing
+  shape). The real cause: Dawn genuinely held position in orbit around
+  Vesta for ~14 months (2011-07-16 to 2012-09-05) before departing for
+  Ceres -- an extended stay that isn't its own leg type in this
+  catalog's schema. `computeMultiLegPosition` already had a correct
+  fallback for the moving marker during a gap like this ("wherever the
+  most recently-reached body still is," tracking its real ongoing
+  motion), but the drawn preview path had no equivalent and simply
+  skipped that span, leaving a real ~3.9 AU gap (exactly how far Vesta
+  itself travels along its own orbit in 14 months) with no connecting
+  line. Generalized the existing Lagrange-loiter arc-drawing logic
+  (added for the same reason -- "there's no reason to hide an exactly
+  computable position") to also cover any gap between two Lambert legs
+  where the held body is a real, trackable object -- fixes this for any
+  other flight with a similar "extended stay at an intermediate target"
+  pattern, not just Dawn.
+
 ## 2026-08-03 (continued) — Fixed NEAR Shoemaker's post-Earth-flyby arc ballooning to 3.2 AU
 
 - Flagged directly: NEAR Shoemaker's path looked wrong after its Earth

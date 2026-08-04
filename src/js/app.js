@@ -2909,6 +2909,52 @@
       if (pts.length) segments.push(pts);
     });
 
+    // Same idea, for a gap this catalog's schema has no dedicated leg type
+    // for at all: an extended stay at an intermediate small-body target
+    // between two lambert legs, e.g. Dawn's real ~14 months orbiting Vesta
+    // before departing for Ceres. computeMultiLegPosition already has a
+    // correct fallback for the MOVING MARKER during a gap like this --
+    // "wherever the most recently-reached body still is," tracking its
+    // real ongoing motion (see that function's own comment) -- but until
+    // now the drawn PREVIEW arc had no equivalent, leaving a real,
+    // visible gap with no line at all (for Dawn, ~3.9 AU -- exactly how
+    // far Vesta itself travels along its own orbit in 14 months, not a
+    // rendering glitch). Detects ANY such gap between consecutive
+    // lambert/geocentric_orbit boundaries (not just Dawn's), so this
+    // fixes the same category of issue wherever else it exists in the
+    // catalog too.
+    const posBoundaries = getLegBoundaries(flightKey)
+      .filter((b) => b.type === 'lambert' || b.type === 'geocentric_orbit');
+    for (let k = 0; k < posBoundaries.length - 1; k++) {
+      const prevB = posBoundaries[k], nextB = posBoundaries[k + 1];
+      if (nextB.dDays <= prevB.aDays) continue; // legs are back-to-back, no gap to fill
+      const heldBodyKey = raw.legs[prevB.index].toBody;
+      // A fixedPos endpoint (a one-off recorded ephemeris waypoint, not a
+      // real ongoing body) has no ongoing position to track -- leave that
+      // case as an honest gap rather than inventing one.
+      if (typeof heldBodyKey !== 'string') continue;
+      let drawStart = prevB.aDays, drawEnd = nextB.dDays;
+      if (windowStart !== undefined) {
+        drawStart = Math.max(drawStart, windowStart);
+        drawEnd   = Math.min(drawEnd, windowEnd);
+        if (drawStart >= drawEnd) continue;
+      }
+      const N = 120;
+      const pts = [];
+      ctx.globalAlpha = 0.4 * alphaScale;
+      ctx.beginPath();
+      for (let i = 0; i <= N; i++) {
+        const t = drawStart + (i / N) * (drawEnd - drawStart);
+        const [X, Y, Z] = getBodyPositionAtDays(heldBodyKey, t);
+        const [sx, sy]  = worldToScreen(X, Y, Z);
+        pts.push([sx, sy]);
+        if (i === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      }
+      ctx.stroke();
+      ctx.globalAlpha = 1.0;
+      if (pts.length) segments.push(pts);
+    }
+
     return segments;
   }
 
@@ -7613,6 +7659,20 @@
     }
     buildFlightsLegend();
     applyInitialURLState();
+    // Small, permanent, read-only hook for offline verification tooling
+    // (see tools/check_lambert_sweep.py, tools/validate_trajectories.py) --
+    // exposes exactly what a script needs to re-derive a leg's solved
+    // shape from outside the app, so verification scripts can point a
+    // headless browser at the real, unmodified page instead of each one
+    // hand-copying app.js and regex-injecting a throwaway hook (the
+    // pattern used ad hoc, repeatedly, before this existed). Nothing here
+    // has side effects or is reachable without deliberately scripting
+    // against the page.
+    window.__VERIFY__ = {
+      FLIGHTS_RAW, isMultiLeg, getSolvedLeg, getGAChain, getGAEvents,
+      daysSinceJ2000, parseFlightDate, computeFlightPosition,
+      getBodyPositionAtDays, getLegBoundaries,
+    };
     requestAnimationFrame(frame);
   }
   bootstrap();

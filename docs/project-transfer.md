@@ -93,6 +93,8 @@ Flights (real interplanetary missions) use a universal-variable Lambert solver:
 
 **Adding a flight:** Drop a new JSON file in `flights/` matching the schema (see Section 5.2), add its key to `flights/manifest.json`'s `order` array. No JS changes needed.
 
+**Known structural limitation — read before adding any long-duration Lambert leg:** `solveLambertUniversal` only ever solves a ZERO-revolution transfer (assumes the spacecraft takes less than one full lap around the Sun). If the real spacecraft actually took more than one lap, the solver doesn't error — it silently returns a different, wrong orbit shape that still satisfies the same two endpoints and time-of-flight (both Solar Orbiter's first leg and NEAR Shoemaker's post-Earth-flyby leg shipped with exactly this bug before being caught and fixed by splitting through real JPL Horizons waypoints — see `CHANGELOG.md`). Run `tools/check_lambert_sweep.py` against any new or edited multi-leg flight before considering it done; see `tools/README.md` for what it checks and its real limits (a screening heuristic, not a verifier — it can't tell a genuine bug from a legitimate long resonant coast leg on its own).
+
 ### 3.5 Camera / Rendering
 
 - Camera is yaw + pitch rotation around the scene origin (Sol)
