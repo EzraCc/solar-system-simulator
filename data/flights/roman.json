@@ -1,0 +1,29 @@
+{
+  "key": "roman",
+  "name": "Nancy Grace Roman Space Telescope",
+  "rocket": "Falcon Heavy",
+  "payload": "Roman Space Telescope (~10,500 kg at launch)",
+  "status": "En Route",
+  "significance": "Named for NASA's first chief astronomer, Roman is a wide-field infrared observatory built to attack two of astronomy's biggest open questions with one instrument: the nature of dark energy and dark matter, and how common planetary systems like our own are. Its Wide Field Instrument has a field of view at least 100 times larger than Hubble's while matching Hubble's resolution, letting it survey huge swaths of sky rather than one small patch at a time -- a single Roman image can cover as much sky as dozens of full-Moon-sized frames from Hubble. Its core surveys include a High Latitude Wide Area Survey mapping the large-scale structure of the universe to trace dark energy's effect on cosmic expansion, a gravitational-microlensing survey of the inner galaxy expected to find thousands of new exoplanets (including free-floating ones invisible to other detection methods), and direct imaging of exoplanets with a coronagraph technology demonstration. Once operating from its perch near Sun-Earth L2, it's expected to return more data in its first weeks than Hubble has returned in its entire multi-decade lifetime.",
+  "statusNote": "Modeled as a direct Earth-to-Sun-Earth-L2 Lambert transfer -- the outbound cruise phase, which is real, well-constrained two-body-adjacent orbital mechanics, the same treatment already used for ESCAPADE's own Earth_L2 leg. NOTE ON DATES: Roman launched 2026-08-30 on a Falcon Heavy from Kennedy Space Center; NASA's own post-launch statement described a 'three-month, million-mile journey to its final orbit' (other reporting cited roughly 30 days of transit followed by about 100 days of commissioning before science operations begin). The 2026-11-28 L2 arrival date used here is estimated from that public statement, not a confirmed trajectory design value -- update it, and add a loiter/station-keeping leg for its ongoing L2 residency, once Roman's real insertion date is public. Same placeholder-pending-actuals pattern as MMX's launch/arrival dates.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Earth_L2",
+      "departDate": "2026-08-30",
+      "arrivalDate": "2026-11-28"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Nancy Grace Roman Space Telescope",
+      "infoUrl": "https://science.nasa.gov/mission/roman-space-telescope/"
+    },
+    "rocket": {
+      "title": "Falcon Heavy",
+      "infoUrl": "https://en.wikipedia.org/wiki/Falcon_Heavy",
+      "localImage": "images/rockets/falcon_heavy.jpg"
+    }
+  }
+}

@@ -4,6 +4,35 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-08-30 — Added Nancy Grace Roman Space Telescope; documented the catalog update cycle
+
+- Roman launched today (2026-08-30, Falcon Heavy from KSC) on a direct
+  Earth-to-Sun–Earth-L2 transfer. Added as a single-Lambert-leg flight
+  (`data/flights/roman.json`) targeting the already-supported `Earth_L2`
+  point (same mechanism ESCAPADE's own L2 leg uses), with an *estimated*
+  2026-11-28 L2 arrival date sourced from NASA's own post-launch
+  "three-month journey to its final orbit" statement — not yet a
+  confirmed trajectory value, flagged as such in the flight's own
+  `statusNote`, to be replaced with real numbers once public (same
+  placeholder-pending-actuals pattern already used for MMX).
+- This is the first flight added under a deliberately broadened scope:
+  previously only missions leaving Earth's SOI for another body were
+  catalog-worthy; Sun-Earth L1/L2 station-keeping observatories are now
+  in scope too, since the underlying trajectory (and this simulator's
+  `Earth_L2` modeling) is real orbital mechanics, not just an Earth-orbit
+  satellite.
+- Checked for other launches between ESCAPADE (2025-11-13, the previous
+  addition) and today — nothing else in the broadened scope was found
+  (Pandora, SMILE, and the Swift boost mission are Earth-orbit only;
+  Venus Life Finder and MMX haven't launched yet).
+- Documented the catalog update cycle itself in `docs/project-transfer.md`
+  section 3.4 — how to find the cutoff (manifest.json's launch-date
+  ordering), where to check for new launches, current scope, and how to
+  handle a just-launched mission's estimated dates — so a future update
+  knows exactly how far back to look instead of re-deriving it from
+  scratch.
+- `BUILD_VERSION` 25 → 26 (data-only change).
+
 ## 2026-08-03 (continued) — Trajectory-bug prevention: a permanent verify hook, a catalog-wide screening tool, and a real Dawn path gap fixed
 
 - After finding the same class of bug twice in one session (Solar Orbiter,
