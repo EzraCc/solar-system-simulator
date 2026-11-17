@@ -256,11 +256,8 @@ The gravigram feature (`docs/gravigram-spec.md`) is fully implemented — multi-
 schema, patched-conic gravity assists with real turn-angle geometry, and
 `data/flights/psp.json` exists in the catalog with all 7 Venus flybys.
 
-### 7.2 Flight Arc Color Legend by Type — still deliberately deferred
-All flight arcs are currently a single color (`#7fd99c`). A per-type color scheme was discussed and **deliberately deferred** — a small fixed palette won't scale to ~100 flights, and the flight taxonomy needed to define "type" hasn't been designed yet. Do not add ad-hoc per-flight colors without that taxonomy existing first.
-
-No change since this was written — still true as of 2026-08-01, still no per-type
-color taxonomy. Remains valid guidance if this is revisited.
+### 7.2 Flight Arc Color Legend by Type — ❌ DROPPED (2026-11-17)
+Superseded by per-flight colors. Each flight gets its own hue from `flightColor()` in `src/js/app.js`: golden-angle (137.508°) steps through `FLIGHTS_ORDER`, at fixed saturation and lightness, so neighboring flights always look different and the scheme scales to any catalog size. The old single-color (`#7fd99c`) arcs are gone. The maintainer dropped mission-type coloring: it would be redundant with per-flight colors and would undo their purpose by giving many flights the same color. Don't reintroduce a per-type palette, and don't hand-assign colors to individual flights. New flights get a distinct color automatically from their position in `manifest.json`.
 
 ### 7.3 Missions Catalog (`interplanetary_missions.json`) — ❌ REMOVED / superseded
 This standalone research artifact was never carried into the repo. `data/flights/manifest.json` is now the actual single source of truth for which missions are included (57 as of 2026-08-01), each backed by a real per-mission JSON file researched and verified individually at add-time rather than through a separate catalog file. Treat this section as historical only — there is no `interplanetary_missions.json` in this repo.
