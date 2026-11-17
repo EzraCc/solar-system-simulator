@@ -7279,8 +7279,11 @@
     systemMoonRows.innerHTML = (OUTER_MOONS[primary] || []).map((m) =>
       `<div class="sv-row sv-follow" data-sv-follow-moon="${m.name}" title="Follow ${m.name}"><span class="sv-dot" style="background:${m.meta.color}"></span>${m.name}` +
       `<span class="sv-sub" style="margin-left:auto">${m.elements.periodSiderealDays.toFixed(2)} d</span></div>`).join("");
-    const tours = getPlanetTours(primary);
-    systemMissionRows.innerHTML = tours.length ? tours.map((tour) => {
+    const now = daysSinceJ2000(simDate);
+    const isActive = (tr) => now >= tr.tStart && now <= tr.tEnd;
+    const tours = getPlanetTours(primary).slice().sort((a, b) => (isActive(b) - isActive(a)) || (a.tStart - b.tStart));
+    systemView.panelBuiltActive = tours.filter(isActive).map((tr) => tr.key).join(",");
+    systemMissionRows.innerHTML = (tours.length ? tours.map((tour) => {
       const flybys = tour.events.filter((e) => e.kind === 'flyby');
       const nPeri = tour.events.filter((e) => e.kind === 'peri').length;
       const d0 = dateFromDaysSinceJ2000(tour.tStart).toISOString().slice(0, 10);
@@ -7288,10 +7291,13 @@
       const evBtns = [`<button class="sv-jump" data-sv-jump="${tour.tStart}">Arrival ${d0}</button>`]
         .concat(flybys.map((e) => `<button class="sv-jump" data-sv-jump="${e.t - 0.25}">${e.moon} ${e.date.slice(0, 10)}` +
           (e.altKm !== undefined ? ` &middot; ${e.altKm.toLocaleString()} km` : "") + `</button>`)).join("");
-      return `<div class="sv-mission"><div class="sv-row sv-follow" data-sv-follow-flight="${tour.key}" title="Follow ${tour.name}"><span class="sv-dot" style="background:${tour.color}"></span>` +
-        `<strong>${tour.name}</strong></div><div class="sv-sub">${d0} &rarr; ${d1} &middot; ${nPeri} periapses, ${flybys.length} moon flybys</div>` +
-        `<div class="sv-events">${evBtns}</div></div>`;
-    }).join("") : `<div class="sv-sub">No mission tours modeled yet.</div>`;
+      const following = systemView.follow && systemView.follow.flight === tour.key;
+      return `<div class="sv-mission${isActive(tour) ? " sv-active" : ""}"><div class="sv-row sv-follow${following ? " following" : ""}" data-sv-follow-flight="${tour.key}" title="Follow ${tour.name}"><span class="sv-dot" style="background:${tour.color}"></span>` +
+        `<strong>${tour.name}</strong>${isActive(tour) ? `<span class="sv-sub" style="margin-left:auto">in orbit now</span>` : ""}</div>` +
+        `<div class="sv-sub">${d0} &rarr; ${d1} &middot; ${nPeri} periapses, ${flybys.length} moon flybys</div>` +
+        `<details class="sv-events-wrap"><summary>Jump to an event</summary><div class="sv-events">${evBtns}</div></details></div>`;
+    }).join("") : `<div class="sv-sub">No mission tours modeled yet.</div>`) +
+      `<label class="sv-row sv-showall"><input type="checkbox" id="sv-show-all"${systemView.showAll ? " checked" : ""}> Show other missions' paths</label>`;
   }
 
   systemPanel.addEventListener("click", (e) => {
@@ -7307,6 +7313,7 @@
       if (fl) setSystemFollow({ flight: fl.dataset.svFollowFlight }, true);
       return;
     }
+    if (e.target.id === "sv-show-all") { systemView.showAll = e.target.checked; return; }
     const fm = e.target.closest("[data-sv-follow-moon]");
     if (fm) { setSystemFollow({ moon: fm.dataset.svFollowMoon }); return; }
     const ff = e.target.closest("[data-sv-follow-flight]");
@@ -7349,6 +7356,8 @@
 
   function drawSystemFrame(t) {
     const primary = systemView.primary;
+    const activeNow = getPlanetTours(primary).filter((tr) => t >= tr.tStart && t <= tr.tEnd).map((tr) => tr.key).join(",");
+    if (activeNow !== systemView.panelBuiltActive) buildSystemPanel();
     const meta = PLANET_META[primary];
     const followKm = systemFollowKm(t);
     if (followKm) {
@@ -7398,6 +7407,7 @@
     const WINDOW = 30;
     getPlanetTours(primary).forEach((tour) => {
       const active = t >= tour.tStart && t <= tour.tEnd;
+      if (!active && !systemView.showAll) return;
       ctx.lineWidth = 1;
       ctx.strokeStyle = hexWithAlpha(tour.color, active ? 0.10 : 0.06);
       ctx.beginPath();

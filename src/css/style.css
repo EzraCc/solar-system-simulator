@@ -1242,3 +1242,8 @@
   .sv-follow { cursor: pointer; border-radius: 4px; padding: 0 3px; margin: 0 -3px; }
   .sv-follow:hover { background: rgba(120,150,200,0.12); }
   .sv-follow.following { background: rgba(143,180,255,0.18); outline: 1px solid rgba(143,180,255,0.45); }
+  .sv-events-wrap { margin-left: 15px; }
+  .sv-events-wrap summary { cursor: pointer; font-size: 11px; color: var(--text-dim); }
+  .sv-events-wrap .sv-events { margin-left: 0; }
+  .sv-mission:not(.sv-active) strong { opacity: 0.75; }
+  .sv-showall { margin-top: 6px; color: var(--text-dim); cursor: pointer; }
