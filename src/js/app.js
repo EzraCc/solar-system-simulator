@@ -1298,9 +1298,13 @@
     const raw = FLIGHTS_RAW[key];
     let launchDays, arrivalDays;
     if (isMultiLeg(raw)) {
-      const lambertLegs = raw.legs.filter(l => l.type === 'lambert');
+      // Window ends at the last lambert arrival -- or, for a flight that
+      // goes on to tour a planet's system (planetocentric legs after orbit
+      // insertion), at the end of that tour, so the spacecraft stays
+      // visible/active while it orbits.
+      const endLegs = raw.legs.filter(l => l.type === 'lambert' || l.type === 'planetocentric');
       launchDays  = daysSinceJ2000(parseFlightDate(raw.legs[0].departDate));
-      arrivalDays = daysSinceJ2000(parseFlightDate(lambertLegs[lambertLegs.length - 1].arrivalDate));
+      arrivalDays = daysSinceJ2000(parseFlightDate(endLegs[endLegs.length - 1].arrivalDate));
     } else {
       launchDays  = daysSinceJ2000(parseFlightDate(raw.launchDate));
       arrivalDays = daysSinceJ2000(parseFlightDate(raw.arrival));
@@ -1334,10 +1338,10 @@
         const a = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
         boundaries.push({ type: 'lambert', index: i, dDays: d, aDays: a });
         prevArrival = a;
-      } else if (leg.type === 'geocentric_orbit') {
+      } else if (leg.type === 'geocentric_orbit' || leg.type === 'planetocentric') {
         const d = daysSinceJ2000(parseFlightDate(leg.departDate));
         const a = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
-        boundaries.push({ type: 'geocentric_orbit', index: i, dDays: d, aDays: a });
+        boundaries.push({ type: leg.type, index: i, dDays: d, aDays: a });
         prevArrival = a;
       } else if (leg.type === 'loiter') {
         const dep = daysSinceJ2000(parseFlightDate(leg.departure));
@@ -2031,6 +2035,105 @@
     };
     _solvedLegCache[cacheKey] = solved;
     return solved;
+  }
+
+  /* =========================================================================
+     PLANETOCENTRIC LEGS (orbits around a planet, e.g. a Jupiter tour)
+     A "planetocentric" leg is a Lambert arc solved in the PRIMARY's frame
+     with the primary's GM:
+       { type: 'planetocentric', primaryBody: 'Jupiter',
+         fromBody / toBody: a moon name of that primary ('Ganymede' -- a
+           flyby, pinned to the moon's own modeled position at that date) or
+           { relPos: [x, y, z] } (km, primary-centered ecliptic J2000 -- a
+           real ephemeris waypoint, e.g. a perijove from JPL Horizons),
+         departDate, arrivalDate, optional flybyAltKm on a moon endpoint }
+     Data generators keep every piece's sweep well under 180 deg, so the
+     short-way zero-revolution solve is unambiguous (same rule as the
+     heliocentric fixedPos waypoint splits).
+
+     Units trick (no changes to the core solver): Lambert's problem and
+     Kepler propagation depend only on GM*t^2/r^3, so measuring length in
+     units of L = cbrt(GM_primary / GM_SUN_AU3_DAY2) km makes the primary's
+     GM numerically equal to GM_SUN_AU3_DAY2. Positions are divided by L
+     going in, and the existing solveLambertUniversal /
+     stateVectorToElements / computeFlightPosition / computeFlightVelocity
+     run unchanged; results are multiplied by L coming out.
+  ========================================================================= */
+  const _primaryUnitKmCache = {};
+  function primaryUnitKm(primary) {
+    if (_primaryUnitKmCache[primary]) return _primaryUnitKmCache[primary];
+    const gmKm3Day2 = PLANET_META[primary].gmKm3S2 * SEC_PER_DAY * SEC_PER_DAY;
+    return (_primaryUnitKmCache[primary] = Math.cbrt(gmKm3Day2 / GM_SUN_AU3_DAY2));
+  }
+
+  function findOuterMoon(primary, name) {
+    const list = OUTER_MOONS[primary];
+    return list ? list.find((m) => m.name === name) : null;
+  }
+
+  // Position (km, primary-centered) of a planetocentric leg endpoint at t.
+  // Endpoint shapes: { relPos: [km] } (a waypoint), a moon name (pinned to
+  // the moon's center), or { moon, offsetKm: [km] } -- a flyby pinned to the
+  // moon's MODELED position plus the real spacecraft-minus-moon offset at
+  // closest approach, so the pass keeps its true geometry (a distant 20,000
+  // km pass doesn't collapse onto the moon) while staying attached to the
+  // moon as drawn, even where the moon model differs slightly from reality.
+  function planetocentricEndpointKm(primary, endpoint, t) {
+    if (endpoint && typeof endpoint === 'object' && endpoint.relPos) return endpoint.relPos;
+    const moonName = (endpoint && typeof endpoint === 'object') ? endpoint.moon : endpoint;
+    const moon = findOuterMoon(primary, moonName);
+    if (!moon) throw new Error('planetocentric endpoint "' + moonName + '" is not a moon of ' + primary);
+    const c = computeSatelliteOffset(moon.elements, t).posAU.map((v) => v * AU_KM);
+    const off = (endpoint && endpoint.offsetKm) || [0, 0, 0];
+    return [c[0] + off[0], c[1] + off[1], c[2] + off[2]];
+  }
+  function planetocentricEndpointMoon(endpoint) {
+    if (typeof endpoint === 'string') return endpoint;
+    return (endpoint && endpoint.moon) || null;
+  }
+
+  const _solvedPlanetoCache = {};
+  function getSolvedPlanetocentricLeg(flightKey, legIndex) {
+    const cacheKey = flightKey + ':' + legIndex;
+    if (_solvedPlanetoCache[cacheKey]) return _solvedPlanetoCache[cacheKey];
+    const leg = FLIGHTS_RAW[flightKey].legs[legIndex];
+    const primary = leg.primaryBody;
+    const L = primaryUnitKm(primary);
+    const t0 = daysSinceJ2000(parseFlightDate(leg.departDate));
+    const t1 = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
+    const r1 = planetocentricEndpointKm(primary, leg.fromBody, t0).map((v) => v / L);
+    const r2 = planetocentricEndpointKm(primary, leg.toBody, t1).map((v) => v / L);
+    const lambert = solveLambertUniversal(r1, r2, t1 - t0, !leg.longWay);
+    const el = stateVectorToElements(r1, lambert.v1);
+    const solved = {
+      primary, unitKm: L, t0, t1,
+      elements: { a: el.a, e: el.e, i: el.i, Om: el.Om, w: el.w, M0: el.M, epochDays: t0 },
+    };
+    _solvedPlanetoCache[cacheKey] = solved;
+    return solved;
+  }
+
+  // Primary-centered position (km) / velocity (km/day) on a solved leg.
+  function planetocentricOffsetKm(solved, t) {
+    return computeFlightPosition({ elements: solved.elements }, t).map((v) => v * solved.unitKm);
+  }
+  function planetocentricVelocityKmDay(solved, t) {
+    return computeFlightVelocity(solved.elements, t).map((v) => v * solved.unitKm);
+  }
+
+  // Which planetocentric leg (if any) of a flight is active at t, and the
+  // spacecraft's primary-centered offset there. null if none is active.
+  function planetocentricStateAt(flightKey, t) {
+    const raw = FLIGHTS_RAW[flightKey];
+    if (!raw || !isMultiLeg(raw)) return null;
+    for (const b of getLegBoundaries(flightKey)) {
+      if (b.type === 'planetocentric' && t >= b.dDays && t <= b.aDays) {
+        const solved = getSolvedPlanetocentricLeg(flightKey, b.index);
+        return { legIndex: b.index, primary: solved.primary, solved,
+                 offsetKm: planetocentricOffsetKm(solved, t) };
+      }
+    }
+    return null;
   }
 
   /* =========================================================================
@@ -2740,6 +2843,13 @@
             primaryPos[1] + offsetKm[1] / AU_KM,
             primaryPos[2] + offsetKm[2] / AU_KM,
           ];
+        }
+      } else if (b.type === 'planetocentric') {
+        if (t >= b.dDays && t <= b.aDays) {
+          const solved = getSolvedPlanetocentricLeg(flightKey, b.index);
+          const primaryPos = computeStateVector(PLANET_ELEMENTS[solved.primary], t).pos;
+          const off = planetocentricOffsetKm(solved, t);
+          return [primaryPos[0] + off[0] / AU_KM, primaryPos[1] + off[1] / AU_KM, primaryPos[2] + off[2] / AU_KM];
         }
       } else if (b.type === 'loiter') {
         if (b.dDays !== null && t >= b.dDays && t <= b.aDays) {
@@ -3483,6 +3593,12 @@
   canvas.addEventListener("mousedown", (e) => {
     dragStartX = e.clientX; dragStartY = e.clientY;
     if (dragButtonIsPan(e)) {
+      if (systemView) {
+        if (systemView.follow) setSystemFollow(null);
+        isPanning = true;
+        camStartX = systemView.panX; camStartY = systemView.panY;
+        return;
+      }
       if (lockedBodyName && !freeCameraMode) enableFreeCameraFromPan();
       isPanning = true;
       camStartX = camX; camStartY = camY;
@@ -3498,17 +3614,24 @@
       yaw = yawStart + dx * 0.006;
       pitch = pitchStart - dy * 0.006;
       pitch = Math.max(MIN_PITCH, Math.min(MAX_PITCH, pitch));
+    } else if (isPanning && systemView) {
+      systemView.panX = camStartX + (e.clientX - dragStartX);
+      systemView.panY = camStartY + (e.clientY - dragStartY);
     } else if (isPanning) {
       camX = camStartX + (e.clientX - dragStartX);
       camY = camStartY + (e.clientY - dragStartY);
     }
-    handleHover(e);
+    if (!systemView) handleHover(e);
   });
   window.addEventListener("mouseup", () => { isRotating = false; isPanning = false; });
 
   canvas.addEventListener("wheel", (e) => {
     e.preventDefault();
     const zoomFactor = Math.exp(-e.deltaY * 0.0012);
+    if (systemView) {
+      systemView.kmPerPx = Math.max(20, Math.min(2e5, systemView.kmPerPx / zoomFactor));
+      return;
+    }
     pxPerAU *= zoomFactor;
     pxPerAU = Math.max(2, Math.min(pxPerAU, 20000));
   }, { passive: false });
@@ -3548,6 +3671,11 @@
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const dist = Math.hypot(dx, dy);
+      if (systemView) {
+        if (!systemView.touchKmPerPx) systemView.touchKmPerPx = systemView.kmPerPx;
+        systemView.kmPerPx = Math.max(20, Math.min(2e5, systemView.touchKmPerPx / (dist / touchStartDist)));
+        return;
+      }
       pxPerAU = Math.max(2, Math.min(20000, touchStartPxPerAU * (dist / touchStartDist)));
       if (lockedBodyName && !freeCameraMode) enableFreeCameraFromPan();
       const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
@@ -3556,7 +3684,7 @@
       camY = camStartY + (midY - touchMidStartY);
     }
   }, { passive: true });
-  canvas.addEventListener("touchend", () => { isRotating = false; isPanning = false; touchStartDist = null; });
+  canvas.addEventListener("touchend", () => { isRotating = false; isPanning = false; touchStartDist = null; if (systemView) systemView.touchKmPerPx = null; });
 
   // Rotate a world point (AU, ecliptic frame: x,y in-plane, z out-of-plane)
   // by yaw (about the world Z axis, spinning the system "in place" as seen
@@ -4842,6 +4970,10 @@
       dateInput.value = dateInputValue(simDate);
       setPaused(true);
     }
+    const systemParam = params.get("system");
+    if (systemParam && SYSTEM_VIEW_PRIMARIES.includes(systemParam)) {
+      setTimeout(() => openSystemView(systemParam), 0);
+    }
     const flightKey = params.get("flight");
     const bodyName = params.get("body");
     if (flightKey && FLIGHTS_RAW[flightKey]) {
@@ -5505,6 +5637,18 @@
   // single frame regardless of pause state -- see drawLockedPanelConnector's
   // comment), but the two-step transition is harmless and left in place.
   lockedPanelBody.addEventListener("click", (e) => {
+    const sysBtn = e.target.closest("[data-open-system]");
+    if (sysBtn) {
+      const tourStart = sysBtn.dataset.tourStart;
+      openSystemView(sysBtn.dataset.openSystem);
+      if (tourStart) {
+        const t = daysSinceJ2000(parseFlightDate(tourStart));
+        const now = daysSinceJ2000(simDate);
+        const tour = getPlanetTours(sysBtn.dataset.openSystem).find((x) => x.tStart === t);
+        if (!tour || now < tour.tStart || now > tour.tEnd) svJumpTo(t);
+      }
+      return;
+    }
     const jumpBtn = e.target.closest(".lp-jump-btn");
     if (jumpBtn) {
       jumpToLaunch(jumpBtn.dataset.jumpToLaunch);
@@ -6006,6 +6150,20 @@
         prevArrivalDays = aDays;
         i = j;
 
+      } else if (leg.type === 'planetocentric') {
+        let j = i;
+        while (j + 1 < legs.length && legs[j + 1].type === 'planetocentric' && legs[j + 1].primaryBody === leg.primaryBody) j++;
+        const run = legs.slice(i, j + 1);
+        const flybys = run.filter((l) => planetocentricEndpointMoon(l.toBody))
+          .map((l) => ({ moon: planetocentricEndpointMoon(l.toBody), date: l.arrivalDate, altKm: l.flybyAltKm }));
+        const dDays = daysSinceJ2000(parseFlightDate(leg.departDate));
+        const aDays = daysSinceJ2000(parseFlightDate(legs[j].arrivalDate));
+        entries.push({ kind: 'planetocentric_tour', legIndexStart: i, legIndexEnd: j, primary: leg.primaryBody,
+          periapses: run.filter((l) => l.periapsisAltKm !== undefined).length, flybys,
+          departDate: leg.departDate, arrivalDate: legs[j].arrivalDate, dDays, aDays });
+        prevArrivalDays = aDays;
+        i = j + 1;
+
       } else if (leg.type === 'loiter') {
         const aDays = daysSinceJ2000(parseFlightDate(leg.departure));
         entries.push({ kind: 'loiter', legIndex: i, leg, dDays: prevArrivalDays, aDays });
@@ -6076,6 +6234,17 @@
           text += " &mdash; engines fire gently the whole way, not just at the ends; the smooth arc shown here approximates that continuous push, not a literal coast.";
         }
         items += legTimelineItemHtml(to.color || from.color, text);
+
+      } else if (entry.kind === 'planetocentric_tour') {
+        const primary = describeLegBody(entry.primary);
+        let text = `<strong>${entry.primary} orbital tour</strong> (${entry.departDate.slice(0, 10)} &rarr; ${entry.arrivalDate.slice(0, 10)}): ` +
+          `${entry.periapses} close passes of ${entry.primary}`;
+        if (entry.flybys.length) {
+          text += `, plus ${entry.flybys.length} moon flyby${entry.flybys.length > 1 ? "s" : ""}: ` +
+            entry.flybys.map((f) => `${f.moon} ${f.date.slice(0, 10)}` + (f.altKm !== undefined ? ` (${f.altKm.toLocaleString()} km)` : "")).join(", ");
+        }
+        text += ". Open the system view to watch it.";
+        items += legTimelineItemHtml(primary.color, text);
 
       } else if (entry.kind === 'gravity_assist') {
         const leg = entry.leg, ev = entry.ev;
@@ -6155,6 +6324,11 @@
             ? `${primary.name} orbit-raising sequence`
             : `${primary.name} orbit insertion`;
           return { type: 'orbit', dDays: e.dDays, aDays: e.aDays, color: primary.color, label };
+        }
+        if (e.kind === 'planetocentric_tour') {
+          const primary = describeLegBody(e.primary);
+          return { type: 'orbit', dDays: e.dDays, aDays: e.aDays, color: primary.color,
+            label: `${primary.name} orbital tour (${e.periapses} orbits, ${e.flybys.length} moon flybys)` };
         }
         // loiter
         const loc = describeLegBody(e.leg.location);
@@ -6241,7 +6415,10 @@
     flightScrubberPlayhead.style.background = accent;
     flightScrubberTitle.textContent = raw.name;
     const ep = flightEndpoints(raw);
-    flightScrubberDates.textContent = `${ep.launchDate.slice(0, 10)} → ${ep.arrival.slice(0, 10)}`;
+    // The track spans getFlightDates' window, which for a planet-touring
+    // flight runs past arrival to the end of the tour -- label it the same.
+    const scrubEnd = dateFromDaysSinceJ2000(getFlightDates(selectedFlightKey).arrivalDays).toISOString().slice(0, 10);
+    flightScrubberDates.textContent = `${ep.launchDate.slice(0, 10)} → ${scrubEnd}`;
 
     buildScrubberEvents(key).forEach((ev) => {
       const span = ev.aDays - ev.dDays;
@@ -6435,7 +6612,11 @@
       // actually want to watch it happen, there was no way to get there
       // short of manually typing a date. This button closes that gap
       // without reintroducing the automatic jump-on-select.
-      const jumpBtn = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-jump-to-launch="${b.flightKey}">Jump to launch date</button></div>`;
+      let jumpBtn = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-jump-to-launch="${b.flightKey}">Jump to launch date</button></div>`;
+      const tourLeg = raw.legs && raw.legs.find((l) => l.type === 'planetocentric' && SYSTEM_VIEW_PRIMARIES.includes(l.primaryBody));
+      if (tourLeg) {
+        jumpBtn += `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-open-system="${tourLeg.primaryBody}" data-tour-start="${tourLeg.departDate}">View ${tourLeg.primaryBody} tour</button></div>`;
+      }
       let sections = "";
       if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
       sections += flightProfileHtml(b.flightKey);
@@ -6503,7 +6684,10 @@
     let sections = "";
     if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
     sections += missionsToHereHtml(b.name);
-    lockedPanelBody.innerHTML = rows + (info ? learnMoreHtml(info.assets) : "") + sections + (info ? assetGalleryHtml(info.assets) : "");
+    const systemBtn = SYSTEM_VIEW_PRIMARIES.includes(b.name)
+      ? `<div class="lp-jump-row lp-system-btn"><button type="button" class="lp-jump-btn" data-open-system="${b.name}">Open ${b.name} system view</button></div>`
+      : "";
+    lockedPanelBody.innerHTML = rows + systemBtn + (info ? learnMoreHtml(info.assets) : "") + sections + (info ? assetGalleryHtml(info.assets) : "");
   }
 
   // The locked panel is event-based, not per-frame: formatLockedPanelContent
@@ -6982,6 +7166,305 @@
     return points;
   }
 
+  /* =========================================================================
+     PLANET SYSTEM VIEW (Jupiter first)
+     A separate, primary-centered mode: Jupiter at the center, its modeled
+     moons, and every mission's planetocentric tour legs (see PLANETOCENTRIC
+     LEGS above), all in km in Jupiter's frame -- so paths don't smear as
+     Jupiter moves around the Sun. Own zoom (km per pixel), own panel
+     (moons, missions with jump-to-event buttons, time presets), shared sim
+     clock and shared camera rotation (yaw/pitch). Entered from a planet's
+     info panel or a touring flight's panel; Escape or the back button exits
+     and restores the Solar System camera.
+  ========================================================================= */
+  const SYSTEM_VIEW_PRIMARIES = ["Jupiter"];
+  let systemView = null; // { primary, kmPerPx, panX, panY, saved }
+  const systemPanel = document.getElementById("system-panel");
+  const systemMoonRows = document.getElementById("system-moon-rows");
+  const systemMissionRows = document.getElementById("system-mission-rows");
+  const systemScaleReadout = document.getElementById("system-scale-readout");
+  const _tourCache = {};
+
+  // Flights with planetocentric legs around `primary`, with a cached,
+  // pre-sampled path (km, primary frame) and their flyby/periapsis events.
+  function getPlanetTours(primary) {
+    if (_tourCache[primary]) return _tourCache[primary];
+    const tours = [];
+    FLIGHTS_ORDER.forEach((key) => {
+      const raw = FLIGHTS_RAW[key];
+      if (!raw || !isMultiLeg(raw)) return;
+      const idx = [];
+      raw.legs.forEach((l, i) => { if (l.type === 'planetocentric' && l.primaryBody === primary) idx.push(i); });
+      if (!idx.length) return;
+      const pts = []; // [t, x, y, z]
+      const events = [];
+      idx.forEach((i) => {
+        const leg = raw.legs[i];
+        const solved = getSolvedPlanetocentricLeg(key, i);
+        const N = 16;
+        for (let k = (pts.length ? 1 : 0); k <= N; k++) {
+          const t = solved.t0 + (k / N) * (solved.t1 - solved.t0);
+          const p = planetocentricOffsetKm(solved, t);
+          pts.push([t, p[0], p[1], p[2]]);
+        }
+        const moon = planetocentricEndpointMoon(leg.toBody);
+        if (moon) {
+          events.push({ kind: 'flyby', t: solved.t1, moon, altKm: leg.flybyAltKm,
+                        pos: planetocentricOffsetKm(solved, solved.t1), date: leg.arrivalDate });
+        } else if (leg.periapsisAltKm !== undefined) {
+          events.push({ kind: 'peri', t: solved.t1, altKm: leg.periapsisAltKm, date: leg.arrivalDate });
+        }
+      });
+      const first = raw.legs[idx[0]], last = raw.legs[idx[idx.length - 1]];
+      tours.push({
+        key, name: raw.name, color: flightColor(key), pts, events,
+        tStart: daysSinceJ2000(parseFlightDate(first.departDate)),
+        tEnd: daysSinceJ2000(parseFlightDate(last.arrivalDate)),
+      });
+    });
+    return (_tourCache[primary] = tours);
+  }
+
+  function svProject(km) {
+    const [rx, ry, rz] = rotateWorld(km[0], km[1], km[2]);
+    return [viewW / 2 + systemView.panX + rx / systemView.kmPerPx,
+            viewH / 2 + systemView.panY - ry / systemView.kmPerPx, rz];
+  }
+
+  function setSpeedDaysPerSec(daysPerSec) {
+    speedMultiplier = daysPerSec / (BASE_DAYS_PER_MS * 1000);
+    speedSlider.value = Math.max(-300, Math.min(300, sliderValueForMultiplier(speedMultiplier)));
+    refreshSpeedField();
+  }
+
+  function openSystemView(primary) {
+    if (!SYSTEM_VIEW_PRIMARIES.includes(primary)) return;
+    const moons = OUTER_MOONS[primary] || [];
+    const outer = moons.reduce((m, x) => Math.max(m, x.elements.aKm), 0) || 2e6;
+    systemView = {
+      primary,
+      kmPerPx: (outer * 1.15) / (Math.min(viewW, viewH) / 2),
+      panX: 0, panY: 0,
+      saved: { pxPerAU, camX, camY, yaw, pitch, speedMultiplier, lockedBodyName },
+    };
+    if (lockedBodyName) lockBody(null);
+    document.body.classList.add("system-view");
+    document.getElementById("system-panel-title").textContent = `${primary} system`;
+    buildSystemPanel();
+    setSpeedDaysPerSec(0.25);
+    updateURLParams({ system: primary });
+  }
+
+  function closeSystemView() {
+    if (!systemView) return;
+    const s = systemView.saved;
+    systemView = null;
+    document.body.classList.remove("system-view");
+    pxPerAU = s.pxPerAU; camX = s.camX; camY = s.camY; yaw = s.yaw; pitch = s.pitch;
+    speedMultiplier = s.speedMultiplier;
+    speedSlider.value = Math.max(-300, Math.min(300, sliderValueForMultiplier(speedMultiplier)));
+    refreshSpeedField();
+    if (s.lockedBodyName) lockBody(s.lockedBodyName);
+    updateURLParams({ system: null });
+  }
+
+  function svJumpTo(t) {
+    simDate = dateFromDaysSinceJ2000(t);
+    dateInput.value = dateInputValue(simDate);
+    setPaused(true);
+  }
+
+  function buildSystemPanel() {
+    const primary = systemView.primary;
+    systemMoonRows.innerHTML = (OUTER_MOONS[primary] || []).map((m) =>
+      `<div class="sv-row sv-follow" data-sv-follow-moon="${m.name}" title="Follow ${m.name}"><span class="sv-dot" style="background:${m.meta.color}"></span>${m.name}` +
+      `<span class="sv-sub" style="margin-left:auto">${m.elements.periodSiderealDays.toFixed(2)} d</span></div>`).join("");
+    const tours = getPlanetTours(primary);
+    systemMissionRows.innerHTML = tours.length ? tours.map((tour) => {
+      const flybys = tour.events.filter((e) => e.kind === 'flyby');
+      const nPeri = tour.events.filter((e) => e.kind === 'peri').length;
+      const d0 = dateFromDaysSinceJ2000(tour.tStart).toISOString().slice(0, 10);
+      const d1 = dateFromDaysSinceJ2000(tour.tEnd).toISOString().slice(0, 10);
+      const evBtns = [`<button class="sv-jump" data-sv-jump="${tour.tStart}">Arrival ${d0}</button>`]
+        .concat(flybys.map((e) => `<button class="sv-jump" data-sv-jump="${e.t - 0.25}">${e.moon} ${e.date.slice(0, 10)}` +
+          (e.altKm !== undefined ? ` &middot; ${e.altKm.toLocaleString()} km` : "") + `</button>`)).join("");
+      return `<div class="sv-mission"><div class="sv-row sv-follow" data-sv-follow-flight="${tour.key}" title="Follow ${tour.name}"><span class="sv-dot" style="background:${tour.color}"></span>` +
+        `<strong>${tour.name}</strong></div><div class="sv-sub">${d0} &rarr; ${d1} &middot; ${nPeri} periapses, ${flybys.length} moon flybys</div>` +
+        `<div class="sv-events">${evBtns}</div></div>`;
+    }).join("") : `<div class="sv-sub">No mission tours modeled yet.</div>`;
+  }
+
+  systemPanel.addEventListener("click", (e) => {
+    if (e.target.closest("#system-exit-btn")) { closeSystemView(); return; }
+    const sp = e.target.closest("[data-sv-speed]");
+    if (sp) { setSpeedDaysPerSec(Number(sp.dataset.svSpeed)); if (paused) setPaused(false); return; }
+    const j = e.target.closest("[data-sv-jump]");
+    if (j) {
+      svJumpTo(Number(j.dataset.svJump));
+      // Jumping to a mission event follows that mission, so the event is on screen.
+      const mission = j.closest(".sv-mission");
+      const fl = mission && mission.querySelector("[data-sv-follow-flight]");
+      if (fl) setSystemFollow({ flight: fl.dataset.svFollowFlight }, true);
+      return;
+    }
+    const fm = e.target.closest("[data-sv-follow-moon]");
+    if (fm) { setSystemFollow({ moon: fm.dataset.svFollowMoon }); return; }
+    const ff = e.target.closest("[data-sv-follow-flight]");
+    if (ff) { setSystemFollow({ flight: ff.dataset.svFollowFlight }); return; }
+  });
+
+  // Follow target (a moon or a touring spacecraft): kept centered each frame
+  // by drawSystemFrame; clicking the same row again, or panning, releases it.
+  function setSystemFollow(target, force) {
+    const same = !force && systemView.follow && target &&
+      systemView.follow.moon === target.moon && systemView.follow.flight === target.flight;
+    systemView.follow = same ? null : target;
+    if (!systemView.follow) { systemView.panX = 0; systemView.panY = 0; }
+    systemPanel.querySelectorAll(".sv-follow").forEach((el) => {
+      const on = systemView.follow && ((el.dataset.svFollowMoon && el.dataset.svFollowMoon === systemView.follow.moon) ||
+        (el.dataset.svFollowFlight && el.dataset.svFollowFlight === systemView.follow.flight));
+      el.classList.toggle("following", !!on);
+    });
+  }
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && systemView) closeSystemView();
+  });
+
+  function niceKm(x) {
+    const p = Math.pow(10, Math.floor(Math.log10(x)));
+    const m = x / p;
+    return (m >= 5 ? 5 : m >= 2 ? 2 : 1) * p;
+  }
+
+  function systemFollowKm(t) {
+    const f = systemView.follow;
+    if (!f) return null;
+    if (f.moon) {
+      const m = findOuterMoon(systemView.primary, f.moon);
+      return m ? computeSatelliteOffset(m.elements, t).posAU.map((v) => v * AU_KM) : null;
+    }
+    const st = planetocentricStateAt(f.flight, t);
+    return st ? st.offsetKm : null;
+  }
+
+  function drawSystemFrame(t) {
+    const primary = systemView.primary;
+    const meta = PLANET_META[primary];
+    const followKm = systemFollowKm(t);
+    if (followKm) {
+      const [rx, ry] = rotateWorld(followKm[0], followKm[1], followKm[2]);
+      systemView.panX = -rx / systemView.kmPerPx;
+      systemView.panY = ry / systemView.kmPerPx;
+    }
+    const primaryHelio = computeStateVector(PLANET_ELEMENTS[primary], t).pos;
+
+    // Light direction (toward the Sun), same convention as the main view.
+    const dist = Math.hypot(primaryHelio[0], primaryHelio[1], primaryHelio[2]);
+    const [lx, ly] = rotateWorld(-primaryHelio[0] / dist, -primaryHelio[1] / dist, -primaryHelio[2] / dist);
+    const lm = Math.hypot(lx, ly) || 1;
+    const lightX = lx / lm, lightY = -ly / lm;
+
+    const items = []; // depth-sorted discs: { rz, draw() }
+
+    // Moon orbits (one period sampled at the current epoch) + moons.
+    (OUTER_MOONS[primary] || []).forEach((m) => {
+      const P = m.elements.periodSiderealDays;
+      ctx.beginPath();
+      for (let k = 0; k <= 120; k++) {
+        const p = computeSatelliteOffset(m.elements, t + (k / 120) * P).posAU.map((v) => v * AU_KM);
+        const [sx, sy] = svProject(p);
+        if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      }
+      ctx.strokeStyle = hexWithAlpha(m.meta.color, 0.35);
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      const pos = computeSatelliteOffset(m.elements, t).posAU.map((v) => v * AU_KM);
+      const [sx, sy, rz] = svProject(pos);
+      const r = Math.max(3, m.meta.radiusKm / systemView.kmPerPx);
+      items.push({ rz, draw: () => {
+        drawBody(sx, sy, r, m.meta.color, false, lightX, lightY);
+        ctx.fillStyle = "rgba(232,237,247,0.85)";
+        ctx.font = "11px system-ui, sans-serif";
+        ctx.fillText(m.name, sx + r + 4, sy - r - 2);
+      } });
+    });
+
+    // Primary.
+    const [jx, jy, jz] = svProject([0, 0, 0]);
+    const jr = Math.max(5, meta.radiusKm / systemView.kmPerPx);
+    items.push({ rz: jz, draw: () => drawBody(jx, jy, jr, meta.color, false, lightX, lightY) });
+
+    // Mission tours: faint full path, brighter +/- 30 days, marker now.
+    const WINDOW = 30;
+    getPlanetTours(primary).forEach((tour) => {
+      const active = t >= tour.tStart && t <= tour.tEnd;
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = hexWithAlpha(tour.color, active ? 0.10 : 0.06);
+      ctx.beginPath();
+      tour.pts.forEach((p, k) => {
+        const [sx, sy] = svProject([p[1], p[2], p[3]]);
+        if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      });
+      ctx.stroke();
+      if (!active) return;
+      // Recent past (bright) and near future (dimmer).
+      [[t - WINDOW, t, 0.95, 1.6], [t, t + WINDOW, 0.35, 1.2]].forEach(([a, b, alpha, lw]) => {
+        ctx.beginPath();
+        let started = false;
+        for (const p of tour.pts) {
+          if (p[0] < a || p[0] > b) continue;
+          const [sx, sy] = svProject([p[1], p[2], p[3]]);
+          if (!started) { ctx.moveTo(sx, sy); started = true; } else ctx.lineTo(sx, sy);
+        }
+        const st = planetocentricStateAt(tour.key, t);
+        if (st && b === t) { const [sx, sy] = svProject(st.offsetKm); ctx.lineTo(sx, sy); }
+        ctx.strokeStyle = hexWithAlpha(tour.color, alpha);
+        ctx.lineWidth = lw;
+        ctx.stroke();
+      });
+      // Flyby markers near the current time.
+      tour.events.forEach((ev) => {
+        if (ev.kind !== 'flyby' || Math.abs(ev.t - t) > WINDOW) return;
+        const [sx, sy] = svProject(ev.pos);
+        ctx.save();
+        ctx.translate(sx, sy); ctx.rotate(Math.PI / 4);
+        ctx.strokeStyle = hexWithAlpha(tour.color, 0.9);
+        ctx.strokeRect(-4, -4, 8, 8);
+        ctx.restore();
+        ctx.fillStyle = hexWithAlpha(tour.color, 0.9);
+        ctx.font = "11px system-ui, sans-serif";
+        ctx.fillText(`${ev.moon} flyby ${ev.date.slice(0, 10)}` +
+          (ev.altKm !== undefined ? ` (${ev.altKm.toLocaleString()} km)` : ""), sx + 8, sy + 14);
+      });
+      const st = planetocentricStateAt(tour.key, t);
+      if (st) {
+        const [sx, sy, rz] = svProject(st.offsetKm);
+        const rKm = Math.hypot(...st.offsetKm);
+        items.push({ rz, draw: () => {
+          ctx.fillStyle = tour.color;
+          ctx.beginPath(); ctx.arc(sx, sy, 3.5, 0, 2 * Math.PI); ctx.fill();
+          ctx.fillStyle = "rgba(232,237,247,0.95)";
+          ctx.font = "12px system-ui, sans-serif";
+          ctx.fillText(`${tour.name}  ${(rKm / meta.radiusKm).toFixed(1)} R${primary[0]}`, sx + 7, sy - 6);
+        } });
+      }
+    });
+
+    items.sort((a, b) => b.rz - a.rz).forEach((it) => it.draw());
+
+    // Scale bar.
+    const barKm = niceKm(systemView.kmPerPx * 120);
+    const barPx = barKm / systemView.kmPerPx;
+    const x0 = viewW - barPx - 24, y0 = viewH - 28;
+    ctx.strokeStyle = "rgba(232,237,247,0.7)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0 + barPx, y0);
+    ctx.moveTo(x0, y0 - 4); ctx.lineTo(x0, y0 + 4); ctx.moveTo(x0 + barPx, y0 - 4); ctx.lineTo(x0 + barPx, y0 + 4);
+    ctx.stroke();
+    ctx.fillStyle = "rgba(232,237,247,0.8)"; ctx.font = "11px system-ui, sans-serif";
+    ctx.fillText(`${barKm.toLocaleString()} km (${(barKm / meta.radiusKm).toFixed(barKm < meta.radiusKm * 10 ? 1 : 0)} R${primary[0]})`, x0, y0 - 8);
+    systemScaleReadout.textContent = `${Math.round(systemView.kmPerPx).toLocaleString()} km per pixel · scroll to zoom, drag to rotate, right-drag to pan, Esc to exit`;
+  }
+
   function frame() {
     const now = performance.now();
     const dtMs = now - lastFrameTime;
@@ -7002,6 +7485,12 @@
     updateFlightsLegendActiveState(daysSinceEpoch);
     updateSmallBodiesLegendActiveState(daysSinceEpoch);
     updateFlightScrubberPlayhead(daysSinceEpoch);
+
+    if (systemView) {
+      drawSystemFrame(daysSinceEpoch);
+      requestAnimationFrame(frame);
+      return;
+    }
 
     // ---- Pass 1: compute world positions for every body, BEFORE any
     // screen projection. This has to happen first so that, if a body is
@@ -7691,6 +8180,7 @@
       daysSinceJ2000, parseFlightDate, computeFlightPosition,
       getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,
       getSolvedFlight, OUTER_MOONS, computeSatelliteOffset,
+      getSolvedPlanetocentricLeg, planetocentricOffsetKm, planetocentricStateAt, primaryUnitKm,
     };
     requestAnimationFrame(frame);
   }

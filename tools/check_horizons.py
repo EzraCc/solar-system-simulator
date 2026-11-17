@@ -65,6 +65,7 @@ IDS_PATH = os.path.join(HERE, "horizons_ids.json")
 CACHE_DIR = os.path.join(HERE, ".horizons_cache")
 J2000_JD = 2451545.0
 HORIZONS_URL = "https://ssd.jpl.nasa.gov/api/horizons.api"
+PRIMARY_IDS = {"Jupiter": "599"}
 
 
 def find_free_port():
@@ -84,22 +85,23 @@ def _get_with_retry(url, tries=4):
             time.sleep(2 * (k + 1))
 
 
-def horizons_vectors(target, jds, chunk=30):
+def horizons_vectors(target, jds, chunk=30, center="10", units="AU-D"):
     """Chunked wrapper: long TLISTs make URLs Horizons' gateway rejects."""
     jds = sorted(jds)
     out = {}
     for i in range(0, len(jds), chunk):
-        out.update(_horizons_vectors(target, jds[i:i + chunk]))
+        out.update(_horizons_vectors(target, jds[i:i + chunk], center, units))
     return out
 
 
-def _horizons_vectors(target, jds):
+def _horizons_vectors(target, jds, center="10", units="AU-D"):
     """Heliocentric ecliptic J2000 positions (AU) at the given JDs (TDB).
     Returns {jd: [x,y,z]} for the JDs Horizons has coverage for; JDs outside
     the spacecraft's ephemeris span are retried after clipping to the span
     Horizons reports in its error message."""
     jds = sorted(jds)
-    key = hashlib.sha1((target + "|" + ",".join(f"{j:.6f}" for j in jds)).encode()).hexdigest()
+    tag = target if (center, units) == ("10", "AU-D") else f"{target}@{center}/{units}/UT"
+    key = hashlib.sha1((tag + "|" + ",".join(f"{j:.6f}" for j in jds)).encode()).hexdigest()
     os.makedirs(CACHE_DIR, exist_ok=True)
     cache_path = os.path.join(CACHE_DIR, key + ".json")
     if os.path.exists(cache_path):
@@ -113,10 +115,14 @@ def _horizons_vectors(target, jds):
             break
         params = {
             "format": "text", "COMMAND": f"'{target}'", "EPHEM_TYPE": "VECTORS",
-            "CENTER": "'500@10'", "REF_PLANE": "ECLIPTIC", "REF_SYSTEM": "J2000",
-            "VEC_TABLE": "1", "OUT_UNITS": "AU-D", "CSV_FORMAT": "YES", "OBJ_DATA": "NO",
+            "CENTER": f"'500@{center}'", "REF_PLANE": "ECLIPTIC", "REF_SYSTEM": "J2000",
+            "VEC_TABLE": "1", "OUT_UNITS": units, "CSV_FORMAT": "YES", "OBJ_DATA": "NO",
             "TLIST_TYPE": "JD", "TLIST": " ".join(f"'{j:.6f}'" for j in pending),
         }
+        if center != "10":
+            # Planetocentric tours are built on the UT scale (build_planet_tour.py);
+            # 69 s of TDB-UT offset is ~4,000 km at a Juno perijove.
+            params["TIME_TYPE"] = "UT"
         url = HORIZONS_URL + "?" + urllib.parse.urlencode(params)
         text = _get_with_retry(url)
         if "$$SOE" in text:
@@ -189,6 +195,15 @@ def sample_app(page_url, flight_keys, n_samples):
                     const hasGA = raw.legs.some(l => l.type === 'gravity_assist');
                     const segs = hasGA ? D.getGAChain(key) : [];
                     raw.legs.forEach((leg, i) => {
+                        if (leg.type === 'planetocentric') {
+                            const solved = D.getSolvedPlanetocentricLeg(key, i);
+                            const samples = fr().map(f => { const t = solved.t0 + f * (solved.t1 - solved.t0);
+                                return { t, pos: D.planetocentricOffsetKm(solved, t) }; });
+                            const nm = (b) => typeof b === 'string' ? b : 'waypoint';
+                            out.push({ flight: key, legIndex: i, depart: leg.departDate.slice(0, 16), arrive: leg.arrivalDate.slice(0, 16),
+                                       from: nm(leg.fromBody), to: nm(leg.toBody), drawn: 'planeto', primary: leg.primaryBody, samples });
+                            return;
+                        }
                         if (leg.type !== 'lambert') return;
                         const t0 = D.daysSinceJ2000(D.parseFlightDate(leg.departDate));
                         const t1 = D.daysSinceJ2000(D.parseFlightDate(leg.arrivalDate));
@@ -260,7 +275,10 @@ def main():
             continue
         target = ids[r["flight"]]["id"]
         jd_of = {round(s["t"] + J2000_JD, 6): s for s in r["samples"]}
-        real = horizons_vectors(target, list(jd_of.keys()))
+        if r.get("primary"):
+            real = horizons_vectors(target, list(jd_of.keys()), center=PRIMARY_IDS[r["primary"]], units="KM-S")
+        else:
+            real = horizons_vectors(target, list(jd_of.keys()))
         worst, devs = None, []
         for jd, s in jd_of.items():
             if jd not in real:
@@ -286,6 +304,14 @@ def main():
         if r["max_dev"] is None:
             print(f"{r['flight']:16s} {r['legIndex']:3d}  {r['depart']} -> {r['arrive']}  "
                   f"{r['from'][:8]:>8s}->{r['to'][:8]:8s} {r['drawn']:7s} {r['coverage']:>5s}  (no Horizons coverage)")
+            continue
+        if r.get("primary"):
+            # Planetocentric leg: km in the primary's frame; judge relative to distance.
+            rel = r["max_dev"] / max(r["r_real"], 1.0)
+            flag = "  <-- WRONG?" if rel > 0.10 else ("  (approx)" if rel > 0.03 else "")
+            print(f"{r['flight']:16s} {r['legIndex']:3d}  {r['depart']} -> {r['arrive']}  "
+                  f"{r['from'][:8]:>8s}->{r['to'][:8]:8s} {r['drawn']:7s} {r['coverage']:>5s}  "
+                  f"{r['max_dev']:9,.0f} km  {100 * rel:5.1f}% of r={r['r_real']:,.0f} km{flag}")
             continue
         flag = "  <-- WRONG?" if r["max_dev"] > 0.15 else ("  (approx)" if r["max_dev"] > 0.05 else "")
         print(f"{r['flight']:16s} {r['legIndex']:3d}  {r['depart']} -> {r['arrive']}  "

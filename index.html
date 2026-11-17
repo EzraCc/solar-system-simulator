@@ -239,6 +239,28 @@
   <button id="dashboard-toggle-btn" title="Open the dashboard (velocity hodograph)">Dashboard</button>
 </div>
 
+<!-- Planet-system view (Jupiter first): a separate, primary-centered mode
+     entered from a planet's info panel. See the PLANET SYSTEM VIEW section
+     of app.js. Hidden unless body.system-view is set. -->
+<div class="panel" id="system-panel">
+  <div id="system-panel-header">
+    <button id="system-exit-btn" title="Back to the Solar System view">&larr; Solar System</button>
+    <span id="system-panel-title">Jupiter system</span>
+  </div>
+  <div class="system-section-label">Time</div>
+  <div id="system-speed-row">
+    <button data-sv-speed="0.0417">1 h/s</button>
+    <button data-sv-speed="0.25">6 h/s</button>
+    <button data-sv-speed="1">1 d/s</button>
+    <button data-sv-speed="7">1 wk/s</button>
+  </div>
+  <div class="system-section-label">Moons</div>
+  <div id="system-moon-rows"></div>
+  <div class="system-section-label">Missions</div>
+  <div id="system-mission-rows"></div>
+  <div id="system-scale-readout"></div>
+</div>
+
 <div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
 
 <!-- Scene Framing: a live readout of the camera state (zoom/rotation/
