@@ -362,15 +362,20 @@
   // ecliptic inclination is approximately the planet's axial tilt:
   //   Jupiter  3.1°,  Saturn 26.7°,  Uranus 97.8°,  Neptune 28.3°.
   // Triton: i=130.8° in ecliptic frame (not 157° equatorial -- spec §7).
-  // KNOWN LIMITATION: OmDeg0, wDeg0, M0Deg are approximate, not from JPL Horizons.
-  // Galilean moon phase angles at J2000 will drift from reality (spec §2.4).
+  // Galilean moons (Io/Europa/Ganymede/Callisto): least-squares fits to JPL
+  // Horizons over 1990-2040 by tools/fit_moon_elements.py (2026-11-17), in
+  // exactly this model (incl. nodal/apsidal precession; the fitted apsidal
+  // rate also absorbs the Laplace-resonance libration of the mean longitude).
+  // Previously hand-entered phases had the moons 50-160 deg out of place.
+  // KNOWN LIMITATION for every other moon below: OmDeg0, wDeg0, M0Deg are
+  // approximate, not from JPL Horizons, and will drift from reality (spec §2.4).
   // Uranian moons share Om ≈ 167° (Uranus ascending node on the ecliptic).
   const OUTER_MOONS = {
     Jupiter: [
-      { name: 'Io',       elements: { aKm: 421800,   e: 0.0041,   iDeg: 3.1,  OmDeg0: 100.5, wDeg0:  84.1, M0Deg: 342, periodSiderealDays:  1.7692  }, meta: { color: '#d4a84b', radiusKm: 1821.6 } },
-      { name: 'Europa',   elements: { aKm: 671100,   e: 0.0094,   iDeg: 3.1,  OmDeg0: 100.5, wDeg0: 188.2, M0Deg: 171, periodSiderealDays:  3.5512  }, meta: { color: '#c8b89a', radiusKm: 1560.8 } },
-      { name: 'Ganymede', elements: { aKm: 1070400,  e: 0.0011,   iDeg: 3.1,  OmDeg0: 100.5, wDeg0: 192.4, M0Deg: 340, periodSiderealDays:  7.1546  }, meta: { color: '#9b8e7e', radiusKm: 2634.1 } },
-      { name: 'Callisto', elements: { aKm: 1882700,  e: 0.0074,   iDeg: 3.1,  OmDeg0: 100.5, wDeg0:  52.6, M0Deg: 190, periodSiderealDays: 16.6890  }, meta: { color: '#6b5f52', radiusKm: 2410.3 } },
+      { name: 'Io',       elements: { aKm: 421763.3,  e: 0.000124, iDeg: 2.21417, OmDeg0: 337.81014, wDeg0: 316.52992, M0Deg:  83.83294, periodSiderealDays:  1.76922367, nodalPeriodDays: 760643209.27, apsidalPeriodDays:  36429.05 }, meta: { color: '#d4a84b', radiusKm: 1821.6 } },
+      { name: 'Europa',   elements: { aKm: 670987.9,  e: 0.000367, iDeg: 2.15628, OmDeg0: 335.34587, wDeg0: 281.88809, M0Deg: 315.50777, periodSiderealDays:  3.55126861, nodalPeriodDays: -827018.75,   apsidalPeriodDays: 174443.05 }, meta: { color: '#c8b89a', radiusKm: 1560.8 } },
+      { name: 'Ganymede', elements: { aKm: 1070430.0, e: 0.001785, iDeg: 2.27434, OmDeg0: 343.02716, wDeg0: 300.04769, M0Deg: 296.94391, periodSiderealDays:  7.15538466, nodalPeriodDays: 813207.89,    apsidalPeriodDays:  57241.35 }, meta: { color: '#9b8e7e', radiusKm: 2634.1 } },
+      { name: 'Callisto', elements: { aKm: 1882744.4, e: 0.007309, iDeg: 1.98088, OmDeg0: 337.89941, wDeg0:  15.01498, M0Deg:  86.28740, periodSiderealDays: 16.69041380, nodalPeriodDays: 3256855.11,   apsidalPeriodDays: 187952.68 }, meta: { color: '#6b5f52', radiusKm: 2410.3 } },
     ],
     Saturn: [
       { name: 'Enceladus', elements: { aKm: 238020,  e: 0.0047, iDeg: 26.7, OmDeg0: 113.7, wDeg0:  92.3, M0Deg: 197, periodSiderealDays:  1.3702  }, meta: { color: '#eaeaea', radiusKm:  252.1 } },
@@ -7685,7 +7690,7 @@
       FLIGHTS_RAW, isMultiLeg, getSolvedLeg, getGAChain, getGAEvents,
       daysSinceJ2000, parseFlightDate, computeFlightPosition,
       getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,
-      getSolvedFlight,
+      getSolvedFlight, OUTER_MOONS, computeSatelliteOffset,
     };
     requestAnimationFrame(frame);
   }

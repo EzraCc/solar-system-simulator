@@ -2,12 +2,12 @@
 
 ## Push policy — check this before every `git push`
 
-**Current mode: PUSH FREELY.** OK to push after each verified, working
-commit without asking each time.
+**Current mode: LOCAL ONLY.** Set 2026-11-17 for the Jupiter-system
+zoom prototype. Commit locally (or don't even commit), but do not run
+`git push` under any circumstances until explicitly told to switch back.
 
-The other mode is **LOCAL ONLY** — commit locally (or don't even commit)
-but do not run `git push` under any circumstances until explicitly told
-to switch back.
+The other mode is **PUSH FREELY**: OK to push after each verified,
+working commit without asking each time.
 
 To change modes, edit the bolded line above. Whoever changes it should
 say so out loud in the conversation too, since the file alone is easy to
