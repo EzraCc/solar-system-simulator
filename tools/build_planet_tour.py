@@ -17,8 +17,7 @@ What it does:
      position plus the real spacecraft-minus-moon offset), anything else a
      {relPos: [km]}.
 
-Pure Python on purpose (no numpy): see the note in fit_moon_elements.py about
-the numpy build in tools/.venv. Horizons responses are cached in
+Pure Python (no numpy dependency), so it runs with the system python3. Horizons responses are cached in
 tools/.horizons_cache/.
 
 Usage:

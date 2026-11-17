@@ -37,10 +37,13 @@ published package), so entries are dated instead.
   - `tools/build_planet_tour.py` builds a tour from Horizons ephemeris.
   - `tools/build_tour_from_flybys.py` builds one from a published schedule.
   - `tools/check_horizons.py` now verifies planetocentric legs in km.
-- **Tooling note**: the `tools/.venv` numpy (1.26, which predates Python
-  3.14) returns corrupted results on arrays of tens of thousands of
-  elements, and its scipy optimizer silently does nothing. The new tools
-  avoid both.
+- **Tooling environment fixed**: the `tools/.venv` numpy (1.26, which
+  predates Python 3.14) silently corrupted large-array results, its scipy
+  optimizer did nothing, and matplotlib 3.7 hit a recursion bug. The venv
+  is rebuilt from a pinned `tools/requirements.txt`: numpy 2.5.5, scipy
+  1.18.1, numba 0.68.1, and matplotlib 3.11.2, which overrides hapsira's
+  old pin. `validate_trajectories.py` still passes, and the new tools
+  reproduce identical results.
 
 ## 2026-11-17 — Every trajectory checked against JPL Horizons; 25 wrong legs fixed; catalog refreshed
 

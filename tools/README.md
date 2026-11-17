@@ -84,12 +84,10 @@ single coast entry, so splitting doesn't clutter the UI.
 - `check_horizons.py` checks planetocentric legs in the planet's frame and
   reports errors in km.
 
-**numpy warning:** the numpy 1.26 in `tools/.venv` predates Python 3.14. On
-2026-11-17 it was verified to return corrupted, nondeterministic results for
-elementwise operations on arrays of ~49k elements, and scipy's
-`least_squares` silently returned its starting guess. The new tools keep
-arrays small or stay in pure Python. Check results before trusting numpy on
-large arrays here.
+**Environment note (fixed 2026-11-17):** the old `tools/.venv` had numpy 1.26, which
+predates Python 3.14. It silently corrupted results on large arrays, and its scipy optimizer did
+nothing. The venv is now rebuilt from `requirements.txt` (numpy 2.5, scipy 1.18, matplotlib 3.11),
+and all of that works. If you ever rebuild it, install from `requirements.txt`, not bare `hapsira`.
 
 ## `check_lambert_sweep.py` — multi-revolution screening
 
@@ -145,7 +143,7 @@ especially any leg with a duration measured in months rather than weeks.
 
 ```sh
 python3 -m venv tools/.venv
-tools/.venv/bin/pip install hapsira
+tools/.venv/bin/pip install -r tools/requirements.txt
 ```
 
 `hapsira` publishes a pure-Python wheel, so this installs cleanly on any

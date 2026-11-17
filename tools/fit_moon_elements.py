@@ -68,9 +68,9 @@ def model(params, t):
 
 
 def levenberg_marquardt(resid, x, iters=60):
-    """Small dense LM with a forward-difference Jacobian -- plain numpy, so it
-    doesn't depend on scipy (whose build in tools/.venv silently returned the
-    starting guess unchanged). e is clamped to [0, 0.2) after each step."""
+    """Small dense LM with a forward-difference Jacobian in plain numpy (written
+    when the old tools/.venv scipy silently returned its starting guess; kept
+    since it works and has no scipy dependency). e is clamped to [0, 0.2)."""
     lam = 1e-3
     r = resid(x)
     cost = r @ r
@@ -110,11 +110,11 @@ def main():
 
     d = vectors(args.target, args.center, args.start, args.stop, args.step)
     t_all, P_all = d[:, 0], d[:, 1:]
-    # Initial estimates from the first ~2000 samples only. Keep every numpy
-    # array op small: the numpy 1.26 build in tools/.venv (which predates
-    # Python 3.14) was verified on 2026-11-17 to return corrupted,
-    # nondeterministic results for elementwise ops on ~49k-element arrays,
-    # while identical work in 10k chunks is exact.
+    # Initial estimates from the first ~2000 samples (plenty for pole, node
+    # and a starting mean motion; the fit itself then uses the whole span).
+    # Arrays are also kept small/chunked because an older tools/.venv numpy
+    # (1.26 on Python 3.14) corrupted large-array results; fixed by the
+    # 2026-11-17 venv rebuild, but harmless to keep.
     t, P = t_all[:2000], P_all[:2000]
     r = np.linalg.norm(P, axis=1)
 
@@ -129,8 +129,8 @@ def main():
     raw = np.arctan2(P @ q, P @ node)
     steps = (np.diff(raw) + np.pi) % (2 * np.pi) - np.pi   # needs < 180 deg per sample step
     lon = np.concatenate([[raw[0]], raw[0] + np.cumsum(steps)])
-    # Plain closed-form linear regression (np.polyfit returned a flat line on
-    # this numpy/Python-3.14 combination for these magnitudes).
+    # Plain closed-form linear regression (np.polyfit returned a flat line
+    # under the old numpy 1.26 venv; kept for robustness).
     L = np.degrees(lon)
     tm, Lm = t.mean(), L.mean()
     n0 = float(((t - tm) * (L - Lm)).sum() / ((t - tm) ** 2).sum())

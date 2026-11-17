@@ -1,2 +1,13 @@
+# Dev-only trajectory tooling (see tools/README.md). Install into tools/.venv:
+#   python3 -m venv tools/.venv
+#   tools/.venv/bin/pip install -r tools/requirements.txt
+#
+# numpy >= 2.3 matters on Python 3.14: numpy 1.26 (which predates 3.14)
+# silently corrupted large-array results there (verified 2026-11-17).
+# matplotlib >= 3.10 overrides hapsira's old `matplotlib<3.8` pin -- pip
+# warns about the conflict, but only hapsira's own plotting module would
+# care, and nothing here uses it; matplotlib 3.7 is broken on Python 3.14.
 hapsira
 playwright
+numpy>=2.3
+matplotlib>=3.10
