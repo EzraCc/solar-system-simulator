@@ -1,0 +1,229 @@
+{
+  "_source": "ESA JUICE trajectory profile, https://www.cosmos.esa.int/web/juice/trajectory-profile (CReMA 5.2, trajectory a3), fetched 2026-11-17. Dates only (no times); closest approach per the page's table (treated as altitude). GOI = Ganymede orbit insertion.",
+  "flight": "juice",
+  "primary": "Jupiter",
+  "events": [
+    {
+      "name": "1G1",
+      "moon": "Ganymede",
+      "date": "2031-07-20",
+      "closestApproachKm": 399
+    },
+    {
+      "name": "2G2",
+      "moon": "Ganymede",
+      "date": "2032-02-06",
+      "closestApproachKm": 324
+    },
+    {
+      "name": "3G3",
+      "moon": "Ganymede",
+      "date": "2032-04-11",
+      "closestApproachKm": 419
+    },
+    {
+      "name": "4G4",
+      "moon": "Ganymede",
+      "date": "2032-05-09",
+      "closestApproachKm": 5741
+    },
+    {
+      "name": "5G5",
+      "moon": "Ganymede",
+      "date": "2032-06-02",
+      "closestApproachKm": 2382
+    },
+    {
+      "name": "6C1",
+      "moon": "Callisto",
+      "date": "2032-06-21",
+      "closestApproachKm": 3603
+    },
+    {
+      "name": "7E1",
+      "moon": "Europa",
+      "date": "2032-07-02",
+      "closestApproachKm": 401
+    },
+    {
+      "name": "8E2",
+      "moon": "Europa",
+      "date": "2032-07-16",
+      "closestApproachKm": 401
+    },
+    {
+      "name": "9C2",
+      "moon": "Callisto",
+      "date": "2032-07-29",
+      "closestApproachKm": 4711
+    },
+    {
+      "name": "10C3",
+      "moon": "Callisto",
+      "date": "2032-08-14",
+      "closestApproachKm": 1111
+    },
+    {
+      "name": "11C4",
+      "moon": "Callisto",
+      "date": "2032-09-10",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "12C5",
+      "moon": "Callisto",
+      "date": "2032-09-27",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "13C6",
+      "moon": "Callisto",
+      "date": "2032-10-14",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "14C7",
+      "moon": "Callisto",
+      "date": "2032-10-30",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "15C8",
+      "moon": "Callisto",
+      "date": "2032-11-16",
+      "closestApproachKm": 370
+    },
+    {
+      "name": "16C9",
+      "moon": "Callisto",
+      "date": "2032-12-28",
+      "closestApproachKm": 370
+    },
+    {
+      "name": "17C10",
+      "moon": "Callisto",
+      "date": "2033-01-13",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "18C11",
+      "moon": "Callisto",
+      "date": "2033-03-05",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "19C12",
+      "moon": "Callisto",
+      "date": "2033-04-24",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "20C13",
+      "moon": "Callisto",
+      "date": "2033-05-10",
+      "closestApproachKm": 4797
+    },
+    {
+      "name": "21C14",
+      "moon": "Callisto",
+      "date": "2033-06-04",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "22C15",
+      "moon": "Callisto",
+      "date": "2033-06-21",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "23C16",
+      "moon": "Callisto",
+      "date": "2033-07-08",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "24C17",
+      "moon": "Callisto",
+      "date": "2033-07-24",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "25C18",
+      "moon": "Callisto",
+      "date": "2033-08-10",
+      "closestApproachKm": 201
+    },
+    {
+      "name": "26C19",
+      "moon": "Callisto",
+      "date": "2033-11-02",
+      "closestApproachKm": 246
+    },
+    {
+      "name": "27G6",
+      "moon": "Ganymede",
+      "date": "2033-11-27",
+      "closestApproachKm": 897
+    },
+    {
+      "name": "28G7",
+      "moon": "Ganymede",
+      "date": "2034-01-14",
+      "closestApproachKm": 3190
+    },
+    {
+      "name": "29C20",
+      "moon": "Callisto",
+      "date": "2034-02-15",
+      "closestApproachKm": 560
+    },
+    {
+      "name": "30C21",
+      "moon": "Callisto",
+      "date": "2034-04-15",
+      "closestApproachKm": 38266
+    },
+    {
+      "name": "31C22",
+      "moon": "Callisto",
+      "date": "2034-05-01",
+      "closestApproachKm": 3902
+    },
+    {
+      "name": "32G8",
+      "moon": "Ganymede",
+      "date": "2034-06-06",
+      "closestApproachKm": 3005
+    },
+    {
+      "name": "33C23",
+      "moon": "Callisto",
+      "date": "2034-06-24",
+      "closestApproachKm": 6064
+    },
+    {
+      "name": "34G9",
+      "moon": "Ganymede",
+      "date": "2034-07-12",
+      "closestApproachKm": 110088
+    },
+    {
+      "name": "35G10",
+      "moon": "Ganymede",
+      "date": "2034-09-07",
+      "closestApproachKm": 35961
+    },
+    {
+      "name": "36G11",
+      "moon": "Ganymede",
+      "date": "2034-09-29",
+      "closestApproachKm": 32682
+    },
+    {
+      "name": "GOI",
+      "moon": "Ganymede",
+      "date": "2034-10-31",
+      "closestApproachKm": 350
+    }
+  ]
+}

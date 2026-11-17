@@ -68,6 +68,29 @@ always re-run `check_horizons.py` on the whole flight afterwards. The
 flight-profile timeline in the app merges each waypoint chain back into a
 single coast entry, so splitting doesn't clutter the UI.
 
+## Planet-system tours (Jupiter system view)
+
+- `build_planet_tour.py <flight> --primary Jupiter --start <arrival> --stop <end>`
+  builds `planetocentric` legs from Horizons. It finds every periapsis and
+  every moon flyby (closest approach refined to 1 s) and keeps pieces under
+  60° / 8 days. Used for Juno, Galileo and Europa Clipper.
+- `build_tour_from_flybys.py tools/tours/<schedule>.json` (needs
+  `tools/.venv` for hapsira's multi-revolution Izzo solver) builds a tour
+  from a published flyby schedule when no ephemeris exists. Used for JUICE,
+  with `tools/tours/juice_crema52.json`. See the script's docstring for the
+  method and its limits.
+- `fit_moon_elements.py <moon id> <planet id>` fits a moon's elements to
+  Horizons in exactly the app's moon model. Used for the Galilean moons.
+- `check_horizons.py` checks planetocentric legs in the planet's frame and
+  reports errors in km.
+
+**numpy warning:** the numpy 1.26 in `tools/.venv` predates Python 3.14. On
+2026-11-17 it was verified to return corrupted, nondeterministic results for
+elementwise operations on arrays of ~49k elements, and scipy's
+`least_squares` silently returned its starting guess. The new tools keep
+arrays small or stay in pure Python. Check results before trusting numpy on
+large arrays here.
+
 ## `check_lambert_sweep.py` — multi-revolution screening
 
 > For flights with a Horizons ID, prefer `check_horizons.py`. This script

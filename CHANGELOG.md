@@ -4,6 +4,44 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## Unreleased (local prototype, not yet pushed) — Jupiter system view
+
+- **Galilean moon positions fixed.** The hand-entered phases had Io,
+  Europa, Ganymede and Callisto 50–160° out of place (400,000 to 2.8
+  million km). They now use least-squares fits to JPL Horizons over
+  1990–2040, from the new `tools/fit_moon_elements.py`, in exactly the
+  app's own moon model. Verified in-app from 1996 to 2034: Ganymede and
+  Callisto within ~2,000 km, Io within ~3,000 km, Europa within ~13,000 km.
+- **New `planetocentric` leg type**: a Lambert arc in a planet's own frame.
+  Endpoints are Horizons waypoints (`{relPos}`) or moon flybys
+  (`{moon, offsetKm}`), and flybys are pinned to the moon as drawn. It
+  reuses the existing solver by rescaling length so the planet's GM equals
+  the Sun's.
+- **Four Jupiter tours**:
+  - **Juno**: 2016–2026, 90 orbits, 7 flybys, built from Horizons. Median
+    error against Horizons is 217 km.
+  - **Galileo**: 1995–2003, 34 orbits, 35 flybys, from Horizons; median
+    error 326 km.
+  - **Europa Clipper**: 2030–2034, 79 orbits, 69 flybys, from Horizons'
+    predicted tour; median error 138 km.
+  - **JUICE**: 2031–2034, 36 flybys, ending at Ganymede orbit insertion.
+    It's a model built from ESA's published flyby schedule, because
+    Horizons has no JUICE tour. Orbit counts and flyby times of day are
+    chosen so each gravity assist conserves the spacecraft's speed relative
+    to the moon.
+- **Separate Jupiter system view**, opened from Jupiter's info panel or a
+  touring flight's "View Jupiter tour" button. It shows Jupiter, the moons
+  and the mission tours, with time presets, jump-to-flyby buttons,
+  follow-a-moon or follow-a-spacecraft, a scale bar, and Esc to exit.
+- **New tools**:
+  - `tools/build_planet_tour.py` builds a tour from Horizons ephemeris.
+  - `tools/build_tour_from_flybys.py` builds one from a published schedule.
+  - `tools/check_horizons.py` now verifies planetocentric legs in km.
+- **Tooling note**: the `tools/.venv` numpy (1.26, which predates Python
+  3.14) returns corrupted results on arrays of tens of thousands of
+  elements, and its scipy optimizer silently does nothing. The new tools
+  avoid both.
+
 ## 2026-11-17 — Every trajectory checked against JPL Horizons; 25 wrong legs fixed; catalog refreshed
 
 - **New real-ephemeris verifier, `tools/check_horizons.py`.** The 2026-08-03

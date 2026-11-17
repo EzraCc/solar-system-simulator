@@ -12,6 +12,11 @@ made for existing satellites so new additions stay consistent.
 described in Section 8. New additions should follow the `OUTER_MOONS` pattern, not
 the named-constants pattern.
 
+> **UPDATE (2026-11-17):** The Galilean moons' elements now come from least-squares
+> fits to JPL Horizons (`tools/fit_moon_elements.py`), including fitted nodal and apsidal
+> precession. Use that tool for any moon whose real position matters, such as a
+> spacecraft flyby target. The hand-entered phases were 50–160° off.
+>
 > **STATUS (2026-08-01): Living reference document, still accurate.** Unlike
 > the other two `docs/` specs, this one isn't a single completed feature —
 > it's the standing checklist/decision-guide for *whenever* a new satellite
