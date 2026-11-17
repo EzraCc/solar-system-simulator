@@ -5,26 +5,108 @@
   "payload": "Psyche orbiter (~2,747 kg wet mass)",
   "status": "En Route",
   "significance": "Psyche was launched to investigate a scientific gap that no prior mission could address: since planetary metallic cores are inaccessible everywhere, including on Earth, the metal-rich asteroid 16 Psyche offers a possible directly observable analog to a protoplanet's exposed core, if Psyche is confirmed to be one. It is the first mission to a predominantly metallic body, carrying a magnetometer, gamma-ray/neutron spectrometer, and imagers to map composition, topography, and any remnant magnetic field, an instrument suite never before flown to a metal-dominated target. Ground and space telescope observations conducted before and during the mission's cruise have already revised estimates of Psyche's bulk metal content downward from earlier assumptions, suggesting a more porous, mixed metal-rock body rather than a solid iron-nickel mass. The spacecraft is still en route, with orbital operations at Psyche not beginning until 2029, so the central question, whether Psyche is truly a stripped planetary core or a metal-rich rubble pile formed some other way, remains open.",
-  "statusNote": "Orbital study of a metal-rich asteroid believed to be part of a planetesimal's core. Single Mars gravity-assist flyby, completed 2026-05-15 at 4,609 km altitude; this leg uses the patched-conic roll-angle solver (like BepiColombo/PSP), not a plain endpoint-anchored arc. Asteroid gravity capture expected 2029-07 (science orbit begins 2029-08); this file uses 2029-07-31 as a representative arrival date pending a firmer published one -- combined with the approximate date, the solved trajectory currently lands ~0.3 AU from Psyche's actual position at that date, larger than this simulator's other patched-conic legs. Worth revisiting once ESA/NASA publish a firmer encounter date closer to arrival.",
+  "statusNote": "Orbital study of a metal-rich asteroid believed to be part of a planetesimal's core. Single Mars gravity-assist flyby, completed 2026-05-15 at 4,609 km altitude. Psyche cruises on continuous solar-electric (Hall-thruster) propulsion, which no two-point coast arc can follow, so both long cruise stretches (2024-03 to 2025-08, and the post-Mars leg) are anchored to real/predicted JPL Horizons waypoints (target -255) and match that trajectory to within ~0.05 AU. Horizons' predicted trajectory ends 2029-02-24 with the spacecraft ~50,000 km from the asteroid and closing at ~0.1 km/s -- the start of the approach phase. NASA expects the asteroid's gravity to capture the spacecraft in July 2029, with orbital operations from August 2029 ('arrival in summer 2029' after the Mars flyby); this file keeps 2029-07-31 as the representative arrival date, and the final 2029-02-24 -> 2029-07-31 piece is just the slow approach alongside the asteroid.",
   "legs": [
     {
       "_comment": "Real Psyche trajectory (JPL Horizons, target -255, checked 2026-07) sweeps close to a full lap (~345 degrees) around the Sun on this cruise to Mars, reaching ~2.6 AU near 2025-01 (past Mars, into the asteroid belt) before curving back in for the flyby -- close enough to 360 degrees that a plain 2-point Lambert solve misreads it as a small-angle short hop, producing an unconstrained a=1.92 AU / e=0.88 orbit. Split through two real recorded positions so each third stays under 180 degrees of sweep.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": { "fixedPos": [-1.239530065099989, 1.193988469032059, 0.02787323631095128] },
+      "toBody": {
+        "fixedPos": [
+          -1.239530065099989,
+          1.193988469032059,
+          0.02787323631095128
+        ]
+      },
       "departDate": "2023-10-13",
       "arrivalDate": "2024-03-12"
     },
     {
+      "_comment": "Split through 3 real JPL Horizons waypoint(s) (target -255, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2024-03-12 -> 2025-08-04 leg's real path sweeps ~115 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
-      "fromBody": { "fixedPos": [-1.239530065099989, 1.193988469032059, 0.02787323631095128] },
-      "toBody": { "fixedPos": [-0.7733164626445336, -2.212482605987324, -0.01573504640488266] },
+      "fromBody": {
+        "fixedPos": [
+          -1.239530065099989,
+          1.193988469032059,
+          0.02787323631095128
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -2.36799969775916,
+          0.05890939792733911,
+          0.02547788736731561
+        ]
+      },
       "departDate": "2024-03-12",
+      "arrivalDate": "2024-08-09"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -2.36799969775916,
+          0.05890939792733911,
+          0.02547788736731561
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -2.296415361097186,
+          -1.225473671612722,
+          0.01696220033506723
+        ]
+      },
+      "departDate": "2024-08-09",
+      "arrivalDate": "2025-01-06"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -2.296415361097186,
+          -1.225473671612722,
+          0.01696220033506723
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.338688930462144,
+          -2.08997460867028,
+          -0.005161392652929989
+        ]
+      },
+      "departDate": "2025-01-06",
+      "arrivalDate": "2025-06-05"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.338688930462144,
+          -2.08997460867028,
+          -0.005161392652929989
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7733164626445336,
+          -2.212482605987324,
+          -0.01573504640488266
+        ]
+      },
+      "departDate": "2025-06-05",
       "arrivalDate": "2025-08-04"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [-0.7733164626445336, -2.212482605987324, -0.01573504640488266] },
+      "fromBody": {
+        "fixedPos": [
+          -0.7733164626445336,
+          -2.212482605987324,
+          -0.01573504640488266
+        ]
+      },
       "toBody": "Mars",
       "departDate": "2025-08-04",
       "arrivalDate": "2026-05-15"
@@ -36,10 +118,144 @@
       "periapsisKm": 4609
     },
     {
+      "_comment": "Split through 7 real JPL Horizons waypoint(s) (target -255, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2026-05-15 -> 2029-07-31 leg's real path sweeps ~272 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Mars",
-      "toBody": "psyche",
+      "toBody": {
+        "fixedPos": [
+          -0.221156950850727,
+          1.691207658494055,
+          -0.0693708427602924
+        ]
+      },
       "departDate": "2026-05-15",
+      "arrivalDate": "2026-10-09"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.221156950850727,
+          1.691207658494055,
+          -0.0693708427602924
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.987075150474726,
+          1.179766972815989,
+          -0.01243792592885466
+        ]
+      },
+      "departDate": "2026-10-09",
+      "arrivalDate": "2027-03-08"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.987075150474726,
+          1.179766972815989,
+          -0.01243792592885466
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -2.773430235804469,
+          -0.1308210501087816,
+          0.07038961973441679
+        ]
+      },
+      "departDate": "2027-03-08",
+      "arrivalDate": "2027-08-05"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -2.773430235804469,
+          -0.1308210501087816,
+          0.07038961973441679
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -2.665374516319648,
+          -1.483047745108284,
+          0.1353530115517725
+        ]
+      },
+      "departDate": "2027-08-05",
+      "arrivalDate": "2028-01-02"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -2.665374516319648,
+          -1.483047745108284,
+          0.1353530115517725
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.881975838251738,
+          -2.513468067077398,
+          0.1662308218167204
+        ]
+      },
+      "departDate": "2028-01-02",
+      "arrivalDate": "2028-05-31"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.881975838251738,
+          -2.513468067077398,
+          0.1662308218167204
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6484559352465697,
+          -3.00344926296403,
+          0.1579800073226162
+        ]
+      },
+      "departDate": "2028-05-31",
+      "arrivalDate": "2028-10-28"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6484559352465697,
+          -3.00344926296403,
+          0.1579800073226162
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.4789852912936066,
+          -2.897256298344235,
+          0.1230895691779907
+        ]
+      },
+      "departDate": "2028-10-28",
+      "arrivalDate": "2029-02-24"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.4789852912936066,
+          -2.897256298344235,
+          0.1230895691779907
+        ]
+      },
+      "toBody": "psyche",
+      "departDate": "2029-02-24",
       "arrivalDate": "2029-07-31"
     }
   ],

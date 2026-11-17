@@ -4,8 +4,13 @@ Optional dev-only tooling. **Not part of the shipped site** — the browser
 app has no server component and never touches Python; nothing here is a
 runtime dependency.
 
-Two scripts:
+Scripts:
 
+- `check_horizons.py` — **the trajectory verifier.** Compares the position
+  the app actually renders for each leg against real JPL Horizons ephemeris.
+  See its own section below.
+- `split_leg_horizons.py` — the fix for a leg `check_horizons.py` shows is
+  wrong: splits it through real Horizons waypoints automatically.
 - `validate_trajectories.py` cross-checks this project's from-scratch
   orbital-mechanics math (`src/js/app.js`'s Lambert solver and gravity-assist
   turn-angle geometry) against an independent reference: [hapsira](https://github.com/pleiszenburg/hapsira)
@@ -16,7 +21,60 @@ Two scripts:
   structural limitation of that same Lambert solver — see its own section
   below, and read its docstring before trusting its output.
 
+## `check_horizons.py` — real-ephemeris verification
+
+For every Lambert leg of a flight, samples the position the app really
+uses for the spacecraft (`window.__VERIFY__.computeMultiLegPosition`, the
+same call the render loop makes) and compares it with JPL Horizons'
+heliocentric ecliptic-J2000 position at the same instants. Reports the
+worst separation per leg and how the leg is drawn (plain Lambert arc,
+patched-conic propagation, or not drawn at all because `getGAChain`
+rejected the fit). Spacecraft IDs live in `horizons_ids.json`; responses are
+cached in `tools/.horizons_cache/` (gitignored). Needs Playwright, like the
+sweep script; no other dependencies.
+
+```sh
+python3 tools/check_horizons.py                   # every flight with an ID
+python3 tools/check_horizons.py psp bepicolombo   # just these
+python3 tools/check_horizons.py --samples 40 --json out.json
+```
+
+Rough reading: under 0.05 AU matches (invisible at normal zoom); 0.05–0.15 AU
+is approximate, usually unmodeled ion/SEP thrust or a long outer-system leg;
+over 0.15 AU is a wrong shape, so fix it with `split_leg_horizons.py`.
+
+As of 2026-11-17, all 466 legs with Horizons coverage are under 0.15 AU and
+446 are under 0.05 AU. Not checkable: Hayabusa (Horizons only has it from
+2009 on), Nozomi's 1998 lunar-swingby phase, and Tianwen-2 (no ephemeris
+published; its cruise uses clearly labeled synthetic waypoints instead).
+
+## `split_leg_horizons.py` — waypoint splitting
+
+```sh
+python3 tools/split_leg_horizons.py psp 10 --dry-run   # show planned waypoints
+python3 tools/split_leg_horizons.py psp 10             # rewrite data/flights/psp.json
+```
+
+Walks Horizons' 6-hourly positions across the leg and drops a `fixedPos`
+waypoint whenever the real spacecraft has swept 90° around the Sun or 150
+days have passed (both adjustable), so every piece is unambiguous for the
+zero-revolution solver. Automatically clips to the spacecraft's Horizons
+coverage: ephemeris usually starts hours after launch, and an active
+mission's predicted trajectory may end before the leg does, in which case
+the last available point becomes the final waypoint. Writes an explanatory
+`_comment` on the first new piece. Splitting a leg can change the incoming
+velocity at the *next* gravity assist and so shift later patched legs, so
+always re-run `check_horizons.py` on the whole flight afterwards. The
+flight-profile timeline in the app merges each waypoint chain back into a
+single coast entry, so splitting doesn't clutter the UI.
+
 ## `check_lambert_sweep.py` — multi-revolution screening
+
+> For flights with a Horizons ID, prefer `check_horizons.py`. This script
+> measures `getSolvedLeg`'s plain Lambert solve, which for any leg after a
+> gravity assist is usually *not* what the app draws, so its ratios can
+> look alarming (e≈1.0) for legs that render correctly.
+
 
 `solveLambertUniversal` in `src/js/app.js` only ever solves for a
 **zero-revolution** transfer: given two positions and a time of flight, it

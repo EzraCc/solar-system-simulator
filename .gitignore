@@ -18,3 +18,6 @@ debug/screenshots/*
 # Local venv for the optional dev-only trajectory validation tooling (see
 # tools/README.md) -- not project content, not a runtime dependency.
 tools/.venv/
+
+# Horizons API response cache for tools/check_horizons.py -- regenerable.
+tools/.horizons_cache/

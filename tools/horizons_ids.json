@@ -1,0 +1,85 @@
+{
+  "_comment": "JPL Horizons spacecraft target IDs per flight key, for tools/check_horizons.py. Looked up 2026-11-17 via Horizons name search (COMMAND='<name>'). A flight absent here, or with id null, has no Horizons ephemeris known to this repo.",
+  "psp": {
+    "id": "-96"
+  },
+  "solar_orbiter": {
+    "id": "-144"
+  },
+  "hayabusa": {
+    "id": "-130"
+  },
+  "hayabusa2": {
+    "id": "-37"
+  },
+  "lucy": {
+    "id": "-49"
+  },
+  "messenger": {
+    "id": "-236"
+  },
+  "akatsuki": {
+    "id": "-5"
+  },
+  "bepicolombo": {
+    "id": "-121"
+  },
+  "stereo_a": {
+    "id": "-234"
+  },
+  "stereo_b": {
+    "id": "-235"
+  },
+  "nozomi": {
+    "id": "-178"
+  },
+  "cassini": {
+    "id": "-82"
+  },
+  "rosetta": {
+    "id": "-226"
+  },
+  "juice": {
+    "id": "-28"
+  },
+  "stardust": {
+    "id": "-29"
+  },
+  "osiris_rex": {
+    "id": "-64"
+  },
+  "europa_clipper": {
+    "id": "-159"
+  },
+  "psyche": {
+    "id": "-255"
+  },
+  "dawn": {
+    "id": "-203"
+  },
+  "galileo": {
+    "id": "-77"
+  },
+  "hera": {
+    "id": "-91"
+  },
+  "dart": {
+    "id": "-135"
+  },
+  "ulysses": {
+    "id": "-55"
+  },
+  "roman": {
+    "id": "-211"
+  },
+  "mmx": {
+    "id": "-239"
+  },
+  "tianwen2": {
+    "id": null
+  },
+  "escapade": {
+    "id": "-9",
+    "note": "ESCAPADE-Blue; Gold is -10"
+  }
+}

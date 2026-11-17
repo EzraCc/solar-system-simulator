@@ -45,6 +45,14 @@ cross-check isn't automated here (no registry of per-mission Horizons IDs
 exists in this repo); use this script's output as a prioritized list of
 what's worth doing that by hand for, not as a pass/fail gate.
 
+## Superseded for most flights by check_horizons.py
+
+For any flight with a JPL Horizons ID (tools/horizons_ids.json), tools/check_horizons.py is the real verifier --
+it compares the RENDERED position against ephemeris. Note also that for a leg following a gravity assist this
+script measures getSolvedLeg's plain Lambert solve, which the app usually does NOT render (getGAChain's
+patched-conic propagation is drawn instead) -- e.g. a Venus->Venus leg can show e~1.0 here while rendering
+correctly. Use this script mainly for flights Horizons can't check.
+
 ## Usage
 
     tools/.venv/bin/python3 tools/check_lambert_sweep.py [flight_key ...]

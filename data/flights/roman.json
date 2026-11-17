@@ -5,14 +5,14 @@
   "payload": "Roman Space Telescope (~10,500 kg at launch)",
   "status": "En Route",
   "significance": "Named for NASA's first chief astronomer, Roman is a wide-field infrared observatory built to attack two of astronomy's biggest open questions with one instrument: the nature of dark energy and dark matter, and how common planetary systems like our own are. Its Wide Field Instrument has a field of view at least 100 times larger than Hubble's while matching Hubble's resolution, letting it survey huge swaths of sky rather than one small patch at a time -- a single Roman image can cover as much sky as dozens of full-Moon-sized frames from Hubble. Its core surveys include a High Latitude Wide Area Survey mapping the large-scale structure of the universe to trace dark energy's effect on cosmic expansion, a gravitational-microlensing survey of the inner galaxy expected to find thousands of new exoplanets (including free-floating ones invisible to other detection methods), and direct imaging of exoplanets with a coronagraph technology demonstration. Once operating from its perch near Sun-Earth L2, it's expected to return more data in its first weeks than Hubble has returned in its entire multi-decade lifetime.",
-  "statusNote": "Modeled as a direct Earth-to-Sun-Earth-L2 Lambert transfer -- the outbound cruise phase, which is real, well-constrained two-body-adjacent orbital mechanics, the same treatment already used for ESCAPADE's own Earth_L2 leg. NOTE ON DATES: Roman launched 2026-08-30 on a Falcon Heavy from Kennedy Space Center; NASA's own post-launch statement described a 'three-month, million-mile journey to its final orbit' (other reporting cited roughly 30 days of transit followed by about 100 days of commissioning before science operations begin). The 2026-11-28 L2 arrival date used here is estimated from that public statement, not a confirmed trajectory design value -- update it, and add a loiter/station-keeping leg for its ongoing L2 residency, once Roman's real insertion date is public. Same placeholder-pending-actuals pattern as MMX's launch/arrival dates.",
+  "statusNote": "Modeled as a direct Earth-to-Sun-Earth-L2 Lambert transfer -- the outbound cruise phase, which is real, well-constrained two-body-adjacent orbital mechanics, the same treatment already used for ESCAPADE's own Earth_L2 leg. DATES: Roman launched 2026-08-30 on a Falcon Heavy from Kennedy Space Center. NASA plans L2 orbit insertion roughly 100 days after launch (early December 2026); JPL Horizons' predicted trajectory (target -211) reaches L2 distance (~1.5 million km from Earth) around 2026-10-20 and settles into its large halo orbit, whose innermost point (~1.18 million km) falls on 2026-12-08 -- used here as the arrival/insertion date. Still a planned value as of 2026-11-17, not yet a confirmed event; a loiter/station-keeping leg for the ongoing L2 residency could follow once insertion is confirmed.",
   "legs": [
     {
       "type": "lambert",
       "fromBody": "Earth",
       "toBody": "Earth_L2",
       "departDate": "2026-08-30",
-      "arrivalDate": "2026-11-28"
+      "arrivalDate": "2026-12-08"
     }
   ],
   "assets": {

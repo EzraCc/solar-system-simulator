@@ -11,20 +11,44 @@
       "_comment": "Real Rosetta trajectory (JPL Horizons, target -226, checked 2026-07) sweeps ~355 degrees around the Sun during this first Earth->Earth loop -- close enough to a full lap that a plain 2-point Lambert solve misreads it as a ~2-degree short hop, producing a nonsensical near-parabolic a=1.12 AU / e=0.9999 orbit. Split through two real recorded positions so each third stays safely under 180 degrees of sweep.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": { "fixedPos": [0.2294970952372984, -0.8669508984934584, 0.005633673056678643] },
+      "toBody": {
+        "fixedPos": [
+          0.2294970952372984,
+          -0.8669508984934584,
+          0.005633673056678643
+        ]
+      },
       "departDate": "2004-03-02",
       "arrivalDate": "2004-06-16"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [0.2294970952372984, -0.8669508984934584, 0.005633673056678643] },
-      "toBody": { "fixedPos": [0.7722944532841886, 0.7719348667963092, -0.006919573773955424] },
+      "fromBody": {
+        "fixedPos": [
+          0.2294970952372984,
+          -0.8669508984934584,
+          0.005633673056678643
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.7722944532841886,
+          0.7719348667963092,
+          -0.006919573773955424
+        ]
+      },
       "departDate": "2004-06-16",
       "arrivalDate": "2004-10-14"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [0.7722944532841886, 0.7719348667963092, -0.006919573773955424] },
+      "fromBody": {
+        "fixedPos": [
+          0.7722944532841886,
+          0.7719348667963092,
+          -0.006919573773955424
+        ]
+      },
       "toBody": "Earth",
       "departDate": "2004-10-14",
       "arrivalDate": "2005-03-04"
@@ -62,10 +86,106 @@
       "periapsisKm": 5700
     },
     {
+      "_comment": "Split through 5 real JPL Horizons waypoint(s) (target -226, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2007-11-13 -> 2009-11-13 leg's real path sweeps ~360 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": {
+        "fixedPos": [
+          -0.7650795036326389,
+          0.6365564450874194,
+          0.1346658211142533
+        ]
+      },
       "departDate": "2007-11-13",
+      "arrivalDate": "2008-01-23"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7650795036326389,
+          0.6365564450874194,
+          0.1346658211142533
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.218924729757317,
+          -1.412179120433661,
+          0.007829655030628923
+        ]
+      },
+      "departDate": "2008-01-23",
+      "arrivalDate": "2008-06-21"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.218924729757317,
+          -1.412179120433661,
+          0.007829655030628923
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.1084972453913613,
+          -2.243839441909723,
+          -0.1797548319551709
+        ]
+      },
+      "departDate": "2008-06-21",
+      "arrivalDate": "2008-11-18"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.1084972453913613,
+          -2.243839441909723,
+          -0.1797548319551709
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          1.086668809815732,
+          -1.754720120622535,
+          -0.2636824554851676
+        ]
+      },
+      "departDate": "2008-11-18",
+      "arrivalDate": "2009-04-17"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          1.086668809815732,
+          -1.754720120622535,
+          -0.2636824554851676
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          1.337786099142174,
+          -0.01410636467134423,
+          -0.1418138971386054
+        ]
+      },
+      "departDate": "2009-04-17",
+      "arrivalDate": "2009-09-14"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          1.337786099142174,
+          -0.01410636467134423,
+          -0.1418138971386054
+        ]
+      },
+      "toBody": "Earth",
+      "departDate": "2009-09-14",
       "arrivalDate": "2009-11-13"
     },
     {
@@ -75,10 +195,220 @@
       "periapsisKm": 2481
     },
     {
+      "_comment": "Split through 11 real JPL Horizons waypoint(s) (target -226, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2009-11-13 -> 2014-08-06 leg's real path sweeps ~240 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "67P",
+      "toBody": {
+        "fixedPos": [
+          -1.103489096159063,
+          0.9034533329467848,
+          0.1090787642817764
+        ]
+      },
       "departDate": "2009-11-13",
+      "arrivalDate": "2010-02-08T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.103489096159063,
+          0.9034533329467848,
+          0.1090787642817764
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -2.666333564017112,
+          -0.4145202900677917,
+          0.1381876410512602
+        ]
+      },
+      "departDate": "2010-02-08T06:00:00Z",
+      "arrivalDate": "2010-07-08T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -2.666333564017112,
+          -0.4145202900677917,
+          0.1381876410512602
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -3.22876767469229,
+          -1.696650097666449,
+          0.1096542115833965
+        ]
+      },
+      "departDate": "2010-07-08T06:00:00Z",
+      "arrivalDate": "2010-12-05T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -3.22876767469229,
+          -1.696650097666449,
+          0.1096542115833965
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -3.317257711455713,
+          -2.788485136384651,
+          0.03742342170596365
+        ]
+      },
+      "departDate": "2010-12-05T06:00:00Z",
+      "arrivalDate": "2011-05-04T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -3.317257711455713,
+          -2.788485136384651,
+          0.03742342170596365
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -3.122949163563874,
+          -3.669439887033779,
+          -0.0510785684554966
+        ]
+      },
+      "departDate": "2011-05-04T06:00:00Z",
+      "arrivalDate": "2011-10-01T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -3.122949163563874,
+          -3.669439887033779,
+          -0.0510785684554966
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -2.740213674411403,
+          -4.33166428429445,
+          -0.1367209821984586
+        ]
+      },
+      "departDate": "2011-10-01T06:00:00Z",
+      "arrivalDate": "2012-02-28T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -2.740213674411403,
+          -4.33166428429445,
+          -0.1367209821984586
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -2.221010123421173,
+          -4.779477272764485,
+          -0.2156562475133877
+        ]
+      },
+      "departDate": "2012-02-28T06:00:00Z",
+      "arrivalDate": "2012-07-27T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -2.221010123421173,
+          -4.779477272764485,
+          -0.2156562475133877
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.600635401852725,
+          -5.009897653674373,
+          -0.2847853409831745
+        ]
+      },
+      "departDate": "2012-07-27T06:00:00Z",
+      "arrivalDate": "2012-12-24T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.600635401852725,
+          -5.009897653674373,
+          -0.2847853409831745
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.9073751693796815,
+          -5.011304703790701,
+          -0.3408573913036763
+        ]
+      },
+      "departDate": "2012-12-24T06:00:00Z",
+      "arrivalDate": "2013-05-23T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.9073751693796815,
+          -5.011304703790701,
+          -0.3408573913036763
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.1693163108944099,
+          -4.760596064406671,
+          -0.3796939405702566
+        ]
+      },
+      "departDate": "2013-05-23T06:00:00Z",
+      "arrivalDate": "2013-10-20T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.1693163108944099,
+          -4.760596064406671,
+          -0.3796939405702566
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5771519358932786,
+          -4.217220967333537,
+          -0.3950128494132432
+        ]
+      },
+      "departDate": "2013-10-20T06:00:00Z",
+      "arrivalDate": "2014-03-19T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5771519358932786,
+          -4.217220967333537,
+          -0.3950128494132432
+        ]
+      },
+      "toBody": "67P",
+      "departDate": "2014-03-19T06:00:00Z",
       "arrivalDate": "2014-08-06"
     }
   ],

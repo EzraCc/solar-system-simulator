@@ -8,10 +8,68 @@
   "statusNote": "First spacecraft to orbit two extraterrestrial bodies in sequence. Single Mars gravity-assist flyby (2009-02-17, closest approach 549 km, ~2.6 km/s contribution). Continuous ion-drive propulsion throughout (not ballistic coasting), same caveat as Hayabusa/Hayabusa2/BepiColombo -- each leg here is anchored to its real recorded encounter position/date rather than a patched-conic fit. Orbited Vesta 2011-07-16 to 2012-09-05 (~14 months), then ion-thrusted on to Ceres, arriving 2015-03-06 -- two distinct target orbits in sequence with no single 'final destination', modeled as two lambert legs with the Vesta-stay gap between them (computeMultiLegPosition's between-legs fallback correctly holds position at Vesta, tracking its real ongoing motion, rather than jumping straight to Ceres). Mission ended 2018-10 at Ceres after hydrazine (attitude-control fuel, not the ion propellant) was exhausted; spacecraft remains in a stable orbit there.",
   "legs": [
     {
+      "_comment": "Split through 3 real JPL Horizons waypoint(s) (target -203, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2007-09-27 -> 2009-02-17 leg's real path sweeps ~292 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Mars",
+      "toBody": {
+        "fixedPos": [
+          -0.08633487218325185,
+          1.202644907280477,
+          0.0122325484751015
+        ]
+      },
       "departDate": "2007-09-27",
+      "arrivalDate": "2007-12-30T00:45:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.08633487218325185,
+          1.202644907280477,
+          0.0122325484751015
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.625317245348597,
+          0.1228162125338251,
+          0.01921312744054755
+        ]
+      },
+      "departDate": "2007-12-30T00:45:00Z",
+      "arrivalDate": "2008-05-28T00:45:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.625317245348597,
+          0.1228162125338251,
+          0.01921312744054755
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.857495167270468,
+          -1.385928868167565,
+          -0.008444794755432104
+        ]
+      },
+      "departDate": "2008-05-28T00:45:00Z",
+      "arrivalDate": "2008-10-25T00:45:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.857495167270468,
+          -1.385928868167565,
+          -0.008444794755432104
+        ]
+      },
+      "toBody": "Mars",
+      "departDate": "2008-10-25T00:45:00Z",
       "arrivalDate": "2009-02-17"
     },
     {
@@ -24,29 +82,168 @@
       "_comment": "Continuous ion thrust (not a coast) makes this leg's real shape a gradual outward spiral, not a single conic -- real Dawn trajectory (JPL Horizons, target -203, checked 2026-07) sweeps ~368 degrees around the Sun while climbing from 1.41 AU to 2.36 AU. A plain 2-point Lambert solve across the whole leg misread this as a 9-degree short hop, producing a nonsensical near-parabolic a=2.01 AU / e=0.997 orbit -- previously suppressed entirely (drew nothing) rather than show that. Split through two real recorded positions so each third is a much closer real-data-anchored approximation of the true spiral, the same technique already used for this file's other ion-thrust legs (see statusNote).",
       "type": "lambert",
       "fromBody": "Mars",
-      "toBody": { "fixedPos": [0.8280028091059225, 1.282608767561954, -0.1160238888287148] },
+      "toBody": {
+        "fixedPos": [
+          0.8280028091059225,
+          1.282608767561954,
+          -0.1160238888287148
+        ]
+      },
       "departDate": "2009-02-17",
       "arrivalDate": "2009-08-31"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [0.8280028091059225, 1.282608767561954, -0.1160238888287148] },
-      "toBody": { "fixedPos": [-1.959836790726072, -0.05022902103041463, 0.2292274075211131] },
+      "fromBody": {
+        "fixedPos": [
+          0.8280028091059225,
+          1.282608767561954,
+          -0.1160238888287148
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.959836790726072,
+          -0.05022902103041463,
+          0.2292274075211131
+        ]
+      },
       "departDate": "2009-08-31",
       "arrivalDate": "2010-06-27"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [-1.959836790726072, -0.05022902103041463, 0.2292274075211131] },
+      "fromBody": {
+        "fixedPos": [
+          -1.959836790726072,
+          -0.05022902103041463,
+          0.2292274075211131
+        ]
+      },
       "toBody": "vesta",
       "departDate": "2010-06-27",
       "arrivalDate": "2011-07-16"
     },
     {
+      "_comment": "Split through 6 real JPL Horizons waypoint(s) (target -203, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2012-09-05 -> 2015-03-06 leg's real path sweeps ~220 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "vesta",
-      "toBody": "ceres",
+      "toBody": {
+        "fixedPos": [
+          -0.0115699531073261,
+          2.546925921797055,
+          -0.05840004884933662
+        ]
+      },
       "departDate": "2012-09-05",
+      "arrivalDate": "2013-02-02"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.0115699531073261,
+          2.546925921797055,
+          -0.05840004884933662
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.482969308753433,
+          1.971381205427423,
+          0.1725059859055803
+        ]
+      },
+      "departDate": "2013-02-02",
+      "arrivalDate": "2013-07-02"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.482969308753433,
+          1.971381205427423,
+          0.1725059859055803
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -2.366420289130945,
+          0.5392181401670865,
+          0.3409767334293279
+        ]
+      },
+      "departDate": "2013-07-02",
+      "arrivalDate": "2013-11-29"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -2.366420289130945,
+          0.5392181401670865,
+          0.3409767334293279
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -2.2630391872214,
+          -1.14649406811258,
+          0.3351570005431603
+        ]
+      },
+      "departDate": "2013-11-29",
+      "arrivalDate": "2014-04-28"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -2.2630391872214,
+          -1.14649406811258,
+          0.3351570005431603
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.290407796793354,
+          -2.395674889421565,
+          0.1514685260839275
+        ]
+      },
+      "departDate": "2014-04-28",
+      "arrivalDate": "2014-09-25"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.290407796793354,
+          -2.395674889421565,
+          0.1514685260839275
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.1217043072803978,
+          -2.854425269028262,
+          -0.1120308873046303
+        ]
+      },
+      "departDate": "2014-09-25",
+      "arrivalDate": "2015-02-22"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.1217043072803978,
+          -2.854425269028262,
+          -0.1120308873046303
+        ]
+      },
+      "toBody": "ceres",
+      "departDate": "2015-02-22",
       "arrivalDate": "2015-03-06"
     }
   ],

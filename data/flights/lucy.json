@@ -8,10 +8,68 @@
   "statusNote": "First mission to the Jupiter Trojan asteroids -- a 12-year tour visiting seven distinct small bodies (one of them a binary) using three Earth gravity assists rather than a single destination. Real mission design, not simplified here: launched into a ~1-year loop back to Earth (first Earth gravity assist 2022-10-16, ~352 km altitude), continued on to an incidental-but-real flyby of tiny near-Earth asteroid Dinkinesh (2023-11-01, discovered mid-mission to be a contact-binary satellite pair -- not modeled separately, same precedent as Didymos/Dimorphos), then back to Earth for a second gravity assist (2024-12-12, ~360 km altitude) that retargeted the spacecraft out to the L4 Trojan swarm and on to main-belt asteroid Donaldjohanson (flyby 2025-04-20, a bonus science target on the way out). The four L4 Trojan encounters follow: Eurybates 2027-08-12, its small moon Queta not modeled separately; Polymele 2027-09-15, likewise not separately modeling its small moon; Leucus 2028-04-18; Orus 2028-11-11. A third Earth gravity assist (2030-12-26, ~355 km altitude -- estimated, since this flyby hasn't happened yet as of this writing) then redirects the spacecraft to the L5 swarm for the binary pair Patroclus/Menoetius (2033-03-03), modeled as a single point at Patroclus (the larger body) for the same reason Didymos/Dimorphos and Eurybates/Queta aren't split into separate targets. None of the flybys use real gravity assists at the asteroids themselves (their masses are far too small to matter) -- only the three Earth passes actually bend the trajectory; the asteroid-to-asteroid legs are plain Lambert arcs anchored to each real recorded encounter date, the same pattern already used for Dawn's Vesta/Ceres sequence. This is also this simulator's largest single-flight leg count (13) and its widest-flung small-body targets (Trojans orbit at Jupiter's ~5.2 AU) -- worth flagging for anyone extending the Lambert solver again: building this flight surfaced a second real bug in solveLambertUniversal beyond the pole-crossing one found during New Horizons. The 34-day Eurybates->Polymele hop (two slow-moving, closely-spaced Trojans) has a valid-but-unsolved z window narrower than the solver's scan grid spacing, so the coarse scan stepped clean over it and reported 'could not bracket a root' for a leg that has a perfectly good solution. Fixed by refining the scan at every invalid->valid domain-boundary crossing (bisecting on validity itself, not TOF) before comparing signs -- see the boundary-refinement comment in app.js. All 13 legs, including this one, now solve and land exactly on their real recorded target position.",
   "legs": [
     {
+      "_comment": "Split through 3 real JPL Horizons waypoint(s) (target -49, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2021-10-16 -> 2022-10-16 leg's real path sweeps ~359 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": {
+        "fixedPos": [
+          -0.4554622672258248,
+          1.066152145188621,
+          -0.004376205015872285
+        ]
+      },
       "departDate": "2021-10-16",
+      "arrivalDate": "2022-02-06T22:38:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.4554622672258248,
+          1.066152145188621,
+          -0.004376205015872285
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.8733000966478194,
+          -0.3758187699820548,
+          5.072483098855157e-05
+        ]
+      },
+      "departDate": "2022-02-06T22:38:00Z",
+      "arrivalDate": "2022-05-24T10:38:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.8733000966478194,
+          -0.3758187699820548,
+          5.072483098855157e-05
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.3344161502302844,
+          -0.770031268692534,
+          0.003167659019295728
+        ]
+      },
+      "departDate": "2022-05-24T10:38:00Z",
+      "arrivalDate": "2022-08-03T04:38:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.3344161502302844,
+          -0.770031268692534,
+          0.003167659019295728
+        ]
+      },
+      "toBody": "Earth",
+      "departDate": "2022-08-03T04:38:00Z",
       "arrivalDate": "2022-10-16"
     },
     {

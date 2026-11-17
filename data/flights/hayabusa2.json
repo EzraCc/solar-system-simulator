@@ -8,10 +8,68 @@
   "statusNote": "Asteroid sample return and ongoing extended-mission flybys. Single Earth gravity-assist flyby (2015-12-03, altitude 3,090 km, speed boost 1.6 km/s), combined with continuous ion-engine thrust (not ballistic coasting) to efficiently reach Ryugu with a compact spacecraft -- like Hayabusa, the post-flyby leg here is anchored to Ryugu's real recorded arrival position/date rather than a patched-conic fit. Sample return to Earth 2020-12-06. Extended mission ongoing under the same spacecraft (next flyby target: asteroid Torifune, expected 2026-07 -- not modeled here, this entry ends at the primary Ryugu rendezvous).",
   "legs": [
     {
+      "_comment": "Split through 3 real JPL Horizons waypoint(s) (target -37, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2014-12-03 -> 2015-12-03 leg's real path sweeps ~359 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth",
+      "toBody": {
+        "fixedPos": [
+          -1.02137315220864,
+          0.3534359963395202,
+          -0.129007608207986
+        ]
+      },
       "departDate": "2014-12-03",
+      "arrivalDate": "2015-03-14T00:19:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.02137315220864,
+          0.3534359963395202,
+          -0.129007608207986
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.3235469612576773,
+          -0.9449706468986309,
+          0.0002598920092252346
+        ]
+      },
+      "departDate": "2015-03-14T00:19:00Z",
+      "arrivalDate": "2015-06-24T18:19:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.3235469612576773,
+          -0.9449706468986309,
+          0.0002598920092252346
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.8563329600968252,
+          -0.2921697732244439,
+          0.1077813943786686
+        ]
+      },
+      "departDate": "2015-06-24T18:19:00Z",
+      "arrivalDate": "2015-09-14T12:19:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.8563329600968252,
+          -0.2921697732244439,
+          0.1077813943786686
+        ]
+      },
+      "toBody": "Earth",
+      "departDate": "2015-09-14T12:19:00Z",
       "arrivalDate": "2015-12-03"
     },
     {
@@ -21,10 +79,163 @@
       "periapsisKm": 3090
     },
     {
+      "_comment": "Split through 8 real JPL Horizons waypoint(s) (target -37, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2015-12-03 -> 2018-06-27 leg's real path sweeps ~781 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "ryugu",
+      "toBody": {
+        "fixedPos": [
+          -0.9211468303898191,
+          0.3275683382918578,
+          -0.1018963135154748
+        ]
+      },
       "departDate": "2015-12-03",
+      "arrivalDate": "2016-02-21T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.9211468303898191,
+          0.3275683382918578,
+          -0.1018963135154748
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.410089456646079,
+          -1.160153099463527,
+          -0.000198284648468721
+        ]
+      },
+      "departDate": "2016-02-21T06:00:00Z",
+      "arrivalDate": "2016-06-06T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.410089456646079,
+          -1.160153099463527,
+          -0.000198284648468721
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          1.142250621610888,
+          -0.400704918242145,
+          0.1248160283789589
+        ]
+      },
+      "departDate": "2016-06-06T06:00:00Z",
+      "arrivalDate": "2016-10-25T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          1.142250621610888,
+          -0.400704918242145,
+          0.1248160283789589
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.3211792327051896,
+          0.9199164216479997,
+          0.0003602364901533161
+        ]
+      },
+      "departDate": "2016-10-25T06:00:00Z",
+      "arrivalDate": "2017-02-06"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.3211792327051896,
+          0.9199164216479997,
+          0.0003602364901533161
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.9443113335314531,
+          0.3264897491079483,
+          -0.1031559016327109
+        ]
+      },
+      "departDate": "2017-02-06",
+      "arrivalDate": "2017-04-27T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.9443113335314531,
+          0.3264897491079483,
+          -0.1031559016327109
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.4230367310640999,
+          -1.228310392982773,
+          -0.0004865323020350635
+        ]
+      },
+      "departDate": "2017-04-27T06:00:00Z",
+      "arrivalDate": "2017-08-19T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.4230367310640999,
+          -1.228310392982773,
+          -0.0004865323020350635
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          1.172284811485668,
+          -0.4479306152765524,
+          0.1295071423954771
+        ]
+      },
+      "departDate": "2017-08-19T06:00:00Z",
+      "arrivalDate": "2018-01-16T06:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          1.172284811485668,
+          -0.4479306152765524,
+          0.1295071423954771
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.3519998625981349,
+          0.924822519295773,
+          0.004308437465952947
+        ]
+      },
+      "departDate": "2018-01-16T06:00:00Z",
+      "arrivalDate": "2018-05-02T18:00:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.3519998625981349,
+          0.924822519295773,
+          0.004308437465952947
+        ]
+      },
+      "toBody": "ryugu",
+      "departDate": "2018-05-02T18:00:00Z",
       "arrivalDate": "2018-06-27"
     }
   ],

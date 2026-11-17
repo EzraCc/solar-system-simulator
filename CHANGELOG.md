@@ -4,6 +4,70 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## 2026-11-17 — Every trajectory checked against JPL Horizons; 25 wrong legs fixed; catalog refreshed
+
+- **New real-ephemeris verifier, `tools/check_horizons.py`.** The 2026-08-03
+  sweep left 53 flagged legs to check by hand. Rather than checking them one
+  at a time, this script compares the position the app actually *renders*
+  (`computeMultiLegPosition`, newly exposed on `window.__VERIFY__` along with
+  `getSolvedFlight`) against JPL Horizons, for every leg of all 27 flights
+  that have a Horizons ID (`tools/horizons_ids.json`). That changed the
+  picture in two ways:
+  - For any leg after a gravity assist, the sweep had been measuring the
+    wrong thing: the plain Lambert solve, which isn't what gets drawn (the
+    patched-conic propagation is). Many of its alarming ratios (e≈1.0 on
+    Venus→Venus legs) belonged to legs that render correctly. Most of
+    Lucy's, Ulysses', JUICE's and Rosetta's flagged legs match Horizons to
+    under 0.02 AU.
+  - It also found real errors the sweep missed or under-ranked. 25 legs were
+    off by more than 0.15 AU, several by 1–3 AU:
+    - PSP's 2021–2024 Venus legs
+    - MESSENGER's four Mercury-approach legs
+    - Solar Orbiter's 2025–2030 legs
+    - Rosetta's 2007–2009 Earth→Earth leg (3.1 AU)
+    - Nozomi's 1998–2002 Earth→Earth leg
+    - Hayabusa2's Earth→Ryugu leg (4.8 AU)
+    - Psyche's post-Mars leg (2.9 AU)
+    - plus smaller misses on Lucy, Dawn, Cassini and BepiColombo
+- **Fixed all of them with a new `tools/split_leg_horizons.py`**, which
+  automates the established fix (split through real Horizons `fixedPos`
+  waypoints, ≤90° of sweep per piece, 6-hour sampling so PSP's perihelion
+  passes are resolved). 29 legs were split, including four borderline ones
+  (Akatsuki, Psyche's 2024–25 cruise, MESSENGER's first Earth→Venus leg, and
+  a Solar Orbiter leg that drifted once an earlier flyby's incoming velocity
+  changed). Result: every one of the 466 legs with Horizons coverage is now
+  under 0.15 AU, and 446 are under 0.05 AU. The remaining 0.05–0.10 AU legs
+  are ion-thrust cruises and Jupiter-distance coasts.
+- **Flight-profile timeline merges waypoint chains** (`buildLegEntries`), so
+  a split coast still reads as one "Venus → Venus" entry. PSP shows 7 coast
+  rows, not ~60.
+- **Tianwen-2** has no published ephemeris, and its single arc dipped to
+  0.57 AU (inside Venus's orbit) en route to quasi-satellite Kamo'oalewa,
+  which never leaves 0.90–1.10 AU. Replaced with 7 **synthetic, clearly
+  labeled** waypoints that blend from Earth's position to Kamo'oalewa's. The
+  path now stays between 0.96 and 1.10 AU. Hayabusa can't be checked
+  (Horizons only has it from 2009).
+- **Catalog update (2026-08-30 → 2026-11-17).** No new in-scope launches
+  besides MMX, which was already a placeholder. Refreshed in-flight
+  missions, mostly from Horizons' predicted trajectories:
+  - **MMX** launched 2026-10-19 19:41 UTC (H3 F10). Mars arrival is now
+    2027-08-31, estimated by coast-propagating Horizons' published cruise
+    trajectory; CNES says August 2027.
+  - **Roman** L2 insertion moved to 2026-12-08 (NASA: ~100 days after
+    launch; Horizons' halo orbit has its innermost point that day).
+  - **Hera** reached Didymos on 2026-10-29, within ~100 km per Horizons
+    (was a 2027-01-15 placeholder).
+  - **ESCAPADE** now follows Blue's real trajectory: L2 arrival ~2025-12-04,
+    departure ~2026-10-20, Earth flyby 2026-11-07 at 1,609 km, Mars
+    2027-09-09.
+  - **JUICE**'s 2026-09-29 Earth flyby altitude is now the real 8,641 km.
+  - **Europa Clipper**'s Earth flyby uses NASA's current ~3,200 km target.
+- **Psyche (backlog item 3):** besides the waypoint fix, Horizons' predicted
+  trajectory runs to 2029-02-24 (~50,000 km from the asteroid). NASA still
+  says capture July 2029 and orbit operations August 2029, so the
+  2029-07-31 arrival stays.
+- `BUILD_VERSION` 26 → 27; `app.js?v=` 78 → 79.
+
 ## 2026-08-30 — Added Nancy Grace Roman Space Telescope; documented the catalog update cycle
 
 - Roman launched today (2026-08-30, Falcon Heavy from KSC) on a direct

@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "26";
+  const BUILD_VERSION = "27";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -5965,11 +5965,24 @@
       const leg = legs[i];
 
       if (leg.type === 'lambert') {
+        // A run of lambert legs chained through {fixedPos} waypoints is one
+        // real coast that was only split so the zero-revolution Lambert
+        // solver gets the shape right (tools/split_leg_horizons.py) -- some
+        // runs have dozens of pieces (PSP's perihelion passes). Present the
+        // whole run as a single timeline entry from its first real body to
+        // its last, instead of a wall of "to a recorded waypoint" rows.
+        let j = i;
+        while (j + 1 < legs.length && legs[j + 1].type === 'lambert' &&
+               legs[j].toBody && typeof legs[j].toBody === 'object' && legs[j].toBody.fixedPos) j++;
+        const lastLeg = legs[j];
+        const shown = j === i ? leg : Object.assign({}, leg, {
+          toBody: lastLeg.toBody, arrivalDate: lastLeg.arrivalDate,
+        });
         const dDays = daysSinceJ2000(parseFlightDate(leg.departDate));
-        const aDays = daysSinceJ2000(parseFlightDate(leg.arrivalDate));
-        entries.push({ kind: 'lambert', legIndex: i, leg, dDays, aDays });
+        const aDays = daysSinceJ2000(parseFlightDate(lastLeg.arrivalDate));
+        entries.push({ kind: 'lambert', legIndex: i, legIndexEnd: j, leg: shown, dDays, aDays });
         prevArrivalDays = aDays;
-        i++;
+        i = j + 1;
 
       } else if (leg.type === 'gravity_assist') {
         const d = daysSinceJ2000(parseFlightDate(leg.date));
@@ -7671,7 +7684,8 @@
     window.__VERIFY__ = {
       FLIGHTS_RAW, isMultiLeg, getSolvedLeg, getGAChain, getGAEvents,
       daysSinceJ2000, parseFlightDate, computeFlightPosition,
-      getBodyPositionAtDays, getLegBoundaries,
+      getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,
+      getSolvedFlight,
     };
     requestAnimationFrame(frame);
   }

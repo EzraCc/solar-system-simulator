@@ -21,10 +21,68 @@
       "periapsisKm": 284
     },
     {
+      "_comment": "Split through 3 real JPL Horizons waypoint(s) (target -82, fetched 2026-11-17 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 1998-04-26 -> 1999-06-24 leg's real path sweeps ~319 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Venus",
-      "toBody": "Venus",
+      "toBody": {
+        "fixedPos": [
+          0.9852256235536454,
+          0.1093285836108715,
+          -0.05560796444063072
+        ]
+      },
       "departDate": "1998-04-26",
+      "arrivalDate": "1998-06-26"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9852256235536454,
+          0.1093285836108715,
+          -0.05560796444063072
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.01856616879852825,
+          1.572448378497916,
+          0.0224573686747113
+        ]
+      },
+      "departDate": "1998-06-26",
+      "arrivalDate": "1998-11-23"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.01856616879852825,
+          1.572448378497916,
+          0.0224573686747113
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.0797455284983,
+          0.359886074916562,
+          0.06701178295718407
+        ]
+      },
+      "departDate": "1998-11-23",
+      "arrivalDate": "1999-04-22"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.0797455284983,
+          0.359886074916562,
+          0.06701178295718407
+        ]
+      },
+      "toBody": "Venus",
+      "departDate": "1999-04-22",
       "arrivalDate": "1999-06-24"
     },
     {

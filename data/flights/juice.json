@@ -5,19 +5,31 @@
   "payload": "JUICE orbiter (5,963 kg wet mass / 2,420 kg dry)",
   "status": "En Route",
   "significance": "JUICE was launched to follow up on Galileo-era magnetometer evidence that Ganymede, Callisto, and Europa each conceal saltwater oceans beneath their icy shells, addressing ESA's Cosmic Vision questions about the conditions needed for planet formation and habitability around gas giants rather than just rocky planets. It is the first mission designed to orbit a moon in the outer solar system (Ganymede, planned for 2034), and the first to carry a full geophysical payload, including ice-penetrating radar, a laser altimeter, and magnetometers, built specifically to characterize a moon's internal ocean, ice-shell thickness, and interior structure rather than just image its surface. Ganymede is also the only moon known to generate its own magnetic field, and JUICE is the first spacecraft equipped to study in detail how that field interacts with Jupiter's much larger magnetosphere. As the mission is still en route to Jupiter (arrival expected 2031), its findings so far are limited to instrument calibration during flybys, with the core discoveries about ocean depth, salinity, and habitability of the three moons still to come.",
-  "statusNote": "ESA mission (partners NASA, JAXA, Israel Space Agency) to study Ganymede, Europa, and Callisto as candidate habitable icy-ocean worlds. Real trajectory used a world-first lunar-Earth double flyby (Moon 2024-08-19, Earth 2024-08-20, ~1.5 days apart) -- this simulator has no lunar gravity-assist physics, so that pair is modeled as a single Earth flyby at the real Earth-encounter date/altitude; the next leg still targets Venus's real recorded 2025-08-31 position, so the simplification doesn't propagate error forward. The 2026-09-29 and 2029-01-18 Earth flyby altitudes are not yet officially published (as of this data's compilation, 2026-07); ~5,000 km is a placeholder in line with the two already-flown Earth flybys, not a confirmed figure. Trajectory modeled through Jupiter orbit insertion (2031-07-20) only -- the following 3+ year Jovian-system tour (Europa/Callisto flybys) and eventual Ganymede orbit insertion (~end of 2034) are a separate multi-target tour phase, not a single transfer arc, and are not modeled here (same reasoning as Lucy's Trojan tour).",
+  "statusNote": "ESA mission (partners NASA, JAXA, Israel Space Agency) to study Ganymede, Europa, and Callisto as candidate habitable icy-ocean worlds. Real trajectory used a world-first lunar-Earth double flyby (Moon 2024-08-19, Earth 2024-08-20, ~1.5 days apart) -- this simulator has no lunar gravity-assist physics, so that pair is modeled as a single Earth flyby at the real Earth-encounter date/altitude; the next leg still targets Venus's real recorded 2025-08-31 position, so the simplification doesn't propagate error forward. The second Earth flyby (2026-09-29) happened as planned at 8,641 km altitude. The 2029-01-18 Earth flyby altitude is not yet officially published; ~5,000 km is a placeholder in line with the already-flown Earth flybys, not a confirmed figure. Trajectory modeled through Jupiter orbit insertion (2031-07-20) only -- the following 3+ year Jovian-system tour (Europa/Callisto flybys) and eventual Ganymede orbit insertion (~end of 2034) are a separate multi-target tour phase, not a single transfer arc, and are not modeled here (same reasoning as Lucy's Trojan tour).",
   "legs": [
     {
       "_comment": "Real JUICE trajectory (JPL Horizons, target -28, checked 2026-07) stays within ~0.86-1.10 AU this whole leg, but a plain 2-point Lambert solve between the two Earth encounters produces an unconstrained a=1.38 AU / e=0.72 orbit (apoapsis 2.37 AU, past Mars). Split through a real recorded waypoint (2023-12-11, near this leg's actual closest approach to the Sun) so each half is anchored to an actual position instead of extrapolating freely.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": { "fixedPos": [0.1082366200770938, 0.856187772661859, 0.0002145812693342752] },
+      "toBody": {
+        "fixedPos": [
+          0.1082366200770938,
+          0.856187772661859,
+          0.0002145812693342752
+        ]
+      },
       "departDate": "2023-04-14",
       "arrivalDate": "2023-12-11"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [0.1082366200770938, 0.856187772661859, 0.0002145812693342752] },
+      "fromBody": {
+        "fixedPos": [
+          0.1082366200770938,
+          0.856187772661859,
+          0.0002145812693342752
+        ]
+      },
       "toBody": "Earth",
       "departDate": "2023-12-11",
       "arrivalDate": "2024-08-20"
@@ -32,13 +44,25 @@
       "_comment": "Same issue as the leg above: real trajectory stays within ~0.64-1.01 AU, plain Lambert gives apoapsis 2.03 AU. Split through the real recorded closest-approach point (2025-01-03).",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": { "fixedPos": [-0.5412919076871876, 0.3478209566761877, -1.739750462437329e-05] },
+      "toBody": {
+        "fixedPos": [
+          -0.5412919076871876,
+          0.3478209566761877,
+          -1.739750462437329e-05
+        ]
+      },
       "departDate": "2024-08-20",
       "arrivalDate": "2025-01-03"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [-0.5412919076871876, 0.3478209566761877, -1.739750462437329e-05] },
+      "fromBody": {
+        "fixedPos": [
+          -0.5412919076871876,
+          0.3478209566761877,
+          -1.739750462437329e-05
+        ]
+      },
       "toBody": "Venus",
       "departDate": "2025-01-03",
       "arrivalDate": "2025-08-31"
@@ -60,26 +84,50 @@
       "type": "gravity_assist",
       "body": "Earth",
       "date": "2026-09-29",
-      "periapsisKm": 5000
+      "periapsisKm": 8641
     },
     {
       "_comment": "Real JUICE trajectory (JPL Horizons, target -28, checked 2026-07) sweeps ~470 degrees around the Sun during this Earth->Earth loop -- more than one full lap, reaching a real aphelion of ~2.41 AU near 2027-11-23 (well past Mars, into the asteroid belt) before returning to Earth. A plain 2-point Lambert solve between the two Earth encounters can't distinguish that from a much shorter same-angle transfer, and produces an unconstrained a=1.86 AU / e=0.85 orbit (periapsis 0.28 AU, inside Mercury's orbit; apoapsis 3.43 AU) -- a real-looking but wrong bulge. Split through two real recorded waypoints so each third stays under 180 degrees of sweep, the same fix pattern used for this file's other two Earth->Earth legs above.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": { "fixedPos": [-1.295249042665561, 0.4173113529973598, -0.00002575979781616868] },
+      "toBody": {
+        "fixedPos": [
+          -1.295249042665561,
+          0.4173113529973598,
+          -2.575979781616868e-05
+        ]
+      },
       "departDate": "2026-09-29",
       "arrivalDate": "2027-02-11"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [-1.295249042665561, 0.4173113529973598, -0.00002575979781616868] },
-      "toBody": { "fixedPos": [1.084701233501064, -0.8712970044995029, 0.00006296324711279625] },
+      "fromBody": {
+        "fixedPos": [
+          -1.295249042665561,
+          0.4173113529973598,
+          -2.575979781616868e-05
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          1.084701233501064,
+          -0.8712970044995029,
+          6.296324711279625e-05
+        ]
+      },
       "departDate": "2027-02-11",
       "arrivalDate": "2028-09-03"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [1.084701233501064, -0.8712970044995029, 0.00006296324711279625] },
+      "fromBody": {
+        "fixedPos": [
+          1.084701233501064,
+          -0.8712970044995029,
+          6.296324711279625e-05
+        ]
+      },
       "toBody": "Earth",
       "departDate": "2028-09-03",
       "arrivalDate": "2029-01-18"

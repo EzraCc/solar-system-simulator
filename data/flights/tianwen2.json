@@ -8,10 +8,144 @@
   "statusNote": "Near-Earth asteroid sample return, then onward to a main-belt comet. This entry models only the confirmed primary target -- rendezvous with 469219 Kamo'oalewa, achieved 2026-06-07 after station-keeping first at 30,000 km then 2,000 km, with sample collection (touch-and-go plus anchor-and-attach, targeting 200-1,000g) underway through April 2027 and Earth return expected late November 2027. The comet extension -- an Earth gravity-assist flyby after sample drop-off, then on to comet 311P/PanSTARRS, arrival not expected until 2035-01 -- is not modeled here: those dates are still provisional this far out (the same reason Tianwen-4, MMX, and other not-yet-executed mission phases aren't modeled), matching how OSIRIS-REx's Apophis extension and Hayabusa2's Torifune extension are also left off past their primary target.",
   "legs": [
     {
+      "_comment": "APPROXIMATION, not ephemeris: CNSA publishes no trajectory for Tianwen-2 and JPL Horizons has no target for it, so this cruise can't be anchored to real waypoints the way other split legs are. A single 2025-05-28 -> 2026-06-07 Lambert arc was clearly wrong -- the zero-revolution solver forced a ~1-year, ~1-lap transfer into an a=1.03/e=0.45 orbit dipping to 0.57 AU (inside Venus's orbit), while the target, quasi-satellite 469219 Kamo'oalewa, never leaves ~0.90-1.10 AU and stays near Earth. These 7 waypoints are synthetic: a smoothstep blend from Earth's position to Kamo'oalewa's at each date (generated 2026-11-17 from the app's own ephemerides), which is the neighborhood a low-thrust rendezvous with an Earth quasi-satellite actually stays in. Replace with real waypoints if a trajectory is ever published.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "kamooalewa",
+      "toBody": {
+        "fixedPos": [
+          0.36098368059662445,
+          -0.9477078551157037,
+          -0.0029762726235504195
+        ]
+      },
       "departDate": "2025-05-28",
+      "arrivalDate": "2025-07-14"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.36098368059662445,
+          -0.9477078551157037,
+          -0.0029762726235504195
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9012441684356303,
+          -0.4166457798227269,
+          -0.0194164334163529
+        ]
+      },
+      "departDate": "2025-07-14",
+      "arrivalDate": "2025-08-30"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9012441684356303,
+          -0.4166457798227269,
+          -0.0194164334163529
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.8889927606937147,
+          0.37586514844153085,
+          -0.026031760919805108
+        ]
+      },
+      "departDate": "2025-08-30",
+      "arrivalDate": "2025-10-16"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.8889927606937147,
+          0.37586514844153085,
+          -0.026031760919805108
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2722621985779315,
+          0.928040833804705,
+          0.013736422378211441
+        ]
+      },
+      "departDate": "2025-10-16",
+      "arrivalDate": "2025-12-02"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2722621985779315,
+          0.928040833804705,
+          0.013736422378211441
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5246638950372519,
+          0.8641154873015156,
+          0.08112753151451638
+        ]
+      },
+      "departDate": "2025-12-02",
+      "arrivalDate": "2026-01-17"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5246638950372519,
+          0.8641154873015156,
+          0.08112753151451638
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.0272862843918498,
+          0.2883252565208952,
+          0.12341101810759379
+        ]
+      },
+      "departDate": "2026-01-17",
+      "arrivalDate": "2026-03-05"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.0272862843918498,
+          0.2883252565208952,
+          0.12341101810759379
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.0046588154815477,
+          -0.42568594498967494,
+          0.09784927606998263
+        ]
+      },
+      "departDate": "2026-03-05",
+      "arrivalDate": "2026-04-21"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.0046588154815477,
+          -0.42568594498967494,
+          0.09784927606998263
+        ]
+      },
+      "toBody": "kamooalewa",
+      "departDate": "2026-04-21",
       "arrivalDate": "2026-06-07"
     }
   ],
