@@ -28,7 +28,7 @@
 
 A browser-based 3D solar system orbital mechanics visualizer built as a multi-file web app (HTML + CSS + JS + per-flight JSON data files). It uses real Keplerian physics throughout — not a cartoon representation — with real orbital elements sourced from authoritative data, a universal-variable Lambert solver for flight trajectories, and verified numerics throughout.
 
-**Intended direction (user's stated goal):** Eventually become the physical simulation layer for a logistics/transport game involving cargo movement between planetary bodies. The current simulator is the foundation; a gameplay layer does not yet exist.
+**Original direction (dropped 2026-11-17):** The project started as the intended physics layer for a cargo/logistics game between planetary bodies. That's no longer the goal — the maintainer confirmed the project has since become something else — so don't treat a gameplay layer as planned work or design toward it.
 
 ---
 
@@ -300,7 +300,7 @@ After research confirmed that Curiosity and Perseverance both landed on exactly 
 `worldToScreen` uses `cy - ry * pxPerAU` — increasing world Y moves *up* on screen (decreasing pixel Y). This is the standard math-coordinates-vs-screen-coordinates inversion. Any code that converts a world-space direction vector to screen space must apply the same flip. Current locations where this matters: sphere lighting (`lightDirY = -ry / screenMag`) and the camera-follow correction. If you add any feature that involves projecting world directions to screen (e.g., arrow indicators, velocity vectors), remember the flip.
 
 ### 8.4 Lazy Lambert Solve
-The expensive trajectory computation is deferred until first actual need (selection or in-transit encounter) and then memoized. This was an explicit scalability decision for the eventual thousands-of-flights logistics game direction. The cheap `getFlightDates()` / expensive `getSolvedFlight()` split must be maintained — do not collapse them back into a single always-eager function.
+The expensive trajectory computation is deferred until first actual need (selection or in-transit encounter) and then memoized. This was originally a scalability decision for a since-dropped thousands-of-flights logistics-game direction, but it still pays off as the catalog grows (several flights now have dozens of waypoint legs). The cheap `getFlightDates()` / expensive `getSolvedFlight()` split must be maintained — do not collapse them back into a single always-eager function.
 
 ### 8.5 Per-Flight JSON Files
 Each flight is its own file (not an array in a single flights.json) so that adding a new flight requires adding one file + one manifest line, with no JS edits. This also makes it easy to track individual flights in version control, review them independently, and eventually validate them against the missions catalog's verification system.
