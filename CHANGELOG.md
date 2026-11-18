@@ -6,6 +6,14 @@ published package), so entries are dated instead.
 
 ## Unreleased (local prototype, not yet pushed) — Jupiter system view
 
+- **Sun orientation marker in the system view.** A small Sun icon sits at
+  the edge of the view along the true direction from the planet to the
+  Sun, through the current camera rotation, and slides clear of the
+  panels. Ecliptic J2000 X/Y/Z axes are drawn around it (X toward the
+  vernal equinox, Z toward ecliptic north). Its label gives the Sun's
+  distance, how far the planet sits north or south of the ecliptic, and
+  how far the Sun lies behind or toward the viewer. The marker and any
+  axis pointing away are dimmed.
 - **Tour paths drawn as true arcs.** Each tour leg used to be drawn from 16
   points evenly spaced in time, so legs that leave a perijove fast (e.g.
   Juno 2024-04-09, 4 RJ to 68 RJ in 8 days) showed long straight chords,

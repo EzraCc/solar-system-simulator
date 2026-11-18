@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "29";
+  const BUILD_VERSION = "30";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -7372,6 +7372,122 @@
     return st ? st.offsetKm : null;
   }
 
+  // Screen rects of the visible UI panels (canvas coordinates), refreshed at
+  // most twice a second -- the Sun marker steers around them.
+  let _svObstacles = { at: -1e9, rects: [] };
+  function systemViewObstacles() {
+    const now = performance.now();
+    if (now - _svObstacles.at < 500) return _svObstacles.rects;
+    const c = canvas.getBoundingClientRect();
+    const rects = [];
+    document.querySelectorAll(".panel, #zoom-hint").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== "hidden") {
+        rects.push({ l: r.left - c.left, t: r.top - c.top, r: r.right - c.left, b: r.bottom - c.top });
+      }
+    });
+    _svObstacles = { at: now, rects };
+    return rects;
+  }
+
+  // Off-screen orientation marker for the system view: the planet is the
+  // local reference, so the Sun is drawn at the edge of the view along its
+  // true direction from the planet (projected through the current camera
+  // rotation), with the ecliptic J2000 X/Y/Z axes around it. Dimmed when
+  // the Sun lies behind the view plane.
+  function drawSystemSunMarker(primary, primaryHelio, px, py) {
+    const dist = Math.hypot(primaryHelio[0], primaryHelio[1], primaryHelio[2]);
+    const [rx, ry, rz] = rotateWorld(-primaryHelio[0] / dist, -primaryHelio[1] / dist, -primaryHelio[2] / dist);
+    let dx = rx, dy = -ry;
+    const planar = Math.hypot(dx, dy);
+    if (planar < 1e-3) { dx = 0; dy = -1; } else { dx /= planar; dy /= planar; }
+
+    // Walk outward from the planet (clamped into the view) along the Sun's
+    // direction to the inset edge, then back off until clear of the panels.
+    const M = 44, PAD = 12;
+    const L = M, R = viewW - M, T = M, B = viewH - M;
+    const ox = Math.min(R, Math.max(L, px)), oy = Math.min(B, Math.max(T, py));
+    let s = Infinity;
+    if (dx > 0) s = Math.min(s, (R - ox) / dx); else if (dx < 0) s = Math.min(s, (L - ox) / dx);
+    if (dy > 0) s = Math.min(s, (B - oy) / dy); else if (dy < 0) s = Math.min(s, (T - oy) / dy);
+    if (!isFinite(s)) s = 0;
+    // The label (built here so its size is known while placing).
+    const zAU = primaryHelio[2];
+    const tilt = Math.asin(Math.max(-1, Math.min(1, rz))) * 180 / Math.PI;
+    const lines = [`Sun · ${dist.toFixed(2)} AU`,
+      `${primary} ${Math.abs(zAU).toFixed(2)} AU ${zAU >= 0 ? "N" : "S"} of ecliptic`];
+    if (Math.abs(tilt) >= 10) lines.push(`${Math.abs(tilt).toFixed(0)}° ${rz > 0 ? "behind" : "toward you"}`);
+    ctx.save();
+    ctx.font = "11px system-ui, sans-serif";
+    const w = Math.max(...lines.map((l) => ctx.measureText(l).width));
+    ctx.restore();
+    const hit = (l, t, r, b) => systemViewObstacles().some((o) =>
+      r > o.l - PAD && l < o.r + PAD && b > o.t - PAD && t < o.b + PAD);
+    const blocked = (x, y) => {
+      const right = x > viewW / 2;
+      const lbl = right ? [x - 44 - w, x - 36] : [x + 36, x + 44 + w];
+      return hit(x - 14, y - 14, x + 14, y + 14) ||
+        hit(lbl[0], y - 6 * lines.length - 8, lbl[1], y + 7 * lines.length + 4);
+    };
+    let k = s;
+    while (k > 0 && blocked(ox + dx * k, oy + dy * k)) k -= 6;
+    if (k <= 0) k = s; // nowhere clear along the ray: sit at the edge anyway
+    const sx = ox + dx * k, sy = oy + dy * k;
+
+    const behind = rz > 0; // larger rz = farther from the viewer
+    ctx.save();
+    ctx.globalAlpha = behind ? 0.55 : 1;
+
+    // Ecliptic axes (X -> vernal equinox, Y, Z -> ecliptic north).
+    const AX = 24;
+    [[1, 0, 0, "X", "#ff7b72"], [0, 1, 0, "Y", "#7ee787"], [0, 0, 1, "Z", "#79c0ff"]].forEach(([x, y, z, name, color]) => {
+      const [ax, ay, az] = rotateWorld(x, y, z);
+      const ex = sx + ax * AX, ey = sy - ay * AX;
+      ctx.globalAlpha = (behind ? 0.55 : 1) * (az > 0 ? 0.45 : 1);
+      ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
+      const len = Math.hypot(ex - sx, ey - sy);
+      if (len > 4) {
+        const ux = (ex - sx) / len, uy = (ey - sy) / len;
+        ctx.beginPath(); ctx.moveTo(ex, ey);
+        ctx.lineTo(ex - ux * 6 - uy * 3, ey - uy * 6 + ux * 3);
+        ctx.lineTo(ex - ux * 6 + uy * 3, ey - uy * 6 - ux * 3);
+        ctx.closePath(); ctx.fill();
+      }
+      ctx.font = "bold 10px system-ui, sans-serif";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(name, sx + ax * (AX + 9), sy - ay * (AX + 9));
+    });
+
+    // Sun disc with rays.
+    ctx.globalAlpha = behind ? 0.55 : 1;
+    ctx.strokeStyle = "#ffd76a"; ctx.lineWidth = 1.5;
+    for (let a = 0; a < 8; a++) {
+      const c = Math.cos(a * Math.PI / 4), sn = Math.sin(a * Math.PI / 4);
+      ctx.beginPath(); ctx.moveTo(sx + c * 10, sy + sn * 10); ctx.lineTo(sx + c * 14, sy + sn * 14); ctx.stroke();
+    }
+    const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, 8);
+    g.addColorStop(0, "#fff6c8"); g.addColorStop(1, "#ffc93c");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(sx, sy, 7.5, 0, 2 * Math.PI); ctx.fill();
+
+    // Label, placed on the side facing the view's interior.
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.textBaseline = "alphabetic";
+    const right = sx > viewW / 2;
+    ctx.textAlign = right ? "right" : "left";
+    const lx = right ? sx - 40 : sx + 40;
+    let ly = sy - 6 * (lines.length - 1);
+    ly = Math.min(viewH - 8 - 13 * (lines.length - 1), Math.max(14, ly));
+    const tx = right ? Math.min(viewW - 6, Math.max(w + 6, lx)) : Math.min(viewW - 6 - w, Math.max(6, lx));
+    const bx = right ? tx - w : tx;
+    ctx.fillStyle = "rgba(5,8,16,0.6)";
+    ctx.fillRect(bx - 4, ly - 11, w + 8, 13 * lines.length + 3);
+    ctx.fillStyle = "rgba(232,237,247,0.85)";
+    lines.forEach((l, i) => ctx.fillText(l, tx, ly + 13 * i));
+    ctx.restore();
+  }
+
   function drawSystemFrame(t) {
     const primary = systemView.primary;
     const activeNow = getPlanetTours(primary).filter((tr) => t >= tr.tStart && t <= tr.tEnd).map((tr) => tr.key).join(",");
@@ -7482,6 +7598,8 @@
     });
 
     items.sort((a, b) => b.rz - a.rz).forEach((it) => it.draw());
+
+    drawSystemSunMarker(primary, primaryHelio, jx, jy);
 
     // Scale bar.
     const barKm = niceKm(systemView.kmPerPx * 120);
