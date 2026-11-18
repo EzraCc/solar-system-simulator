@@ -6,6 +6,13 @@ published package), so entries are dated instead.
 
 ## Unreleased (local prototype, not yet pushed) — Jupiter system view
 
+- **Tour paths drawn as true arcs.** Each tour leg used to be drawn from 16
+  points evenly spaced in time, so legs that leave a perijove fast (e.g.
+  Juno 2024-04-09, 4 RJ to 68 RJ in 8 days) showed long straight chords,
+  up to 6° off the real arc. Legs are now subdivided until every segment
+  is within ~0.2°. The upcoming-path highlight also starts at the
+  spacecraft instead of at the next sample point; before, the stretch
+  just ahead of the spacecraft vanished while it flew through it.
 - **System-view clock.** The Jupiter panel shows the simulation time in
   UTC to the minute. The shared date field shows whole days only, so at
   system-view speeds (hours per second) it looked stuck while Juno moved.

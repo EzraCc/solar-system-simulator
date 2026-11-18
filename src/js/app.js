@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "28";
+  const BUILD_VERSION = "29";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -7205,11 +7205,25 @@
       idx.forEach((i) => {
         const leg = raw.legs[i];
         const solved = getSolvedPlanetocentricLeg(key, i);
+        // Even time steps alone leave long straight chords where a leg
+        // spans very different speeds (e.g. 8 days from 4 RJ out to 68 RJ
+        // just after a perijove), so each step is bisected until its
+        // midpoint sits within ~0.2 deg of the chord, seen from the primary.
+        const at = (t) => { const p = planetocentricOffsetKm(solved, t); return [t, p[0], p[1], p[2]]; };
+        const refine = (a, b, depth) => {
+          const m = at((a[0] + b[0]) / 2);
+          const dx = m[1] - (a[1] + b[1]) / 2, dy = m[2] - (a[2] + b[2]) / 2, dz = m[3] - (a[3] + b[3]) / 2;
+          if (depth < 10 && Math.hypot(dx, dy, dz) > 0.004 * Math.hypot(m[1], m[2], m[3])) {
+            refine(a, m, depth + 1); refine(m, b, depth + 1);
+          } else pts.push(b);
+        };
         const N = 16;
-        for (let k = (pts.length ? 1 : 0); k <= N; k++) {
-          const t = solved.t0 + (k / N) * (solved.t1 - solved.t0);
-          const p = planetocentricOffsetKm(solved, t);
-          pts.push([t, p[0], p[1], p[2]]);
+        let prev = at(solved.t0);
+        if (!pts.length) pts.push(prev);
+        for (let k = 1; k <= N; k++) {
+          const cur = at(solved.t0 + (k / N) * (solved.t1 - solved.t0));
+          refine(prev, cur, 0);
+          prev = cur;
         }
         const moon = planetocentricEndpointMoon(leg.toBody);
         if (moon) {
@@ -7425,12 +7439,15 @@
       [[t - WINDOW, t, 0.95, 1.6], [t, t + WINDOW, 0.35, 1.2]].forEach(([a, b, alpha, lw]) => {
         ctx.beginPath();
         let started = false;
+        const st = planetocentricStateAt(tour.key, t);
+        // The upcoming stretch starts at the spacecraft itself, not at the
+        // next sample after it -- otherwise the gap ahead is never drawn.
+        if (st && a === t) { const [sx, sy] = svProject(st.offsetKm); ctx.moveTo(sx, sy); started = true; }
         for (const p of tour.pts) {
           if (p[0] < a || p[0] > b) continue;
           const [sx, sy] = svProject([p[1], p[2], p[3]]);
           if (!started) { ctx.moveTo(sx, sy); started = true; } else ctx.lineTo(sx, sy);
         }
-        const st = planetocentricStateAt(tour.key, t);
         if (st && b === t) { const [sx, sy] = svProject(st.offsetKm); ctx.lineTo(sx, sy); }
         ctx.strokeStyle = hexWithAlpha(tour.color, alpha);
         ctx.lineWidth = lw;
@@ -8195,7 +8212,7 @@
       daysSinceJ2000, parseFlightDate, computeFlightPosition,
       getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,
       getSolvedFlight, OUTER_MOONS, computeSatelliteOffset,
-      getSolvedPlanetocentricLeg, planetocentricOffsetKm, planetocentricStateAt, primaryUnitKm,
+      getSolvedPlanetocentricLeg, planetocentricOffsetKm, planetocentricStateAt, primaryUnitKm, getPlanetTours,
     };
     requestAnimationFrame(frame);
   }
