@@ -6,6 +6,9 @@ published package), so entries are dated instead.
 
 ## Unreleased (local prototype, not yet pushed) — Jupiter system view
 
+- **System-view clock.** The Jupiter panel shows the simulation time in
+  UTC to the minute. The shared date field shows whole days only, so at
+  system-view speeds (hours per second) it looked stuck while Juno moved.
 - **Galilean moon positions fixed.** The hand-entered phases had Io,
   Europa, Ganymede and Callisto 50–160° out of place (400,000 to 2.8
   million km). They now use least-squares fits to JPL Horizons over

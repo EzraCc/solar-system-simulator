@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "27";
+  const BUILD_VERSION = "28";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -7183,6 +7183,10 @@
   const systemMoonRows = document.getElementById("system-moon-rows");
   const systemMissionRows = document.getElementById("system-mission-rows");
   const systemScaleReadout = document.getElementById("system-scale-readout");
+  // The shared date field shows whole days only, which at system-view
+  // speeds (hours per second) looks frozen for seconds at a time while the
+  // spacecraft visibly moves -- so the panel carries its own UTC clock.
+  const systemClock = document.getElementById("system-clock");
   const _tourCache = {};
 
   // Flights with planetocentric legs around `primary`, with a cached,
@@ -7472,6 +7476,7 @@
     ctx.stroke();
     ctx.fillStyle = "rgba(232,237,247,0.8)"; ctx.font = "11px system-ui, sans-serif";
     ctx.fillText(`${barKm.toLocaleString()} km (${(barKm / meta.radiusKm).toFixed(barKm < meta.radiusKm * 10 ? 1 : 0)} R${primary[0]})`, x0, y0 - 8);
+    systemClock.textContent = simDate.toISOString().slice(0, 16).replace("T", " ") + " UTC";
     systemScaleReadout.textContent = `${Math.round(systemView.kmPerPx).toLocaleString()} km per pixel · scroll to zoom, drag to rotate, right-drag to pan, Esc to exit`;
   }
 

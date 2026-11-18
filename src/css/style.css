@@ -1218,6 +1218,7 @@
   body.system-view #flight-scrubber-panel { display: none !important; }
   #system-panel-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
   #system-panel-title { font-weight: 600; font-size: 14px; }
+  #system-clock { font-variant-numeric: tabular-nums; font-size: 13px; margin: 2px 0 6px; }
   #system-exit-btn, #system-speed-row button, .sv-jump {
     background: #16203a; color: var(--text-primary);
     border: 1px solid var(--panel-border); border-radius: 6px;
