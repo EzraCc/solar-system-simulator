@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "30";
+  const BUILD_VERSION = "32";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -305,17 +305,9 @@
      Both Martian moons orbit almost exactly in Mars's equatorial plane
      (inclination to that plane is ~1 degree or less for each), not the
      ecliptic -- unlike the Moon, whose orbit happens to sit close to the
-     ecliptic already. The ecliptic-frame inclinations used below (26.04
-     and 27.58 degrees) are taken directly from published reference values
-     rather than derived from Mars's pole orientation, since the residual
-     wobble from Mars's true (slowly precessing) pole vs. its mean ~25
-     degree obliquity is far smaller than these moons' rendered pixel size
-     at any zoom level this simulator's canvas supports -- a deliberate,
-     named simplification, not an oversight. Likewise, their ascending
-     nodes are held fixed rather than precessed: the real precession period
-     is months for Phobos, but it precesses around the LOCAL LAPLACE PLANE,
-     to which Phobos's inclination is under 0.05 degrees -- so the actual
-     visual wobble this precession would add is negligible at this scale.
+     ecliptic already. Their elements are therefore measured from Mars's
+     equator (refPoleRaDec), fitted to JPL Horizons; see the note above
+     PHOBOS_ELEMENTS.
      Both moons have negligible mass relative to Mars, so (unlike the
      Earth-Moon pair) no combined-GM correction is needed for their period.
   ========================================================================= */
@@ -323,25 +315,23 @@
   // GM_MARS_KM3_S2 declared above (consolidated planet GM block).
   const GM_MARS_KM3_DAY2 = GM_MARS_KM3_S2 * SEC_PER_DAY * SEC_PER_DAY;
 
+  // Phobos and Deimos: fitted 2026-11-19 to JPL Horizons over 2001-2027 (M0
+  // shifted from TDB to the app's UTC clock, as for every fitted moon)
+  // (tools/fit_moon_elements.py --pole, Mars's IAU pole) in Mars's equatorial
+  // frame, where their J2-driven precession is linear: Phobos's node regresses
+  // every ~826 d and its perigee advances every ~413 d. Max error: Phobos
+  // 275 km, Deimos 285 km.
   const PHOBOS_ELEMENTS = {
-    aKm: 9376,
-    e: 0.0151,
-    iDeg: 26.04,                  // inclination to the ecliptic (see note above)
-    periodSiderealDays: 0.31891023,
-    OmDeg0: 0,                     // ascending node held fixed (see note above)
-    wDeg0: 0,
-    M0Deg: 0
+    aKm: 9373.1, e: 0.015137, iDeg: -1.10737, OmDeg0: 310.05754, wDeg0: 33.01205, M0Deg: 190.21806,
+    periodSiderealDays: 0.31903307, refPoleRaDec: [317.269, 54.432],
+    nodalPeriodDays: 826.18, apsidalPeriodDays: 413.36,
   };
   const PHOBOS_META = { color: "#9c8b7a", radiusKm: 11.08 };
 
   const DEIMOS_ELEMENTS = {
-    aKm: 23463.2,
-    e: 0.00033,
-    iDeg: 27.58,                  // inclination to the ecliptic (see note above)
-    periodSiderealDays: 1.263,
-    OmDeg0: 90,                    // offset from Phobos's so the two don't render coincident at epoch; arbitrary given the fixed-node simplification
-    wDeg0: 0,
-    M0Deg: 0
+    aKm: 23457.4, e: 0.000248, iDeg: 2.52513, OmDeg0: 345.67784, wDeg0: 204.50163, M0Deg: 26.16795,
+    periodSiderealDays: 1.26253539, refPoleRaDec: [317.269, 54.432],
+    nodalPeriodDays: 29798.13, apsidalPeriodDays: 10761.26,
   };
   const DEIMOS_META = { color: "#8a7d70", radiusKm: 6.27 };
   // GM constants for outer planets in km³/day² — needed for the orbital-period
@@ -367,23 +357,32 @@
   // exactly this model (incl. nodal/apsidal precession; the fitted apsidal
   // rate also absorbs the Laplace-resonance libration of the mean longitude).
   // Previously hand-entered phases had the moons 50-160 deg out of place.
-  // KNOWN LIMITATION for every other moon below: OmDeg0, wDeg0, M0Deg are
-  // approximate, not from JPL Horizons, and will drift from reality (spec §2.4).
+  // M0 shifted 2026-11-19 from Horizons' TDB to the app's UTC clock (~67 s).
+  // Saturn's moons are fitted too (see their note). KNOWN LIMITATION for the
+  // Uranian and Neptunian moons below: OmDeg0, wDeg0, M0Deg are approximate,
+  // not from JPL Horizons, and will drift from reality (spec §2.4).
   // Uranian moons share Om ≈ 167° (Uranus ascending node on the ecliptic).
   const OUTER_MOONS = {
     Jupiter: [
-      { name: 'Io',       elements: { aKm: 421763.3,  e: 0.000124, iDeg: 2.21417, OmDeg0: 337.81014, wDeg0: 316.52992, M0Deg:  83.83294, periodSiderealDays:  1.76922367, nodalPeriodDays: 760643209.27, apsidalPeriodDays:  36429.05 }, meta: { color: '#d4a84b', radiusKm: 1821.6 } },
-      { name: 'Europa',   elements: { aKm: 670987.9,  e: 0.000367, iDeg: 2.15628, OmDeg0: 335.34587, wDeg0: 281.88809, M0Deg: 315.50777, periodSiderealDays:  3.55126861, nodalPeriodDays: -827018.75,   apsidalPeriodDays: 174443.05 }, meta: { color: '#c8b89a', radiusKm: 1560.8 } },
-      { name: 'Ganymede', elements: { aKm: 1070430.0, e: 0.001785, iDeg: 2.27434, OmDeg0: 343.02716, wDeg0: 300.04769, M0Deg: 296.94391, periodSiderealDays:  7.15538466, nodalPeriodDays: 813207.89,    apsidalPeriodDays:  57241.35 }, meta: { color: '#9b8e7e', radiusKm: 2634.1 } },
-      { name: 'Callisto', elements: { aKm: 1882744.4, e: 0.007309, iDeg: 1.98088, OmDeg0: 337.89941, wDeg0:  15.01498, M0Deg:  86.28740, periodSiderealDays: 16.69041380, nodalPeriodDays: 3256855.11,   apsidalPeriodDays: 187952.68 }, meta: { color: '#6b5f52', radiusKm: 2410.3 } },
+      { name: 'Io',       elements: { aKm: 421763.3,  e: 0.000124, iDeg: 2.21417, OmDeg0: 337.81014, wDeg0: 316.52992, M0Deg:  83.99073, periodSiderealDays:  1.76922367, nodalPeriodDays: 760643209.27, apsidalPeriodDays:  36429.05 }, meta: { color: '#d4a84b', radiusKm: 1821.6 } },
+      { name: 'Europa',   elements: { aKm: 670987.9,  e: 0.000367, iDeg: 2.15628, OmDeg0: 335.34587, wDeg0: 281.88809, M0Deg: 315.58638, periodSiderealDays:  3.55126861, nodalPeriodDays: -827018.75,   apsidalPeriodDays: 174443.05 }, meta: { color: '#c8b89a', radiusKm: 1560.8 } },
+      { name: 'Ganymede', elements: { aKm: 1070430.0, e: 0.001785, iDeg: 2.27434, OmDeg0: 343.02716, wDeg0: 300.04769, M0Deg: 296.98292, periodSiderealDays:  7.15538466, nodalPeriodDays: 813207.89,    apsidalPeriodDays:  57241.35 }, meta: { color: '#9b8e7e', radiusKm: 2634.1 } },
+      { name: 'Callisto', elements: { aKm: 1882744.4, e: 0.007309, iDeg: 1.98088, OmDeg0: 337.89941, wDeg0:  15.01498, M0Deg:  86.30413, periodSiderealDays: 16.69041380, nodalPeriodDays: 3256855.11,   apsidalPeriodDays: 187952.68 }, meta: { color: '#6b5f52', radiusKm: 2410.3 } },
     ],
     Saturn: [
-      { name: 'Enceladus', elements: { aKm: 238020,  e: 0.0047, iDeg: 26.7, OmDeg0: 113.7, wDeg0:  92.3, M0Deg: 197, periodSiderealDays:  1.3702  }, meta: { color: '#eaeaea', radiusKm:  252.1 } },
-      { name: 'Tethys',    elements: { aKm: 294619,  e: 0.0001, iDeg: 27.1, OmDeg0: 113.7, wDeg0:  45.0, M0Deg:  10, periodSiderealDays:  1.8878  }, meta: { color: '#d4d0c8', radiusKm:  536.3 } },
-      { name: 'Dione',     elements: { aKm: 377396,  e: 0.0022, iDeg: 26.7, OmDeg0: 113.7, wDeg0: 284.3, M0Deg: 357, periodSiderealDays:  2.7369  }, meta: { color: '#c8c4b8', radiusKm:  561.7 } },
-      { name: 'Rhea',      elements: { aKm: 527108,  e: 0.0013, iDeg: 26.8, OmDeg0: 113.7, wDeg0: 241.6, M0Deg: 350, periodSiderealDays:  4.5175  }, meta: { color: '#c0bcb0', radiusKm:  764.3 } },
-      { name: 'Titan',     elements: { aKm: 1221870, e: 0.0288, iDeg: 27.5, OmDeg0: 113.7, wDeg0: 185.7, M0Deg: 133, periodSiderealDays: 15.9454  }, meta: { color: '#c8a055', radiusKm: 2574.7 } },
-      { name: 'Iapetus',   elements: { aKm: 3560820, e: 0.0286, iDeg: 19.0, OmDeg0:  75.8, wDeg0: 275.8, M0Deg: 201, periodSiderealDays: 79.3215  }, meta: { color: '#a09080', radiusKm:  735.6 } },
+      // Fitted 2026-11-19 to JPL Horizons over 2000-2020 (tools/fit_moon_elements.py),
+      // M0 shifted from Horizons' TDB to the app's UTC clock (TT-UTC ~67 s).
+      // Enceladus-Rhea in Saturn's equatorial frame (refPoleRaDec), where their
+      // precession is linear; Titan and Iapetus in the ecliptic frame. Max error:
+      // Enceladus 3,900 km and Tethys 6,000 km (resonance librations with Dione
+      // and Mimas a smooth model can't follow), Dione 2,200, Rhea 420, Titan 730,
+      // Iapetus 8,200 km.
+      { name: 'Enceladus', elements: { aKm: 238028.6, e: 0.000245, iDeg: 0.00171, OmDeg0: 145.77506, wDeg0: 72.43854, M0Deg: 284.40819, periodSiderealDays: 1.37031878, refPoleRaDec: [40.589, 83.537], nodalPeriodDays: -33776.4, apsidalPeriodDays: 41822.78 }, meta: { color: '#eaeaea', radiusKm:  252.1 } },
+      { name: 'Tethys',    elements: { aKm: 294645.8, e: 0.000024, iDeg: 0.08291, OmDeg0: 126.93386, wDeg0: 16.84476, M0Deg: 3.46544, periodSiderealDays: 1.88790254, refPoleRaDec: [40.589, 83.537], nodalPeriodDays: -16643.27, apsidalPeriodDays: -32547.77 }, meta: { color: '#d4d0c8', radiusKm:  536.3 } },
+      { name: 'Dione',     elements: { aKm: 377418.1, e: 0.000415, iDeg: 0.01117, OmDeg0: 212.83931, wDeg0: 23.61906, M0Deg: 260.58262, periodSiderealDays: 2.73722404, refPoleRaDec: [40.589, 83.537], nodalPeriodDays: 32061.41, apsidalPeriodDays: 13817.32 }, meta: { color: '#c8c4b8', radiusKm:  561.7 } },
+      { name: 'Rhea',      elements: { aKm: 527067.6, e: 0.000915, iDeg: 0.35049, OmDeg0: 303.77603, wDeg0: 230.36129, M0Deg: 198.13923, periodSiderealDays: 4.51748491, refPoleRaDec: [40.589, 83.537], nodalPeriodDays: 14065.18, apsidalPeriodDays: 14240.69 }, meta: { color: '#c0bcb0', radiusKm:  764.3 } },
+      { name: 'Titan',     elements: { aKm: 1221864.1, e: 0.028691, iDeg: 27.71182, OmDeg0: 169.20237, wDeg0: 164.30243, M0Deg: 163.59768, periodSiderealDays: 15.94645249, nodalPeriodDays: 22978678.17, apsidalPeriodDays: 250842.8 }, meta: { color: '#c8a055', radiusKm: 2574.7 } },
+      { name: 'Iapetus',   elements: { aKm: 3560829.4, e: 0.028325, iDeg: 17.16748, OmDeg0: 139.59149, wDeg0: 229.0266, M0Deg: 208.74963, periodSiderealDays: 79.336264, nodalPeriodDays: 3687283.27, apsidalPeriodDays: 916650.96 }, meta: { color: '#a09080', radiusKm:  735.6 } },
     ],
     Uranus: [
       { name: 'Miranda', elements: { aKm: 129390, e: 0.0013, iDeg: 97.8, OmDeg0: 167.4, wDeg0:  68.3, M0Deg:  45, periodSiderealDays:  1.4135 }, meta: { color: '#b0a898', radiusKm: 235.8 } },
@@ -774,10 +773,12 @@
   // ~5.9-billion-km solar orbit is a relative error of ~4x10^-7 -- utterly
   // undetectable at this simulator's scale, the same simplification
   // already accepted for Earth-Moon.
-  // Elements: JPL Horizons osculating elements (COMMAND=901, CENTER=999,
-  // PLU060/DE440 solution, fit through 2023 post-New-Horizons + Gaia
-  // data), ecliptic J2000 frame, epoch JD 2461200.5 -- the same epoch used
-  // for every other SMALL_BODIES entry in this file. The large ~113°
+  // Elements: least-squares fit to JPL Horizons (COMMAND=901, CENTER=999)
+  // over 2005-2025 by tools/fit_moon_elements.py, 2026-11-19 -- max error
+  // 7 km. Ecliptic J2000 frame, M0 at J2000 like every OUTER_MOONS entry
+  // (computeSatelliteOffset's convention). The previous elements were
+  // osculating values at JD 2461200.5 read as if at J2000, which put
+  // Charon tens of degrees away from its real place. The large ~113°
   // inclination here is not a real tilt of Charon's orbit relative to
   // Pluto's equator (it's ~0°, i.e. exactly equatorial and mutually
   // tidally locked) -- it's Pluto's own extreme ~120° axial obliquity
@@ -786,9 +787,9 @@
   const GM_PLUTO_CHARON_KM3_S2 = 975.43; // combined system GM (Brozovic & Jacobson 2024) -- Charon is ~12% of Pluto's mass, non-negligible, so Kepler's-third-law period readouts use the combined value, same reasoning as GM_EARTH_MOON_KM3_DAY2
   const GM_PLUTO_CHARON_KM3_DAY2 = GM_PLUTO_CHARON_KM3_S2 * SEC_PER_DAY * SEC_PER_DAY;
   const CHARON_ELEMENTS = {
-    aKm: 19595.76, e: 0.00016026, iDeg: 112.8878,
-    OmDeg0: 227.393, wDeg0: 172.3086, M0Deg: 37.3563,
-    periodSiderealDays: 6.387222,
+    aKm: 19595.8, e: 0.0, iDeg: 112.88879,
+    OmDeg0: 227.39122, wDeg0: 0.00683, M0Deg: 321.28643,
+    periodSiderealDays: 6.38722221,
   };
   const CHARON_META = { color: '#9c958c', radiusKm: 606 };
 
@@ -2062,13 +2063,12 @@
   const _primaryUnitKmCache = {};
   function primaryUnitKm(primary) {
     if (_primaryUnitKmCache[primary]) return _primaryUnitKmCache[primary];
-    const gmKm3Day2 = PLANET_META[primary].gmKm3S2 * SEC_PER_DAY * SEC_PER_DAY;
+    const gmKm3Day2 = systemPrimary(primary).gmKm3S2 * SEC_PER_DAY * SEC_PER_DAY;
     return (_primaryUnitKmCache[primary] = Math.cbrt(gmKm3Day2 / GM_SUN_AU3_DAY2));
   }
 
   function findOuterMoon(primary, name) {
-    const list = OUTER_MOONS[primary];
-    return list ? list.find((m) => m.name === name) : null;
+    return systemMoons(primary).find((m) => m.name === name) || null;
   }
 
   // Position (km, primary-centered) of a planetocentric leg endpoint at t.
@@ -2847,7 +2847,7 @@
       } else if (b.type === 'planetocentric') {
         if (t >= b.dDays && t <= b.aDays) {
           const solved = getSolvedPlanetocentricLeg(flightKey, b.index);
-          const primaryPos = computeStateVector(PLANET_ELEMENTS[solved.primary], t).pos;
+          const primaryPos = systemPrimary(solved.primary).helio(t);
           const off = planetocentricOffsetKm(solved, t);
           return [primaryPos[0] + off[0] / AU_KM, primaryPos[1] + off[1] / AU_KM, primaryPos[2] + off[2] / AU_KM];
         }
@@ -3274,6 +3274,22 @@
   // their epoch values (used for Phobos/Deimos, where the real precession
   // wobble is negligible at this orbital scale -- see comment above their
   // element definitions).
+  // Orthonormal basis (ecliptic J2000 components) of a frame whose z axis is
+  // the given pole and whose x axis is the pole's equator's ascending node
+  // on the ecliptic -- the same construction tools/fit_moon_elements.py --pole
+  // uses. Cached on the elements object.
+  function refPoleBasis(elements) {
+    if (elements._refBasis) return elements._refBasis;
+    const [raDeg, decDeg] = elements.refPoleRaDec;
+    const ra = raDeg * D2R, dec = decDeg * D2R, eps = 23.4392911 * D2R;
+    const xq = Math.cos(dec) * Math.cos(ra), yq = Math.cos(dec) * Math.sin(ra), zq = Math.sin(dec);
+    const p = [xq, yq * Math.cos(eps) + zq * Math.sin(eps), -yq * Math.sin(eps) + zq * Math.cos(eps)];
+    const xn = Math.hypot(p[0], p[1]);
+    const X = [-p[1] / xn, p[0] / xn, 0];           // z_ecl x p, normalized
+    const Y = [p[1] * X[2] - p[2] * X[1], p[2] * X[0] - p[0] * X[2], p[0] * X[1] - p[1] * X[0]];
+    return (elements._refBasis = [X, Y, p]);
+  }
+
   function computeSatelliteOffset(elements, daysSinceEpoch) {
     const a = elements.aKm;
     const e = elements.e;
@@ -3316,15 +3332,30 @@
       return [X, Y, Z];
     }
 
-    const posKm = rotate(xOrb, yOrb);
-    const velKmDay = rotate(xOrbDot, yOrbDot);
+    let posKm = rotate(xOrb, yOrb);
+    let velKmDay = rotate(xOrbDot, yOrbDot);
+    // Elements measured from a planet's equator (refPoleRaDec: the pole's
+    // ICRF RA/Dec) instead of the ecliptic: a moon whose orbit precesses
+    // about its planet's equator (Phobos, Deimos, Tethys) only has a linear
+    // node rate in that frame. Rotate the result back to ecliptic J2000.
+    let iOut = i;
+    if (elements.refPoleRaDec) {
+      const B = refPoleBasis(elements);
+      const toEcl = (v) => [0, 1, 2].map((k) => B[0][k] * v[0] + B[1][k] * v[1] + B[2][k] * v[2]);
+      posKm = toEcl(posKm);
+      velKmDay = toEcl(velKmDay);
+      // Callers read `i` as inclination to the ecliptic (locked panel).
+      const [p0, p1, p2] = posKm, [v0, v1, v2] = velKmDay;
+      const hx = p1 * v2 - p2 * v1, hy = p2 * v0 - p0 * v2, hz = p0 * v1 - p1 * v0;
+      iOut = Math.acos(hz / Math.hypot(hx, hy, hz));
+    }
 
     // Convert to AU / (AU/day) so it composes directly with the primary's
     // already-AU-scale heliocentric position and velocity.
     const posAU = posKm.map((v) => v / AU_KM);
     const velAU = velKmDay.map((v) => v / AU_KM);
 
-    return { posAU, velAU, rKm: r, a, e, i, Om, w, M, nu };
+    return { posAU, velAU, rKm: r, a, e, i: iOut, Om, w, M, nu };
   }
 
   /* =========================================================================
@@ -5644,7 +5675,7 @@
       if (tourStart) {
         const t = daysSinceJ2000(parseFlightDate(tourStart));
         const now = daysSinceJ2000(simDate);
-        const tour = getPlanetTours(sysBtn.dataset.openSystem).find((x) => x.tStart === t);
+        const tour = getSystemMissions(sysBtn.dataset.openSystem).find((x) => x.tStart === t);
         if (!tour || now < tour.tStart || now > tour.tEnd) svJumpTo(t);
       }
       return;
@@ -6613,9 +6644,11 @@
       // short of manually typing a date. This button closes that gap
       // without reintroducing the automatic jump-on-select.
       let jumpBtn = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-jump-to-launch="${b.flightKey}">Jump to launch date</button></div>`;
-      const tourLeg = raw.legs && raw.legs.find((l) => l.type === 'planetocentric' && SYSTEM_VIEW_PRIMARIES.includes(l.primaryBody));
+      const tourLeg = (raw.legs && raw.legs.find((l) => l.type === 'planetocentric' && SYSTEM_VIEW_PRIMARIES.includes(l.primaryBody))) ||
+        (raw.planetOrbit && raw.planetOrbit.phases && raw.planetOrbit.phases.length && SYSTEM_VIEW_PRIMARIES.includes(raw.planetOrbit.primaryBody)
+          ? { primaryBody: raw.planetOrbit.primaryBody, departDate: raw.planetOrbit.phases[0].start, orbit: true } : null);
       if (tourLeg) {
-        jumpBtn += `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-open-system="${tourLeg.primaryBody}" data-tour-start="${tourLeg.departDate}">View ${tourLeg.primaryBody} tour</button></div>`;
+        jumpBtn += `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-open-system="${tourLeg.primaryBody}" data-tour-start="${tourLeg.departDate}">View ${tourLeg.primaryBody} ${tourLeg.orbit ? "orbit" : "tour"}</button></div>`;
       }
       let sections = "";
       if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
@@ -6684,8 +6717,9 @@
     let sections = "";
     if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
     sections += missionsToHereHtml(b.name);
-    const systemBtn = SYSTEM_VIEW_PRIMARIES.includes(b.name)
-      ? `<div class="lp-jump-row lp-system-btn"><button type="button" class="lp-jump-btn" data-open-system="${b.name}">Open ${b.name} system view</button></div>`
+    const sysPrimary = systemPrimaryForBodyName(b.name);
+    const systemBtn = sysPrimary
+      ? `<div class="lp-jump-row lp-system-btn"><button type="button" class="lp-jump-btn" data-open-system="${sysPrimary}">Open ${sysPrimary} system view</button></div>`
       : "";
     lockedPanelBody.innerHTML = rows + systemBtn + (info ? learnMoreHtml(info.assets) : "") + sections + (info ? assetGalleryHtml(info.assets) : "");
   }
@@ -7089,7 +7123,11 @@
       const E = (k / N) * 2 * Math.PI;
       const xOrb = a * (Math.cos(E) - e);
       const yOrb = a * Math.sqrt(1 - e * e) * Math.sin(E);
-      const [Xkm, Ykm, Zkm] = rotate(xOrb, yOrb);
+      let [Xkm, Ykm, Zkm] = rotate(xOrb, yOrb);
+      if (satElements.refPoleRaDec) { // equator-frame elements (see computeSatelliteOffset)
+        const B = refPoleBasis(satElements);
+        [Xkm, Ykm, Zkm] = [0, 1, 2].map((k) => B[0][k] * Xkm + B[1][k] * Ykm + B[2][k] * Zkm);
+      }
       const X = centerAU[0] + Xkm / AU_KM;
       const Y = centerAU[1] + Ykm / AU_KM;
       const Z = centerAU[2] + Zkm / AU_KM;
@@ -7177,7 +7215,100 @@
      info panel or a touring flight's panel; Escape or the back button exits
      and restores the Solar System camera.
   ========================================================================= */
-  const SYSTEM_VIEW_PRIMARIES = ["Jupiter"];
+  const SYSTEM_VIEW_PRIMARIES = ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Pluto"];
+  // Starting half-width of the view (km) where the outermost moon would make
+  // the planet a speck (Saturn's Iapetus) or there are no moons at all.
+  const SYSTEM_DEFAULT_EXTENT_KM = { Mercury: 16000, Venus: 90000, Mars: 26000, Saturn: 1.45e6, Pluto: 60000 };
+  // Default playback speed (days per second) on entering each system.
+  const SYSTEM_DEFAULT_SPEED = { Mercury: 0.0417, Venus: 0.25, Mars: 0.0417, Jupiter: 0.25, Saturn: 0.25, Pluto: 0.0417 };
+  // Saturn's main rings (km from center): C, B, Cassini Division, A.
+  const SATURN_RINGS = [
+    { r0: 74658, r1: 91975, alpha: 0.16 }, { r0: 91975, r1: 117507, alpha: 0.42 },
+    { r0: 117507, r1: 122340, alpha: 0.05 }, { r0: 122340, r1: 136780, alpha: 0.3 },
+  ];
+  const SATURN_POLE = { refPoleRaDec: [40.589, 83.537] };
+
+  // The locked-panel body name -> system-view primary, or null.
+  function systemPrimaryForBodyName(name) {
+    if (SYSTEM_VIEW_PRIMARIES.includes(name)) return name;
+    if (name === SMALL_BODIES.pluto.name) return "Pluto";
+    return null;
+  }
+
+  // Radius, color, GM, label unit and heliocentric position of a primary.
+  const _systemPrimaryCache = {};
+  function systemPrimary(primary) {
+    if (_systemPrimaryCache[primary]) return _systemPrimaryCache[primary];
+    const units = { Mercury: "R☿", Venus: "R♀", Mars: "R♂", Jupiter: "RJ", Saturn: "RS", Pluto: "RP" };
+    let info;
+    if (primary === "Pluto") {
+      const sb = SMALL_BODIES.pluto;
+      // Pluto's own GM (not Pluto+Charon): the planetocentric frame is
+      // centered on Pluto itself, as Horizons' 500@999 is.
+      info = { radiusKm: sb.meta.radiusKm, color: sb.meta.color, gmKm3S2: 869.6,
+               helio: (t) => computeSmallBodyState(sb.elements, t).pos };
+    } else {
+      const m = PLANET_META[primary];
+      info = { radiusKm: m.radiusKm, color: m.color, gmKm3S2: m.gmKm3S2,
+               helio: (t) => computeStateVector(PLANET_ELEMENTS[primary], t).pos };
+    }
+    info.unit = units[primary] || "R";
+    return (_systemPrimaryCache[primary] = info);
+  }
+
+  // Moons modeled around a primary, as [{ name, elements, meta }].
+  const _systemMoonCache = {};
+  function systemMoons(primary) {
+    if (OUTER_MOONS[primary]) return OUTER_MOONS[primary];
+    if (!_systemMoonCache[primary]) {
+      _systemMoonCache[primary] =
+        primary === "Mars" ? [{ name: "Phobos", elements: PHOBOS_ELEMENTS, meta: PHOBOS_META },
+                              { name: "Deimos", elements: DEIMOS_ELEMENTS, meta: DEIMOS_META }]
+        : primary === "Pluto" ? [{ name: "Charon", elements: CHARON_ELEMENTS, meta: CHARON_META }]
+        : [];
+    }
+    return _systemMoonCache[primary];
+  }
+
+  // Flights with a fitted `planetOrbit` around `primary` (orbiters too
+  // short-period to draw arc by arc; see tools/build_orbit_phases.py).
+  const _orbiterCache = {};
+  function getPlanetOrbiters(primary) {
+    if (_orbiterCache[primary]) return _orbiterCache[primary];
+    const list = [];
+    FLIGHTS_ORDER.forEach((key) => {
+      const raw = FLIGHTS_RAW[key];
+      const po = raw && raw.planetOrbit;
+      if (!po || po.primaryBody !== primary || !po.phases || !po.phases.length) return;
+      const phases = po.phases.map((ph) => ({
+        t0: daysSinceJ2000(parseFlightDate(ph.start)), t1: daysSinceJ2000(parseFlightDate(ph.end)),
+        epochDays: ph.epochDays, elements: ph.elements,
+      }));
+      list.push({ kind: "orbit", key, name: raw.name, color: flightColor(key), phases,
+                  tStart: phases[0].t0, tEnd: phases[phases.length - 1].t1 });
+    });
+    return (_orbiterCache[primary] = list);
+  }
+  function orbiterPhaseAt(orb, t) {
+    const ph = orb.phases;
+    if (t < ph[0].t0 || t > ph[ph.length - 1].t1) return null;
+    let lo = 0, hi = ph.length - 1;
+    while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (ph[mid].t0 <= t) lo = mid; else hi = mid - 1; }
+    return ph[lo];
+  }
+  function orbiterOffsetKm(phase, t) {
+    return computeSatelliteOffset(phase.elements, t - phase.epochDays).posAU.map((v) => v * AU_KM);
+  }
+
+  // Every mission shown in a system: arc-by-arc tours and fitted orbiters.
+  function getSystemMissions(primary) {
+    return getPlanetTours(primary).concat(getPlanetOrbiters(primary));
+  }
+  function missionOffsetKm(m, t) {
+    if (m.kind === "orbit") { const ph = orbiterPhaseAt(m, t); return ph ? orbiterOffsetKm(ph, t) : null; }
+    const st = planetocentricStateAt(m.key, t);
+    return st ? st.offsetKm : null;
+  }
   let systemView = null; // { primary, kmPerPx, panX, panY, saved }
   const systemPanel = document.getElementById("system-panel");
   const systemMoonRows = document.getElementById("system-moon-rows");
@@ -7235,7 +7366,7 @@
       });
       const first = raw.legs[idx[0]], last = raw.legs[idx[idx.length - 1]];
       tours.push({
-        key, name: raw.name, color: flightColor(key), pts, events,
+        kind: "tour", key, name: raw.name, color: flightColor(key), pts, events,
         tStart: daysSinceJ2000(parseFlightDate(first.departDate)),
         tEnd: daysSinceJ2000(parseFlightDate(last.arrivalDate)),
       });
@@ -7257,8 +7388,8 @@
 
   function openSystemView(primary) {
     if (!SYSTEM_VIEW_PRIMARIES.includes(primary)) return;
-    const moons = OUTER_MOONS[primary] || [];
-    const outer = moons.reduce((m, x) => Math.max(m, x.elements.aKm), 0) || 2e6;
+    const moons = systemMoons(primary);
+    const outer = SYSTEM_DEFAULT_EXTENT_KM[primary] || moons.reduce((m, x) => Math.max(m, x.elements.aKm), 0) || 2e6;
     systemView = {
       primary,
       kmPerPx: (outer * 1.15) / (Math.min(viewW, viewH) / 2),
@@ -7269,7 +7400,7 @@
     document.body.classList.add("system-view");
     document.getElementById("system-panel-title").textContent = `${primary} system`;
     buildSystemPanel();
-    setSpeedDaysPerSec(0.25);
+    setSpeedDaysPerSec(SYSTEM_DEFAULT_SPEED[primary] || 0.25);
     updateURLParams({ system: primary });
   }
 
@@ -7294,28 +7425,50 @@
 
   function buildSystemPanel() {
     const primary = systemView.primary;
-    systemMoonRows.innerHTML = (OUTER_MOONS[primary] || []).map((m) =>
+    const moons = systemMoons(primary);
+    document.getElementById("system-moons-label").style.display = moons.length ? "" : "none";
+    systemMoonRows.innerHTML = moons.map((m) =>
       `<div class="sv-row sv-follow" data-sv-follow-moon="${m.name}" title="Follow ${m.name}"><span class="sv-dot" style="background:${m.meta.color}"></span>${m.name}` +
       `<span class="sv-sub" style="margin-left:auto">${m.elements.periodSiderealDays.toFixed(2)} d</span></div>`).join("");
     const now = daysSinceJ2000(simDate);
     const isActive = (tr) => now >= tr.tStart && now <= tr.tEnd;
-    const tours = getPlanetTours(primary).slice().sort((a, b) => (isActive(b) - isActive(a)) || (a.tStart - b.tStart));
+    const tours = getSystemMissions(primary).slice().sort((a, b) => (isActive(b) - isActive(a)) || (a.tStart - b.tStart));
     systemView.panelBuiltActive = tours.filter(isActive).map((tr) => tr.key).join(",");
     systemMissionRows.innerHTML = (tours.length ? tours.map((tour) => {
+      if (tour.kind === "orbit") return orbiterPanelHtml(tour, isActive(tour));
       const flybys = tour.events.filter((e) => e.kind === 'flyby');
       const nPeri = tour.events.filter((e) => e.kind === 'peri').length;
       const d0 = dateFromDaysSinceJ2000(tour.tStart).toISOString().slice(0, 10);
       const d1 = dateFromDaysSinceJ2000(tour.tEnd).toISOString().slice(0, 10);
+      // A brief visit (New Horizons at Pluto) is a flyby, not an orbit, and
+      // its events are minutes apart: jump an hour ahead instead of six.
+      const brief = tour.tEnd - tour.tStart < 30;
+      const lead = brief ? 1 / 24 : 0.25;
       const evBtns = [`<button class="sv-jump" data-sv-jump="${tour.tStart}">Arrival ${d0}</button>`]
-        .concat(flybys.map((e) => `<button class="sv-jump" data-sv-jump="${e.t - 0.25}">${e.moon} ${e.date.slice(0, 10)}` +
-          (e.altKm !== undefined ? ` &middot; ${e.altKm.toLocaleString()} km` : "") + `</button>`)).join("");
+        .concat(flybys.map((e) => `<button class="sv-jump" data-sv-jump="${e.t - lead}">${e.moon} ${e.date.slice(0, 10)}` +
+          (e.altKm !== undefined ? ` &middot; ${e.altKm.toLocaleString()} km` : "") + `</button>`))
+        .concat(brief ? tour.events.filter((e) => e.kind === 'peri').map((e) =>
+          `<button class="sv-jump" data-sv-jump="${e.t - lead}">Closest approach ${e.date.slice(11, 16)} UTC` +
+          (e.altKm !== undefined ? ` &middot; ${e.altKm.toLocaleString()} km up` : "") + `</button>`) : []).join("");
       const following = systemView.follow && systemView.follow.flight === tour.key;
       return `<div class="sv-mission${isActive(tour) ? " sv-active" : ""}"><div class="sv-row sv-follow${following ? " following" : ""}" data-sv-follow-flight="${tour.key}" title="Follow ${tour.name}"><span class="sv-dot" style="background:${tour.color}"></span>` +
-        `<strong>${tour.name}</strong>${isActive(tour) ? `<span class="sv-sub" style="margin-left:auto">in orbit now</span>` : ""}</div>` +
-        `<div class="sv-sub">${d0} &rarr; ${d1} &middot; ${nPeri} periapses, ${flybys.length} moon flybys</div>` +
+        `<strong>${tour.name}</strong>${isActive(tour) ? `<span class="sv-sub" style="margin-left:auto">${brief ? "flying by now" : "in orbit now"}</span>` : ""}</div>` +
+        `<div class="sv-sub">${d0} &rarr; ${d1} &middot; ${brief ? `flyby${flybys.length ? `, ${flybys.length} moon pass${flybys.length > 1 ? "es" : ""}` : ""}` : `${nPeri} periapses, ${flybys.length} moon flybys`}</div>` +
         `<details class="sv-events-wrap"><summary>Jump to an event</summary><div class="sv-events">${evBtns}</div></details></div>`;
-    }).join("") : `<div class="sv-sub">No mission tours modeled yet.</div>`) +
+    }).join("") : `<div class="sv-sub">No missions modeled yet.</div>`) +
       `<label class="sv-row sv-showall"><input type="checkbox" id="sv-show-all"${systemView.showAll ? " checked" : ""}> Show other missions' paths</label>`;
+  }
+
+  function orbiterPanelHtml(orb, active) {
+    const d0 = dateFromDaysSinceJ2000(orb.tStart).toISOString().slice(0, 10);
+    const d1 = dateFromDaysSinceJ2000(orb.tEnd).toISOString().slice(0, 10);
+    const following = systemView.follow && systemView.follow.flight === orb.key;
+    const evBtns = `<button class="sv-jump" data-sv-jump="${orb.tStart}">Orbit insertion ${d0}</button>` +
+      `<button class="sv-jump" data-sv-jump="${orb.tEnd - 0.05}">Last modeled ${d1}</button>`;
+    return `<div class="sv-mission${active ? " sv-active" : ""}"><div class="sv-row sv-follow${following ? " following" : ""}" data-sv-follow-flight="${orb.key}" title="Follow ${orb.name}"><span class="sv-dot" style="background:${orb.color}"></span>` +
+      `<strong>${orb.name}</strong>${active ? `<span class="sv-sub" style="margin-left:auto">in orbit now</span>` : ""}</div>` +
+      `<div class="sv-sub">${d0} &rarr; ${d1} &middot; orbit fitted to JPL Horizons</div>` +
+      `<details class="sv-events-wrap"><summary>Jump to an event</summary><div class="sv-events">${evBtns}</div></details></div>`;
   }
 
   systemPanel.addEventListener("click", (e) => {
@@ -7368,8 +7521,8 @@
       const m = findOuterMoon(systemView.primary, f.moon);
       return m ? computeSatelliteOffset(m.elements, t).posAU.map((v) => v * AU_KM) : null;
     }
-    const st = planetocentricStateAt(f.flight, t);
-    return st ? st.offsetKm : null;
+    const m = getSystemMissions(systemView.primary).find((x) => x.key === f.flight);
+    return m ? missionOffsetKm(m, t) : null;
   }
 
   // Screen rects of the visible UI panels (canvas coordinates), refreshed at
@@ -7490,16 +7643,16 @@
 
   function drawSystemFrame(t) {
     const primary = systemView.primary;
-    const activeNow = getPlanetTours(primary).filter((tr) => t >= tr.tStart && t <= tr.tEnd).map((tr) => tr.key).join(",");
+    const activeNow = getSystemMissions(primary).filter((tr) => t >= tr.tStart && t <= tr.tEnd).map((tr) => tr.key).join(",");
     if (activeNow !== systemView.panelBuiltActive) buildSystemPanel();
-    const meta = PLANET_META[primary];
+    const meta = systemPrimary(primary);
     const followKm = systemFollowKm(t);
     if (followKm) {
       const [rx, ry] = rotateWorld(followKm[0], followKm[1], followKm[2]);
       systemView.panX = -rx / systemView.kmPerPx;
       systemView.panY = ry / systemView.kmPerPx;
     }
-    const primaryHelio = computeStateVector(PLANET_ELEMENTS[primary], t).pos;
+    const primaryHelio = meta.helio(t);
 
     // Light direction (toward the Sun), same convention as the main view.
     const dist = Math.hypot(primaryHelio[0], primaryHelio[1], primaryHelio[2]);
@@ -7508,19 +7661,71 @@
     const lightX = lx / lm, lightY = -ly / lm;
 
     const items = []; // depth-sorted discs: { rz, draw() }
+    // Spacecraft labels step down past ones already drawn this frame, so a
+    // crowd of orbiters (Mars) stays readable.
+    const labelBoxes = [];
+    const placeLabel = (text, x, y) => {
+      const w = ctx.measureText(text).width;
+      for (let k = 0; k < 8; k++, y += 14) {
+        if (!labelBoxes.some((b) => x < b[2] && x + w > b[0] && y - 11 < b[3] && y + 3 > b[1])) break;
+      }
+      labelBoxes.push([x, y - 11, x + w, y + 3]);
+      ctx.fillText(text, x, y);
+    };
+
+    // Primary (projected first: paths need its disc to know what it hides).
+    const [jx, jy, jz] = svProject([0, 0, 0]);
+    const jr = Math.max(5, meta.radiusKm / systemView.kmPerPx);
+    items.push({ rz: jz, draw: () => drawBody(jx, jy, jr, meta.color, false, lightX, lightY) });
+
+    // Paths are stroked before the depth-sorted discs, so the planet's disc
+    // would paint over the stretches that pass IN FRONT of it (a low orbit,
+    // a perijove). Those few segments are remembered and re-stroked on top.
+    const frontSegs = [];
+    const strokePath = (pts, style, lw) => {
+      if (pts.length < 2) return;
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let k = 1; k < pts.length; k++) ctx.lineTo(pts[k][0], pts[k][1]);
+      ctx.strokeStyle = style; ctx.lineWidth = lw; ctx.stroke();
+      const rr = (jr + 3) * (jr + 3);
+      for (let k = 1; k < pts.length; k++) {
+        const p = pts[k - 1], q = pts[k];
+        if (p[2] >= jz || q[2] >= jz) continue;
+        const dp = (p[0] - jx) ** 2 + (p[1] - jy) ** 2, dq = (q[0] - jx) ** 2 + (q[1] - jy) ** 2;
+        if (dp < rr || dq < rr) frontSegs.push([p[0], p[1], q[0], q[1], style, lw]);
+      }
+    };
+
+    // Saturn's rings, in sectors so each sorts in depth against the planet
+    // (the far half goes behind the disc, the near half in front).
+    if (primary === "Saturn") {
+      const B = refPoleBasis(SATURN_POLE);
+      const N = 72;
+      const ringPt = (r, th) => svProject([0, 1, 2].map((k) => r * (Math.cos(th) * B[0][k] + Math.sin(th) * B[1][k])));
+      SATURN_RINGS.forEach((ring) => {
+        for (let k = 0; k < N; k++) {
+          const th0 = (k / N) * 2 * Math.PI, th1 = ((k + 1.04) / N) * 2 * Math.PI;
+          const q = [ringPt(ring.r0, th0), ringPt(ring.r1, th0), ringPt(ring.r1, th1), ringPt(ring.r0, th1)];
+          const rz = (q[0][2] + q[1][2] + q[2][2] + q[3][2]) / 4;
+          items.push({ rz, draw: () => {
+            ctx.beginPath(); ctx.moveTo(q[0][0], q[0][1]);
+            for (let j = 1; j < 4; j++) ctx.lineTo(q[j][0], q[j][1]);
+            ctx.closePath();
+            ctx.fillStyle = `rgba(216,200,160,${ring.alpha})`; ctx.fill();
+          } });
+        }
+      });
+    }
 
     // Moon orbits (one period sampled at the current epoch) + moons.
-    (OUTER_MOONS[primary] || []).forEach((m) => {
+    systemMoons(primary).forEach((m) => {
       const P = m.elements.periodSiderealDays;
-      ctx.beginPath();
+      const orbitPts = [];
       for (let k = 0; k <= 120; k++) {
-        const p = computeSatelliteOffset(m.elements, t + (k / 120) * P).posAU.map((v) => v * AU_KM);
-        const [sx, sy] = svProject(p);
-        if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+        orbitPts.push(svProject(computeSatelliteOffset(m.elements, t + (k / 120) * P).posAU.map((v) => v * AU_KM)));
       }
-      ctx.strokeStyle = hexWithAlpha(m.meta.color, 0.35);
-      ctx.lineWidth = 1;
-      ctx.stroke();
+      strokePath(orbitPts, hexWithAlpha(m.meta.color, 0.35), 1);
       const pos = computeSatelliteOffset(m.elements, t).posAU.map((v) => v * AU_KM);
       const [sx, sy, rz] = svProject(pos);
       const r = Math.max(3, m.meta.radiusKm / systemView.kmPerPx);
@@ -7532,42 +7737,26 @@
       } });
     });
 
-    // Primary.
-    const [jx, jy, jz] = svProject([0, 0, 0]);
-    const jr = Math.max(5, meta.radiusKm / systemView.kmPerPx);
-    items.push({ rz: jz, draw: () => drawBody(jx, jy, jr, meta.color, false, lightX, lightY) });
-
     // Mission tours: faint full path, brighter +/- 30 days, marker now.
     const WINDOW = 30;
     getPlanetTours(primary).forEach((tour) => {
       const active = t >= tour.tStart && t <= tour.tEnd;
       if (!active && !systemView.showAll) return;
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = hexWithAlpha(tour.color, active ? 0.10 : 0.06);
-      ctx.beginPath();
-      tour.pts.forEach((p, k) => {
-        const [sx, sy] = svProject([p[1], p[2], p[3]]);
-        if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
-      });
-      ctx.stroke();
+      strokePath(tour.pts.map((p) => svProject([p[1], p[2], p[3]])), hexWithAlpha(tour.color, active ? 0.10 : 0.06), 1);
       if (!active) return;
       // Recent past (bright) and near future (dimmer).
       [[t - WINDOW, t, 0.95, 1.6], [t, t + WINDOW, 0.35, 1.2]].forEach(([a, b, alpha, lw]) => {
-        ctx.beginPath();
-        let started = false;
+        const pts = [];
         const st = planetocentricStateAt(tour.key, t);
         // The upcoming stretch starts at the spacecraft itself, not at the
         // next sample after it -- otherwise the gap ahead is never drawn.
-        if (st && a === t) { const [sx, sy] = svProject(st.offsetKm); ctx.moveTo(sx, sy); started = true; }
+        if (st && a === t) pts.push(svProject(st.offsetKm));
         for (const p of tour.pts) {
           if (p[0] < a || p[0] > b) continue;
-          const [sx, sy] = svProject([p[1], p[2], p[3]]);
-          if (!started) { ctx.moveTo(sx, sy); started = true; } else ctx.lineTo(sx, sy);
+          pts.push(svProject([p[1], p[2], p[3]]));
         }
-        if (st && b === t) { const [sx, sy] = svProject(st.offsetKm); ctx.lineTo(sx, sy); }
-        ctx.strokeStyle = hexWithAlpha(tour.color, alpha);
-        ctx.lineWidth = lw;
-        ctx.stroke();
+        if (st && b === t) pts.push(svProject(st.offsetKm));
+        strokePath(pts, hexWithAlpha(tour.color, alpha), lw);
       });
       // Flyby markers near the current time.
       tour.events.forEach((ev) => {
@@ -7580,7 +7769,7 @@
         ctx.restore();
         ctx.fillStyle = hexWithAlpha(tour.color, 0.9);
         ctx.font = "11px system-ui, sans-serif";
-        ctx.fillText(`${ev.moon} flyby ${ev.date.slice(0, 10)}` +
+        placeLabel(`${ev.moon} flyby ${ev.date.slice(0, 10)}` +
           (ev.altKm !== undefined ? ` (${ev.altKm.toLocaleString()} km)` : ""), sx + 8, sy + 14);
       });
       const st = planetocentricStateAt(tour.key, t);
@@ -7592,12 +7781,60 @@
           ctx.beginPath(); ctx.arc(sx, sy, 3.5, 0, 2 * Math.PI); ctx.fill();
           ctx.fillStyle = "rgba(232,237,247,0.95)";
           ctx.font = "12px system-ui, sans-serif";
-          ctx.fillText(`${tour.name}  ${(rKm / meta.radiusKm).toFixed(1)} R${primary[0]}`, sx + 7, sy - 6);
+          placeLabel(`${tour.name}  ${(rKm / meta.radiusKm).toFixed(1)} ${meta.unit}`, sx + 7, sy - 6);
         } });
       }
     });
 
+    // Fitted orbiters: the current orbit (one revolution centered on now)
+    // and the spacecraft. Close in, the label gives altitude, not radii.
+    getPlanetOrbiters(primary).forEach((orb) => {
+      const ph = orbiterPhaseAt(orb, t);
+      if (!ph) return;
+      // Sampled evenly in eccentric anomaly, not time: an eccentric
+      // orbit (Akatsuki e≈0.9) whips through periapsis in a sliver of
+      // its period, which even time steps draw as a few long chords.
+      const el = ph.elements, P = el.periodSiderealDays, e = el.e || 0;
+      const rad = Math.PI / 180;
+      const Mnow = (el.M0Deg + 360 * (t - ph.epochDays) / P) * rad;
+      let Enow = Mnow;
+      for (let it = 0; it < 30; it++) Enow -= (Enow - e * Math.sin(Enow) - Mnow) / (1 - e * Math.cos(Enow));
+      const pts = [];
+      for (let k = 0; k <= 200; k++) {
+        const E = Enow - Math.PI + (k / 200) * 2 * Math.PI;
+        const dM = (E - e * Math.sin(E)) - Mnow;
+        pts.push(svProject(orbiterOffsetKm(ph, t + (dM / (2 * Math.PI)) * P)));
+      }
+      strokePath(pts, hexWithAlpha(orb.color, 0.6), 1.2);
+      const pos = orbiterOffsetKm(ph, t);
+      const [sx, sy, rz] = svProject(pos);
+      const rKm = Math.hypot(...pos);
+      const where = rKm < 4 * meta.radiusKm
+        ? `${Math.round(rKm - meta.radiusKm).toLocaleString()} km up`
+        : `${(rKm / meta.radiusKm).toFixed(1)} ${meta.unit}`;
+      items.push({ rz, draw: () => {
+        ctx.fillStyle = orb.color;
+        ctx.beginPath(); ctx.arc(sx, sy, 3.5, 0, 2 * Math.PI); ctx.fill();
+        ctx.fillStyle = "rgba(232,237,247,0.95)";
+        ctx.font = "12px system-ui, sans-serif";
+        placeLabel(`${orb.name}  ${where}`, sx + 7, sy - 6);
+      } });
+    });
+
     items.sort((a, b) => b.rz - a.rz).forEach((it) => it.draw());
+    // Over the disc: a dark halo, then the path at full strength, so it
+    // reads against a bright planet.
+    ctx.save();
+    ctx.lineCap = "round";
+    frontSegs.forEach(([x0, y0, x1, y1, , lw]) => {
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+      ctx.strokeStyle = "rgba(5,8,16,0.55)"; ctx.lineWidth = lw + 2.5; ctx.stroke();
+    });
+    frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+      ctx.strokeStyle = style.replace(/,\s*[\d.]+\)$/, ",0.95)"); ctx.lineWidth = lw + 0.3; ctx.stroke();
+    });
+    ctx.restore();
 
     drawSystemSunMarker(primary, primaryHelio, jx, jy);
 
@@ -7610,7 +7847,7 @@
     ctx.moveTo(x0, y0 - 4); ctx.lineTo(x0, y0 + 4); ctx.moveTo(x0 + barPx, y0 - 4); ctx.lineTo(x0 + barPx, y0 + 4);
     ctx.stroke();
     ctx.fillStyle = "rgba(232,237,247,0.8)"; ctx.font = "11px system-ui, sans-serif";
-    ctx.fillText(`${barKm.toLocaleString()} km (${(barKm / meta.radiusKm).toFixed(barKm < meta.radiusKm * 10 ? 1 : 0)} R${primary[0]})`, x0, y0 - 8);
+    ctx.fillText(`${barKm.toLocaleString()} km (${(barKm / meta.radiusKm).toFixed(barKm < meta.radiusKm * 10 ? 1 : 0)} ${meta.unit})`, x0, y0 - 8);
     systemClock.textContent = simDate.toISOString().slice(0, 16).replace("T", " ") + " UTC";
     systemScaleReadout.textContent = `${Math.round(systemView.kmPerPx).toLocaleString()} km per pixel · scroll to zoom, drag to rotate, right-drag to pan, Esc to exit`;
   }
@@ -8330,7 +8567,7 @@
       daysSinceJ2000, parseFlightDate, computeFlightPosition,
       getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,
       getSolvedFlight, OUTER_MOONS, computeSatelliteOffset,
-      getSolvedPlanetocentricLeg, planetocentricOffsetKm, planetocentricStateAt, primaryUnitKm, getPlanetTours,
+      getSolvedPlanetocentricLeg, planetocentricOffsetKm, planetocentricStateAt, primaryUnitKm, getPlanetTours, getPlanetOrbiters, orbiterPhaseAt, orbiterOffsetKm,
     };
     requestAnimationFrame(frame);
   }

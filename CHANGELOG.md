@@ -4,7 +4,62 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
-## Unreleased (local prototype, not yet pushed) — Jupiter system view
+## Unreleased (local prototype, not yet pushed) — planet system views
+
+- **System views for Mercury, Venus, Mars, Saturn and Pluto**, alongside
+  Jupiter. Open them from the planet's panel (Pluto's from "Pluto and
+  Charon") or from a mission's "View … orbit/tour" button. Earth is left
+  for later because of its Lagrange-point missions. Uranus and Neptune have
+  no missions in the catalog.
+  - Saturn draws its main rings (C, B, Cassini Division, A) in its
+    equatorial plane, depth-sorted against the planet.
+  - Paths that pass in front of a planet (low orbits, perijoves) are
+    redrawn over its disc.
+  - Spacecraft labels step aside instead of overlapping.
+  - New 10 min/s speed. Each system opens at a speed suited to it.
+- **Missions:** MESSENGER and BepiColombo (Mercury); Venus Express and
+  Akatsuki (Venus); Mars Odyssey, Mars Express, MRO, MAVEN, MOM, TGO and
+  Hope (Mars); Cassini's full 2004–2017 tour (Saturn); New Horizons' flyby
+  (Pluto). Magellan, Mars Global Surveyor and Tianwen-1's orbit have no
+  Horizons ephemeris and aren't modeled.
+- **New `planetOrbit` block for orbiters** (tools/build_orbit_phases.py):
+  windows of mean elements fitted to Horizons, because a Mars orbiter's
+  ~12 revolutions a day for decades are too many to draw arc by arc. The
+  view shows the current orbit and the spacecraft, with altitude when
+  close in. Checked against Horizons with the new
+  tools/check_orbit_phases.py: median error 3–42 km for every
+  orbiter except Akatsuki (311 km, Sun-perturbed 10-day orbit); worst single
+  samples run from 29 km (Odyssey) to 1,700 km (Akatsuki). The current orbit
+  is sampled in eccentric anomaly, so highly eccentric ones (Akatsuki,
+  capture orbits) stay smooth through periapsis. Each phase is written on
+  one line, about 30% smaller, since every flight file loads at startup.
+- **Cassini and New Horizons** use the existing arc-by-arc tours.
+  New Horizons matches Horizons to within 255 km through the Pluto and
+  Charon passes. Cassini: 2,028 legs, median error 57 km, 95th percentile
+  1,256 km; the worst is 59,000 km (0.7% of its distance) on the first
+  8-day apoapsis leg in 2004, where the Sun tugs at the far end.
+- **Moon fixes:**
+  - Saturn's six moons, Phobos, Deimos and Charon are fitted to Horizons;
+    they were hand-entered.
+  - The moon model takes an optional equatorial reference plane
+    (`refPoleRaDec`), so moons that precess about their planet's equator
+    have linear rates.
+  - Max errors: Titan 730 km, Rhea 420, Phobos 275, Deimos 285, Charon
+    7 km; Enceladus and Tethys ~1° because of resonance librations.
+  - Charon had been tens of degrees out of place: its elements were
+    osculating values at a 2026 epoch, read as if at J2000.
+  - All fitted moons now use the app's UTC clock. Horizons times are TDB,
+    ~67 s off, which was ~0.9° for Phobos and ~0.16° for Io.
+- **Tools:**
+  - fit_moon_elements.py: fits in the e·cos ω / e·sin ω form, so a
+    small eccentricity no longer sticks at 0 (Titan's had); new `--pole`,
+    `--nodal-guess` and `--apsidal-guess` options.
+  - build_planet_tour.py: Saturn and Pluto; `--merge-min`; flyby refinement
+    only near real passes; backs off when Horizons is busy.
+  - check_horizons.py: knows every system primary.
+  - After the venv rebuild, Playwright needed its own browser build
+    (`playwright install chromium-headless-shell`). The checkers couldn't
+    launch without it.
 
 - **Sun orientation marker in the system view.** A small Sun icon sits at
   the edge of the view along the true direction from the planet to the

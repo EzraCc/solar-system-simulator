@@ -68,26 +68,48 @@ always re-run `check_horizons.py` on the whole flight afterwards. The
 flight-profile timeline in the app merges each waypoint chain back into a
 single coast entry, so splitting doesn't clutter the UI.
 
-## Planet-system tours (Jupiter system view)
+## Planet-system views (Mercury, Venus, Mars, Jupiter, Saturn, Pluto)
 
-- `build_planet_tour.py <flight> --primary Jupiter --start <arrival> --stop <end>`
+Two ways to model a spacecraft in a planet's system:
+
+- **Tours, arc by arc:** `build_planet_tour.py <flight> --primary <planet> --start <arrival> --stop <end>`
   builds `planetocentric` legs from Horizons. It finds every periapsis and
   every moon flyby (closest approach refined to 1 s) and keeps pieces under
-  60° / 8 days. Used for Juno, Galileo and Europa Clipper.
+  60° / 8 days. Used for Juno, Galileo, Europa Clipper, Cassini (Saturn) and
+  New Horizons (Pluto; `--flyby-km 40000 --merge-min 5`, so the Pluto and
+  Charon closest approaches 13 minutes apart both stay waypoints).
+- **Orbiters, as fitted orbit phases:** `build_orbit_phases.py <flight> --primary <planet> --arrival <date> --stop <end>`
+  writes a `planetOrbit` block: windows (default 30 days) of mean elements
+  with secular rates, fitted to Horizons in the app's moon model, each
+  halved until its worst error is under max(30 km, 1% of a). Aerobraking
+  and maneuvers end up in short windows automatically. Used for MESSENGER,
+  BepiColombo, Venus Express, Akatsuki and the Mars orbiters, which circle
+  too often (a Mars orbiter makes ~12 revolutions a day for decades) to
+  draw arc by arc. Phase times are UTC, the app's clock (Horizons vector
+  times are TDB, ~64–69 s off).
+- `check_orbit_phases.py [flight ...]` samples fitted orbiters in the app
+  at random times and reports the error against Horizons in km.
 - `build_tour_from_flybys.py tools/tours/<schedule>.json` (needs
   `tools/.venv` for hapsira's multi-revolution Izzo solver) builds a tour
   from a published flyby schedule when no ephemeris exists. Used for JUICE,
   with `tools/tours/juice_crema52.json`. See the script's docstring for the
   method and its limits.
 - `fit_moon_elements.py <moon id> <planet id>` fits a moon's elements to
-  Horizons in exactly the app's moon model. Used for the Galilean moons.
+  Horizons in exactly the app's moon model, with M0 shifted to UTC. Options:
+  `--pole RA DEC` fits in the planet's equatorial frame (output carries
+  `refPoleRaDec`), for moons that precess about the equator (Phobos, Deimos,
+  Saturn's inner moons). `--nodal-guess` / `--apsidal-guess` seed fast
+  precession (Phobos: 826 / 413 days). Used for the Galilean, Saturnian and
+  Martian moons and Charon.
 - `check_horizons.py` checks planetocentric legs in the planet's frame and
   reports errors in km.
 
 **Environment note (fixed 2026-11-17):** the old `tools/.venv` had numpy 1.26, which
 predates Python 3.14. It silently corrupted results on large arrays, and its scipy optimizer did
 nothing. The venv is now rebuilt from `requirements.txt` (numpy 2.5, scipy 1.18, matplotlib 3.11),
-and all of that works. If you ever rebuild it, install from `requirements.txt`, not bare `hapsira`.
+and all of that works. If you ever rebuild it, install from `requirements.txt`, not bare `hapsira`,
+then run `tools/.venv/bin/playwright install chromium-headless-shell` -- a newer Playwright
+needs its own browser build, and the checkers fail to launch without it.
 
 ## `check_lambert_sweep.py` — multi-revolution screening
 

@@ -84,5 +84,32 @@
   },
   "juno": {
     "id": "-61"
+  },
+  "mars_odyssey": {
+    "id": "-53"
+  },
+  "mars_express": {
+    "id": "-41"
+  },
+  "exomars_tgo": {
+    "id": "-143"
+  },
+  "maven": {
+    "id": "-202"
+  },
+  "mom_mangalyaan": {
+    "id": "-3"
+  },
+  "hope_mars": {
+    "id": "-62"
+  },
+  "mro": {
+    "id": "-74"
+  },
+  "venus_express": {
+    "id": "-248"
+  },
+  "new_horizons": {
+    "id": "-98"
   }
 }

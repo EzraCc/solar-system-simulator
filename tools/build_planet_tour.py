@@ -36,6 +36,7 @@ import json
 import math
 import os
 import sys
+import time
 import urllib.parse
 import urllib.request
 
@@ -49,6 +50,9 @@ PRIMARIES = {
     # (name -> (Horizons ID, radius km))
     "Jupiter": ("599", 69911, {"Io": ("501", 1821.6), "Europa": ("502", 1560.8),
                                 "Ganymede": ("503", 2634.1), "Callisto": ("504", 2410.3)}),
+    "Saturn": ("699", 58232, {"Enceladus": ("602", 252.1), "Tethys": ("603", 536.3), "Dione": ("604", 561.7),
+                              "Rhea": ("605", 764.3), "Titan": ("606", 2574.7), "Iapetus": ("608", 735.6)}),
+    "Pluto": ("999", 1188.3, {"Charon": ("901", 606.0)}),
 }
 
 
@@ -66,6 +70,7 @@ def hz_get(params):
         except Exception:
             if attempt == 3:
                 raise
+            time.sleep(10 * (attempt + 1))  # Horizons answers 503 when busy
     if "$$SOE" in text:
         open(path, "w").write(text)
     return text
@@ -131,6 +136,8 @@ def main():
     ap.add_argument("--max-days", type=float, default=8.0)
     ap.add_argument("--flyby-km", type=float, default=25000.0,
                     help="closest approach (center-to-center) below which a moon pass counts as a flyby")
+    ap.add_argument("--merge-min", type=float, default=30.0,
+                    help="drop a periapsis within this many minutes of a moon flyby (the flyby is the waypoint)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -161,7 +168,10 @@ def main():
         mc = dict(vectors(mid, center, start, stop, "1h"))
         d = [norm(sub(pos[w], mc[w])) for w in times]
         for k in local_minima(d):
-            if d[k] > 400000:
+            # Hourly samples can miss closest approach by up to ~half an hour
+            # of relative motion (~30,000 km at 15 km/s), so only passes whose
+            # hourly minimum is within that margin of --flyby-km get refined.
+            if d[k] > args.flyby_km + 30000:
                 continue
             lo, hi = times[k] - dt.timedelta(hours=2), times[k] + dt.timedelta(hours=2)
             fs, fm = vectors(sc, center, lo, hi, "1m"), dict(vectors(mid, center, lo, hi, "1m"))
@@ -182,10 +192,10 @@ def main():
                 events.append((best[0], "flyby", {"moon": name, "altKm": round(best[1] - mrad), "offsetKm": off}))
 
     events.sort()
-    # Drop a periapsis that coincides (within 30 min) with a flyby -- the flyby wins.
+    # Drop a periapsis that coincides (within --merge-min) with a flyby -- the flyby wins.
     flyby_times = [e[0] for e in events if e[1] == "flyby"]
     events = [e for e in events if e[1] == "flyby" or
-              all(abs((e[0] - ft).total_seconds()) > 1800 for ft in flyby_times)]
+              all(abs((e[0] - ft).total_seconds()) > args.merge_min * 60 for ft in flyby_times)]
     pos.update(fine)
     samples = sorted(pos)
     event_at = {e[0]: e for e in events}

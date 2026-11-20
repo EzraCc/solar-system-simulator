@@ -26,6 +26,71 @@
       "toBody": "pluto",
       "departDate": "2007-02-28",
       "arrivalDate": "2015-07-14"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Pluto",
+      "fromBody": {
+        "relPos": [
+          5571.9,
+          577790.2,
+          -96671.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          12199.7,
+          -424.1,
+          -6179.5
+        ]
+      },
+      "departDate": "2015-07-14",
+      "arrivalDate": "2015-07-14T11:48:00Z",
+      "periapsisAltKm": 12494,
+      "_comment": "Pluto tour built 2026-11-19 by tools/build_planet_tour.py from JPL Horizons (target -98, 2015-07-14 -> 2015-07-15T12:00): one planetocentric Lambert arc per piece between real periapses, moon flybys (pinned to the moon's modeled position) and filler waypoints keeping each piece under 60 deg / 1 d."
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Pluto",
+      "fromBody": {
+        "relPos": [
+          12199.7,
+          -424.1,
+          -6179.5
+        ]
+      },
+      "toBody": {
+        "moon": "Charon",
+        "offsetKm": [
+          26717.1,
+          -1456.9,
+          -12260.1
+        ]
+      },
+      "departDate": "2015-07-14T11:48:00Z",
+      "arrivalDate": "2015-07-14T12:02:22Z",
+      "flybyAltKm": 28826
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Pluto",
+      "fromBody": {
+        "moon": "Charon",
+        "offsetKm": [
+          26717.1,
+          -1456.9,
+          -12260.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          26113.8,
+          -1185514.1,
+          178986.6
+        ]
+      },
+      "departDate": "2015-07-14T12:02:22Z",
+      "arrivalDate": "2015-07-15T12:00:00Z"
     }
   ],
   "assets": {
