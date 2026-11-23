@@ -423,5 +423,33 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Ariane_5",
       "localImage": "images/rockets/ariane_5.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "67P",
+      "kind": "orbit",
+      "start": "2014-08-06",
+      "end": "2016-09-30",
+      "label": "Escort orbit"
+    },
+    {
+      "body": "67P",
+      "kind": "landing",
+      "start": "2014-11-12",
+      "label": "Philae landed (bounced twice)"
+    },
+    {
+      "body": "67P",
+      "kind": "ground",
+      "start": "2014-11-12",
+      "end": "2014-11-15",
+      "label": "Philae surface operations"
+    },
+    {
+      "body": "67P",
+      "kind": "impact",
+      "start": "2016-09-30",
+      "label": "Rosetta set down on the comet at end of mission"
+    }
+  ]
 }

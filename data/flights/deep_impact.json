@@ -26,5 +26,13 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
       "localImage": "images/rockets/delta_ii.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "tempel1",
+      "kind": "impact",
+      "start": "2005-07-04",
+      "label": "Impactor struck Tempel 1; flyby spacecraft watched"
+    }
+  ]
 }

@@ -6,6 +6,34 @@ published package), so entries are dated instead.
 
 ## Unreleased (local prototype, not yet pushed) — planet system views
 
+- **Mission timelines.** A body's info panel (planets, moons, small
+  bodies, and the system view's info card) now dates each mission in
+  "Missions here", lists flybys and gravity assists separately, and has a
+  "See timeline" button. The timeline has one row per mission: transit,
+  orbit and surface time as color-coded bars; landings, flybys, arrivals,
+  atmospheric entries, impacts and losses as fixed-size marks, so an
+  instant (or a lander that lasted an hour) never shrinks out of sight.
+  Planned phases are drawn hollow or dashed past today. Scroll to zoom,
+  drag to pan, click a mark to jump the clock there, click a mission to
+  select it.
+  - Built from each flight's legs plus a new `timeline` block (orbit end
+    dates, landings, surface operations, losses) for 42 flights, written
+    by tools/timeline_data.py.
+  - Moons now list their missions, with flyby counts (Titan: Cassini,
+    124 flybys plus Huygens' landing; Europa: Galileo, Juno, JUICE,
+    Europa Clipper).
+- **System view: click a body or spacecraft** for an info card: size,
+  live distance, orbit, why it matters, missions, timeline. Clicks used
+  to fall through to the Solar System view's stale hit list.
+- **System view: "Compare true sizes"** shows the planet and its moons
+  side by side at true relative diameter. In the view itself, a moon (or
+  the planet, zoomed far out) too small to see is drawn as a true-size dot
+  inside a ring, so it stays visible and clickable without being drawn
+  bigger than it is.
+- **docs/pre-1988-missions.md:** the backlog of earlier interplanetary
+  missions (Earth–Moon-only excluded). 55 reached interplanetary space and
+  can be mapped; 22 more never left Earth orbit.
+
 - **System views for Mercury, Venus, Mars, Saturn and Pluto**, alongside
   Jupiter. Open them from the planet's panel (Pluto's from "Pluto and
   Charon") or from a mission's "View … orbit/tour" button. Earth is left

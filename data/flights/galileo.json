@@ -10379,5 +10379,26 @@
       "infoUrl": "https://en.wikipedia.org/wiki/STS-34",
       "localImage": "images/missions/galileo/rocket.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Jupiter",
+      "kind": "entry",
+      "start": "1995-12-07",
+      "label": "Atmospheric probe entered Jupiter"
+    },
+    {
+      "body": "Jupiter",
+      "kind": "orbit",
+      "start": "1995-12-08",
+      "end": "2003-09-21",
+      "label": "Orbit tour"
+    },
+    {
+      "body": "Jupiter",
+      "kind": "impact",
+      "start": "2003-09-21",
+      "label": "Deliberately entered Jupiter"
+    }
+  ]
 }

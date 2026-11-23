@@ -1105,5 +1105,26 @@
       {"start": "2024-04-12T07:43:50Z", "end": "2024-04-19T03:51:20Z", "epochDays": 8867.82211593, "elements": {"aKm": 196382.11, "e": 0.916749, "iDeg": 171.464, "OmDeg0": 225.5832, "wDeg0": 244.1904, "M0Deg": 312.1866, "periodSiderealDays": 11.17639885, "nodalPeriodDays": 2415.03, "apsidalPeriodDays": -4681.92}},
       {"start": "2024-04-19T03:51:20Z", "end": "2024-04-25T23:58:50Z", "epochDays": 8874.66065759, "elements": {"aKm": 195409.06, "e": 0.927542, "iDeg": 171.7507, "OmDeg0": 228.6168, "wDeg0": 247.9171, "M0Deg": 169.4731, "periodSiderealDays": 11.0686159, "nodalPeriodDays": -3109.16, "apsidalPeriodDays": 1464.67}}
     ]
-  }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "flyby",
+      "start": "2010-12-07",
+      "label": "Orbit insertion failed; flew past Venus"
+    },
+    {
+      "body": "Venus",
+      "kind": "orbit",
+      "start": "2015-12-07",
+      "end": "2024-04-25",
+      "label": "Orbit (second attempt succeeded)"
+    },
+    {
+      "body": "Venus",
+      "kind": "lost",
+      "start": "2024-04-25",
+      "label": "Contact lost"
+    }
+  ]
 }

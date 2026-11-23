@@ -21,5 +21,13 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Commercial_Titan_III",
       "localImage": "images/missions/mars_observer/rocket.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "1993-08-21",
+      "label": "Contact lost three days before orbit insertion"
+    }
+  ]
 }

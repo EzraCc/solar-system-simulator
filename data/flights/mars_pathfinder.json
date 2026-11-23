@@ -21,5 +21,20 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
       "localImage": "images/rockets/delta_ii.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "landing",
+      "start": "1997-07-04",
+      "label": "Landed in Ares Vallis (airbags)"
+    },
+    {
+      "body": "Mars",
+      "kind": "ground",
+      "start": "1997-07-04",
+      "end": "1997-09-27",
+      "label": "Lander and Sojourner rover"
+    }
+  ]
 }

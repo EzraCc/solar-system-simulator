@@ -47,5 +47,20 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
       "localImage": "images/rockets/atlas_v.png"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "bennu",
+      "kind": "orbit",
+      "start": "2018-12-03",
+      "end": "2021-05-10",
+      "label": "Proximity operations"
+    },
+    {
+      "body": "bennu",
+      "kind": "landing",
+      "start": "2020-10-20",
+      "label": "Touch-and-go sample collection"
+    }
+  ]
 }

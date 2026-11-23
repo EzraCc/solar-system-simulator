@@ -529,5 +529,20 @@
       {"start": "2026-09-28T19:58:50Z", "end": "2026-10-28T19:58:50Z", "epochDays": 9767.33253259, "elements": {"aKm": 8820.62, "e": 0.567933, "iDeg": 113.7952, "OmDeg0": 89.0858, "wDeg0": 93.6268, "M0Deg": 177.238, "periodSiderealDays": 0.2909890829, "nodalPeriodDays": 5660.78, "apsidalPeriodDays": -585.894}},
       {"start": "2026-10-28T19:58:50Z", "end": "2026-11-16T23:58:50Z", "epochDays": 9797.33253259, "elements": {"aKm": 8820.72, "e": 0.568033, "iDeg": 113.8449, "OmDeg0": 87.2005, "wDeg0": 75.2018, "M0Deg": 212.0007, "periodSiderealDays": 0.2909933375, "nodalPeriodDays": 5592.96, "apsidalPeriodDays": -585.613}}
     ]
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "2003-12-25",
+      "ongoing": true,
+      "label": "Orbit"
+    },
+    {
+      "body": "Mars",
+      "kind": "landing",
+      "start": "2003-12-25",
+      "label": "Beagle 2 landed but never made contact (found in 2015)"
+    }
+  ]
 }

@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "33";
+  const BUILD_VERSION = "35";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -4874,6 +4874,9 @@
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
+    // The system view draws its own scene; renderedBodies is the (stale)
+    // Solar System frame's, so it has its own hit list.
+    if (systemView) { handleSystemClick(mx, my); return; }
 
     // A mouse pointer is precise; a fingertip isn't -- give touch a much
     // more forgiving hit radius so tapping a small/distant body (or a
@@ -5653,7 +5656,7 @@
     hodographReadout.innerHTML = lines.map((l) => `<div>${l}</div>`).join("");
   }
 
-  // "Missions here" (missionsToHereHtml) and "Destinations"
+  // "Missions here" (bodyMissionsHtml) and "Destinations"
   // (flightDestinationsHtml) links are rebuilt into lockedPanelBody's
   // innerHTML each time the panel's content is (re)rendered (see
   // drawLockedPanelConnector -- just once per lock change, not every
@@ -5668,6 +5671,8 @@
   // single frame regardless of pause state -- see drawLockedPanelConnector's
   // comment), but the two-step transition is harmless and left in place.
   lockedPanelBody.addEventListener("click", (e) => {
+    const tlBtn = e.target.closest("[data-open-timeline]");
+    if (tlBtn) { openTimeline(tlBtn.dataset.openTimeline); return; }
     const sysBtn = e.target.closest("[data-open-system]");
     if (sysBtn) {
       const tourStart = sysBtn.dataset.tourStart;
@@ -5961,16 +5966,378 @@
     return FLIGHTS_ORDER.filter((key) => flightEndpoints(FLIGHTS_RAW[key]).destinationBody === bodyName);
   }
 
-  // Clickable list of missions whose destination is this body -- see the
-  // delegated click listener on lockedPanelBody (below) for how these
-  // actually select the flight; empty string (no section at all) if none.
-  function missionsToHereHtml(bodyName) {
-    const keys = getMissionsToBody(bodyName);
-    if (keys.length === 0) return "";
-    const links = keys
-      .map((k) => `<span class="lp-mission-link" data-flight-key="${k}">${FLIGHTS_RAW[k].name}</span>`)
-      .join("");
-    return `<div class="lp-section"><div class="lp-section-heading">Missions here</div><div class="lp-mission-links">${links}</div></div>`;
+  /* =========================================================================
+     MISSION TIMELINES
+     Per body: every mission's phases there, from its legs (launch, gravity
+     assists, fitted orbits, planet tours, moon flybys) merged with the
+     flight's own `timeline` block (orbit end dates, landings, surface
+     operations, losses -- see tools/timeline_data.py). Drawn as one row per
+     mission: transit, orbit and surface as bars, instantaneous events as
+     fixed-size glyphs so a flyby, or a lander that lasted an hour, never
+     shrinks out of sight.
+  ========================================================================= */
+
+  const TL_KINDS = {
+    transit: { label: "Transit",           color: "#7d8cab" },
+    orbit:   { label: "Orbit",             color: "#4fa3ff" },
+    ground:  { label: "Surface",           color: "#e3a03f" },
+    landing: { label: "Landing",           color: "#ffd27a" },
+    flyby:   { label: "Flyby",             color: "#c79bff" },
+    arrival: { label: "Arrival",           color: "#4fa3ff" },
+    entry:   { label: "Atmospheric entry", color: "#ff8f5e" },
+    impact:  { label: "Impact",            color: "#ff5e5e" },
+    lost:    { label: "Lost",              color: "#aab2c3" },
+  };
+  const TL_BAR_KINDS = new Set(["orbit", "ground"]);
+
+  // A leg/timeline body key (planet, SMALL_BODIES key, moon name, "Pluto")
+  // to the display name panels and lockedBodyName use.
+  function resolveTimelineBody(k) {
+    if (!k || typeof k !== "string") return null;
+    const n = resolveBodyKeyName(k);
+    if (n) return n;
+    if (SMALL_BODIES[k.toLowerCase()]) return SMALL_BODIES[k.toLowerCase()].name;
+    return resolveLockedMoonElements(k) ? k : null;
+  }
+
+  const _flightTimelineCache = {};
+  function getFlightTimeline(key) {
+    if (_flightTimelineCache[key]) return _flightTimelineCache[key];
+    const raw = FLIGHTS_RAW[key];
+    const day = (s) => daysSinceJ2000(parseFlightDate(s));
+    const explicit = (raw.timeline || []).map((e) => ({
+      body: resolveTimelineBody(e.body), kind: e.kind, t0: day(e.start),
+      t1: e.end ? day(e.end) : null, ongoing: !!e.ongoing, label: e.label || "",
+    })).filter((e) => e.body && TL_KINDS[e.kind]);
+    const derived = [];
+    const hasOrbit = (body) => explicit.some((e) => e.body === body && e.kind === "orbit");
+    const nearExplicit = (body, t) => explicit.some((e) => e.body === body && !TL_BAR_KINDS.has(e.kind) && Math.abs(e.t0 - t) < 2);
+
+    if (isMultiLeg(raw)) {
+      const legs = raw.legs;
+      const lastLambert = legs.map((l) => l.type).lastIndexOf("lambert");
+      legs.forEach((leg, i) => {
+        if (leg.type === "gravity_assist") {
+          const body = resolveTimelineBody(leg.body);
+          const t = day(leg.date);
+          if (body && !nearExplicit(body, t)) {
+            derived.push({ body, kind: "flyby", t0: t, label: "Gravity assist" +
+              (leg.periapsisKm ? ` · ${Math.round(leg.periapsisKm).toLocaleString()} km` : "") });
+          }
+        } else if (leg.type === "lambert" && typeof leg.toBody === "string") {
+          const body = resolveTimelineBody(leg.toBody);
+          const next = legs[i + 1];
+          if (!body || (next && next.type === "gravity_assist")) return;
+          const t = day(leg.arrivalDate);
+          if (i !== lastLambert && SMALL_BODIES[leg.toBody.toLowerCase()] && !nearExplicit(body, t)) {
+            derived.push({ body, kind: "flyby", t0: t, label: "Flyby" });
+          }
+        }
+      });
+      // Planet tours: an orbit span (or, for a brief visit, a flyby), plus
+      // each moon flyby.
+      const byPrimary = {};
+      legs.forEach((l) => { if (l.type === "planetocentric") (byPrimary[l.primaryBody] = byPrimary[l.primaryBody] || []).push(l); });
+      Object.entries(byPrimary).forEach(([primary, pl]) => {
+        const body = resolveTimelineBody(primary);
+        const t0 = day(pl[0].departDate), t1 = day(pl[pl.length - 1].arrivalDate);
+        if (t1 - t0 < 30) {
+          const peri = pl.find((l) => l.periapsisAltKm !== undefined);
+          if (body && !nearExplicit(body, peri ? day(peri.arrivalDate) : t0)) {
+            derived.push({ body, kind: "flyby", t0: peri ? day(peri.arrivalDate) : t0,
+              label: "Flyby" + (peri ? ` · ${peri.periapsisAltKm.toLocaleString()} km up` : "") });
+          }
+        } else if (body && !hasOrbit(body)) {
+          derived.push({ body, kind: "orbit", t0, t1, label: "Orbit tour" });
+        }
+        pl.forEach((l) => {
+          const moon = planetocentricEndpointMoon(l.toBody);
+          if (!moon || !resolveLockedMoonElements(moon)) return;
+          const t = day(l.arrivalDate);
+          if (nearExplicit(moon, t)) return;
+          derived.push({ body: moon, kind: "flyby", t0: t,
+            label: "Flyby" + (l.flybyAltKm !== undefined ? ` · ${l.flybyAltKm.toLocaleString()} km` : "") });
+        });
+      });
+    }
+    if (raw.planetOrbit && raw.planetOrbit.phases && raw.planetOrbit.phases.length) {
+      const body = resolveTimelineBody(raw.planetOrbit.primaryBody);
+      const ph = raw.planetOrbit.phases;
+      if (body && !hasOrbit(body)) derived.push({ body, kind: "orbit", t0: day(ph[0].start), t1: day(ph[ph.length - 1].end), label: "Orbit" });
+    }
+    // Final destination with nothing else said about it: a plain arrival.
+    const ep = flightEndpoints(raw);
+    const dest = resolveTimelineBody(ep.destinationBody);
+    const all = derived.concat(explicit);
+    if (dest && !all.some((e) => e.body === dest)) {
+      all.push({ body: dest, kind: "arrival", t0: day(ep.arrival), label: "Arrival" });
+    }
+    all.forEach((e) => { if (e.t1 === undefined) e.t1 = null; });
+    all.sort((a, b) => a.t0 - b.t0);
+    return (_flightTimelineCache[key] = { launch: getFlightDates(key).launchDays, entries: all });
+  }
+
+  // One row per mission with anything at `bodyName`, oldest first. The
+  // transit bar runs from launch (or from leaving the last body it orbited
+  // or landed on, e.g. Dawn from Vesta to Ceres) to its first event here.
+  function bodyTimelineRows(bodyName) {
+    const rows = [];
+    FLIGHTS_ORDER.forEach((key) => {
+      const tl = getFlightTimeline(key);
+      const here = tl.entries.filter((e) => e.body === bodyName);
+      if (!here.length) return;
+      const first = here[0].t0;
+      let from = tl.launch;
+      tl.entries.forEach((e) => {
+        if (e.body !== bodyName && TL_BAR_KINDS.has(e.kind) && e.t1 !== null && e.t1 <= first) from = Math.max(from, e.t1);
+      });
+      const last = Math.max(...here.map((e) => (e.ongoing ? Infinity : (e.t1 !== null ? e.t1 : e.t0))));
+      rows.push({ key, name: FLIGHTS_RAW[key].name, color: flightColor(key), entries: here,
+                  transit: first > from ? { t0: from, t1: first } : null, first, last });
+    });
+    return rows.sort((a, b) => (a.transit ? a.transit.t0 : a.first) - (b.transit ? b.transit.t0 : b.first));
+  }
+
+  // Row labels share the label column with the year span: drop a long
+  // name's parenthetical ("Akatsuki (Venus Climate Orbiter)" -> "Akatsuki"),
+  // then truncate whatever still won't fit.
+  function tlShortName(name, span) {
+    const room = Math.floor((TL_LABEL_W - 26) / 6.4) - span.length;
+    let n = name.length > room ? name.replace(/\s*\([^)]*\)\s*/g, " ").trim() : name;
+    if (n.length > room) n = n.slice(0, Math.max(4, room - 1)).trimEnd() + "…";
+    return n;
+  }
+  function tlYear(t) { return dateFromDaysSinceJ2000(t).getUTCFullYear(); }
+  function tlDate(t) { return dateFromDaysSinceJ2000(t).toISOString().slice(0, 10); }
+  function tlSpan(row) {
+    const a = tlYear(row.first);
+    if (row.last === Infinity) return `${a}–now`;
+    const b = tlYear(row.last);
+    return a === b ? `${a}` : `${a}–${b}`;
+  }
+
+  const timelinePanel = document.getElementById("timeline-panel");
+  const timelineTitle = document.getElementById("timeline-title");
+  const timelineChart = document.getElementById("timeline-chart");
+  const timelineLegend = document.getElementById("timeline-legend");
+  let timelineState = null; // { body, rows, t0, t1, full: [t0, t1] }
+  const TL_ROW_H = 22, TL_LABEL_W = 190, TL_AXIS_H = 22;
+
+  function openTimeline(bodyName) {
+    const rows = bodyTimelineRows(bodyName);
+    if (!rows.length) return;
+    const today = daysSinceJ2000(new Date());
+    let t0 = Infinity, t1 = -Infinity;
+    rows.forEach((r) => {
+      t0 = Math.min(t0, r.transit ? r.transit.t0 : r.first);
+      t1 = Math.max(t1, r.last === Infinity ? today : r.last, ...r.entries.map((e) => e.t0));
+    });
+    t1 = Math.max(t1, today);
+    const pad = Math.max(60, (t1 - t0) * 0.03);
+    timelineState = { body: bodyName, rows, t0: t0 - pad, t1: t1 + pad, full: [t0 - pad, t1 + pad] };
+    timelineTitle.textContent = `${bodyName}: mission timeline`;
+    timelineLegend.innerHTML = ["transit", "orbit", "ground", "landing", "flyby", "arrival", "impact", "entry", "lost"]
+      .filter((k) => k === "transit" ? rows.some((r) => r.transit) : rows.some((r) => r.entries.some((e) => e.kind === k)))
+      .map((k) => `<span class="tl-key">${tlGlyphSvg(k)}${TL_KINDS[k].label}</span>`).join("");
+    timelinePanel.classList.add("visible");
+    renderTimeline();
+  }
+  function closeTimeline() {
+    timelineState = null;
+    timelinePanel.classList.remove("visible");
+    hoverTip.style.display = "none";
+  }
+  document.getElementById("timeline-close").addEventListener("click", closeTimeline);
+
+  function tlGlyphSvg(kind) {
+    const c = TL_KINDS[kind].color;
+    let g;
+    if (kind === "transit") g = `<line x1="1" y1="7" x2="13" y2="7" stroke="${c}" stroke-width="3"/>`;
+    else if (TL_BAR_KINDS.has(kind)) g = `<rect x="1" y="3" width="12" height="8" rx="2" fill="${c}"/>`;
+    else g = tlGlyph(kind, 7, 7);
+    return `<svg width="14" height="14" viewBox="0 0 14 14">${g}</svg>`;
+  }
+  // Fixed-size marks: an instant stays visible at any zoom.
+  function tlGlyph(kind, x, y, planned) {
+    const c = TL_KINDS[kind].color, op = planned ? ' fill-opacity="0.25"' : "";
+    switch (kind) {
+      case "flyby":   return `<path d="M${x} ${y - 5}L${x + 5} ${y}L${x} ${y + 5}L${x - 5} ${y}Z" fill="${c}"${op} stroke="#0b1020" stroke-width="1"/>`;
+      case "landing": return `<path d="M${x - 5} ${y - 5}L${x + 5} ${y - 5}L${x} ${y + 4}Z" fill="${c}"${op} stroke="#0b1020" stroke-width="1"/>`;
+      case "arrival": return `<circle cx="${x}" cy="${y}" r="4.5" fill="${c}"${op} stroke="#0b1020" stroke-width="1"/>`;
+      case "lost":    return `<circle cx="${x}" cy="${y}" r="4.5" fill="none" stroke="${c}" stroke-width="1.6"/><path d="M${x - 3} ${y + 3}L${x + 3} ${y - 3}" stroke="${c}" stroke-width="1.6"/>`;
+      default:        return `<path d="M${x - 4} ${y - 4}L${x + 4} ${y + 4}M${x + 4} ${y - 4}L${x - 4} ${y + 4}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>`;
+    }
+  }
+
+  function tlTicks(t0, t1, widthPx) {
+    if (!isFinite(t0) || !isFinite(t1) || t1 <= t0) return [];
+    const years = (t1 - t0) / 365.25;
+    const steps = [1 / 12, 3 / 12, 0.5, 1, 2, 5, 10, 20];
+    const step = steps.find((s) => years / s <= widthPx / 70) || 50;
+    const ticks = [];
+    if (step < 1) {
+      const months = Math.round(step * 12);
+      const d = dateFromDaysSinceJ2000(t0);
+      let y = d.getUTCFullYear(), m = Math.ceil(d.getUTCMonth() / months) * months;
+      for (;;) {
+        const t = daysSinceJ2000(new Date(Date.UTC(y + Math.floor(m / 12), m % 12, 1)));
+        if (t > t1) break;
+        if (t >= t0) ticks.push({ t, label: m % 12 === 0 ? `${y + Math.floor(m / 12)}` : new Date(Date.UTC(2000, m % 12, 1)).toLocaleString("en", { month: "short", timeZone: "UTC" }) });
+        m += months;
+      }
+    } else {
+      for (let y = Math.ceil(tlYear(t0) / step) * step; ; y += step) {
+        const t = daysSinceJ2000(new Date(Date.UTC(y, 0, 1)));
+        if (t > t1) break;
+        if (t >= t0) ticks.push({ t, label: `${y}` });
+      }
+    }
+    return ticks;
+  }
+
+  function renderTimeline() {
+    const st = timelineState;
+    if (!st) return;
+    const W = Math.max(320, timelineChart.clientWidth);
+    const plotW = W - TL_LABEL_W - 12;
+    const H = TL_AXIS_H + st.rows.length * TL_ROW_H + 6;
+    const X = (t) => TL_LABEL_W + ((t - st.t0) / (st.t1 - st.t0)) * plotW;
+    const clipX = (x) => Math.max(TL_LABEL_W, Math.min(TL_LABEL_W + plotW, x));
+    const today = daysSinceJ2000(new Date());
+    const now = daysSinceJ2000(simDate);
+    const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+    let svg = `<svg width="${W}" height="${H}" class="tl-svg"><defs><clipPath id="tl-clip"><rect x="${TL_LABEL_W}" y="0" width="${plotW}" height="${H}"/></clipPath></defs>`;
+    tlTicks(st.t0, st.t1, plotW).forEach((tk) => {
+      const x = X(tk.t);
+      svg += `<line x1="${x}" y1="${TL_AXIS_H - 4}" x2="${x}" y2="${H}" class="tl-grid"/><text x="${x}" y="${TL_AXIS_H - 8}" class="tl-tick">${tk.label}</text>`;
+    });
+    st.rows.forEach((row, i) => {
+      const y = TL_AXIS_H + i * TL_ROW_H + TL_ROW_H / 2;
+      if (i % 2 === 0) svg += `<rect x="0" y="${y - TL_ROW_H / 2}" width="${W}" height="${TL_ROW_H}" class="tl-band"/>`;
+      svg += `<g class="tl-row-label" data-tl-flight="${row.key}"><circle cx="8" cy="${y}" r="4" fill="${row.color}"/>` +
+        `<title>${esc(row.name)}</title><text x="18" y="${y + 4}" class="tl-name">${esc(tlShortName(row.name, tlSpan(row)))}</text>` +
+        `<text x="${TL_LABEL_W - 6}" y="${y + 4}" class="tl-span">${tlSpan(row)}</text></g>`;
+      let marks = "", bars = "";
+      const tip = (kind, a, b, label) => esc(`<strong>${row.name}</strong><br>${TL_KINDS[kind].label}: ` +
+        (b !== undefined ? `${tlDate(a)} → ${b === null ? "ongoing" : tlDate(b)}` : tlDate(a)) +
+        (a > today ? " (planned)" : "") + (label ? `<br>${label}` : ""));
+      if (row.transit) {
+        const x0 = X(row.transit.t0), x1 = X(row.transit.t1);
+        const planned = row.transit.t1 > today ? ' stroke-dasharray="4 3"' : "";
+        bars += `<line x1="${x0}" y1="${y}" x2="${Math.max(x1, x0 + 2)}" y2="${y}" stroke="${TL_KINDS.transit.color}" stroke-width="3"${planned} class="tl-mark" data-tip="${tip("transit", row.transit.t0, row.transit.t1, "Launch to first event here")}" data-t="${row.transit.t0}"/>`;
+      }
+      // Flybys first: a landing, impact or loss is drawn over a cluster
+      // of flybys (Huygens among Cassini's Titan passes), never under.
+      const order = (e) => (e.kind === "flyby" ? 0 : 1);
+      row.entries.slice().sort((a, b) => order(a) - order(b)).forEach((e) => {
+        const k = TL_KINDS[e.kind];
+        if (TL_BAR_KINDS.has(e.kind)) {
+          const end = e.ongoing ? Math.max(today, e.t0) : (e.t1 !== null ? e.t1 : e.t0);
+          const x0 = X(e.t0);
+          let w = X(end) - x0;
+          const short = w < 5;
+          if (short) w = 5; // a ground mission of minutes still shows
+          const h = e.kind === "ground" ? 8 : 10;
+          const planned = e.t0 > today;
+          bars += `<rect x="${x0 - (short ? 2.5 : 0)}" y="${y - h / 2 + (e.kind === "ground" ? 1 : 0)}" width="${w}" height="${h}" rx="2" fill="${k.color}" fill-opacity="${planned ? 0.25 : 0.85}"` +
+            `${planned ? ` stroke="${k.color}" stroke-dasharray="3 2"` : ""} class="tl-mark" data-tip="${tip(e.kind, e.t0, e.ongoing ? null : end, e.label)}" data-t="${e.t0}"/>`;
+          if (e.ongoing) bars += `<path d="M${x0 + w} ${y - 5}L${x0 + w + 5} ${y}L${x0 + w} ${y + 5}Z" fill="${k.color}" fill-opacity="0.85"/>`;
+        } else {
+          marks += `<g class="tl-mark" data-tip="${tip(e.kind, e.t0, undefined, e.label)}" data-t="${e.t0}">` +
+            `<rect x="${X(e.t0) - 6}" y="${y - 7}" width="12" height="14" fill="transparent"/>${tlGlyph(e.kind, X(e.t0), y, e.t0 > today)}</g>`;
+        }
+      });
+      svg += `<g clip-path="url(#tl-clip)">${bars}${marks}</g>`;
+    });
+    if (today > st.t0 && today < st.t1) svg += `<line x1="${X(today)}" y1="${TL_AXIS_H - 4}" x2="${X(today)}" y2="${H}" class="tl-today"/><text x="${X(today) + 3}" y="${H - 3}" class="tl-today-label">today</text>`;
+    if (now > st.t0 && now < st.t1) svg += `<line x1="${clipX(X(now))}" y1="${TL_AXIS_H - 4}" x2="${clipX(X(now))}" y2="${H}" class="tl-now"/>`;
+    svg += `</svg>`;
+    timelineChart.innerHTML = svg;
+  }
+
+  // Wheel zooms around the pointer, drag pans, double-click resets; a mark
+  // click jumps the clock to it, a mission name selects the mission.
+  let tlDrag = null;
+  timelineChart.addEventListener("wheel", (e) => {
+    const st = timelineState;
+    if (!st) return;
+    e.preventDefault();
+    const r = timelineChart.getBoundingClientRect();
+    const plotW = r.width - TL_LABEL_W - 12;
+    const f = Math.min(1, Math.max(0, (e.clientX - r.left - TL_LABEL_W) / plotW));
+    const tAt = st.t0 + f * (st.t1 - st.t0);
+    const span = Math.min(st.full[1] - st.full[0], Math.max(3, (st.t1 - st.t0) * Math.exp(e.deltaY * 0.0015)));
+    st.t0 = tAt - f * span; st.t1 = st.t0 + span;
+    renderTimeline();
+  }, { passive: false });
+  timelineChart.addEventListener("pointerdown", (e) => {
+    if (!timelineState) return;
+    tlDrag = { x: e.clientX, t0: timelineState.t0, t1: timelineState.t1, moved: false };
+  });
+  window.addEventListener("pointermove", (e) => {
+    if (!tlDrag || !timelineState) return;
+    const dx = e.clientX - tlDrag.x;
+    if (Math.abs(dx) > 3) tlDrag.moved = true;
+    if (!tlDrag.moved) return;
+    const plotW = timelineChart.clientWidth - TL_LABEL_W - 12;
+    const dt = -dx / plotW * (tlDrag.t1 - tlDrag.t0);
+    timelineState.t0 = tlDrag.t0 + dt; timelineState.t1 = tlDrag.t1 + dt;
+    renderTimeline();
+  });
+  window.addEventListener("pointerup", (e) => {
+    if (!tlDrag) return;
+    const wasDrag = tlDrag.moved;
+    tlDrag = null;
+    if (wasDrag || !timelineChart.contains(e.target)) return;
+    const mark = e.target.closest(".tl-mark");
+    if (mark) { timelineJumpTo(Number(mark.dataset.t)); renderTimeline(); return; }
+    const lbl = e.target.closest("[data-tl-flight]");
+    if (lbl && !systemView) selectFlight(lbl.dataset.tlFlight);
+  });
+  timelineChart.addEventListener("dblclick", () => {
+    if (!timelineState) return;
+    [timelineState.t0, timelineState.t1] = timelineState.full;
+    renderTimeline();
+  });
+  timelineChart.addEventListener("mousemove", (e) => {
+    const el = e.target.closest(".tl-mark");
+    if (!el || tlDrag && tlDrag.moved) { hoverTip.style.display = "none"; return; }
+    hoverTip.style.display = "block";
+    hoverTip.style.left = Math.min(e.clientX + 14, window.innerWidth - 260) + "px";
+    hoverTip.style.top = (e.clientY + 14) + "px";
+    hoverTip.innerHTML = el.dataset.tip;
+  });
+  timelineChart.addEventListener("mouseleave", () => { hoverTip.style.display = "none"; });
+  window.addEventListener("resize", () => { if (timelineState) renderTimeline(); });
+
+  function timelineJumpTo(t) {
+    if (systemView) { svJumpTo(t); return; }
+    commitScrubberDate(t);
+    setPaused(true);
+    updateURLParams({ date: dateInput.value });
+  }
+
+  // "Missions here", with when each was there, then the flybys, then the
+  // timeline button. Moons list every mission with anything at them.
+  function bodyMissionsHtml(bodyName) {
+    const rows = bodyTimelineRows(bodyName);
+    const dest = new Set(getMissionsToBody(bodyName));
+    const isMoon = !!resolveLockedMoonElements(bodyName);
+    const visits = rows.filter((r) => dest.has(r.key) || isMoon || r.entries.some((e) => e.kind !== "flyby"));
+    const flybys = rows.filter((r) => !visits.includes(r));
+    dest.forEach((k) => { if (!rows.some((r) => r.key === k)) visits.push({ key: k, name: FLIGHTS_RAW[k].name, first: getFlightDates(k).arrivalDays, last: getFlightDates(k).arrivalDays, entries: [] }); });
+    if (!visits.length && !flybys.length) return "";
+    const link = (r) => {
+      const nFly = r.entries.filter((e) => e.kind === "flyby").length;
+      const extra = isMoon && nFly > 1 ? ` · ${nFly} flybys` : "";
+      return `<span class="lp-mission-link" data-flight-key="${r.key}">${FLIGHTS_RAW[r.key].name}</span>` +
+        `<span class="lp-mission-when">${tlSpan(r)}${extra}</span>`;
+    };
+    let html = "";
+    if (visits.length) html += `<div class="lp-section"><div class="lp-section-heading">Missions here</div><div class="lp-mission-links lp-mission-dated">${visits.map(link).join("")}</div></div>`;
+    if (flybys.length) html += `<div class="lp-section"><div class="lp-section-heading">Flybys and gravity assists</div><div class="lp-mission-links lp-mission-dated">${flybys.map(link).join("")}</div></div>`;
+    if (rows.length) html += `<div class="lp-jump-row"><button type="button" class="lp-timeline-btn" data-open-timeline="${bodyName}">See timeline</button></div>`;
+    return html;
   }
 
   // The reverse of getMissionsToBody: every planet/small body a given
@@ -6028,7 +6395,7 @@
   }
 
   // Clickable list of this flight's destinations -- same .lp-mission-link
-  // styling as missionsToHereHtml's links, distinguished by data-body-name
+  // styling as bodyMissionsHtml's links, distinguished by data-body-name
   // (lock a body) vs data-flight-key (select a flight) in the shared
   // delegated click listener below.
   function flightDestinationsHtml(flightKey) {
@@ -6693,6 +7060,7 @@
       const satInfo = BODY_INFO[b.name];
       let sections = "";
       if (satInfo && satInfo.significance) sections += lpSectionHtml("Why it matters", satInfo.significance);
+      sections += bodyMissionsHtml(b.name);
       lockedPanelBody.innerHTML = rows + (satInfo ? learnMoreHtml(satInfo.assets) : "") + sections + (satInfo ? assetGalleryHtml(satInfo.assets) : "");
       return;
     }
@@ -6716,7 +7084,7 @@
     const info = BODY_INFO[b.name];
     let sections = "";
     if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
-    sections += missionsToHereHtml(b.name);
+    sections += bodyMissionsHtml(b.name);
     const sysPrimary = systemPrimaryForBodyName(b.name);
     const systemBtn = sysPrimary
       ? `<div class="lp-jump-row lp-system-btn"><button type="button" class="lp-jump-btn" data-open-system="${sysPrimary}">Open ${sysPrimary} system view</button></div>`
@@ -7399,6 +7767,8 @@
     if (lockedBodyName) lockBody(null);
     document.body.classList.add("system-view");
     document.getElementById("system-panel-title").textContent = `${primary} system`;
+    document.getElementById("sv-true-sizes-row").style.display = moons.length ? "" : "none";
+    document.getElementById("sv-true-sizes").checked = false;
     buildSystemPanel();
     setSpeedDaysPerSec(SYSTEM_DEFAULT_SPEED[primary] || 0.25);
     updateURLParams({ system: primary });
@@ -7408,6 +7778,8 @@
     if (!systemView) return;
     const s = systemView.saved;
     systemView = null;
+    systemInfoPanel.classList.remove("visible");
+    systemSizePanel.classList.remove("visible");
     document.body.classList.remove("system-view");
     pxPerAU = s.pxPerAU; camX = s.camX; camY = s.camY; yaw = s.yaw; pitch = s.pitch;
     speedMultiplier = s.speedMultiplier;
@@ -7505,7 +7877,163 @@
     });
   }
   window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && systemView) closeSystemView();
+    if (e.key !== "Escape") return;
+    if (timelineState) { closeTimeline(); return; }
+    if (systemView) closeSystemView();
+  });
+
+  // A body too small to see at this zoom: its true-size dot inside a thin
+  // ring at a fixed marker size, so it stays visible and clickable without
+  // being drawn bigger than it is.
+  function drawSmallBodyMarker(x, y, rTrue, ringR, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(x, y, Math.max(1.2, rTrue), 0, 2 * Math.PI); ctx.fill();
+    ctx.strokeStyle = hexWithAlpha(color, 0.6); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(x, y, ringR, 0, 2 * Math.PI); ctx.stroke();
+  }
+
+  // The name panels, BODY_INFO and timelines use for a system's primary.
+  function systemBodyDisplayName(primary) {
+    return primary === "Pluto" ? "Pluto and Charon" : primary;
+  }
+
+  /* ---- System view: click a body or spacecraft for its info card ---- */
+  const systemInfoPanel = document.getElementById("system-info-panel");
+  const systemInfoTitle = document.getElementById("system-info-title");
+  const systemInfoBody = document.getElementById("system-info-body");
+
+  function handleSystemClick(mx, my) {
+    const hits = (systemView && systemView.hits) || [];
+    let best = null, bestD = Infinity;
+    // Spacecraft first (they sit on top of whatever they pass), then the
+    // nearest body; ties go to whichever is closer to the camera.
+    hits.forEach((h) => {
+      const d = Math.hypot(mx - h.x, my - h.y);
+      if (d > h.r) return;
+      const score = d - (h.kind === "flight" ? 1000 : 0) + h.rz * 1e-9;
+      if (score < bestD) { bestD = score; best = h; }
+    });
+    if (best) openSystemInfo(best); else closeSystemInfo();
+  }
+
+  function openSystemInfo(target) {
+    systemView.info = target;
+    renderSystemInfo();
+    systemInfoPanel.classList.add("visible");
+  }
+  function closeSystemInfo() {
+    if (systemView) systemView.info = null;
+    systemInfoPanel.classList.remove("visible");
+  }
+  document.getElementById("system-info-close").addEventListener("click", closeSystemInfo);
+
+  // rowsOnly: refresh just the live figures (distance, altitude) while time
+  // runs, leaving the buttons and links alone so clicks aren't lost to a
+  // rebuilt element.
+  function renderSystemInfo(rowsOnly) {
+    const target = systemView && systemView.info;
+    if (!target) return;
+    const primary = systemView.primary;
+    const meta = systemPrimary(primary);
+    const t = daysSinceJ2000(simDate);
+    let rows = "";
+    const addRow = (k, v) => { rows += `<div class="lp-row"><span class="lp-key">${k}</span><span class="lp-val">${v}</span></div>`; };
+    const fmt = (x) => Math.round(x).toLocaleString();
+    let title, extra = "", sections = "";
+    if (target.kind === "flight") {
+      const raw = FLIGHTS_RAW[target.key];
+      const m = getSystemMissions(primary).find((x) => x.key === target.key);
+      title = raw.name;
+      addRow("Status", raw.status);
+      if (m) addRow(`At ${primary}`, `${tlDate(m.tStart)} → ${tlDate(m.tEnd)}`);
+      const pos = m && missionOffsetKm(m, t);
+      if (pos) {
+        const r = Math.hypot(...pos);
+        addRow(`Distance from ${primary}`, `${fmt(r)} km (${(r / meta.radiusKm).toFixed(1)} ${meta.unit})`);
+        addRow("Altitude", `${fmt(r - meta.radiusKm)} km`);
+      }
+      extra = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-sv-follow-flight="${target.key}">Follow</button></div>` +
+        `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-sv-open-flight="${target.key}">Full mission info (Solar System view)</button></div>`;
+      if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
+    } else if (target.kind === "moon") {
+      const m = findOuterMoon(primary, target.name);
+      title = m.name;
+      const st = computeSatelliteOffset(m.elements, t);
+      const info = BODY_INFO[m.name];
+      addRow("Size", `${fmt(2 * m.meta.radiusKm)} km diameter`);
+      addRow("Orbits", primary);
+      addRow(`Distance from ${primary}`, `${fmt(st.rKm)} km (${(st.rKm / meta.radiusKm).toFixed(1)} ${meta.unit})`);
+      addRow("Semi-major axis", `${fmt(m.elements.aKm)} km`);
+      addRow("Orbital period", `${m.elements.periodSiderealDays.toFixed(3)} d`);
+      addRow("Eccentricity", (m.elements.e || 0).toFixed(4));
+      addRow("Inclination to ecliptic", `${(st.i / D2R).toFixed(2)}°`);
+      addRow(`Size vs ${primary}`, `${(100 * m.meta.radiusKm / meta.radiusKm).toFixed(m.meta.radiusKm / meta.radiusKm < 0.01 ? 2 : 1)}% of its diameter`);
+      extra = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-sv-follow-moon="${m.name}">Follow</button></div>`;
+      if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
+      sections += bodyMissionsHtml(m.name);
+    } else {
+      const name = systemBodyDisplayName(primary);
+      title = name;
+      const info = BODY_INFO[name];
+      addRow("Size", `${fmt(2 * meta.radiusKm)} km diameter`);
+      addRow("Moons shown", `${systemMoons(primary).length || "none"}`);
+      addRow("Distance from Sol", `${Math.hypot(...meta.helio(t)).toFixed(3)} AU`);
+      if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
+      sections += bodyMissionsHtml(name);
+    }
+    if (rowsOnly) { const el = document.getElementById("system-info-rows"); if (el) el.innerHTML = rows; return; }
+    systemInfoTitle.textContent = title;
+    systemInfoBody.innerHTML = `<div id="system-info-rows">${rows}</div>` + extra + sections;
+    systemInfoBody.scrollTop = 0;
+  }
+
+  systemInfoBody.addEventListener("click", (e) => {
+    const tl = e.target.closest("[data-open-timeline]");
+    if (tl) { openTimeline(tl.dataset.openTimeline); return; }
+    const fm = e.target.closest("[data-sv-follow-moon]");
+    if (fm) { setSystemFollow({ moon: fm.dataset.svFollowMoon }, true); return; }
+    const ff = e.target.closest("[data-sv-follow-flight]");
+    if (ff) { setSystemFollow({ flight: ff.dataset.svFollowFlight }, true); return; }
+    const of = e.target.closest("[data-sv-open-flight]");
+    const link = e.target.closest(".lp-mission-link");
+    const key = (of && of.dataset.svOpenFlight) || (link && link.dataset.flightKey);
+    if (!key) return;
+    // A mission modeled in this system: follow it (jumping to its arrival
+    // if it isn't here now). Anything else opens in the Solar System view.
+    const m = !of && getSystemMissions(systemView.primary).find((x) => x.key === key);
+    if (m) {
+      const t = daysSinceJ2000(simDate);
+      if (t < m.tStart || t > m.tEnd) svJumpTo(m.tStart);
+      setSystemFollow({ flight: key }, true);
+      return;
+    }
+    closeSystemView();
+    selectFlight(key);
+  });
+
+  /* ---- System view: true-size comparison (planet and its moons) ---- */
+  const systemSizePanel = document.getElementById("system-size-panel");
+  function buildSystemSizePanel() {
+    const primary = systemView.primary;
+    const meta = systemPrimary(primary);
+    const maxPx = 60;
+    const item = (name, radiusKm, color) => {
+      const r = (radiusKm / meta.radiusKm) * maxPx;
+      const pct = (radiusKm / meta.radiusKm) * 100;
+      // Under a pixel the circle can't be drawn true; show a hairline dot
+      // and say so in the label instead of inflating it.
+      return `<div class="size-item"><div class="size-circle" style="width:${Math.max(1, 2 * r)}px;height:${Math.max(1, 2 * r)}px;background:${color}"></div>` +
+        `<div class="size-label">${name} (${pct < 1 ? pct.toFixed(2) : pct.toFixed(1)}%)${r < 0.5 ? " ·" : ""}</div></div>`;
+    };
+    document.getElementById("system-size-row").innerHTML = item(primary, meta.radiusKm, meta.color) +
+      systemMoons(primary).map((m) => item(m.name, m.meta.radiusKm, m.meta.color)).join("");
+    document.getElementById("system-size-title").textContent = `${primary} and its moons (diameters to scale)`;
+  }
+  document.getElementById("sv-true-sizes").addEventListener("change", (e) => {
+    if (!systemView) return;
+    systemView.trueSizes = e.target.checked;
+    if (systemView.trueSizes) buildSystemSizePanel();
+    systemSizePanel.classList.toggle("visible", systemView.trueSizes);
   });
 
   function niceKm(x) {
@@ -7673,10 +8201,26 @@
       ctx.fillText(text, x, y);
     };
 
+    // Click targets for this frame (see handleSystemClick).
+    const hits = [];
+    systemView.hits = hits;
+    if (systemView.info && performance.now() - (systemView.infoAt || 0) > 400) {
+      systemView.infoAt = performance.now();
+      renderSystemInfo(true);
+    }
+
     // Primary (projected first: paths need its disc to know what it hides).
+    // Bodies smaller than a few pixels get a ring at a fixed marker size
+    // around a true-size dot: big enough to see and click, without
+    // pretending the body is that big.
     const [jx, jy, jz] = svProject([0, 0, 0]);
-    const jr = Math.max(5, meta.radiusKm / systemView.kmPerPx);
-    items.push({ rz: jz, draw: () => drawBody(jx, jy, jr, meta.color, false, lightX, lightY) });
+    const jrTrue = meta.radiusKm / systemView.kmPerPx;
+    const jr = Math.max(5, jrTrue);
+    items.push({ rz: jz, draw: () => {
+      if (jrTrue >= 5) { drawBody(jx, jy, jr, meta.color, false, lightX, lightY); return; }
+      drawSmallBodyMarker(jx, jy, jrTrue, 7, meta.color);
+    } });
+    hits.push({ x: jx, y: jy, r: Math.max(jr, 12), rz: jz, kind: "primary", name: primary });
 
     // Paths are stroked before the depth-sorted discs, so the planet's disc
     // would paint over the stretches that pass IN FRONT of it (a low orbit,
@@ -7728,9 +8272,12 @@
       strokePath(orbitPts, hexWithAlpha(m.meta.color, 0.35), 1);
       const pos = computeSatelliteOffset(m.elements, t).posAU.map((v) => v * AU_KM);
       const [sx, sy, rz] = svProject(pos);
-      const r = Math.max(3, m.meta.radiusKm / systemView.kmPerPx);
+      const rTrue = m.meta.radiusKm / systemView.kmPerPx;
+      const r = rTrue >= 3 ? rTrue : 5;
+      hits.push({ x: sx, y: sy, r: Math.max(r, 10), rz, kind: "moon", name: m.name });
       items.push({ rz, draw: () => {
-        drawBody(sx, sy, r, m.meta.color, false, lightX, lightY);
+        if (rTrue >= 3) drawBody(sx, sy, r, m.meta.color, false, lightX, lightY);
+        else drawSmallBodyMarker(sx, sy, rTrue, r, m.meta.color);
         ctx.fillStyle = "rgba(232,237,247,0.85)";
         ctx.font = "11px system-ui, sans-serif";
         ctx.fillText(m.name, sx + r + 4, sy - r - 2);
@@ -7776,6 +8323,7 @@
       if (st) {
         const [sx, sy, rz] = svProject(st.offsetKm);
         const rKm = Math.hypot(...st.offsetKm);
+        hits.push({ x: sx, y: sy, r: 10, rz, kind: "flight", key: tour.key });
         items.push({ rz, draw: () => {
           ctx.fillStyle = tour.color;
           ctx.beginPath(); ctx.arc(sx, sy, 3.5, 0, 2 * Math.PI); ctx.fill();
@@ -7809,6 +8357,7 @@
       const pos = orbiterOffsetKm(ph, t);
       const [sx, sy, rz] = svProject(pos);
       const rKm = Math.hypot(...pos);
+      hits.push({ x: sx, y: sy, r: 10, rz, kind: "flight", key: orb.key });
       const where = rKm < 4 * meta.radiusKm
         ? `${Math.round(rKm - meta.radiusKm).toLocaleString()} km up`
         : `${(rKm / meta.radiusKm).toFixed(1)} ${meta.unit}`;
@@ -8568,6 +9117,7 @@
       getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,
       getSolvedFlight, OUTER_MOONS, computeSatelliteOffset,
       getSolvedPlanetocentricLeg, planetocentricOffsetKm, planetocentricStateAt, primaryUnitKm, getPlanetTours, getPlanetOrbiters, orbiterPhaseAt, orbiterOffsetKm,
+      getFlightTimeline, bodyTimelineRows, tlTicks, openTimeline,
     };
     requestAnimationFrame(frame);
   }

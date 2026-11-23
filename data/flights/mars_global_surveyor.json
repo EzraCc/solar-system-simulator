@@ -21,5 +21,20 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
       "localImage": "images/rockets/delta_ii.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "1997-09-12",
+      "end": "2006-11-02",
+      "label": "Mapping orbit"
+    },
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "2006-11-02",
+      "label": "Contact lost"
+    }
+  ]
 }

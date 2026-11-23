@@ -1713,5 +1713,20 @@
       {"start": "2025-11-24T12:51:20Z", "end": "2025-11-29T06:25:05Z", "epochDays": 9459.03565759, "elements": {"aKm": 5728.72, "e": 0.371708, "iDeg": 99.7674, "OmDeg0": 63.9083, "wDeg0": 151.828, "M0Deg": 91.9766, "periodSiderealDays": 0.1523062506, "nodalPeriodDays": 418.533, "apsidalPeriodDays": -246.811}},
       {"start": "2025-11-29T06:25:05Z", "end": "2025-12-03T23:58:50Z", "epochDays": 9463.76742843, "elements": {"aKm": 5728.67, "e": 0.371335, "iDeg": 99.0566, "OmDeg0": 60.0187, "wDeg0": 144.9365, "M0Deg": 116.2772, "periodSiderealDays": 0.1523046289, "nodalPeriodDays": 415.62, "apsidalPeriodDays": -248.624}}
     ]
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "2014-09-22",
+      "end": "2025-12-06",
+      "label": "Orbit (contact lost)"
+    },
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "2025-12-06",
+      "label": "Contact lost"
+    }
+  ]
 }

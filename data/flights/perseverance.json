@@ -21,5 +21,20 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
       "localImage": "images/rockets/atlas_v.png"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "landing",
+      "start": "2021-02-18",
+      "label": "Landed in Jezero crater"
+    },
+    {
+      "body": "Mars",
+      "kind": "ground",
+      "start": "2021-02-18",
+      "ongoing": true,
+      "label": "Perseverance rover (and Ingenuity)"
+    }
+  ]
 }

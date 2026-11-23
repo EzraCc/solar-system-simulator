@@ -47,5 +47,26 @@
       "infoUrl": "https://en.wikipedia.org/wiki/M-V",
       "localImage": "images/rockets/m_v.jpeg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "itokawa",
+      "kind": "orbit",
+      "start": "2005-09-12",
+      "end": "2005-12-08",
+      "label": "Station-keeping near Itokawa"
+    },
+    {
+      "body": "itokawa",
+      "kind": "landing",
+      "start": "2005-11-19",
+      "label": "First touchdown"
+    },
+    {
+      "body": "itokawa",
+      "kind": "landing",
+      "start": "2005-11-25",
+      "label": "Second touchdown (sample)"
+    }
+  ]
 }

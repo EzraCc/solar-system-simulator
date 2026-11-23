@@ -21,5 +21,20 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
       "localImage": "images/rockets/delta_ii.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "landing",
+      "start": "2004-01-25",
+      "label": "Landed in Meridiani Planum"
+    },
+    {
+      "body": "Mars",
+      "kind": "ground",
+      "start": "2004-01-25",
+      "end": "2018-06-10",
+      "label": "Opportunity rover (last contact)"
+    }
+  ]
 }

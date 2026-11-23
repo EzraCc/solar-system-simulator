@@ -21,5 +21,20 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
       "localImage": "images/rockets/atlas_v.png"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "landing",
+      "start": "2018-11-26",
+      "label": "Landed in Elysium Planitia"
+    },
+    {
+      "body": "Mars",
+      "kind": "ground",
+      "start": "2018-11-26",
+      "end": "2022-12-15",
+      "label": "InSight lander (last contact)"
+    }
+  ]
 }

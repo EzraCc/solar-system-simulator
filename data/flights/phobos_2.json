@@ -21,5 +21,20 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
       "localImage": "images/rockets/proton_k.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "1989-01-29",
+      "end": "1989-03-27",
+      "label": "Mars orbit; approach to Phobos"
+    },
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "1989-03-27",
+      "label": "Contact lost before the Phobos landers were released"
+    }
+  ]
 }

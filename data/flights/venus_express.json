@@ -278,5 +278,20 @@
       {"start": "2014-11-20T10:58:51Z", "end": "2014-11-24T05:28:51Z", "epochDays": 5436.95755541, "elements": {"aKm": 37698.81, "e": 0.833886, "iDeg": 91.0426, "OmDeg0": 106.4283, "wDeg0": 73.8665, "M0Deg": 244.7373, "periodSiderealDays": 0.933804296, "nodalPeriodDays": -396379.0, "apsidalPeriodDays": -35307.1}},
       {"start": "2014-11-24T05:28:51Z", "end": "2014-11-27T23:58:52Z", "epochDays": 5440.72838941, "elements": {"aKm": 37740.48, "e": 0.832251, "iDeg": 91.0601, "OmDeg0": 106.4607, "wDeg0": 73.8526, "M0Deg": 258.4602, "periodSiderealDays": 0.935362822, "nodalPeriodDays": -252261.0, "apsidalPeriodDays": -19782.9}}
     ]
-  }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "orbit",
+      "start": "2006-04-11",
+      "end": "2014-11-28",
+      "label": "Orbit (contact lost)"
+    },
+    {
+      "body": "Venus",
+      "kind": "lost",
+      "start": "2014-11-28",
+      "label": "Contact lost after its fuel ran out"
+    }
+  ]
 }

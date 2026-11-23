@@ -41502,5 +41502,33 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Titan_IV",
       "localImage": "images/missions/cassini/rocket.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Saturn",
+      "kind": "orbit",
+      "start": "2004-07-01",
+      "end": "2017-09-15",
+      "label": "Orbit tour"
+    },
+    {
+      "body": "Saturn",
+      "kind": "entry",
+      "start": "2017-09-15",
+      "label": "Grand Finale: entered Saturn"
+    },
+    {
+      "body": "Titan",
+      "kind": "landing",
+      "start": "2005-01-14",
+      "label": "Huygens probe landed (72 minutes of surface data)"
+    },
+    {
+      "body": "Titan",
+      "kind": "ground",
+      "start": "2005-01-14",
+      "end": "2005-01-14",
+      "label": "Huygens on the surface (~72 min)"
+    }
+  ]
 }

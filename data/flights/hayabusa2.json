@@ -250,5 +250,51 @@
       "infoUrl": "https://en.wikipedia.org/wiki/H-IIA",
       "localImage": "images/rockets/h_iia.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "ryugu",
+      "kind": "orbit",
+      "start": "2018-06-27",
+      "end": "2019-11-13",
+      "label": "Station-keeping near Ryugu"
+    },
+    {
+      "body": "ryugu",
+      "kind": "landing",
+      "start": "2018-09-21",
+      "label": "MINERVA-II1 rovers landed"
+    },
+    {
+      "body": "ryugu",
+      "kind": "landing",
+      "start": "2018-10-03",
+      "label": "MASCOT lander (~17 hours)"
+    },
+    {
+      "body": "ryugu",
+      "kind": "ground",
+      "start": "2018-10-03",
+      "end": "2018-10-04",
+      "label": "MASCOT on the surface"
+    },
+    {
+      "body": "ryugu",
+      "kind": "landing",
+      "start": "2019-02-21",
+      "label": "First touchdown (sample)"
+    },
+    {
+      "body": "ryugu",
+      "kind": "impact",
+      "start": "2019-04-05",
+      "label": "Small Carry-on Impactor made a crater"
+    },
+    {
+      "body": "ryugu",
+      "kind": "landing",
+      "start": "2019-07-11",
+      "label": "Second touchdown (subsurface sample)"
+    }
+  ]
 }

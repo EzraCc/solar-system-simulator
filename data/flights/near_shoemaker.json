@@ -69,5 +69,27 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
       "localImage": "images/missions/near_shoemaker/rocket.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "eros",
+      "kind": "orbit",
+      "start": "2000-02-14",
+      "end": "2001-02-12",
+      "label": "Orbit"
+    },
+    {
+      "body": "eros",
+      "kind": "landing",
+      "start": "2001-02-12",
+      "label": "Touched down: first landing on an asteroid"
+    },
+    {
+      "body": "eros",
+      "kind": "ground",
+      "start": "2001-02-12",
+      "end": "2001-02-28",
+      "label": "Surface operations"
+    }
+  ]
 }

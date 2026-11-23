@@ -258,5 +258,21 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
       "localImage": "images/rockets/delta_ii.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "vesta",
+      "kind": "orbit",
+      "start": "2011-07-16",
+      "end": "2012-09-05",
+      "label": "Orbit"
+    },
+    {
+      "body": "ceres",
+      "kind": "orbit",
+      "start": "2015-03-06",
+      "end": "2018-10-31",
+      "label": "Orbit (mission ended, out of fuel)"
+    }
+  ]
 }

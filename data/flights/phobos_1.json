@@ -21,5 +21,13 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
       "localImage": "images/rockets/proton_k.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "1988-09-02",
+      "label": "Contact lost in cruise (bad uploaded command)"
+    }
+  ]
 }

@@ -3552,5 +3552,20 @@
       {"start": "2026-11-15T02:45:03Z", "end": "2026-11-16T01:21:57Z", "epochDays": 9814.61462524, "elements": {"aKm": 3785.68, "e": 0.007065, "iDeg": 69.424, "OmDeg0": 344.3699, "wDeg0": 240.9721, "M0Deg": 251.1944, "periodSiderealDays": 0.08193691331, "nodalPeriodDays": 154.594, "apsidalPeriodDays": 108.207}},
       {"start": "2026-11-16T01:21:57Z", "end": "2026-11-16T23:58:50Z", "epochDays": 9815.55691225, "elements": {"aKm": 3785.77, "e": 0.00712, "iDeg": 68.3773, "OmDeg0": 342.2067, "wDeg0": 242.0158, "M0Deg": 73.3609, "periodSiderealDays": 0.081920906, "nodalPeriodDays": 152.451, "apsidalPeriodDays": 152.838}}
     ]
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "2016-10-19",
+      "ongoing": true,
+      "label": "Orbit"
+    },
+    {
+      "body": "Mars",
+      "kind": "impact",
+      "start": "2016-10-19",
+      "label": "Schiaparelli lander crashed"
+    }
+  ]
 }

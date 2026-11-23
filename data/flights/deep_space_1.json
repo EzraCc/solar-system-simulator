@@ -77,5 +77,19 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
       "localImage": "images/rockets/delta_ii.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "braille",
+      "kind": "flyby",
+      "start": "1999-07-29",
+      "label": "Flyby"
+    },
+    {
+      "body": "borrelly",
+      "kind": "flyby",
+      "start": "2001-09-22",
+      "label": "Flyby"
+    }
+  ]
 }

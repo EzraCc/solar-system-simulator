@@ -241,5 +241,20 @@
       {"start": "2022-03-11T04:43:50Z", "end": "2022-04-10T04:43:50Z", "epochDays": 8104.69711593, "elements": {"aKm": 39758.2, "e": 0.897777, "iDeg": 132.2282, "OmDeg0": 286.2776, "wDeg0": 167.4872, "M0Deg": 359.1075, "periodSiderealDays": 2.786874543, "nodalPeriodDays": -10858.2, "apsidalPeriodDays": 4311.99}},
       {"start": "2022-04-10T04:43:50Z", "end": "2022-04-23T23:58:50Z", "epochDays": 8134.69711593, "elements": {"aKm": 39758.29, "e": 0.897498, "iDeg": 132.5022, "OmDeg0": 287.2411, "wDeg0": 169.946, "M0Deg": 274.3219, "periodSiderealDays": 2.787102073, "nodalPeriodDays": -9743.09, "apsidalPeriodDays": 4325.73}}
     ]
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "2014-09-24",
+      "end": "2022-04-23",
+      "label": "Orbit"
+    },
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "2022-04-23",
+      "label": "Contact lost (announced October 2022)"
+    }
+  ]
 }

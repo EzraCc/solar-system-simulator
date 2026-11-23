@@ -1267,5 +1267,20 @@
       {"start": "2015-04-22T20:33:31Z", "end": "2015-04-24T20:14:51Z", "epochDays": 5590.35662141, "elements": {"aKm": 7956.3, "e": 0.692184, "iDeg": 86.2194, "OmDeg0": 345.7637, "wDeg0": 51.391, "M0Deg": 50.259, "periodSiderealDays": 0.3476610052, "nodalPeriodDays": 14920.3, "apsidalPeriodDays": -8489.49}},
       {"start": "2015-04-24T20:14:51Z", "end": "2015-04-30T19:18:51Z", "epochDays": 5592.34366041, "elements": {"aKm": 7961.81, "e": 0.692396, "iDeg": 86.407, "OmDeg0": 345.8779, "wDeg0": 51.2781, "M0Deg": 307.77, "periodSiderealDays": 0.3480420346, "nodalPeriodDays": 26242.8, "apsidalPeriodDays": -10692.8}}
     ]
-  }
+  },
+  "timeline": [
+    {
+      "body": "Mercury",
+      "kind": "orbit",
+      "start": "2011-03-18",
+      "end": "2015-04-30",
+      "label": "Orbit"
+    },
+    {
+      "body": "Mercury",
+      "kind": "impact",
+      "start": "2015-04-30",
+      "label": "Impacted Mercury at end of mission"
+    }
+  ]
 }

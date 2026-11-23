@@ -111,6 +111,18 @@ and all of that works. If you ever rebuild it, install from `requirements.txt`, 
 then run `tools/.venv/bin/playwright install chromium-headless-shell` -- a newer Playwright
 needs its own browser build, and the checkers fail to launch without it.
 
+## `timeline_data.py` — mission timeline phases
+
+Writes each flight's `timeline` block: the phases its legs can't express
+(orbit end dates, landings, surface operations, losses, impacts). The app
+merges these with what the legs already give (launch, gravity assists,
+fitted orbits, planet tours, moon flybys) to draw a body's mission
+timeline (the "See timeline" button on a body's info panel). Edit the
+table in the script and rerun; only the `timeline` block of each listed
+flight is touched, as text, so the rest of the file stays as it was.
+
+    python3 tools/timeline_data.py
+
 ## `check_lambert_sweep.py` — multi-revolution screening
 
 > For flights with a Horizons ID, prefer `check_horizons.py`. This script

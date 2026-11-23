@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=45">
+<link rel="stylesheet" href="src/css/style.css?v=47">
 </head>
 <body>
 
@@ -239,6 +239,18 @@
   <button id="dashboard-toggle-btn" title="Open the dashboard (velocity hodograph)">Dashboard</button>
 </div>
 
+<!-- Mission timeline for one body (see MISSION TIMELINES in app.js):
+     opened from a body's "See timeline" button; floats over the scene. -->
+<div class="panel" id="timeline-panel">
+  <div id="timeline-header">
+    <span id="timeline-title">Mission timeline</span>
+    <button id="timeline-close" title="Close">&times;</button>
+  </div>
+  <div id="timeline-legend"></div>
+  <div id="timeline-chart"></div>
+  <div id="timeline-hint">scroll to zoom · drag to pan · double-click to reset · click a mark to jump there · click a mission to select it</div>
+</div>
+
 <!-- Planet-system view (Jupiter first): a separate, primary-centered mode
      entered from a planet's info panel. See the PLANET SYSTEM VIEW section
      of app.js. Hidden unless body.system-view is set. -->
@@ -258,9 +270,24 @@
   </div>
   <div class="system-section-label" id="system-moons-label">Moons</div>
   <div id="system-moon-rows"></div>
+  <label class="sv-row sv-showall" id="sv-true-sizes-row" title="The planet and its moons side by side at true relative size. In the view itself, a moon too small to see is drawn as a true-size dot inside a ring."><input type="checkbox" id="sv-true-sizes"> Compare true sizes</label>
   <div class="system-section-label">Missions</div>
   <div id="system-mission-rows"></div>
   <div id="system-scale-readout"></div>
+</div>
+
+<!-- System view: info card for a clicked body or spacecraft, and the
+     planet-and-moons size comparison. -->
+<div class="panel" id="system-info-panel">
+  <div id="system-info-header">
+    <span id="system-info-title"></span>
+    <button id="system-info-close" title="Close">&times;</button>
+  </div>
+  <div id="system-info-body"></div>
+</div>
+<div class="panel" id="system-size-panel">
+  <div class="title" id="system-size-title">Diameters to scale</div>
+  <div id="system-size-row"></div>
 </div>
 
 <div id="zoom-hint">drag to rotate · shift+drag (or right-drag) to pan · scroll to zoom · click a body to track it</div>
@@ -299,6 +326,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=85"></script>
+<script src="src/js/app.js?v=87"></script>
 </body>
 </html>

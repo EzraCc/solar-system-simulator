@@ -48,5 +48,20 @@
       "infoUrl": "https://en.wikipedia.org/wiki/STS-30",
       "localImage": "images/missions/magellan/rocket.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "orbit",
+      "start": "1990-08-10",
+      "end": "1994-10-12",
+      "label": "Radar mapping orbit"
+    },
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1994-10-13",
+      "label": "Deliberately entered the atmosphere"
+    }
+  ]
 }

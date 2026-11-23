@@ -165,5 +165,13 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Atlas_V",
       "localImage": "images/rockets/atlas_v.png"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "patroclus",
+      "kind": "flyby",
+      "start": "2033-03-03",
+      "label": "Flyby of the Patroclus\u2013Menoetius binary (planned)"
+    }
+  ]
 }

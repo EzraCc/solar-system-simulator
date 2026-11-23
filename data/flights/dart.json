@@ -26,5 +26,13 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Falcon_9",
       "localImage": "images/rockets/falcon_9.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "didymos",
+      "kind": "impact",
+      "start": "2022-09-26",
+      "label": "Struck Dimorphos, changing its orbit"
+    }
+  ]
 }

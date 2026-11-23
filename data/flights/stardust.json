@@ -54,5 +54,19 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
       "localImage": "images/rockets/delta_ii.jpg"
     }
-  }
+  },
+  "timeline": [
+    {
+      "body": "annefrank",
+      "kind": "flyby",
+      "start": "2002-11-02",
+      "label": "Flyby"
+    },
+    {
+      "body": "wild2",
+      "kind": "flyby",
+      "start": "2004-01-02",
+      "label": "Flyby; collected coma dust"
+    }
+  ]
 }

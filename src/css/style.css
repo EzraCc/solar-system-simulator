@@ -1248,3 +1248,70 @@
   .sv-events-wrap .sv-events { margin-left: 0; }
   .sv-mission:not(.sv-active) strong { opacity: 0.75; }
   .sv-showall { margin-top: 6px; color: var(--text-dim); cursor: pointer; }
+
+  /* ---- Mission timeline (see MISSION TIMELINES in app.js) ---- */
+  #timeline-panel {
+    display: none;
+    top: 16px; left: 50%; transform: translateX(-50%);
+    width: min(1000px, calc(100vw - 32px));
+    max-height: calc(100vh - 140px);
+    flex-direction: column;
+    z-index: 45;
+  }
+  #timeline-panel.visible { display: flex; }
+  #timeline-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  #timeline-title { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 18px; color: #fff; }
+  #timeline-close { background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 18px; padding: 0 4px; }
+  #timeline-close:hover { color: var(--text-primary); }
+  #timeline-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
+  .tl-key { display: inline-flex; align-items: center; gap: 4px; }
+  #timeline-chart { overflow-y: auto; overflow-x: hidden; min-height: 60px; cursor: grab; touch-action: pan-y; scrollbar-width: thin; }
+  #timeline-chart:active { cursor: grabbing; }
+  #timeline-hint { font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+  .tl-svg { display: block; user-select: none; }
+  .tl-band { fill: rgba(120,150,200,0.05); }
+  .tl-grid { stroke: rgba(140,160,200,0.14); stroke-width: 1; }
+  .tl-tick { fill: var(--text-dim); font-size: 10px; text-anchor: middle; }
+  .tl-name { fill: var(--text-primary); font-size: 11.5px; }
+  .tl-span { fill: var(--text-dim); font-size: 10px; text-anchor: end; }
+  .tl-row-label { cursor: pointer; }
+  .tl-row-label:hover .tl-name { fill: var(--accent); }
+  .tl-mark { cursor: pointer; }
+  .tl-today { stroke: rgba(255,255,255,0.35); stroke-dasharray: 3 3; }
+  .tl-today-label { fill: rgba(255,255,255,0.45); font-size: 9px; }
+  .tl-now { stroke: var(--accent); stroke-width: 1.5; }
+  .lp-mission-dated { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; align-items: baseline; }
+  .lp-mission-when { font-size: 11px; color: var(--text-dim); }
+  .lp-timeline-btn {
+    background: #16203a; color: var(--text-primary); border: 1px solid var(--panel-border);
+    border-radius: 6px; padding: 4px 10px; cursor: pointer; font-family: inherit; font-size: 12px; margin-top: 8px;
+  }
+  .lp-timeline-btn:hover { background: #1f2c4d; }
+  body.mobile #timeline-panel { top: 0; width: 100vw; max-height: 70vh; border-radius: 0; }
+
+  /* ---- System view info card and size comparison ---- */
+  #system-info-panel {
+    display: none;
+    right: 16px; top: 16px;
+    width: 320px;
+    max-height: calc(100vh - 220px);
+    flex-direction: column;
+    z-index: 40;
+  }
+  body.system-view #system-info-panel.visible { display: flex; }
+  #system-info-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  #system-info-title { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 19px; color: #fff; }
+  #system-info-close { background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; padding: 0 4px; }
+  #system-info-close:hover { color: var(--text-primary); }
+  #system-info-body { overflow-y: auto; scrollbar-width: thin; padding-right: 4px; font-size: 12px; }
+  #system-size-panel {
+    display: none;
+    top: 16px; left: 50%; transform: translateX(-50%);
+    max-width: min(640px, calc(100vw - 600px));
+    min-width: 260px;
+  }
+  body.system-view #system-size-panel.visible { display: block; }
+  #system-size-panel .title { font-weight: 600; margin-bottom: 8px; font-size: 13px; }
+  #system-size-row { display: flex; align-items: flex-end; gap: 10px; min-height: 70px; overflow-x: auto; padding-top: 4px; }
+  body.mobile #system-info-panel { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 50vh; border-radius: 0; }
+  body.mobile #system-size-panel { max-width: calc(100vw - 32px); }
