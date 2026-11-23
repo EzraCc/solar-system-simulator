@@ -22,6 +22,11 @@ published package), so entries are dated instead.
   Hope (Mars); Cassini's full 2004–2017 tour (Saturn); New Horizons' flyby
   (Pluto). Magellan, Mars Global Surveyor and Tianwen-1's orbit have no
   Horizons ephemeris and aren't modeled.
+- **BepiColombo is in Mercury orbit** (inserted 2026-11-21): status set to
+  Success and its description updated. The insertion burn was cut short by a
+  software issue, and Horizons still carries ESA's pre-arrival prediction
+  (fit through 2026-11-10), so the modeled orbit is that prediction until
+  Horizons updates; the flight's statusNote says to refit then.
 - **New `planetOrbit` block for orbiters** (tools/build_orbit_phases.py):
   windows of mean elements fitted to Horizons, because a Mars orbiter's
   ~12 revolutions a day for decades are too many to draw arc by arc. The
