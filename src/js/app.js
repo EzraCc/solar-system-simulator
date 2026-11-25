@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "38";
+  const BUILD_VERSION = "44";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -8038,6 +8038,54 @@
   ];
   const SATURN_POLE = { refPoleRaDec: [40.589, 83.537] };
 
+  // Saturn's rings around the planet in the Solar System view: one half
+  // at a time, so the far half ("back") goes under the planet and the near
+  // half ("front") over it. (The system view draws its rings sector by
+  // sector into its own depth sort instead.) Same lighting as there: the
+  // planet's shadow, and dimmer when seen from the unlit side or with the
+  // Sun low over the ring plane. sx/sy: planet centre in px; kmToPx: px
+  // per km at the planet; light: unit vector toward the Sun (ecliptic).
+  function drawSaturnRingsHalf(c, half, sx, sy, kmToPx, light, viewRows) {
+    // Small on screen, the thin rings need more opacity to read at all.
+    const boost = Math.min(2, Math.max(1, 60 / (PLANET_META.Saturn.radiusKm * kmToPx)));
+    const B = refPoleBasis(SATURN_POLE);
+    const pole = B[2];
+    const dot3 = (u, v) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+    const Req = PLANET_META.Saturn.radiusKm, Rpol = Req * (1 - BODY_ROTATION.Saturn.flattening);
+    const inShadow = (w) => {
+      const sL = dot3(w, light);
+      if (sL >= 0) return 0;
+      const perp = [w[0] - sL * light[0], w[1] - sL * light[1], w[2] - sL * light[2]];
+      const pp = dot3(perp, pole);
+      const pe2 = Math.max(0, dot3(perp, perp) - pp * pp);
+      return pe2 / (Req * Req) + (pp * pp) / (Rpol * Rpol) < 1 ? 1 : 0;
+    };
+    const sunUp = dot3(pole, light), viewUp = dot3(pole, viewRows[2]);
+    const bright = (Math.sign(sunUp) === Math.sign(viewUp) ? 1 : 0.4) * (0.45 + 0.55 * Math.min(1, Math.abs(sunUp) / 0.4));
+    const proj = (w) => {
+      const [rx, ry, rz] = rotateWorld(w[0], w[1], w[2]);
+      return [sx + rx * kmToPx, sy - ry * kmToPx, rz];
+    };
+    const N = 96;
+    const ringW = (r, th) => [0, 1, 2].map((k) => r * (Math.cos(th) * B[0][k] + Math.sin(th) * B[1][k]));
+    SATURN_RINGS.forEach((ring) => {
+      for (let k = 0; k < N; k++) {
+        const th0 = (k / N) * 2 * Math.PI, th1 = ((k + 1.04) / N) * 2 * Math.PI;
+        const w = [ringW(ring.r0, th0), ringW(ring.r1, th0), ringW(ring.r1, th1), ringW(ring.r0, th1)];
+        const q = w.map(proj);
+        const rz = q[0][2] + q[1][2] + q[2][2] + q[3][2];
+        if ((half === "back") !== (rz > 0)) continue; // larger rz = farther from the viewer
+        const shade = (inShadow(w[0]) + inShadow(w[1]) + inShadow(w[2]) + inShadow(w[3])) / 4;
+        const f = bright * (1 - 0.92 * shade);
+        c.beginPath(); c.moveTo(q[0][0], q[0][1]);
+        for (let j = 1; j < 4; j++) c.lineTo(q[j][0], q[j][1]);
+        c.closePath();
+        c.fillStyle = `rgba(${Math.round(216 * f)},${Math.round(200 * f)},${Math.round(160 * f)},${Math.min(0.85, boost * ring.alpha * (0.6 + 0.4 * (1 - shade)))})`;
+        c.fill();
+      }
+    });
+  }
+
   // The locked-panel body name -> system-view primary, or null.
   function systemPrimaryForBodyName(name) {
     if (SYSTEM_VIEW_PRIMARIES.includes(name)) return name;
@@ -9458,16 +9506,24 @@
       // it; a planet with a known orientation also gets its map. Sol,
       // spacecraft markers and tiny dots keep the flat 2D drawing.
       let drawn = false;
-      if (!b.isSun && !b.isFlight && b.screenR >= 4 && distFromSol > 1e-9) {
+      const toSol = distFromSol > 1e-9 ? [-b.pos[0] / distFromSol, -b.pos[1] / distFromSol, -b.pos[2] / distFromSol] : null;
+      // Saturn's rings: far half under the planet, near half over it.
+      const ringed = b.name === "Saturn" && b.primary === "Sol" && toSol && b.screenR >= 2;
+      const ringScale = ringed ? b.screenR / PLANET_META.Saturn.radiusKm : 0;
+      if (ringed) drawSaturnRingsHalf(ctx, "back", b.sx, b.sy, ringScale, toSol, viewRows);
+      if (!b.isSun && !b.isFlight && b.screenR >= 4 && toSol) {
         const rot = b.primary === "Sol" ? BODY_ROTATION[b.name] : null;
         const axes = rot ? iauBodyAxes(rot, tNow) : (b.axes || null);
         drawn = sphereGL.draw(ctx, { sx: b.sx, sy: b.sy, r: b.screenR, color: b.color, viewRows,
-          light: [-b.pos[0] / distFromSol, -b.pos[1] / distFromSol, -b.pos[2] / distFromSol],
-          axes, textureName: axes ? b.name : null,
-          flattening: rot ? rot.flattening : 0, ambient: 0.12, limb: LIMB_DARKENING[b.name] || 0 });
+          light: toSol, axes, textureName: axes ? b.name : null,
+          flattening: rot ? rot.flattening : 0, ambient: 0.12, limb: LIMB_DARKENING[b.name] || 0,
+          // The rings' shadow on the planet only once it's big enough to
+          // show cleanly; at a few px it aliases into a jagged line.
+          rings: ringed && b.screenR >= 30 ? bodyRingsForShader("Saturn") : null });
       }
       if (!drawn) drawBody(b.sx, b.sy, b.screenR, b.color, b.isSun, lightDirX, lightDirY);
       else drawAtmosphere(ctx, b.name, b.sx, b.sy, b.screenR);
+      if (ringed) drawSaturnRingsHalf(ctx, "front", b.sx, b.sy, ringScale, toSol, viewRows);
       renderedBodies.push(b);
     });
 
