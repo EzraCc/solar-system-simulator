@@ -5,7 +5,7 @@
   "payload": "Europa Clipper orbiter (6,065 kg fully fueled)",
   "status": "En Route",
   "significance": "Europa Clipper was launched because Galileo's 1990s flybys detected magnetic-field signatures consistent with a global saltwater ocean beneath Europa's icy crust, raising the question of whether that ocean, warmed by tidal flexing, could support the chemistry needed for life. It is NASA's first mission dedicated specifically to Europa and the largest spacecraft NASA has ever built for a planetary mission, carrying nine instruments to conduct dozens of close flybys rather than orbiting the moon directly, avoiding Jupiter's intense radiation while still mapping over 80% of the surface at high resolution. Its objectives are to confirm the ocean's existence, measure the ice shell's thickness and the ocean's depth and salinity via magnetic and gravity measurements, characterize surface chemistry for potential biosignatures, and search for active water plumes to sample directly. The spacecraft is still travelling to Jupiter, with orbit insertion expected in 2030, so its central discoveries about Europa's habitability remain ahead; a 2024 pre-launch analysis of its imaging system also settled that the moon's radiation exposure would not compromise the mission's instruments as once feared.",
-  "statusNote": "NASA's heaviest-ever planetary mission, studying Europa's habitability potential via ~50 flybys from Jupiter orbit rather than orbiting Europa directly. Jupiter orbit insertion 2030-04-11. The orbital tour, viewable in the Jupiter system view, is built from JPL Horizons' PREDICTED trajectory (target -159, published through 2034-09-03): 79 orbits and 69 moon flybys (53 of Europa, many below 100 km, plus Ganymede and Callisto passes used to reshape the orbit). It's a pre-arrival reference design, so dates and altitudes will change as the real tour is flown. Earth flyby (2026-12-03) altitude is NASA's current target of ~3,200 km (the pre-encounter range had been ~3,140-3,450 km); update with the as-flown figure after the flyby.",
+  "statusNote": "NASA's heaviest-ever planetary mission, studying Europa's habitability potential via ~50 flybys from Jupiter orbit rather than orbiting Europa directly. Jupiter orbit insertion 2030-04-11. The orbital tour, viewable in the Jupiter system view, is built from JPL Horizons' PREDICTED trajectory (target -159, published through 2034-09-03): 79 orbits and 69 moon flybys (53 of Europa, many below 100 km, plus Ganymede and Callisto passes used to reshape the orbit). It's a pre-arrival reference design, so dates and altitudes will change as the real tour is flown. Earth flyby: JPL Horizons' trajectory revised 2026-11-20 puts closest approach at 2026-12-03 20:15 UTC, 3,231 km altitude, in line with NASA's ~3,200 km target. Update with the as-flown figure after the flyby.",
   "legs": [
     {
       "type": "lambert",
@@ -31,7 +31,7 @@
       "type": "gravity_assist",
       "body": "Earth",
       "date": "2026-12-03",
-      "periapsisKm": 3200
+      "periapsisKm": 3231
     },
     {
       "type": "lambert",

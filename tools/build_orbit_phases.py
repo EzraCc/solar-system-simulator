@@ -37,6 +37,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -294,6 +295,11 @@ def dump_flight(data, ascii_only=False):
     return out
 
 
+def old_fit_date(block):
+    m = re.search(r"fitted (\d{4}-\d{2}-\d{2})", block.get("_comment", ""))
+    return m.group(1) if m else "earlier"
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("flight")
@@ -307,13 +313,29 @@ def main():
     ap.add_argument("--tol-frac", type=float, default=0.01)
     ap.add_argument("--samples", type=int, default=600)
     ap.add_argument("--note", default="", help="extra text for the block's _comment")
+    ap.add_argument("--append", action="store_true",
+                    help="keep the flight's existing phases and fit only from the last phase's end to --stop")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
     with open(os.path.join(HERE, "horizons_ids.json")) as f:
         sc = json.load(f)[args.flight]["id"]
     center, gm, radius = PRIMARIES[args.primary]
-    jd_start = to_jd(args.start) if args.start else find_capture(sc, center, gm, to_jd(args.arrival))
+    path = os.path.join(REPO_ROOT, "data", "flights", args.flight + ".json")
+    existing = []
+    if args.append:
+        with open(path) as f:
+            old = json.load(f).get("planetOrbit") or {}
+        existing = old.get("phases", [])
+        if not existing:
+            sys.exit("--append: flight has no planetOrbit phases to extend")
+        # Phase ends are stored in UTC; the fit runs in TDB.
+        last_end = to_jd(existing[-1]["end"].rstrip("Z").replace("T", " "))
+        jd_start = last_end + tt_minus_utc_days(last_end)
+    elif args.start:
+        jd_start = to_jd(args.start)
+    else:
+        jd_start = find_capture(sc, center, gm, to_jd(args.arrival))
     jd_stop = to_jd(args.stop)
     print(f"{args.flight}: orbit {iso(jd_start)} -> {iso(jd_stop)}", flush=True)
 
@@ -349,17 +371,27 @@ def main():
         jd += w
 
     print(f"{args.flight}: {len(phases)} phases, worst fit error {worst:,.0f} km")
+    if args.append:
+        old_worst = 0.0
+        m = re.search(r"worst position error ([\d,]+) km", old.get("_comment", ""))
+        if m:
+            old_worst = float(m.group(1).replace(",", ""))
+        worst = max(worst, old_worst)
+        phases = existing + phases
+        if not args.note:  # keep the old block's own notes
+            m = re.search(r"worst position error [\d,]+ km\.\s*(.*)$", old.get("_comment", ""), re.S)
+            args.note = m.group(1) if m else ""
     block = {
         "primaryBody": args.primary,
         "timeScale": "UTC",
-        "_comment": (f"Orbit phases fitted {dt.date.today().isoformat()} by tools/build_orbit_phases.py to JPL "
+        "_comment": (f"Orbit phases fitted {dt.date.today().isoformat() if not args.append else old_fit_date(old)}"
+                     f"{f' and extended {dt.date.today().isoformat()}' if args.append else ''} by tools/build_orbit_phases.py to JPL "
                      f"Horizons (target {sc}, center {center}): mean elements per window, worst position error "
                      f"{worst:,.0f} km. {args.note}").strip(),
         "phases": phases,
     }
     if args.dry_run:
         return 0
-    path = os.path.join(REPO_ROOT, "data", "flights", args.flight + ".json")
     src = open(path).read()
     data = json.loads(src)
     data["planetOrbit"] = block
