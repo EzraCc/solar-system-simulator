@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "45";
+  const BUILD_VERSION = "46";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -8380,6 +8380,22 @@
     return (_tourCache[primary] = tours);
   }
 
+  // Offscreen layers for drawSystemFrame's layered paths, reused every
+  // frame: the n-th layer is resized to the main canvas, cleared and given
+  // the same device-pixel transform before use.
+  const _svLayers = [];
+  function svPathLayer(n) {
+    if (!_svLayers[n]) _svLayers[n] = document.createElement("canvas").getContext("2d");
+    const g = _svLayers[n];
+    if (g.canvas.width !== canvas.width || g.canvas.height !== canvas.height) {
+      g.canvas.width = canvas.width; g.canvas.height = canvas.height;
+    }
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.clearRect(0, 0, g.canvas.width, g.canvas.height);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return g;
+  }
+
   function svProject(km) {
     const [rx, ry, rz] = rotateWorld(km[0], km[1], km[2]);
     return [viewW / 2 + systemView.panX + rx / systemView.kmPerPx,
@@ -8925,12 +8941,36 @@
     // would paint over the stretches that pass IN FRONT of it (a low orbit,
     // a perijove). Those few segments are remembered and re-stroked on top.
     const frontSegs = [];
-    const strokePath = (pts, style, lw) => {
+    // Semi-transparent strokes add up where they overlap: seen edge-on, a
+    // planet's moon orbits collapse onto one line and five 35% strokes
+    // stack to near-solid white (and a full tour's faint orbits pile up
+    // near periapsis). Paths drawn with layered=true go onto an offscreen
+    // layer per opacity at FULL strength, and each layer is laid over the
+    // scene once at that opacity, so overlaps cover instead of adding up
+    // and a line looks the same from any angle.
+    const layers = new Map(); // alpha -> 2D context of a cleared layer
+    const layerFor = (alpha) => {
+      if (layers.has(alpha)) return layers.get(alpha);
+      const g = svPathLayer(layers.size);
+      layers.set(alpha, g);
+      return g;
+    };
+    const compositeLayers = () => {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      layers.forEach((g, alpha) => { ctx.globalAlpha = alpha; ctx.drawImage(g.canvas, 0, 0); });
+      ctx.restore();
+      layers.clear();
+    };
+    const styleAlpha = (style) => { const m = style.match(/,\s*([\d.]+)\)$/); return m ? Number(m[1]) : 1; };
+    const strokePath = (pts, style, lw, layered) => {
       if (pts.length < 2) return;
-      ctx.beginPath();
-      ctx.moveTo(pts[0][0], pts[0][1]);
-      for (let k = 1; k < pts.length; k++) ctx.lineTo(pts[k][0], pts[k][1]);
-      ctx.strokeStyle = style; ctx.lineWidth = lw; ctx.stroke();
+      const g = layered ? layerFor(styleAlpha(style)) : ctx;
+      g.beginPath();
+      g.moveTo(pts[0][0], pts[0][1]);
+      for (let k = 1; k < pts.length; k++) g.lineTo(pts[k][0], pts[k][1]);
+      g.strokeStyle = layered ? style.replace(/,\s*[\d.]+\)$/, ",1)") : style;
+      g.lineWidth = lw; g.stroke();
       const rr = (jr + 3) * (jr + 3);
       for (let k = 1; k < pts.length; k++) {
         const p = pts[k - 1], q = pts[k];
@@ -8992,7 +9032,7 @@
       for (let k = 0; k <= 120; k++) {
         orbitPts.push(svProject(computeSatelliteOffset(m.elements, t + (k / 120) * P).posAU.map((v) => v * AU_KM)));
       }
-      strokePath(orbitPts, hexWithAlpha(m.meta.color, 0.35), 1);
+      strokePath(orbitPts, hexWithAlpha(m.meta.color, 0.35), 1, true);
       const pos = computeSatelliteOffset(m.elements, t).posAU.map((v) => v * AU_KM);
       const [sx, sy, rz] = svProject(pos);
       const rTrue = m.meta.radiusKm / systemView.kmPerPx;
@@ -9021,7 +9061,7 @@
       const active = t >= tour.tStart && t <= tour.tEnd;
       if (!active && !systemView.showAll) return;
       if (!active || !svCurrentOrbitOnly) {
-        strokePath(tour.pts.map((p) => svProject([p[1], p[2], p[3]])), hexWithAlpha(tour.color, active ? 0.10 : 0.06), 1);
+        strokePath(tour.pts.map((p) => svProject([p[1], p[2], p[3]])), hexWithAlpha(tour.color, active ? 0.10 : 0.06), 1, true);
       }
       if (!active) return;
       const [wa, wb] = svCurrentOrbitOnly ? tourCurrentOrbitWindow(tour, t) : [t - WINDOW, t + WINDOW];
@@ -9103,6 +9143,7 @@
       } });
     });
 
+    compositeLayers(); // the layered paths go under the discs, like the rest
     items.sort((a, b) => b.rz - a.rz).forEach((it) => it.draw());
     // Over the disc: a dark halo, then the path at full strength, so it
     // reads against a bright planet.
@@ -9115,7 +9156,7 @@
     // a full tour as a bright line.) Only the strong spacecraft paths
     // (alpha >= 0.6) get a thin dark halo so they read against the
     // planet's bright face.
-    const segAlpha = (style) => { const m = style.match(/,\s*([\d.]+)\)$/); return m ? Number(m[1]) : 1; };
+    const segAlpha = styleAlpha;
     frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
       if (segAlpha(style) < 0.6) return;
       ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
@@ -9125,12 +9166,19 @@
     // aren't re-stroked at all: a tour like Juno's passes in front of the
     // planet over a hundred times, and even faint copies stack into a
     // solid wedge across the disc.
+    // Faint-but-visible ones (moon orbits) go through layers too, so an
+    // edge-on stack of them doesn't become a bright bar across the planet.
     frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
-      if (segAlpha(style) < 0.3) return;
-      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
-      ctx.strokeStyle = style; ctx.lineWidth = lw; ctx.stroke();
+      const a = segAlpha(style);
+      if (a < 0.3) return;
+      const g = a < 0.6 ? layerFor(a) : ctx;
+      g.lineCap = "round";
+      g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1);
+      g.strokeStyle = a < 0.6 ? style.replace(/,\s*[\d.]+\)$/, ",1)") : style;
+      g.lineWidth = lw; g.stroke();
     });
     ctx.restore();
+    compositeLayers();
 
     drawSystemSunMarker(primary, primaryHelio, jx, jy);
 
