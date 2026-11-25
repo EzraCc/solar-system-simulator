@@ -3,8 +3,11 @@
 ## Push policy — check this before every `git push`
 
 **Current mode: LOCAL ONLY.** Set 2026-11-17 for the Jupiter-system
-zoom prototype. Commit locally (or don't even commit), but do not run
-`git push` under any circumstances until explicitly told to switch back.
+zoom prototype; that work (system views, timelines, info panels) was
+pushed to main on 2026-11-25 at the user's explicit request. Still LOCAL
+ONLY for the textured-sphere rendering branch started that day. Commit
+locally (or don't even commit), but do not run `git push` under any
+circumstances until explicitly told to switch back.
 
 The other mode is **PUSH FREELY**: OK to push after each verified,
 working commit without asking each time.
