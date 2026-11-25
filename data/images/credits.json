@@ -1,0 +1,2052 @@
+{
+ "images/bodies/67p.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Comet_67P_True_color.jpg",
+  "sourceTitle": "Comet 67P True color.jpg",
+  "credit": "ESA/Rosetta/MPS for OSIRIS Team MPS/UPD/LAM/IAA/SSO/INTA/UPM/DASP/IDA",
+  "creditDetail": "https://blogs.esa.int/rosetta/2014/12/12/comet-67pc-g-in-living-colour/ https://www.planetary.org/space-images/comet-cg-20140806-osiris-color https://www.flickr.com/photos/europeanspaceagency/15978891926/",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article '67P/Churyumov–Gerasimenko'",
+  "match": 1.0,
+  "title": "67P/Churyumov–Gerasimenko (true color)",
+  "usedBy": [
+   "Churyumov–Gerasimenko (67P)"
+  ]
+ },
+ "images/bodies/ariel.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA00041",
+  "sourceTitle": "Ariel - Highest Resolution Color Picture",
+  "credit": "NASA/JPL",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Ariel (Voyager 2)",
+  "usedBy": [
+   "Ariel"
+  ]
+ },
+ "images/bodies/bennu.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Bennu_mosaic_OSIRIS-REx_(square).png",
+  "sourceTitle": "Bennu mosaic OSIRIS-REx (square).png",
+  "credit": "NASA/Goddard/University of Arizona",
+  "creditDetail": "File:Bennu mosaic OSIRIS-REx.jpg from https://www.nasa.gov/press-release/nasa-spacecraft-provides-insight-into-asteroid-bennu-s-future-orbit",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article '101955 Bennu'",
+  "match": 1.0,
+  "title": "101955 Bennu (OSIRIS-REx mosaic)",
+  "usedBy": [
+   "Bennu (101955)"
+  ]
+ },
+ "images/bodies/callisto.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Callisto_VGR2_C2060635_OGB.png",
+  "sourceTitle": "Callisto VGR2 C2060635 OGB.png",
+  "credit": "zelario12",
+  "creditDetail": "https://www.flickr.com/photos/197038812@N04/54002253611/",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Callisto (moon)'",
+  "match": 1.0,
+  "title": "Callisto (Voyager 2)",
+  "usedBy": [
+   "Callisto"
+  ]
+ },
+ "images/bodies/ceres.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Ceres_-_RC3_-_Haulani_Crater_(22381131691)_(cropped).jpg",
+  "sourceTitle": "Ceres - RC3 - Haulani Crater (22381131691) (cropped).jpg",
+  "credit": "Justin Cowart",
+  "creditDetail": "Ceres - RC3 - Haulani Crater",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Ceres (dwarf planet)'",
+  "match": 1.0,
+  "title": "1 Ceres (Dawn, Haulani Crater)",
+  "usedBy": [
+   "Ceres (1)"
+  ]
+ },
+ "images/bodies/charon.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Charon_in_True_Color_-_High-Res.png",
+  "sourceTitle": "Charon in True Color - High-Res.png",
+  "credit": "NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute/Alex Parker",
+  "creditDetail": "http://pluto.jhuapl.edu/Multimedia/Science-Photos/image.php?page=1&gallery_id=2&image_id=544",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Charon (moon)'",
+  "match": 1.0,
+  "title": "Charon (true color, New Horizons)",
+  "usedBy": [
+   "Charon"
+  ]
+ },
+ "images/bodies/deimos.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA11826",
+  "sourceTitle": "Martian Moon Deimos in High Resolution",
+  "credit": "NASA/JPL-Caltech/University of Arizona",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Deimos (high resolution)",
+  "usedBy": [
+   "Deimos"
+  ]
+ },
+ "images/bodies/didymos.png": {
+  "sourcePage": "https://en.wikipedia.org/wiki/65803_Didymos",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Didymos and Dimorphos (DART, high resolution)",
+  "usedBy": [
+   "Didymos (65803)"
+  ]
+ },
+ "images/bodies/dinkinesh.png": {
+  "sourcePage": "https://www.nasa.gov/image-article/nasas-lucy-spacecraft-discovers-2nd-asteroid-during-dinkinesh-flyby/",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "152830 Dinkinesh and its satellite Selam (Lucy)",
+  "usedBy": [
+   "Dinkinesh (152830)"
+  ]
+ },
+ "images/bodies/dione.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Dione_in_natural_light.jpg",
+  "sourceTitle": "Dione in natural light.jpg",
+  "credit": "NASA",
+  "creditDetail": "http://photojournal.jpl.nasa.gov/catalog/PIA09861",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Dione (moon)'",
+  "match": 1.0,
+  "title": "Dione (natural light)",
+  "usedBy": [
+   "Dione"
+  ]
+ },
+ "images/bodies/donaldjohanson.png": {
+  "sourcePage": "https://science.nasa.gov/blogs/lucy/2025/07/02/nasas-lucy-mission-provides-full-view-of-asteroid-donaldjohanson/",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "52246 Donaldjohanson (Lucy)",
+  "usedBy": [
+   "Donaldjohanson (52246)"
+  ]
+ },
+ "images/bodies/earth.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/ARC-1972-AS17-148-22727",
+  "sourceTitle": "ARC-1972-AS17-148-22727",
+  "credit": "NASA/ARC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Earth (Apollo 17 \"Blue Marble\")",
+  "usedBy": [
+   "Earth"
+  ]
+ },
+ "images/bodies/enceladus.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:PIA17202_-_Approaching_Enceladus.jpg",
+  "sourceTitle": "PIA17202 - Approaching Enceladus.jpg",
+  "credit": "National Aeronautics and Space Administration (NASA) / Jet Propulsion Laboratory (JPL)",
+  "creditDetail": "PIA17202 from the NASA/JPL Photojournal",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Enceladus'",
+  "match": 1.0,
+  "title": "Enceladus (approach, Cassini)",
+  "usedBy": [
+   "Enceladus"
+  ]
+ },
+ "images/bodies/europa.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA19048",
+  "sourceTitle": "Europa Stunning Surface",
+  "credit": "NASA/JPL-Caltech/SETI Institute",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Europa",
+  "usedBy": [
+   "Europa"
+  ]
+ },
+ "images/bodies/eurybates.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:3548_Eurybates_lightcurve_shape_model_2023.jpg",
+  "sourceTitle": "3548 Eurybates lightcurve shape model 2023.jpg",
+  "credit": "Stefano Mottola et al. (The Planetary Science Journal/American Astronomical Society)",
+  "creditDetail": "https://iopscience.iop.org/article/10.3847/PSJ/acaf79",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "infoUrl is the file page",
+  "match": 1.0,
+  "title": "3548 Eurybates (lightcurve shape model, 2023)",
+  "usedBy": [
+   "Eurybates (3548)"
+  ]
+ },
+ "images/bodies/ganymede.jpg": {
+  "sourcePage": "https://science.nasa.gov/photojournal/ganymede-color-global/",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Ganymede (color global)",
+  "usedBy": [
+   "Ganymede"
+  ]
+ },
+ "images/bodies/iapetus.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Iapetus_as_seen_by_Cassini_True_Color.png",
+  "sourceTitle": "Iapetus as seen by Cassini True Color.png",
+  "credit": "Anonymsiy",
+  "creditDetail": "Own work",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Iapetus (moon)'",
+  "match": 0.931,
+  "title": "Iapetus (trailing hemisphere, natural color)",
+  "usedBy": [
+   "Iapetus"
+  ]
+ },
+ "images/bodies/io.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA02308",
+  "sourceTitle": "Global image of Io true color",
+  "credit": "NASA/JPL/University of Arizona",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Io",
+  "usedBy": [
+   "Io"
+  ]
+ },
+ "images/bodies/itokawa.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Asteroid_(25143)_Itokawa_seen_in_close-up_(eso1405c).jpg",
+  "sourceTitle": "Asteroid (25143) Itokawa seen in close-up (eso1405c).jpg",
+  "credit": "JAXA",
+  "creditDetail": "This media was produced by the European Southern Observatory (ESO), under the identifier eso1405c This tag does not indicate the copyright status of the attached work. A normal copyright tag is still required. See Commons:Licensing.",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article '25143 Itokawa'",
+  "match": 1.0,
+  "title": "25143 Itokawa (close-up)",
+  "usedBy": [
+   "Itokawa (25143)"
+  ]
+ },
+ "images/bodies/jupiter.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png",
+  "sourceTitle": "Jupiter OPAL 2024.png",
+  "credit": "NASA/STSCI (S.T.A.R.S)",
+  "creditDetail": "https://hubblesite.org/contents/media/images/2024/009/01HPMN3ZGXFN1E0M1W5Y8AVCAM?news=true",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Jupiter'",
+  "match": 1.0,
+  "title": "Jupiter (OPAL program, 2024)",
+  "usedBy": [
+   "Jupiter"
+  ]
+ },
+ "images/bodies/kamooalewa.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/File:First_look_at_Kamo%CA%BBoalewa_from_Tianwen-2.jpg",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "469219 Kamo'oalewa (first close-up, Tianwen-2)",
+  "usedBy": [
+   "Kamoʻoalewa (469219)"
+  ]
+ },
+ "images/bodies/leucus.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:11351_Leucus_lightcurve_shape_model_2020.jpg",
+  "sourceTitle": "11351 Leucus lightcurve shape model 2020.jpg",
+  "credit": "Stefano Mottola et al. (The Planetary Science Journal/American Astronomical Society)",
+  "creditDetail": "https://iopscience.iop.org/article/10.3847/PSJ/abb942",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "infoUrl is the file page",
+  "match": 1.0,
+  "title": "11351 Leucus (lightcurve shape model, 2020)",
+  "usedBy": [
+   "Leucus (11351)"
+  ]
+ },
+ "images/bodies/mars.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA00407",
+  "sourceTitle": "Global Color Views of Mars",
+  "credit": "NASA/JPL/USGS",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Mars",
+  "usedBy": [
+   "Mars"
+  ]
+ },
+ "images/bodies/mercury.jpg": {
+  "sourcePage": "https://science.nasa.gov/photojournal/mercurys-true-color-is-in-the-eye-of-the-beholder/",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Mercury (true color)",
+  "usedBy": [
+   "Mercury"
+  ]
+ },
+ "images/bodies/miranda.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA00043",
+  "sourceTitle": "Miranda - High Resolution Mosaic",
+  "credit": "NASA/JPL",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Miranda (Voyager 2 mosaic)",
+  "usedBy": [
+   "Miranda"
+  ]
+ },
+ "images/bodies/moon.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/as17-152-23311",
+  "sourceTitle": "Full disc of moon photographed by Apollo 17 crewmen during transearth coast",
+  "credit": "NASA/JSC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "The Moon (Apollo 17)",
+  "usedBy": [
+   "Moon"
+  ]
+ },
+ "images/bodies/neptune.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Neptune_Voyager2_color_calibrated.png",
+  "sourceTitle": "Neptune Voyager2 color calibrated.png",
+  "credit": "NASA / Voyager 2 / PDS / OPUS / Ardenau4",
+  "creditDetail": "Own work; also published on Flickr: https://www.flickr.com/photos/197038812@N04/53446862462/",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Neptune'",
+  "match": 1.0,
+  "title": "Neptune (Voyager 2, color calibrated)",
+  "usedBy": [
+   "Neptune"
+  ]
+ },
+ "images/bodies/oberon.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA00034",
+  "sourceTitle": "Oberon at Voyager Closest Approach",
+  "credit": "NASA/JPL",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Oberon (Voyager 2)",
+  "usedBy": [
+   "Oberon"
+  ]
+ },
+ "images/bodies/orus.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:21900_Orus_lightcurve_shape_model_2023.jpg",
+  "sourceTitle": "21900 Orus lightcurve shape model 2023.jpg",
+  "credit": "Stefano Mottola et al. (The Planetary Science Journal/American Astronomical Society)",
+  "creditDetail": "https://iopscience.iop.org/article/10.3847/PSJ/acaf79",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "infoUrl is the file page",
+  "match": 1.0,
+  "title": "21900 Orus (lightcurve shape model, 2023)",
+  "usedBy": [
+   "Orus (21900)"
+  ]
+ },
+ "images/bodies/patroclus.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:617_Patroclus_Hubble.jpg",
+  "sourceTitle": "617 Patroclus Hubble.jpg",
+  "credit": "Hubble Space Telescope/SwRI",
+  "creditDetail": "http://lucy.swri.edu//2018/HST-images.html",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "infoUrl is the file page",
+  "match": 1.0,
+  "title": "617 Patroclus (Hubble)",
+  "usedBy": [
+   "Patroclus (617)"
+  ]
+ },
+ "images/bodies/phobos.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA10369",
+  "sourceTitle": "Phobos from 5,800 Kilometers Color",
+  "credit": "NASA/JPL-Caltech/University of Arizona",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Phobos (ESA Mars Express)",
+  "usedBy": [
+   "Phobos"
+  ]
+ },
+ "images/bodies/pluto_charon.jpg": {
+  "sourcePage": "https://science.nasa.gov/image-detail/pluto-and-charon-1920x640/",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Pluto and Charon (New Horizons)",
+  "usedBy": [
+   "Pluto and Charon"
+  ]
+ },
+ "images/bodies/polymele.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Polymele_occultation_satellite_discovery.png",
+  "sourceTitle": "Polymele occultation satellite discovery.png",
+  "credit": "NASA's Goddard Space Flight Center",
+  "creditDetail": "https://www.nasa.gov/feature/goddard/2022/nasa-s-lucy-team-discovers-moon-around-asteroid-polymele",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "infoUrl's Commons file is an occultation chart, not this render; source not found",
+  "match": -0.051,
+  "title": "Polymele occultation campaign (satellite discovery)",
+  "usedBy": [
+   "Polymele (15094)"
+  ]
+ },
+ "images/bodies/psyche.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Psyche_asteroid_eso.jpg",
+  "sourceTitle": "Psyche asteroid eso.jpg",
+  "credit": "ESO/LAM",
+  "creditDetail": "Source: https://www.eso.org/public/usa/blog/true-nature-of-asteroids/?lang ; Direct image link: https://cdn.eso.org/images/banner1920/psyche_asteroid_unnanotated.jpg",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "infoUrl is the file page",
+  "match": 0.999,
+  "title": "16 Psyche (ESO/LAM HARISSA survey)",
+  "usedBy": [
+   "Psyche (16)"
+  ]
+ },
+ "images/bodies/rhea.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:PIA07763_Rhea_full_globe5.jpg",
+  "sourceTitle": "PIA07763 Rhea full globe5.jpg",
+  "credit": "NASA/JPL/Space Science Institute",
+  "creditDetail": "http://photojournal.jpl.nasa.gov/catalog/PIA07763",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Rhea (moon)'",
+  "match": 1.0,
+  "title": "Rhea (full globe, Cassini)",
+  "usedBy": [
+   "Rhea"
+  ]
+ },
+ "images/bodies/ryugu.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:162173_Ryugu_brightened.png",
+  "sourceTitle": "162173 Ryugu brightened.png",
+  "credit": "Original image taken by JAXA/ISAS, processed by User:Anonymsiy, image adjusted by User:Nrco0e",
+  "creditDetail": "Modified from original image: File:162173 Ryugu.png (+150% exposure in paint.net)",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article '162173 Ryugu'",
+  "match": 1.0,
+  "title": "162173 Ryugu (Hayabusa2)",
+  "usedBy": [
+   "Ryugu (162173)"
+  ]
+ },
+ "images/bodies/saturn.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Saturn_global_view_from_Cassini,_rings_open_Better_Colour.png",
+  "sourceTitle": "Saturn global view from Cassini, rings open Better Colour.png",
+  "credit": "NASA / JPL-Caltech / SSI / color composite by Gordan Ugarkovic",
+  "creditDetail": "https://www.planetary.org/space-images/saturn_globe_rings_open_ugodan",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Saturn'",
+  "match": 1.0,
+  "title": "Saturn (Cassini mosaic)",
+  "usedBy": [
+   "Saturn"
+  ]
+ },
+ "images/bodies/sol.jpg": {
+  "sourcePage": "https://svs.gsfc.nasa.gov/3988/",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "The Sun (SDO HMI visible-light image)",
+  "usedBy": [
+   "Sol"
+  ]
+ },
+ "images/bodies/tempel1.jpg": {
+  "sourcePage": "https://science.nasa.gov/photojournal/tempel-1-composite-map",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "9P/Tempel 1 (Deep Impact/Stardust-NExT composite)",
+  "usedBy": [
+   "Tempel 1 (9P)"
+  ]
+ },
+ "images/bodies/tethys.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Global_view_of_Tethys_from_Cassini.jpg",
+  "sourceTitle": "Global view of Tethys from Cassini.jpg",
+  "credit": "NASA / JPL-Caltech / SSI / Gordan Ugarkovic",
+  "creditDetail": "https://www.planetary.org/space-images/tethys",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Tethys (moon)'",
+  "match": 1.0,
+  "title": "Tethys (Cassini global view)",
+  "usedBy": [
+   "Tethys"
+  ]
+ },
+ "images/bodies/titan.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Titan_in_true_color_by_Kevin_M._Gill.jpg",
+  "sourceTitle": "Titan in true color by Kevin M. Gill.jpg",
+  "credit": "NASA/JPL-Caltech/SSI/Kevin M. Gill",
+  "creditDetail": "File:Titan - December 16 2011 (40047599334).jpg by [1]",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Titan (moon)'",
+  "match": 1.0,
+  "title": "Titan (true color)",
+  "usedBy": [
+   "Titan"
+  ]
+ },
+ "images/bodies/titania.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA00039",
+  "sourceTitle": "Titania - Highest Resolution Voyager Picture",
+  "credit": "NASA/JPL",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Titania (Voyager 2)",
+  "usedBy": [
+   "Titania"
+  ]
+ },
+ "images/bodies/toutatis.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Asteroid_4179_Toutatis_close-up.jpg",
+  "sourceTitle": "Asteroid 4179 Toutatis close-up.jpg",
+  "credit": "Yun Jiang, Jianghui Ji, Jiangchuan Huang, Simone Marchi, Yuan Li & Wing-Huen Ip",
+  "creditDetail": "https://doi.org/10.1038/srep16029",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "infoUrl is the file page",
+  "match": 1.0,
+  "title": "4179 Toutatis (close-up)",
+  "usedBy": [
+   "Toutatis (4179)"
+  ]
+ },
+ "images/bodies/triton.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Triton_Reprocessed.png",
+  "sourceTitle": "Triton Reprocessed.png",
+  "credit": "NASA",
+  "creditDetail": "File:Triton.png",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Triton (moon)'",
+  "match": 1.0,
+  "title": "Triton (true color, Voyager 2)",
+  "usedBy": [
+   "Triton"
+  ]
+ },
+ "images/bodies/umbriel.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA00040",
+  "sourceTitle": "Umbriel at Closest Approach",
+  "credit": "NASA/JPL",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "NASA Image Library record",
+  "title": "Umbriel (southern hemisphere, Voyager 2)",
+  "usedBy": [
+   "Umbriel"
+  ]
+ },
+ "images/bodies/uranus.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Uranus_Voyager2_color_calibrated.png",
+  "sourceTitle": "Uranus Voyager2 color calibrated.png",
+  "credit": "Ardenau4",
+  "creditDetail": "Own work; also published on Flickr: https://www.flickr.com/photos/197038812@N04/53449450202/",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Uranus'",
+  "match": 1.0,
+  "title": "Uranus (Voyager 2, color calibrated)",
+  "usedBy": [
+   "Uranus"
+  ]
+ },
+ "images/bodies/venus.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Venus-real_color.jpg",
+  "sourceTitle": "Venus-real color.jpg",
+  "credit": "NASA or Ricardo Nunes",
+  "creditDetail": "http://www.astrosurf.com/nunes/explor/explor_m10.htm",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "infoUrl is the file page",
+  "match": 1.0,
+  "title": "Venus (true color)",
+  "usedBy": [
+   "Venus"
+  ]
+ },
+ "images/bodies/vesta.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Vesta_in_natural_color.jpg",
+  "sourceTitle": "Vesta in natural color.jpg",
+  "credit": "NASA / JPL / MPS / DLR / IDA / Björn Jónsson",
+  "creditDetail": "https://planetary.s3.amazonaws.com/assets/images/9-small-bodies/2013/20130819_vesta_rgb_20110724_0835.png (description; see also other side)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article '4 Vesta'",
+  "match": 1.0,
+  "title": "4 Vesta (Dawn, natural color)",
+  "usedBy": [
+   "Vesta (4)"
+  ]
+ },
+ "images/missions/aditya_l1/spacecraft.png": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Aditya-L1",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Aditya-L1",
+  "usedBy": [
+   "aditya_l1"
+  ]
+ },
+ "images/missions/akatsuki/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Akatsuki_PressConf01.jpg",
+  "sourceTitle": "Akatsuki PressConf01.jpg",
+  "credit": "宇宙航空研究開発機構・宇宙科学研究所(JAXA/ISAS)、https://www.isas.jaxa.jp/en/researchers/data-policy/ 、https://www.isas.jaxa.jp/researchers/data-policy/",
+  "creditDetail": "https://isas-gallery.jp/tag/akatsuki",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Akatsuki (spacecraft)'",
+  "match": 1.0,
+  "title": "Akatsuki (spacecraft)",
+  "usedBy": [
+   "akatsuki"
+  ]
+ },
+ "images/missions/bepicolombo/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:BepiColombo_stack_cropped.jpg",
+  "sourceTitle": "BepiColombo stack cropped.jpg",
+  "credit": "ESA–C. Carreau",
+  "creditDetail": "http://www.esa.int/spaceinimages/Images/2017/04/BepiColombo_stack2",
+  "license": "CC BY-SA 3.0 igo",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/deed.en",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'BepiColombo'",
+  "match": 1.0,
+  "title": "BepiColombo",
+  "usedBy": [
+   "bepicolombo"
+  ]
+ },
+ "images/missions/cassini/rocket.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Titan4B_on_Launch_Complex_40.jpg",
+  "sourceTitle": "Titan4B on Launch Complex 40.jpg",
+  "credit": "NASA",
+  "creditDetail": "https://mediaarchive.ksc.nasa.gov/#/Detail/31540",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Titan IV'",
+  "match": 1.0,
+  "title": "Titan IV",
+  "usedBy": [
+   "cassini"
+  ]
+ },
+ "images/missions/cassini/spacecraft.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Cassini%E2%80%93Huygens",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Cassini-Huygens",
+  "usedBy": [
+   "cassini"
+  ]
+ },
+ "images/missions/chunge2_toutatis/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Chang%27e-2_mockup_at_BASM.jpg",
+  "sourceTitle": "Chang'e-2 mockup at BASM.jpg",
+  "credit": "Shujianyang",
+  "creditDetail": "Own work",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Chang'e 2'",
+  "match": 1.0,
+  "title": "Chang'e 2",
+  "usedBy": [
+   "chunge2_toutatis"
+  ]
+ },
+ "images/missions/curiosity/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Curiosity_Self-Portrait_at_%27Big_Sky%27_Drilling_Site.jpg",
+  "sourceTitle": "Curiosity Self-Portrait at 'Big Sky' Drilling Site.jpg",
+  "credit": "NASA",
+  "creditDetail": "http://photojournal.jpl.nasa.gov/catalog/PIA19920",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Curiosity (rover)'",
+  "match": 1.0,
+  "title": "Curiosity (rover)",
+  "usedBy": [
+   "curiosity"
+  ]
+ },
+ "images/missions/dart/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Dart-poster3.jpg",
+  "sourceTitle": "Dart-poster3.jpg",
+  "credit": "NASA/Johns Hopkins Applied Physics Lab",
+  "creditDetail": "https://www.nasa.gov/sites/default/files/thumbnails/image/dart-poster3_.jpeg",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Double Asteroid Redirection Test'",
+  "match": 0.999,
+  "title": "Double Asteroid Redirection Test",
+  "usedBy": [
+   "dart"
+  ]
+ },
+ "images/missions/dawn/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Dawn_logo.png",
+  "sourceTitle": "Dawn logo.png",
+  "credit": "NASA",
+  "creditDetail": "http://photojournal.jpl.nasa.gov/catalog/PIA19375 http://mediaarchive.ksc.nasa.gov/detail.cfm?mediaid=33416",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Dawn (spacecraft)'",
+  "match": 1.0,
+  "title": "Dawn (spacecraft)",
+  "usedBy": [
+   "dawn"
+  ]
+ },
+ "images/missions/deep_impact/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Deep_Impact.jpg",
+  "sourceTitle": "Deep Impact.jpg",
+  "credit": "NASA/JPL",
+  "creditDetail": "http://deepimpact.jpl.nasa.gov/gallery/Flyby_w_Impactor.html",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Deep Impact (spacecraft)'",
+  "match": 0.999,
+  "title": "Deep Impact (spacecraft)",
+  "usedBy": [
+   "deep_impact"
+  ]
+ },
+ "images/missions/deep_space_1/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Deep_Space_1_spacecraft.jpg",
+  "sourceTitle": "Deep Space 1 spacecraft.jpg",
+  "credit": "NASA",
+  "creditDetail": "Great Images in NASA Description",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Deep Space 1'",
+  "match": 1.0,
+  "title": "Deep Space 1",
+  "usedBy": [
+   "deep_space_1"
+  ]
+ },
+ "images/missions/escapade/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:EscaPADE.png",
+  "sourceTitle": "EscaPADE.png",
+  "credit": "NASA's Scientific Visualization Studio - TRAX International/Kristen Perrin",
+  "creditDetail": "ESCAPADE Mission Posters",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'ESCAPADE'",
+  "match": 1.0,
+  "title": "ESCAPADE",
+  "usedBy": [
+   "escapade"
+  ]
+ },
+ "images/missions/europa_clipper/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Europa_Clipper_spacecraft_model.png",
+  "sourceTitle": "Europa Clipper spacecraft model.png",
+  "credit": "National Aeronautics and Space Administration (NASA) · Jet Propulsion Laboratory",
+  "creditDetail": "Published source: Europa Mission Spacecraft - Artist's Rendering \" by the Jet Propulsion Laboratory.; Direct source: Image hosted by jpl.nasa.gov.",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Europa Clipper'",
+  "match": 1.0,
+  "title": "Europa Clipper",
+  "usedBy": [
+   "europa_clipper"
+  ]
+ },
+ "images/missions/exomars_tgo/lander.JPG": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Schiaparelli_Lander_Model_at_ESOC.JPG",
+  "sourceTitle": "Schiaparelli Lander Model at ESOC.JPG",
+  "credit": "Gerbil",
+  "creditDetail": "Own work",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Schiaparelli EDM'",
+  "match": 0.999,
+  "title": "Schiaparelli EDM",
+  "usedBy": [
+   "exomars_tgo"
+  ]
+ },
+ "images/missions/exomars_tgo/spacecraft.png": {
+  "sourcePage": "https://en.wikipedia.org/wiki/File:ExoMars_2016_TGO_and_EDM_trans-small.png",
+  "sourceTitle": "ExoMars 2016 TGO and EDM trans-small.png",
+  "credit": "http://exploration.esa.int/mars/56673-exomars-2016-trace-gas-orbiter-and-schiaparelli/ (image link)",
+  "creditDetail": "",
+  "license": "Fair use",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "replace",
+  "method": "source found, but it's a fair-use (non-free) file: replace with a freely licensed image",
+  "match": 1.0,
+  "title": "Trace Gas Orbiter",
+  "usedBy": [
+   "exomars_tgo"
+  ]
+ },
+ "images/missions/galileo/rocket.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:STS-34_Launch_1.jpg",
+  "sourceTitle": "STS-34 Launch 1.jpg",
+  "credit": "NASA",
+  "creditDetail": "NASA MSFC 8913765 High Resolution Image",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'STS-34'",
+  "match": 1.0,
+  "title": "Space Shuttle / IUS",
+  "usedBy": [
+   "galileo"
+  ]
+ },
+ "images/missions/galileo/spacecraft.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Galileo_(spacecraft)",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Galileo (spacecraft)",
+  "usedBy": [
+   "galileo"
+  ]
+ },
+ "images/missions/genesis/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:GenSC_collection2_150dpi.jpg",
+  "sourceTitle": "GenSC collection2 150dpi.jpg",
+  "credit": "NASA/JPL",
+  "creditDetail": "https://genesismission.jpl.nasa.gov/mission/genSC_collection2.html (image link",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Genesis (spacecraft)'",
+  "match": 1.0,
+  "title": "Genesis (spacecraft)",
+  "usedBy": [
+   "genesis"
+  ]
+ },
+ "images/missions/hayabusa/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Hayabusa_hover.jpg",
+  "sourceTitle": "Hayabusa hover.jpg",
+  "credit": "JGarry at English Wikipedia",
+  "creditDetail": "Transferred from en.wikipedia to Commons by Drilnoth using CommonsHelper.",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Hayabusa'",
+  "match": 1.0,
+  "title": "Hayabusa",
+  "usedBy": [
+   "hayabusa"
+  ]
+ },
+ "images/missions/hayabusa2/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Hayabusa2_Ion_thruster.jpg",
+  "sourceTitle": "Hayabusa2 Ion thruster.jpg",
+  "credit": "DLR German Aerospace Center",
+  "creditDetail": "This image has been extracted from another file",
+  "license": "CC BY 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Hayabusa2'",
+  "match": 0.999,
+  "title": "Hayabusa2",
+  "usedBy": [
+   "hayabusa2"
+  ]
+ },
+ "images/missions/hera/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Hera_in_orbit.jpg",
+  "sourceTitle": "Hera in orbit.jpg",
+  "credit": "ESA – Science Office",
+  "creditDetail": "https://www.esa.int/ESA_Multimedia/Images/2015/04/Hera_in_orbit",
+  "license": "CC BY-SA 3.0 igo",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/deed.en",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Hera (space mission)'",
+  "match": 1.0,
+  "title": "Hera (space mission)",
+  "usedBy": [
+   "hera"
+  ]
+ },
+ "images/missions/hope_mars/spacecraft.png": {
+  "sourcePage": "https://en.wikipedia.org/wiki/File:Mars_Hope_Probe.png",
+  "sourceTitle": "Mars Hope Probe.png",
+  "credit": "Original work: MBRSC; Depiction: MBRSC",
+  "creditDetail": "https://www.mbrsc.ae/application/files/cache/69f0ebc9322d471238bd648499cff6bb.jpg",
+  "license": "Fair use",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "replace",
+  "method": "source found, but it's a fair-use (non-free) file: replace with a freely licensed image",
+  "match": 0.999,
+  "title": "Emirates Mars Mission",
+  "usedBy": [
+   "hope_mars"
+  ]
+ },
+ "images/missions/insight/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:PIA19664-MarsInSightLander-Assembly-20150430.jpg",
+  "sourceTitle": "PIA19664-MarsInSightLander-Assembly-20150430.jpg",
+  "credit": "NASA/JPL-Caltech/Lockheed Martin",
+  "creditDetail": "http://photojournal.jpl.nasa.gov/jpeg/PIA19664.jpg",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'InSight'",
+  "match": 0.999,
+  "title": "InSight",
+  "usedBy": [
+   "insight"
+  ]
+ },
+ "images/missions/juice/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Juice_launch_kit_cover_close-up.png",
+  "sourceTitle": "Juice launch kit cover close-up.png",
+  "credit": "ESA",
+  "creditDetail": "https://www.esa.int/Science_Exploration/Space_Science/Juice/Juice_launch_kit",
+  "license": "CC BY-SA 3.0 igo",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/deed.en",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Jupiter Icy Moons Explorer'",
+  "match": 1.0,
+  "title": "Jupiter Icy Moons Explorer",
+  "usedBy": [
+   "juice"
+  ]
+ },
+ "images/missions/juno/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Juno_spacecraft_model_1.png",
+  "sourceTitle": "Juno spacecraft model 1.png",
+  "credit": "National Aeronautics and Space Administration (NASA)",
+  "creditDetail": "Juno Mission to Jupiter (2010 Artist's Concept) at the official NASA website.",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Juno (spacecraft)'",
+  "match": 1.0,
+  "title": "Juno (spacecraft)",
+  "usedBy": [
+   "juno"
+  ]
+ },
+ "images/missions/lucy/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Lucy-PatroclusMenoetius-art.png",
+  "sourceTitle": "Lucy-PatroclusMenoetius-art.png",
+  "credit": "NASA’s Goddard Space Flight Center/Conceptual Image Lab/Adriana Gutierrez",
+  "creditDetail": "http://lucy.swri.edu/img/1000days.png ; http://lucy.swri.edu/2019/01/20/1000days.html",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Lucy (spacecraft)'",
+  "match": 0.999,
+  "title": "Lucy",
+  "usedBy": [
+   "lucy"
+  ]
+ },
+ "images/missions/magellan/rocket.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/STS-30",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Space Shuttle / IUS",
+  "usedBy": [
+   "magellan"
+  ]
+ },
+ "images/missions/magellan/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Magellan_at_Kennedy_Space_Center.jpg",
+  "sourceTitle": "Magellan at Kennedy Space Center.jpg",
+  "credit": "NASA",
+  "creditDetail": "http://www2.jpl.nasa.gov/magellan/image14.html",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Magellan (spacecraft)'",
+  "match": 1.0,
+  "title": "Magellan (spacecraft)",
+  "usedBy": [
+   "magellan"
+  ]
+ },
+ "images/missions/mars_climate_orbiter/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars_Climate_Orbiter_2.jpg",
+  "sourceTitle": "Mars Climate Orbiter 2.jpg",
+  "credit": "NASA/JPL/Corby Waste",
+  "creditDetail": "http://www.vitalstatistics.info/uploads/mars%20climate%20orbiter.jpg (see also http://www.jpl.nasa.gov/pictures/solar/mcoartist.html)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Mars Climate Orbiter'",
+  "match": 1.0,
+  "title": "Mars Climate Orbiter",
+  "usedBy": [
+   "mars_climate_orbiter"
+  ]
+ },
+ "images/missions/mars_express/lander.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Beagle_2_replica.jpg",
+  "sourceTitle": "Beagle 2 replica.jpg",
+  "credit": "user:geni",
+  "creditDetail": "Photo by user:geni",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Beagle 2'",
+  "match": 0.998,
+  "title": "Beagle 2",
+  "usedBy": [
+   "mars_express"
+  ]
+ },
+ "images/missions/mars_express/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars_Express_illustration_highlighting_MARSIS_antenna.jpg",
+  "sourceTitle": "Mars Express illustration highlighting MARSIS antenna.jpg",
+  "credit": "NASA/JPL/Corby Waste",
+  "creditDetail": "http://www.fourth-millennium.net/mission-artwork/mars-express-MARSIS-antenna.html (image link)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Mars Express'",
+  "match": 1.0,
+  "title": "Mars Express",
+  "usedBy": [
+   "mars_express"
+  ]
+ },
+ "images/missions/mars_global_surveyor/spacecraft.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Mars_Global_Surveyor",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Mars Global Surveyor",
+  "usedBy": [
+   "mars_global_surveyor"
+  ]
+ },
+ "images/missions/mars_observer/rocket.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Commercial_Titan_3_launching_Mars_Observer.jpg",
+  "sourceTitle": "Commercial Titan 3 launching Mars Observer.jpg",
+  "credit": "",
+  "creditDetail": "",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Commercial Titan III'",
+  "match": 1.0,
+  "title": "Commercial Titan III",
+  "usedBy": [
+   "mars_observer"
+  ]
+ },
+ "images/missions/mars_observer/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars_Observer_preparations.jpg",
+  "sourceTitle": "Mars Observer preparations.jpg",
+  "credit": "NASA Marshall Space Flight Center (NASA-MSFC), Image-ID: MSFC-9261352",
+  "creditDetail": "http://nix.larc.nasa.gov/info;jsessionid=c0okmrdhqip6?id=MSFC-9261352&orgid=11",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Mars Observer'",
+  "match": 1.0,
+  "title": "Mars Observer",
+  "usedBy": [
+   "mars_observer"
+  ]
+ },
+ "images/missions/mars_odyssey/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars_Odyssey_spacecraft_model.png",
+  "sourceTitle": "Mars Odyssey spacecraft model.png",
+  "credit": "National Aeronautics and Space Administration (NASA)",
+  "creditDetail": "Published source': \"Spacecraft Icons\" at NASA Science; Direct source: Image hosted by smd-prod.s3.amazonaws.com.",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article '2001 Mars Odyssey'",
+  "match": 0.999,
+  "title": "2001 Mars Odyssey",
+  "usedBy": [
+   "mars_odyssey"
+  ]
+ },
+ "images/missions/mars_pathfinder/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars_Pathfinder_Lander_preparations.jpg",
+  "sourceTitle": "Mars Pathfinder Lander preparations.jpg",
+  "credit": "NASA",
+  "creditDetail": "http://grin.hq.nasa.gov/ABSTRACTS/GPN-2000-000785.html",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Mars Pathfinder'",
+  "match": 1.0,
+  "title": "Mars Pathfinder",
+  "usedBy": [
+   "mars_pathfinder"
+  ]
+ },
+ "images/missions/mars_polar_lander/spacecraft.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Mars_Polar_Lander",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Mars Polar Lander",
+  "usedBy": [
+   "mars_polar_lander"
+  ]
+ },
+ "images/missions/maven/spacecraft.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/MAVEN",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "MAVEN",
+  "usedBy": [
+   "maven"
+  ]
+ },
+ "images/missions/messenger/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:MESSENGER_-_spacecraft_at_mercury_-_atmercury_lg.jpg",
+  "sourceTitle": "MESSENGER - spacecraft at mercury - atmercury lg.jpg",
+  "credit": "NASA / JHU/APL",
+  "creditDetail": "http://messenger.jhuapl.edu/the_mission/artistimpression/artists_impression.html ; Direct link",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'MESSENGER'",
+  "match": 1.0,
+  "title": "MESSENGER",
+  "usedBy": [
+   "messenger"
+  ]
+ },
+ "images/missions/mmx/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:MMX-CG02.jpg",
+  "sourceTitle": "MMX-CG02.jpg",
+  "credit": "This work is licensed under the Government of Japan Standard Terms of Use (Ver.2.0). The Terms of Use are compatible with the Creative Commons Attribution License 4.0 International. For the terms of use of this work, see this license page. The Government of Japan Standard Terms of Use (Version 2.0) was revised in 2024 and replaced by the Public Data License (Version 1.0). Accordingly, updates to the copyright policies are currently in progress on the websites of public institutions, such as national and local governments. For content on websites where the updates have already been completed, please use {{PDL1.0}} instead. العربية ∙ বাংলা ∙ English ∙ español ∙ 日本語 ∙ 한국어 ∙ македонски ∙ português ∙ русский ∙ slovenščina ∙ svenska ∙ Tiếng Việt ∙ 中文 ∙ +/− ; This file is licensed under the Creative Commons Attribution 4.0 International license. You are free: to share – to copy, distribute and transmit the work to remix – to adapt the work Under the following conditions: attribution – You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use. https://creativecommons.org/licenses/by/4.0CC BY 4.0 Creative Commons Attribution 4.0 truetrue",
+  "creditDetail": "https://isas-gallery.jp/tag/mmx",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Martian Moons eXploration'",
+  "match": 0.999,
+  "title": "MMX spacecraft",
+  "usedBy": [
+   "mmx"
+  ]
+ },
+ "images/missions/mom_mangalyaan/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars_Orbiter_Mission_Over_Mars_(15237158879).jpg",
+  "sourceTitle": "Mars Orbiter Mission Over Mars (15237158879).jpg",
+  "credit": "Kevin Gill from Nashua, NH, United States",
+  "creditDetail": "Mars Orbiter Mission Over Mars",
+  "license": "CC BY-SA 2.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Mars Orbiter Mission'",
+  "match": 1.0,
+  "title": "Mars Orbiter Mission",
+  "usedBy": [
+   "mom_mangalyaan"
+  ]
+ },
+ "images/missions/mro/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars_Reconnaissance_Orbiter,_front_view,_artist%27s_concept_(PIA07245).jpg",
+  "sourceTitle": "Mars Reconnaissance Orbiter, front view, artist's concept (PIA07245).jpg",
+  "credit": "NASA/JPL/Corby Waste",
+  "creditDetail": "http://photojournal.jpl.nasa.gov/catalog/PIA07245 (image link)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Mars Reconnaissance Orbiter'",
+  "match": 0.999,
+  "title": "Mars Reconnaissance Orbiter",
+  "usedBy": [
+   "mro"
+  ]
+ },
+ "images/missions/near_shoemaker/rocket.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Delta_II",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Delta II",
+  "usedBy": [
+   "near_shoemaker"
+  ]
+ },
+ "images/missions/near_shoemaker/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:NEARCraft.jpg",
+  "sourceTitle": "NEARCraft.jpg",
+  "credit": "NASA",
+  "creditDetail": "http://upload.wikimedia.org/wikipedia/en/f/fa/NEARCraft.jpg",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'NEAR Shoemaker'",
+  "match": 1.0,
+  "title": "NEAR Shoemaker",
+  "usedBy": [
+   "near_shoemaker"
+  ]
+ },
+ "images/missions/new_horizons/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:New_Horizons_spacecraft_model_1.png",
+  "sourceTitle": "New Horizons spacecraft model 1.png",
+  "credit": "National Aeronautics and Space Administration (NASA), Applied Physics Laboratory",
+  "creditDetail": "\"PEPSSI Instrument Tastes Pluto's Atmosphere\" from the Applied Physics Laboratory New Horizons website.",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'New Horizons'",
+  "match": 1.0,
+  "title": "New Horizons",
+  "usedBy": [
+   "new_horizons"
+  ]
+ },
+ "images/missions/nozomi/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Planet_B.gif",
+  "sourceTitle": "Planet B.gif",
+  "credit": "NASA/NSSDC",
+  "creditDetail": "http://solarviews.com/browse/craft/nozomi.gif",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Nozomi (spacecraft)'",
+  "match": 1.0,
+  "title": "Nozomi (spacecraft)",
+  "usedBy": [
+   "nozomi"
+  ]
+ },
+ "images/missions/opportunity_mer_b/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:NASA_Mars_Rover.jpg",
+  "sourceTitle": "NASA Mars Rover.jpg",
+  "credit": "NASA/JPL/Cornell University, Maas Digital LLC",
+  "creditDetail": "http://photojournal.jpl.nasa.gov/catalog/PIA04413 (image link)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Opportunity (rover)'",
+  "match": 1.0,
+  "title": "Opportunity (rover)",
+  "usedBy": [
+   "opportunity_mer_b"
+  ]
+ },
+ "images/missions/osiris_rex/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:OSIRIS-REx_spacecraft_model.png",
+  "sourceTitle": "OSIRIS-REx spacecraft model.png",
+  "credit": "National Aeronautics and Space Administration (NASA) / Goddard Space Flight Center (GSFC) / University of Arizona / Lockheed Martin",
+  "creditDetail": "Website used: \"[We will find organic materials on Asteroid Bennu, says OSIRIS-REx principal investigator http://phys.org/news/2015-07-materials-asteroid-bennu-osiris-rex-principal.html]\" by Phys.org; Direct source: Image, hosted by cdn.phys.org",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'OSIRIS-REx'",
+  "match": 1.0,
+  "title": "OSIRIS-REx",
+  "usedBy": [
+   "osiris_rex"
+  ]
+ },
+ "images/missions/perseverance/spacecraft.gif": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Perseverance-Selfie-at-Rochette-Horizontal-V2.gif",
+  "sourceTitle": "Perseverance-Selfie-at-Rochette-Horizontal-V2.gif",
+  "credit": "NASA/JPL-Caltech",
+  "creditDetail": "https://mars.nasa.gov/resources/26253/perseverances-selfie-at-rochette/",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Perseverance (rover)'",
+  "match": 0.998,
+  "title": "Perseverance (rover)",
+  "usedBy": [
+   "perseverance"
+  ]
+ },
+ "images/missions/phobos_1/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B5%D0%B6%D0%BF%D0%BB%D0%B0%D0%BD%D0%B5%D1%82%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D0%B0%D0%BD%D1%86%D0%B8%D1%8F_%D0%A4%D0%BE%D0%B1%D0%BE%D1%81_(14988562882).jpg",
+  "sourceTitle": "Автоматическая межпланетная станция Фобос (14988562882).jpg",
+  "credit": "Музей Космонавтики from Россия",
+  "creditDetail": "Автоматическая межпланетная станция Фобос",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Phobos program'",
+  "match": 0.999,
+  "title": "Phobos program",
+  "usedBy": [
+   "phobos_1"
+  ]
+ },
+ "images/missions/phobos_2/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B5%D0%B6%D0%BF%D0%BB%D0%B0%D0%BD%D0%B5%D1%82%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D0%B0%D0%BD%D1%86%D0%B8%D1%8F_%D0%A4%D0%BE%D0%B1%D0%BE%D1%81_(14988562882).jpg",
+  "sourceTitle": "Автоматическая межпланетная станция Фобос (14988562882).jpg",
+  "credit": "Музей Космонавтики from Россия",
+  "creditDetail": "Автоматическая межпланетная станция Фобос",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Phobos program'",
+  "match": 0.999,
+  "title": "Phobos program",
+  "usedBy": [
+   "phobos_2"
+  ]
+ },
+ "images/missions/phoenix/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Phoenix_landing.jpg",
+  "sourceTitle": "Phoenix landing.jpg",
+  "credit": "NASA/JPL/Corby Waste",
+  "creditDetail": "http://www.nasa.gov/mission_pages/phoenix/multimedia/pia09943.html (image link)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Phoenix (spacecraft)'",
+  "match": 1.0,
+  "title": "Phoenix (spacecraft)",
+  "usedBy": [
+   "phoenix"
+  ]
+ },
+ "images/missions/psp/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Parker_Solar_Probe_spacecraft_model.png",
+  "sourceTitle": "Parker Solar Probe spacecraft model.png",
+  "credit": "National Aeronautics and Space Administration (NASA)",
+  "creditDetail": "Cropped from an image hosted by nasa.gov",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Parker Solar Probe'",
+  "match": 1.0,
+  "title": "Parker Solar Probe",
+  "usedBy": [
+   "psp"
+  ]
+ },
+ "images/missions/psyche/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:PIA21499_-_Artist%27s_Concept_of_Psyche_Spacecraft_with_Five-Panel_Array.jpg",
+  "sourceTitle": "PIA21499 - Artist's Concept of Psyche Spacecraft with Five-Panel Array.jpg",
+  "credit": "NASA/JPL-Caltech/Arizona State Univ./Space Systems Loral/Peter Rubin",
+  "creditDetail": "This image or video was catalogued by Jet Propulsion Laboratory of the United States National Aeronautics and Space Administration (NASA) under Photo ID: PIA21499.",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Psyche (spacecraft)'",
+  "match": 1.0,
+  "title": "Psyche (spacecraft)",
+  "usedBy": [
+   "psyche"
+  ]
+ },
+ "images/missions/rosetta/spacecraft.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Rosetta_(spacecraft)",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Rosetta (spacecraft)",
+  "usedBy": [
+   "rosetta"
+  ]
+ },
+ "images/missions/solar_orbiter/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Solar_Orbiter_ESA20813950.jpg",
+  "sourceTitle": "Solar Orbiter ESA20813950.jpg",
+  "credit": "European Space Agency",
+  "creditDetail": "Solar Orbiter",
+  "license": "CC BY-SA 3.0 igo",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/deed.en",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Solar Orbiter'",
+  "match": 1.0,
+  "title": "Solar Orbiter",
+  "usedBy": [
+   "solar_orbiter"
+  ]
+ },
+ "images/missions/spirit_mer_a/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:KSC-03PD-0786.jpg",
+  "sourceTitle": "KSC-03PD-0786.jpg",
+  "credit": "NASA",
+  "creditDetail": "https://archive.org/details/KSC-KSC-03PD-0786",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Spirit (rover)'",
+  "match": 0.999,
+  "title": "Spirit (rover)",
+  "usedBy": [
+   "spirit_mer_a"
+  ]
+ },
+ "images/missions/stardust/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Stardust_-_ksc9901117.jpg",
+  "sourceTitle": "Stardust - ksc9901117.jpg",
+  "credit": "NASA/JPL",
+  "creditDetail": "http://stardust.jpl.nasa.gov/photo/ksc990111.html ; Direct link",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Stardust (spacecraft)'",
+  "match": 1.0,
+  "title": "Stardust (spacecraft)",
+  "usedBy": [
+   "stardust"
+  ]
+ },
+ "images/missions/stereo_a/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Deployment_of_STEREO_spacecraft_panels_(crop).jpg",
+  "sourceTitle": "Deployment of STEREO spacecraft panels (crop).jpg",
+  "credit": "NASA/Johns Hopkins University Applied Physics Laboratory",
+  "creditDetail": "http://stereo.jhuapl.edu/gallery/images/artistConcepts/pages/panelsDeploy.php (image link)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'STEREO'",
+  "match": 1.0,
+  "title": "STEREO",
+  "usedBy": [
+   "stereo_a"
+  ]
+ },
+ "images/missions/stereo_b/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Deployment_of_STEREO_spacecraft_panels_(crop).jpg",
+  "sourceTitle": "Deployment of STEREO spacecraft panels (crop).jpg",
+  "credit": "NASA/Johns Hopkins University Applied Physics Laboratory",
+  "creditDetail": "http://stereo.jhuapl.edu/gallery/images/artistConcepts/pages/panelsDeploy.php (image link)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'STEREO'",
+  "match": 1.0,
+  "title": "STEREO",
+  "usedBy": [
+   "stereo_b"
+  ]
+ },
+ "images/missions/tianwen1/lander.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Zhurong_rover_3x2_crop.png",
+  "sourceTitle": "Zhurong rover 3x2 crop.png",
+  "credit": "中国新闻网",
+  "creditDetail": "YouTube: https://www.youtube.com/watch?v=BnrwZVJ_VAQ – View/save archived versions on archive.org",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Zhurong (rover)'",
+  "match": 1.0,
+  "title": "Zhurong (rover)",
+  "usedBy": [
+   "tianwen1"
+  ]
+ },
+ "images/missions/tianwen1/spacecraft.png": {
+  "sourcePage": "https://en.wikipedia.org/wiki/File:Mars_Global_Remote_Sensing_Orbiter_and_Small_Rover_(2020).png",
+  "sourceTitle": "Mars Global Remote Sensing Orbiter and Small Rover (2020).png",
+  "credit": "China Aerospace Technology Corporation",
+  "creditDetail": "Original publication: China Global Television Network; Immediate source: https://news.cgtn.com/news/2019-10-12/China-unveils-first-picture-of-its-Mar-explorer-KJ4LAwSYbm/index.html",
+  "license": "Fair use",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "replace",
+  "method": "source found, but it's a fair-use (non-free) file: replace with a freely licensed image",
+  "match": 1.0,
+  "title": "Tianwen-1",
+  "usedBy": [
+   "tianwen1"
+  ]
+ },
+ "images/missions/tianwen2/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Rendering_of_Tianwen_2_asteroid_mission_03_cropped_rotated.png",
+  "sourceTitle": "Rendering of Tianwen 2 asteroid mission 03 cropped rotated.png",
+  "credit": "中国新闻社",
+  "creditDetail": "https://www.youtube.com/watch?v=Rs-iJUwiCWM",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Tianwen-2'",
+  "match": 0.999,
+  "title": "Tianwen-2",
+  "usedBy": [
+   "tianwen2"
+  ]
+ },
+ "images/missions/ulysses/rocket.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:STS-41_launch.jpg",
+  "sourceTitle": "STS-41 launch.jpg",
+  "credit": "NASA",
+  "creditDetail": "http://nix.ksc.nasa.gov/info?id=MSFC-9020066 (direct link)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'STS-41'",
+  "match": 1.0,
+  "title": "Space Shuttle / IUS",
+  "usedBy": [
+   "ulysses"
+  ]
+ },
+ "images/missions/ulysses/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:STS-41_Ulysses_deployment.jpg",
+  "sourceTitle": "STS-41 Ulysses deployment.jpg",
+  "credit": "NASA",
+  "creditDetail": "https://images.nasa.gov/details/s41-601-009 http://nix.larc.nasa.gov/info?id=STS041-601-009&orgid=8[dead link] http://images.jsc.nasa.gov/luceneweb/caption.jsp?photoId=STS041-601-009[dead link]",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Ulysses (spacecraft)'",
+  "match": 0.999,
+  "title": "Ulysses (spacecraft)",
+  "usedBy": [
+   "ulysses"
+  ]
+ },
+ "images/missions/venus_express/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Venus_Express_in_orbit_(crop).jpg",
+  "sourceTitle": "Venus Express in orbit (crop).jpg",
+  "credit": "Andrzej Mirecki",
+  "creditDetail": "Self-made with Celestia program with Addon by Jestr",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Venus Express'",
+  "match": 1.0,
+  "title": "Venus Express",
+  "usedBy": [
+   "venus_express"
+  ]
+ },
+ "images/rockets/ariane_5.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(51773093465).jpg",
+  "sourceTitle": "Ariane 5 with James Webb Space Telescope Prelaunch (51773093465).jpg",
+  "credit": "Chris Gunn",
+  "creditDetail": "Ariane 5 with James Webb Space Telescope Prelaunch",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Ariane 5'",
+  "match": 1.0,
+  "title": "Ariane 5",
+  "usedBy": [
+   "bepicolombo",
+   "juice",
+   "rosetta"
+  ]
+ },
+ "images/rockets/atlas_v.png": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Atlas_V",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Atlas V",
+  "usedBy": [
+   "curiosity",
+   "insight",
+   "juno",
+   "lucy",
+   "maven",
+   "mro",
+   "new_horizons",
+   "osiris_rex",
+   "perseverance",
+   "solar_orbiter"
+  ]
+ },
+ "images/rockets/delta_ii.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Delta_II",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Delta II",
+  "usedBy": [
+   "dawn",
+   "deep_impact",
+   "deep_space_1",
+   "genesis",
+   "mars_climate_orbiter",
+   "mars_global_surveyor",
+   "mars_odyssey",
+   "mars_pathfinder",
+   "mars_polar_lander",
+   "messenger",
+   "opportunity_mer_b",
+   "phoenix",
+   "spirit_mer_a",
+   "stardust",
+   "stereo_a",
+   "stereo_b"
+  ]
+ },
+ "images/rockets/delta_iv_heavy.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Delta_IV_Heavy",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Delta IV Heavy",
+  "usedBy": [
+   "psp"
+  ]
+ },
+ "images/rockets/falcon_9.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:ORBCOMM-2_First-Stage_Landing_(23271687254).jpg",
+  "sourceTitle": "ORBCOMM-2 First-Stage Landing (23271687254).jpg",
+  "credit": "SpaceX",
+  "creditDetail": "https://www.flickr.com/photos/spacexphotos/23271687254/",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "closest Commons match (0.81) is a different launch photo; source not found",
+  "match": 0.813,
+  "title": "Falcon 9",
+  "usedBy": [
+   "dart",
+   "hera"
+  ]
+ },
+ "images/rockets/falcon_heavy.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Falcon_Heavy",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Falcon Heavy",
+  "usedBy": [
+   "europa_clipper",
+   "psyche",
+   "roman"
+  ]
+ },
+ "images/rockets/h3.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:H3_rocket_launch.jpg",
+  "sourceTitle": "H3 rocket launch.jpg",
+  "credit": "AF991",
+  "creditDetail": "This image was released by the United States Air Force with the ID 250202-F-AF991-1336 (next).; This tag does not indicate the copyright status of the attached work. A normal copyright tag is still required. See Commons:Licensing. العربية ∙ বাংলা ∙ Bahasa Indonesia ∙ Bahaso Jambi ∙ Deutsch ∙ Deutsch (Sie-Form) ∙ English ∙ español ∙ euskara ∙ فارسی ∙ français ∙ italiano ∙ 日本語 ∙ 한국어 ∙ македонски ∙ മലയാളം ∙ Plattdüütsch ∙ Nederlands ∙ polski ∙ پښتو ∙ português ∙ русский ∙ slovenščina ∙ svenska ∙ Türkçe ∙ українська ∙ 简体中文 ∙ 繁體中文 ∙ +/−",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'H3 (rocket)'",
+  "match": 1.0,
+  "title": "H3",
+  "usedBy": [
+   "mmx"
+  ]
+ },
+ "images/rockets/h_iia.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:H_IIA_No._F23_with_GPM_on_its_way_to_the_launchpad.jpg",
+  "sourceTitle": "H IIA No. F23 with GPM on its way to the launchpad.jpg",
+  "credit": "Bill Ingalls",
+  "creditDetail": "Global Precipitation Measurement (GPM) Mission",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'H-IIA'",
+  "match": 1.0,
+  "title": "H-IIA",
+  "usedBy": [
+   "akatsuki",
+   "hayabusa2",
+   "hope_mars"
+  ]
+ },
+ "images/rockets/long_march_3b.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:CZ-3B_rendering.jpg",
+  "sourceTitle": "CZ-3B rendering.jpg",
+  "credit": "Shujianyang",
+  "creditDetail": "Own work",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Long March 3B'",
+  "match": 1.0,
+  "title": "Long March 3B",
+  "usedBy": [
+   "tianwen2"
+  ]
+ },
+ "images/rockets/long_march_3c.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:CZ-3C_rendering.jpg",
+  "sourceTitle": "CZ-3C rendering.jpg",
+  "credit": "Shujianyang",
+  "creditDetail": "Own work",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Long March 3C'",
+  "match": 1.0,
+  "title": "Long March 3C",
+  "usedBy": [
+   "chunge2_toutatis"
+  ]
+ },
+ "images/rockets/long_march_5.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Launching_Tianhe_Core_Module.jpg",
+  "sourceTitle": "Launching Tianhe Core Module.jpg",
+  "credit": "China News Service",
+  "creditDetail": "YouTube: https://www.youtube.com/watch?v=hZyJdxzjGN4 – View/save archived versions on archive.org",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Long March 5'",
+  "match": 1.0,
+  "title": "Long March 5",
+  "usedBy": [
+   "tianwen1"
+  ]
+ },
+ "images/rockets/m_v.jpeg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:M-V_launching_ASTRO-E2.jpeg",
+  "sourceTitle": "M-V launching ASTRO-E2.jpeg",
+  "credit": "",
+  "creditDetail": "",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'M-V'",
+  "match": 1.0,
+  "title": "M-V",
+  "usedBy": [
+   "hayabusa",
+   "nozomi"
+  ]
+ },
+ "images/rockets/new_glenn.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:New_Glenn_-_BlueBird_7_Launch_(9628277)_(cropped).jpg",
+  "sourceTitle": "New Glenn - BlueBird 7 Launch (9628277) (cropped).jpg",
+  "credit": "U.S. Space Force photo by Gwendolyn Kurzen",
+  "creditDetail": "This image was released by the United States Space Force with the ID 260419-X-KX339-1010 (next).; This tag does not indicate the copyright status of the attached work. A normal copyright tag is still required. See Commons:Licensing. العربية ∙ বাংলা ∙ Bahasa Indonesia ∙ Bahaso Jambi ∙ Deutsch ∙ Deutsch (Sie-Form) ∙ English ∙ español ∙ euskara ∙ فارسی ∙ français ∙ italiano ∙ 日本語 ∙ 한국어 ∙ македонски ∙ മലയാളം ∙ Plattdüütsch ∙ Nederlands ∙ polski ∙ پښتو ∙ português ∙ русский ∙ slovenščina ∙ svenska ∙ Türkçe ∙ українська ∙ 简体中文 ∙ 繁體中文 ∙ +/−",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'New Glenn'",
+  "match": 1.0,
+  "title": "New Glenn",
+  "usedBy": [
+   "escapade"
+  ]
+ },
+ "images/rockets/polar_satellite_launch_vehicle.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:PSLVC62.webp",
+  "sourceTitle": "PSLVC62.webp",
+  "credit": "ISRO, Dept. of Space, Govtd of India",
+  "creditDetail": "https://www.isro.gov.in/Mission_PSLV_C62_Gallery.html",
+  "license": "GODL-India",
+  "licenseUrl": "https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Polar Satellite Launch Vehicle'",
+  "match": 1.0,
+  "title": "Polar Satellite Launch Vehicle",
+  "usedBy": [
+   "aditya_l1",
+   "mom_mangalyaan"
+  ]
+ },
+ "images/rockets/proton_k.jpg": {
+  "sourcePage": "https://en.wikipedia.org/wiki/Proton-K",
+  "credit": "",
+  "license": "",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "unverified",
+  "method": "no match found",
+  "title": "Proton-K",
+  "usedBy": [
+   "phobos_1",
+   "phobos_2"
+  ]
+ },
+ "images/rockets/proton_m.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Night_start_of_Proton-M_rocket_with_Blagovest_satellite_17.08.2017.jpg",
+  "sourceTitle": "Night start of Proton-M rocket with Blagovest satellite 17.08.2017.jpg",
+  "credit": "Unknown authorUnknown author",
+  "creditDetail": "https://function.mil.ru/news_page/world/more.htm?id=12137978",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Proton-M'",
+  "match": 1.0,
+  "title": "Proton-M",
+  "usedBy": [
+   "exomars_tgo"
+  ]
+ },
+ "images/rockets/soyuz_fg.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Soyuz_TMA-3_launch.jpg",
+  "sourceTitle": "Soyuz TMA-3 launch.jpg",
+  "credit": "Bill Ingalls",
+  "creditDetail": "http://spaceflight.nasa.gov/gallery/images/station/crew-8/html/jsc2003e60961.html",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "visual match in Wikipedia article 'Soyuz-FG'",
+  "match": 1.0,
+  "title": "Soyuz-FG",
+  "usedBy": [
+   "mars_express",
+   "venus_express"
+  ]
+ }
+}
