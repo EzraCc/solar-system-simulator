@@ -7777,8 +7777,18 @@
 
   // Body-fixed axes [x (prime meridian), y (90 E), z (north pole)] in the
   // ecliptic world frame, from the IAU model at day d.
+  // Simulated days per rendered frame, set by frame(). When a body would
+  // turn more than SPIN_HOLD_DEG between frames (Earth at 1 yr/min turns
+  // ~36 deg a frame), its surface strobes like a wagon wheel and the
+  // shading seems to spin. Its face is then held at the last angle shown,
+  // and it spins normally again once playback is slow enough to follow.
+  let sphereDaysPerFrame = 0;
+  const SPIN_HOLD_DEG = 10;
   function iauBodyAxes(rot, d) {
-    const a = rot.ra * D2R, dl = rot.dec * D2R, W = ((rot.W0 + rot.Wdot * d) % 360) * D2R;
+    let Wdeg = (rot.W0 + rot.Wdot * d) % 360;
+    if (Math.abs(rot.Wdot * sphereDaysPerFrame) > SPIN_HOLD_DEG && rot._heldW !== undefined) Wdeg = rot._heldW;
+    else rot._heldW = Wdeg;
+    const a = rot.ra * D2R, dl = rot.dec * D2R, W = Wdeg * D2R;
     const p = [Math.cos(dl) * Math.cos(a), Math.cos(dl) * Math.sin(a), Math.sin(dl)];
     const Q = [-Math.sin(a), Math.cos(a), 0]; // ascending node of the body's equator on Earth's
     const PQ = vCross(p, Q);
@@ -8921,6 +8931,7 @@
     const dtMs = now - lastFrameTime;
     lastFrameTime = now;
 
+    sphereDaysPerFrame = paused ? 0 : Math.abs(speedMultiplier * BASE_DAYS_PER_MS * dtMs);
     if (!paused && speedMultiplier !== 0) {
       const daysElapsed = speedMultiplier * BASE_DAYS_PER_MS * dtMs;
       simDate = new Date(simDate.getTime() + daysElapsed * 86400000);
