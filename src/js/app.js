@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "43";
+  const BUILD_VERSION = "45";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -197,6 +197,17 @@
     const res = await fetch(`data/bodies/info.json?v=${BUILD_VERSION}`);
     if (!res.ok) throw new Error("Failed to load data/bodies/info.json: " + res.status);
     Object.assign(BODY_INFO, await res.json());
+  }
+
+  // Surface maps for the sphere renderer: body name -> { file, title,
+  // credit, license, sourcePage, downloadedFrom, processing }, written by
+  // tools/build_textures.py. Used for the texture paths and for the credit
+  // line in each body's info panel (see textureCreditHtml).
+  const TEXTURE_INFO = {};
+  async function loadTextureInfo() {
+    const res = await fetch(`data/images/textures/manifest.json?v=${BUILD_VERSION}`);
+    if (!res.ok) throw new Error("Failed to load data/images/textures/manifest.json: " + res.status);
+    Object.assign(TEXTURE_INFO, await res.json());
   }
 
   async function loadFlightsRaw() {
@@ -3721,6 +3732,19 @@
   // by yaw (about the world Z axis, spinning the system "in place" as seen
   // from above) then pitch (about the resulting X axis, tilting the whole
   // system toward/away from the viewer to reveal the 3rd dimension).
+  //
+  // Returns [right, up, depth], where depth grows AWAY from the viewer
+  // (every depth sort and "behind" test in this file assumes that). The
+  // depth is the NEGATED third rotated axis: x right / y up (screen y is
+  // flipped in worldToScreen) is a right-handed camera only with the viewer
+  // on the +z2 side, i.e. the default view looks down from ecliptic north
+  // and orbits run counterclockwise. Before 2026-11-25 depth was +z2, which
+  // put the viewer on the opposite side from the one the positions are
+  // drawn for: every overlap (planet over planet, Saturn's ring halves,
+  // moons crossing a disc) came out mirror-imaged. Invisible with flat
+  // discs, wrong with lit, textured spheres. The old "Mercury in front of
+  // Sol" check behind the previous sort fix reasoned from Earth's point of
+  // view, not this camera's.
   function rotateWorld(x, y, z) {
     const cosYaw = Math.cos(yaw), sinYaw = Math.sin(yaw);
     const x1 = x * cosYaw - y * sinYaw;
@@ -3731,7 +3755,7 @@
     const y2 = y1 * cosPitch - z1 * sinPitch;
     const z2 = y1 * sinPitch + z1 * cosPitch;
 
-    return [x1, y2, z2];
+    return [x1, y2, -z2];
   }
 
   function worldToScreen(xAU, yAU, zAU) {
@@ -7259,7 +7283,7 @@
       let sections = "";
       if (satInfo && satInfo.significance) sections += lpSectionHtml("Why it matters", satInfo.significance);
       sections += bodyMissionsHtml(b.name);
-      lockedPanelBody.innerHTML = rows + (satInfo ? learnMoreHtml(satInfo.assets) : "") + sections + (satInfo ? assetGalleryHtml(satInfo.assets) : "");
+      lockedPanelBody.innerHTML = rows + (satInfo ? learnMoreHtml(satInfo.assets) : "") + sections + (satInfo ? assetGalleryHtml(satInfo.assets) : "") + textureCreditHtml(b.name);
       return;
     }
 
@@ -7287,7 +7311,8 @@
     const systemBtn = sysPrimary
       ? `<div class="lp-jump-row lp-system-btn"><button type="button" class="lp-jump-btn" data-open-system="${sysPrimary}">Open ${sysPrimary} system view</button></div>`
       : "";
-    lockedPanelBody.innerHTML = rows + systemBtn + (info ? learnMoreHtml(info.assets) : "") + sections + (info ? assetGalleryHtml(info.assets) : "");
+    lockedPanelBody.innerHTML = rows + systemBtn + (info ? learnMoreHtml(info.assets) : "") + sections + (info ? assetGalleryHtml(info.assets) : "") +
+      textureCreditHtml(b.name === "Pluto and Charon" ? "Pluto" : b.name);
   }
 
   // The locked panel is event-based, not per-frame: formatLockedPanelContent
@@ -7772,6 +7797,334 @@
   }
 
   /* =========================================================================
+     SPHERE RENDERER
+     Lit, optionally textured spheres (oblate spheroids for the giants),
+     drawn by WebGL into one small offscreen canvas and copied into the 2D
+     canvas with drawImage at the point where a flat disc used to be
+     painted. Everything else stays 2D, and depth order is unchanged: a
+     sphere is just another item in the same painter's-algorithm sort.
+
+     Per pixel, the fragment shader casts a ray along the view direction
+     into the body's own frame (pole = +z, prime meridian = +x), hits the
+     spheroid, takes the surface normal, looks up the map at that
+     latitude/longitude, and lights it by the angle to the Sun. So the
+     terminator is exact for any Sun/camera geometry (crescents included),
+     the planet turns at its real rate, and its pole tilts the real way.
+
+     Falls back to the 2D gradient disc (drawBody) when WebGL is
+     unavailable or the body is too small for any of this to show.
+  ========================================================================= */
+
+  // Surface map path for a body, from TEXTURE_INFO (see loadTextureInfo).
+  // Maps are equirectangular: longitude 0 at the centre, east to the
+  // right, north up. Venus deliberately has none: to the eye it is a
+  // featureless cloud deck, and its radar surface maps would misrepresent
+  // what it looks like.
+  function textureSrc(name) {
+    const t = TEXTURE_INFO[name];
+    return t ? `${t.file}?v=${BUILD_VERSION}` : null;
+  }
+
+  // "Surface map: <title>. <credit>. <license>." with a link to the source
+  // page, for the info panels of bodies that are drawn with a map.
+  function textureCreditHtml(name) {
+    const t = TEXTURE_INFO[name];
+    if (!t) return "";
+    const esc = (x) => String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    return `<div class="lp-credit">Surface map: <a href="${esc(t.sourcePage)}" target="_blank" rel="noopener noreferrer">${esc(t.title)}</a>. ${esc(t.credit)}. ${esc(t.license)}.</div>`;
+  }
+
+  // IAU WGCCRE 2015 (Archinal et al. 2018) pole and prime meridian, without
+  // the small periodic terms: pole RA/Dec (deg, ICRF) at J2000, and
+  // W = W0 + Wdot * d (deg; d in days from J2000). flattening = 1 - polar
+  // radius / equatorial radius. Jupiter's W is System III; its cloud
+  // features drift against it, so the Great Red Spot's position on the
+  // map is illustrative, not a prediction.
+  const BODY_ROTATION = {
+    Mercury: { ra: 281.0103, dec: 61.4155, W0: 329.5988, Wdot: 6.1385108, flattening: 0 },
+    Venus:   { ra: 272.76,   dec: 67.16,   W0: 160.20,   Wdot: -1.4813688, flattening: 0 },
+    Earth:   { ra: 0.0,      dec: 90.0,    W0: 190.147,  Wdot: 360.9856235, flattening: 0.00335 },
+    Mars:    { ra: 317.269202, dec: 54.432516, W0: 176.049863, Wdot: 350.891982443297, flattening: 0.00589 },
+    Jupiter: { ra: 268.056595, dec: 64.495303, W0: 284.95, Wdot: 870.5360000, flattening: 0.06487 },
+    Saturn:  { ra: 40.589,   dec: 83.537,  W0: 38.90,    Wdot: 810.7939024, flattening: 0.09796 },
+    Uranus:  { ra: 257.311,  dec: -15.175, W0: 203.81,   Wdot: -501.1600928, flattening: 0.02293 },
+    Neptune: { ra: 299.36,   dec: 43.46,   W0: 249.978,  Wdot: 541.1397757, flattening: 0.01708 },
+    Pluto:   { ra: 132.993,  dec: -6.163,  W0: 302.695,  Wdot: 56.3625225, flattening: 0 },
+  };
+
+  // Gas giants darken toward the limb (light leaves their deep
+  // atmospheres at a grazing angle); solid bodies follow plain Lambert.
+  const LIMB_DARKENING = { Jupiter: 0.35, Saturn: 0.35, Uranus: 0.3, Neptune: 0.3 };
+  // Ring shadows on the planet: ring radii in equatorial radii.
+  function bodyRingsForShader(name) {
+    if (name !== "Saturn") return null;
+    const R = PLANET_META.Saturn.radiusKm;
+    return SATURN_RINGS.map((g) => ({ r0: g.r0 / R, r1: g.r1 / R, alpha: g.alpha }));
+  }
+
+  // A thin halo for bodies with a substantial atmosphere: colour and peak
+  // opacity. Drawn in 2D just outside the limb, after the sphere.
+  const ATMOSPHERES = {
+    Venus: ["#fff1c8", 0.35], Earth: ["#8fc0ff", 0.35], Titan: ["#f0a860", 0.45], Mars: ["#f2b48a", 0.12],
+  };
+  function drawAtmosphere(target, name, x, y, r) {
+    const atm = ATMOSPHERES[name];
+    if (!atm || r < 8) return;
+    const outer = r + Math.min(r * 0.07, 10); // a real atmosphere is a thin shell: cap the halo on big discs
+    const g = target.createRadialGradient(x, y, r * 0.98, x, y, outer);
+    g.addColorStop(0, hexWithAlpha(atm[0], atm[1]));
+    g.addColorStop(1, hexWithAlpha(atm[0], 0));
+    target.fillStyle = g;
+    target.beginPath(); target.arc(x, y, outer, 0, 2 * Math.PI); target.fill();
+  }
+
+  const OBLIQUITY_J2000 = 23.4392911 * D2R;
+  const eqToEcl = (v) => [v[0],
+    v[1] * Math.cos(OBLIQUITY_J2000) + v[2] * Math.sin(OBLIQUITY_J2000),
+    -v[1] * Math.sin(OBLIQUITY_J2000) + v[2] * Math.cos(OBLIQUITY_J2000)];
+  const vCross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const vNorm = (a) => { const m = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / m, a[1] / m, a[2] / m]; };
+
+  // Body-fixed axes [x (prime meridian), y (90 E), z (north pole)] in the
+  // ecliptic world frame, from the IAU model at day d.
+  // Simulated days per rendered frame, set by frame(). When a body would
+  // turn more than SPIN_HOLD_DEG between frames (Earth at 1 yr/min turns
+  // ~36 deg a frame), its surface strobes like a wagon wheel and the
+  // shading seems to spin. Its face is then held at the last angle shown,
+  // and it spins normally again once playback is slow enough to follow.
+  let sphereDaysPerFrame = 0;
+  const SPIN_HOLD_DEG = 10;
+  function iauBodyAxes(rot, d) {
+    let Wdeg = (rot.W0 + rot.Wdot * d) % 360;
+    if (Math.abs(rot.Wdot * sphereDaysPerFrame) > SPIN_HOLD_DEG && rot._heldW !== undefined) Wdeg = rot._heldW;
+    else rot._heldW = Wdeg;
+    const a = rot.ra * D2R, dl = rot.dec * D2R, W = Wdeg * D2R;
+    const p = [Math.cos(dl) * Math.cos(a), Math.cos(dl) * Math.sin(a), Math.sin(dl)];
+    const Q = [-Math.sin(a), Math.cos(a), 0]; // ascending node of the body's equator on Earth's
+    const PQ = vCross(p, Q);
+    const x = [0, 1, 2].map((k) => Q[k] * Math.cos(W) + PQ[k] * Math.sin(W));
+    const y = vCross(p, x);
+    return [eqToEcl(x), eqToEcl(y), eqToEcl(p)];
+  }
+
+  // A tidally locked moon: pole along its orbit normal, prime meridian
+  // facing its planet (the IAU definition for these moons, to within their
+  // small librations). relPos/relVel: moon minus planet, any units.
+  function lockedMoonAxes(relPos, relVel) {
+    const z = vNorm(vCross(relPos, relVel));
+    const toPlanet = vNorm([-relPos[0], -relPos[1], -relPos[2]]);
+    const dz = toPlanet[0] * z[0] + toPlanet[1] * z[1] + toPlanet[2] * z[2];
+    const x = vNorm([toPlanet[0] - dz * z[0], toPlanet[1] - dz * z[1], toPlanet[2] - dz * z[2]]);
+    return [x, vCross(z, x), z];
+  }
+
+  // Camera basis: rows map a world vector to view space (right, up, toward
+  // the viewer). rotateWorld's depth grows away from the viewer, hence -.
+  function viewBasisRows() {
+    const c = [[1, 0, 0], [0, 1, 0], [0, 0, 1]].map((e) => rotateWorld(e[0], e[1], e[2]));
+    return [[c[0][0], c[1][0], c[2][0]], [c[0][1], c[1][1], c[2][1]], [-c[0][2], -c[1][2], -c[2][2]]];
+  }
+
+  const sphereGL = (() => {
+    let gl = null, prog = null, loc = {}, failed = false, hasDeriv = false;
+    const glCanvas = document.createElement("canvas");
+    const textures = {}; // name -> { tex, ready }
+    const onTextureReady = []; // callbacks, e.g. redraw the size chart
+    const MAX_PX = 2048;
+
+    const VS = `attribute vec2 aPos; varying vec2 vUv;
+      void main() { vUv = aPos * 0.5 + 0.5; gl_Position = vec4(aPos, 0.0, 1.0); }`;
+    const FS = (deriv) => `${deriv ? "#extension GL_OES_standard_derivatives : enable\n" : ""}
+      precision highp float;
+      varying vec2 vUv;
+      uniform vec4 uRect;          // view-plane x0, y0, x1, y1 in equatorial radii
+      uniform mat3 uViewToBody;
+      uniform vec3 uLight;         // toward the Sun, body frame
+      uniform float uPolar;        // polar / equatorial radius
+      uniform float uPxPerR;       // device pixels per equatorial radius
+      uniform sampler2D uTex;
+      uniform float uHasTex;
+      uniform vec3 uColor;
+      uniform float uAmbient;
+      uniform float uLimb;         // limb-darkening exponent (gas giants), 0 = off
+      uniform vec4 uRingR0;        // up to 4 rings in the equatorial plane:
+      uniform vec4 uRingR1;        //   inner/outer radius (equatorial radii)
+      uniform vec4 uRingA;         //   and opacity; all zero = no rings
+      const float PI = 3.141592653589793;
+      void main() {
+        vec2 q = mix(uRect.xy, uRect.zw, vUv);
+        vec3 o = uViewToBody * vec3(q, 2.0);
+        vec3 d = uViewToBody * vec3(0.0, 0.0, -1.0);
+        vec3 s = vec3(1.0, 1.0, 1.0 / uPolar);
+        vec3 os = o * s, ds = d * s;
+        float a = dot(ds, ds), b = dot(os, ds), c = dot(os, os) - 1.0;
+        float disc = b * b - a * c;
+        // Antialiased edge: disc falls off ~2a(1 - r) near the limb.
+        float alpha = clamp(disc * uPxPerR / (2.0 * a) + 0.5, 0.0, 1.0);
+        if (alpha <= 0.0) discard;
+        float t = (-b - sqrt(max(disc, 0.0))) / a;
+        vec3 p = o + t * d;
+        vec3 ps = p * s;
+        vec3 n = normalize(vec3(p.xy, p.z / (uPolar * uPolar)));
+        float lon = atan(ps.y, ps.x);
+        float lat = asin(clamp(ps.z, -1.0, 1.0));
+        float u = lon / (2.0 * PI) + 0.5;
+        ${deriv ? `// Mip seam at lon 180: pick whichever of two wrapped u's
+        // is continuous across this pixel's neighbours (Tarini 2012).
+        float u2 = fract(u + 0.5) - 0.5;
+        if (fwidth(u) > fwidth(u2) + 1e-5) u = u2;` : ""}
+        vec3 albedo = uHasTex > 0.5 ? texture2D(uTex, vec2(u, 0.5 - lat / PI)).rgb : uColor;
+        float ndl = dot(n, uLight);
+        float lit = clamp(ndl, 0.0, 1.0);
+        // Ring shadow: follow the ray from this point toward the Sun to the
+        // ring plane (the body's equator) and dim by the ring it crosses.
+        if (uRingA != vec4(0.0) && abs(uLight.z) > 1e-4) {
+          float tr = -p.z / uLight.z;
+          if (tr > 0.0) {
+            float rho = length(p.xy + tr * uLight.xy);
+            vec4 inR = step(uRingR0, vec4(rho)) * step(vec4(rho), uRingR1);
+            vec4 pass = vec4(1.0) - uRingA * inR;
+            lit *= pass.x * pass.y * pass.z * pass.w;
+          }
+        }
+        if (uLimb > 0.0) {
+          float mu = clamp(dot(n, -normalize(d)), 0.0, 1.0);
+          lit *= pow(mu, uLimb);
+        }
+        vec3 col = albedo * (uAmbient + (1.0 - uAmbient) * lit);
+        gl_FragColor = vec4(col * alpha, alpha);
+      }`;
+
+    function init() {
+      if (gl || failed) return !!gl;
+      try {
+        gl = glCanvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false, preserveDrawingBuffer: true });
+        if (!gl) throw new Error("no webgl");
+        hasDeriv = !!gl.getExtension("OES_standard_derivatives");
+        const sh = (type, src) => {
+          const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+          return s;
+        };
+        prog = gl.createProgram();
+        gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+        gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS(hasDeriv)));
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+        gl.useProgram(prog);
+        ["uRect", "uViewToBody", "uLight", "uPolar", "uPxPerR", "uTex", "uHasTex", "uColor", "uAmbient",
+         "uLimb", "uRingR0", "uRingR1", "uRingA"]
+          .forEach((n) => { loc[n] = gl.getUniformLocation(prog, n); });
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        const aPos = gl.getAttribLocation(prog, "aPos");
+        gl.enableVertexAttribArray(aPos);
+        gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+        gl.uniform1i(loc.uTex, 0);
+        return true;
+      } catch (err) {
+        console.warn("Sphere renderer unavailable, using flat discs:", err.message);
+        gl = null; failed = true;
+        return false;
+      }
+    }
+
+    function texture(name) {
+      const src = textureSrc(name);
+      if (!src) return null;
+      if (textures[name]) return textures[name].ready ? textures[name].tex : null;
+      const entry = textures[name] = { tex: null, ready: false };
+      const img = new Image();
+      img.onload = () => {
+        if (!gl) return;
+        const tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
+        gl.generateMipmap(gl.TEXTURE_2D);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        entry.tex = tex; entry.ready = true;
+        onTextureReady.forEach((f) => f(name));
+      };
+      img.onerror = () => console.warn("Texture failed to load:", src);
+      img.src = src;
+      return null;
+    }
+
+    // Draw a sphere centred at (sx, sy) with equatorial radius r (CSS px)
+    // into the 2D context target. axes: body-fixed axes in world coords
+    // (null: any orientation, fine without a texture). light: unit vector
+    // toward the Sun, world coords. viewRows: camera basis (viewBasisRows).
+    // clip: CSS-px rect of target to render within (defaults to the
+    // viewport), so a planet zoomed far past the screen only costs the
+    // pixels actually visible. Returns false if nothing was drawn and the
+    // caller should fall back to the flat disc.
+    // rings: [{ r0, r1, alpha }] in equatorial radii (ring shadow on the
+    // body); limb: limb-darkening exponent.
+    function draw(target, { sx, sy, r, color, light, axes, viewRows, textureName, flattening = 0,
+                            ambient = 0.06, scale = dpr, clip = null, rings = null, limb = 0 }) {
+      if (!init()) return false;
+      const B = axes || [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+      const V = viewRows;
+      // viewToBody = B * V^T (V's rows are the view axes in world coords).
+      const M = B.map((bRow) => V.map((vRow) => bRow[0] * vRow[0] + bRow[1] * vRow[1] + bRow[2] * vRow[2]));
+      const L = B.map((bRow) => bRow[0] * light[0] + bRow[1] * light[1] + bRow[2] * light[2]);
+      // Visible part of the body's bounding square, in CSS px.
+      const cl = clip || { x0: 0, y0: 0, x1: viewW, y1: viewH };
+      const x0 = Math.max(sx - r, cl.x0), x1 = Math.min(sx + r, cl.x1);
+      const y0 = Math.max(sy - r, cl.y0), y1 = Math.min(sy + r, cl.y1);
+      if (x1 <= x0 || y1 <= y0) return true; // fully off-screen: nothing to draw, but not a failure
+      let pw = Math.ceil((x1 - x0) * scale), ph = Math.ceil((y1 - y0) * scale);
+      const down = Math.min(1, MAX_PX / Math.max(pw, ph));
+      pw = Math.max(1, Math.round(pw * down)); ph = Math.max(1, Math.round(ph * down));
+      if (glCanvas.width < pw || glCanvas.height < ph) {
+        glCanvas.width = Math.max(glCanvas.width, pw, 64);
+        glCanvas.height = Math.max(glCanvas.height, ph, 64);
+      }
+      // Render into the canvas's top-left pw x ph (GL's origin is bottom-left).
+      gl.viewport(0, glCanvas.height - ph, pw, ph);
+      gl.enable(gl.SCISSOR_TEST);
+      gl.scissor(0, glCanvas.height - ph, pw, ph);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      // View-plane rect in units of r, y up.
+      gl.uniform4f(loc.uRect, (x0 - sx) / r, (sy - y1) / r, (x1 - sx) / r, (sy - y0) / r);
+      gl.uniformMatrix3fv(loc.uViewToBody, false, [M[0][0], M[1][0], M[2][0], M[0][1], M[1][1], M[2][1], M[0][2], M[1][2], M[2][2]]);
+      gl.uniform3f(loc.uLight, L[0], L[1], L[2]);
+      gl.uniform1f(loc.uPolar, 1 - flattening);
+      gl.uniform1f(loc.uPxPerR, r * scale * down);
+      gl.uniform1f(loc.uAmbient, ambient);
+      gl.uniform1f(loc.uLimb, limb);
+      const rg = [0, 1, 2, 3].map((k) => (rings && rings[k]) || { r0: 0, r1: 0, alpha: 0 });
+      gl.uniform4f(loc.uRingR0, rg[0].r0, rg[1].r0, rg[2].r0, rg[3].r0);
+      gl.uniform4f(loc.uRingR1, rg[0].r1, rg[1].r1, rg[2].r1, rg[3].r1);
+      gl.uniform4f(loc.uRingA, rg[0].alpha, rg[1].alpha, rg[2].alpha, rg[3].alpha);
+      const tex = textureName ? texture(textureName) : null;
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.uniform1f(loc.uHasTex, tex ? 1 : 0);
+      const rgb = hexToRgb01(color);
+      gl.uniform3f(loc.uColor, rgb[0], rgb[1], rgb[2]);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      gl.disable(gl.SCISSOR_TEST);
+      target.drawImage(glCanvas, 0, 0, pw, ph, x0, y0, x1 - x0, y1 - y0);
+      return true;
+    }
+
+    return { draw, available: () => init(), onTextureReady };
+  })();
+
+  function hexToRgb01(hex) {
+    const h = hex.replace("#", "");
+    const n = parseInt(h.length === 3 ? h.split("").map((c) => c + c).join("") : h, 16);
+    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+  }
+
+  /* =========================================================================
      PLANET SYSTEM VIEW (Jupiter first)
      A separate, primary-centered mode: Jupiter at the center, its modeled
      moons, and every mission's planetocentric tour legs (see PLANETOCENTRIC
@@ -7794,6 +8147,54 @@
     { r0: 117507, r1: 122340, alpha: 0.05 }, { r0: 122340, r1: 136780, alpha: 0.3 },
   ];
   const SATURN_POLE = { refPoleRaDec: [40.589, 83.537] };
+
+  // Saturn's rings around the planet in the Solar System view: one half
+  // at a time, so the far half ("back") goes under the planet and the near
+  // half ("front") over it. (The system view draws its rings sector by
+  // sector into its own depth sort instead.) Same lighting as there: the
+  // planet's shadow, and dimmer when seen from the unlit side or with the
+  // Sun low over the ring plane. sx/sy: planet centre in px; kmToPx: px
+  // per km at the planet; light: unit vector toward the Sun (ecliptic).
+  function drawSaturnRingsHalf(c, half, sx, sy, kmToPx, light, viewRows) {
+    // Small on screen, the thin rings need more opacity to read at all.
+    const boost = Math.min(2, Math.max(1, 60 / (PLANET_META.Saturn.radiusKm * kmToPx)));
+    const B = refPoleBasis(SATURN_POLE);
+    const pole = B[2];
+    const dot3 = (u, v) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+    const Req = PLANET_META.Saturn.radiusKm, Rpol = Req * (1 - BODY_ROTATION.Saturn.flattening);
+    const inShadow = (w) => {
+      const sL = dot3(w, light);
+      if (sL >= 0) return 0;
+      const perp = [w[0] - sL * light[0], w[1] - sL * light[1], w[2] - sL * light[2]];
+      const pp = dot3(perp, pole);
+      const pe2 = Math.max(0, dot3(perp, perp) - pp * pp);
+      return pe2 / (Req * Req) + (pp * pp) / (Rpol * Rpol) < 1 ? 1 : 0;
+    };
+    const sunUp = dot3(pole, light), viewUp = dot3(pole, viewRows[2]);
+    const bright = (Math.sign(sunUp) === Math.sign(viewUp) ? 1 : 0.4) * (0.45 + 0.55 * Math.min(1, Math.abs(sunUp) / 0.4));
+    const proj = (w) => {
+      const [rx, ry, rz] = rotateWorld(w[0], w[1], w[2]);
+      return [sx + rx * kmToPx, sy - ry * kmToPx, rz];
+    };
+    const N = 96;
+    const ringW = (r, th) => [0, 1, 2].map((k) => r * (Math.cos(th) * B[0][k] + Math.sin(th) * B[1][k]));
+    SATURN_RINGS.forEach((ring) => {
+      for (let k = 0; k < N; k++) {
+        const th0 = (k / N) * 2 * Math.PI, th1 = ((k + 1.04) / N) * 2 * Math.PI;
+        const w = [ringW(ring.r0, th0), ringW(ring.r1, th0), ringW(ring.r1, th1), ringW(ring.r0, th1)];
+        const q = w.map(proj);
+        const rz = q[0][2] + q[1][2] + q[2][2] + q[3][2];
+        if ((half === "back") !== (rz > 0)) continue; // larger rz = farther from the viewer
+        const shade = (inShadow(w[0]) + inShadow(w[1]) + inShadow(w[2]) + inShadow(w[3])) / 4;
+        const f = bright * (1 - 0.92 * shade);
+        c.beginPath(); c.moveTo(q[0][0], q[0][1]);
+        for (let j = 1; j < 4; j++) c.lineTo(q[j][0], q[j][1]);
+        c.closePath();
+        c.fillStyle = `rgba(${Math.round(216 * f)},${Math.round(200 * f)},${Math.round(160 * f)},${Math.min(0.85, boost * ring.alpha * (0.6 + 0.4 * (1 - shade)))})`;
+        c.fill();
+      }
+    });
+  }
 
   // The locked-panel body name -> system-view primary, or null.
   function systemPrimaryForBodyName(name) {
@@ -8135,6 +8536,13 @@
     ctx.beginPath(); ctx.arc(x, y, ringR, 0, 2 * Math.PI); ctx.stroke();
   }
 
+  // A moon's body-fixed axes at day t (tidally locked; see lockedMoonAxes).
+  function moonAxesAt(m, t) {
+    const p0 = computeSatelliteOffset(m.elements, t).posAU;
+    const p1 = computeSatelliteOffset(m.elements, t + 0.01).posAU;
+    return lockedMoonAxes(p0, [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]]);
+  }
+
   // The name panels, BODY_INFO and timelines use for a system's primary.
   function systemBodyDisplayName(primary) {
     return primary === "Pluto" ? "Pluto and Charon" : primary;
@@ -8217,6 +8625,7 @@
       extra = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-sv-follow-moon="${m.name}">Follow</button></div>`;
       if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
       sections += bodyMissionsHtml(m.name);
+      sections += textureCreditHtml(m.name);
     } else {
       const name = systemBodyDisplayName(primary);
       title = name;
@@ -8227,6 +8636,7 @@
       addRow("Distance from Sol", `${Math.hypot(...meta.helio(t)).toFixed(3)} AU`);
       if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
       sections += bodyMissionsHtml(name);
+      sections += textureCreditHtml(primary);
     }
     if (rowsOnly) { const el = document.getElementById("system-info-rows"); if (el) el.innerHTML = rows; return; }
     systemInfoTitle.textContent = title;
@@ -8261,22 +8671,50 @@
 
   /* ---- System view: true-size comparison (planet and its moons) ---- */
   const systemSizePanel = document.getElementById("system-size-panel");
+  // Size chart: each body as a lit sphere at true relative diameter, seen
+  // from its equator with longitude 0 facing you (a moon's planet-facing
+  // side) and a fixed three-quarter light, so all of them read the same
+  // way. Bodies under a pixel can't be drawn true: a hairline dot, and
+  // the label says so instead of inflating it.
+  const SIZE_CHART_LIGHT = vNorm([-0.45, 0.35, 0.82]); // view coords: right, up, toward you
+  const SIZE_CHART_AXES = [[0, 0, 1], [1, 0, 0], [0, 1, 0]]; // lon 0 toward you, east right, north up
+  const IDENTITY_ROWS = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
   function buildSystemSizePanel() {
     const primary = systemView.primary;
     const meta = systemPrimary(primary);
     const maxPx = 60;
-    const item = (name, radiusKm, color) => {
-      const r = (radiusKm / meta.radiusKm) * maxPx;
-      const pct = (radiusKm / meta.radiusKm) * 100;
-      // Under a pixel the circle can't be drawn true; show a hairline dot
-      // and say so in the label instead of inflating it.
-      return `<div class="size-item"><div class="size-circle" style="width:${Math.max(1, 2 * r)}px;height:${Math.max(1, 2 * r)}px;background:${color}"></div>` +
-        `<div class="size-label">${name} (${pct < 1 ? pct.toFixed(2) : pct.toFixed(1)}%)${r < 0.5 ? " ·" : ""}</div></div>`;
-    };
-    document.getElementById("system-size-row").innerHTML = item(primary, meta.radiusKm, meta.color) +
-      systemMoons(primary).map((m) => item(m.name, m.meta.radiusKm, m.meta.color)).join("");
+    const bodies = [{ name: primary, radiusKm: meta.radiusKm, color: meta.color, primary: true }]
+      .concat(systemMoons(primary).map((m) => ({ name: m.name, radiusKm: m.meta.radiusKm, color: m.meta.color })));
+    const row = document.getElementById("system-size-row");
+    row.innerHTML = bodies.map((b, i) => {
+      const r = (b.radiusKm / meta.radiusKm) * maxPx;
+      const pct = (b.radiusKm / meta.radiusKm) * 100;
+      const box = Math.max(1, Math.ceil(2 * r));
+      return `<div class="size-item"><canvas class="size-sphere" data-i="${i}" width="${Math.ceil(box * dpr)}" height="${Math.ceil(box * dpr)}" style="width:${box}px;height:${box}px"></canvas>` +
+        `<div class="size-label">${b.name} (${pct < 1 ? pct.toFixed(2) : pct.toFixed(1)}%)${r < 0.5 ? " ·" : ""}</div></div>`;
+    }).join("");
+    row.querySelectorAll("canvas.size-sphere").forEach((cv) => {
+      const b = bodies[+cv.dataset.i];
+      const r = (b.radiusKm / meta.radiusKm) * maxPx;
+      const c2 = cv.getContext("2d");
+      c2.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const box = cv.width / dpr, mid = box / 2;
+      const rot = b.primary ? BODY_ROTATION[primary] : null;
+      const ok = r >= 1.5 && sphereGL.draw(c2, { sx: mid, sy: mid, r, color: b.color, light: SIZE_CHART_LIGHT,
+        viewRows: IDENTITY_ROWS, axes: SIZE_CHART_AXES, textureName: b.name, flattening: rot ? rot.flattening : 0,
+        limb: b.primary ? (LIMB_DARKENING[primary] || 0) : 0,
+        clip: { x0: 0, y0: 0, x1: box, y1: box } });
+      if (!ok) { // too small for shading, or no WebGL: a flat disc
+        c2.fillStyle = b.color;
+        c2.beginPath(); c2.arc(mid, mid, Math.max(0.5, r), 0, 2 * Math.PI); c2.fill();
+      }
+    });
     document.getElementById("system-size-title").textContent = `${primary} and its moons (diameters to scale)`;
   }
+  // A map that finishes loading after the chart was drawn: redraw it.
+  sphereGL.onTextureReady.push(() => {
+    if (systemView && systemView.trueSizes) buildSystemSizePanel();
+  });
   document.getElementById("sv-true-sizes").addEventListener("change", (e) => {
     if (!systemView) return;
     systemView.trueSizes = e.target.checked;
@@ -8436,6 +8874,10 @@
     const [lx, ly] = rotateWorld(-primaryHelio[0] / dist, -primaryHelio[1] / dist, -primaryHelio[2] / dist);
     const lm = Math.hypot(lx, ly) || 1;
     const lightX = lx / lm, lightY = -ly / lm;
+    // For the sphere renderer: toward the Sun in world coords (the same for
+    // every body in the system, to well under a degree), and the camera.
+    const lightWorld = [-primaryHelio[0] / dist, -primaryHelio[1] / dist, -primaryHelio[2] / dist];
+    const viewRows = viewBasisRows();
 
     const items = []; // depth-sorted discs: { rz, draw() }
     // Spacecraft labels step down past ones already drawn this frame, so a
@@ -8466,7 +8908,15 @@
     const jrTrue = meta.radiusKm / systemView.kmPerPx;
     const jr = Math.max(5, jrTrue);
     items.push({ rz: jz, draw: () => {
-      if (jrTrue >= 5) { drawBody(jx, jy, jr, meta.color, false, lightX, lightY); return; }
+      if (jrTrue >= 5) {
+        const rot = BODY_ROTATION[primary];
+        const ok = sphereGL.draw(ctx, { sx: jx, sy: jy, r: jr, color: meta.color, light: lightWorld, viewRows,
+          axes: rot ? iauBodyAxes(rot, t) : null, textureName: primary, flattening: rot ? rot.flattening : 0,
+          rings: bodyRingsForShader(primary), limb: LIMB_DARKENING[primary] || 0 });
+        if (!ok) drawBody(jx, jy, jr, meta.color, false, lightX, lightY);
+        drawAtmosphere(ctx, primary, jx, jy, jr);
+        return;
+      }
       drawSmallBodyMarker(jx, jy, jrTrue, 7, meta.color);
     } });
     hits.push({ x: jx, y: jy, r: Math.max(jr, 12), rz: jz, kind: "primary", name: primary });
@@ -8494,18 +8944,42 @@
     // (the far half goes behind the disc, the near half in front).
     if (primary === "Saturn") {
       const B = refPoleBasis(SATURN_POLE);
-      const N = 72;
-      const ringPt = (r, th) => svProject([0, 1, 2].map((k) => r * (Math.cos(th) * B[0][k] + Math.sin(th) * B[1][k])));
+      const pole = B[2];
+      const N = 180;
+      const dot3 = (u, v) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+      const ringW = (r, th) => [0, 1, 2].map((k) => r * (Math.cos(th) * B[0][k] + Math.sin(th) * B[1][k]));
+      // Saturn's shadow on the rings: a point is shadowed when it lies on
+      // the night side and within the planet's (oblate) cross-section seen
+      // from the Sun.
+      const Req = meta.radiusKm, Rpol = Req * (1 - BODY_ROTATION.Saturn.flattening);
+      const inShadow = (w) => {
+        const sL = dot3(w, lightWorld);
+        if (sL >= 0) return 0;
+        const perp = [w[0] - sL * lightWorld[0], w[1] - sL * lightWorld[1], w[2] - sL * lightWorld[2]];
+        const pp = dot3(perp, pole);
+        const pe2 = Math.max(0, dot3(perp, perp) - pp * pp);
+        return pe2 / (Req * Req) + (pp * pp) / (Rpol * Rpol) < 1 ? 1 : 0;
+      };
+      // Seen from the side the Sun isn't on, the rings glow only by light
+      // scattered through them: much dimmer. Brightness also falls as the
+      // Sun's elevation above the ring plane drops (zero at equinox).
+      const sunUp = dot3(pole, lightWorld), viewUp = dot3(pole, viewRows[2]);
+      const litSide = Math.sign(sunUp) === Math.sign(viewUp);
+      const bright = (litSide ? 1 : 0.4) * (0.45 + 0.55 * Math.min(1, Math.abs(sunUp) / 0.4));
       SATURN_RINGS.forEach((ring) => {
         for (let k = 0; k < N; k++) {
           const th0 = (k / N) * 2 * Math.PI, th1 = ((k + 1.04) / N) * 2 * Math.PI;
-          const q = [ringPt(ring.r0, th0), ringPt(ring.r1, th0), ringPt(ring.r1, th1), ringPt(ring.r0, th1)];
+          const w = [ringW(ring.r0, th0), ringW(ring.r1, th0), ringW(ring.r1, th1), ringW(ring.r0, th1)];
+          const q = w.map(svProject);
           const rz = (q[0][2] + q[1][2] + q[2][2] + q[3][2]) / 4;
+          const shade = (inShadow(w[0]) + inShadow(w[1]) + inShadow(w[2]) + inShadow(w[3])) / 4;
+          const f = bright * (1 - 0.92 * shade);
+          const fill = `rgba(${Math.round(216 * f)},${Math.round(200 * f)},${Math.round(160 * f)},${ring.alpha * (0.6 + 0.4 * (1 - shade))})`;
           items.push({ rz, draw: () => {
             ctx.beginPath(); ctx.moveTo(q[0][0], q[0][1]);
             for (let j = 1; j < 4; j++) ctx.lineTo(q[j][0], q[j][1]);
             ctx.closePath();
-            ctx.fillStyle = `rgba(216,200,160,${ring.alpha})`; ctx.fill();
+            ctx.fillStyle = fill; ctx.fill();
           } });
         }
       });
@@ -8525,7 +8999,12 @@
       const r = rTrue >= 3 ? rTrue : 5;
       hits.push({ x: sx, y: sy, r: Math.max(r, 10), rz, kind: "moon", name: m.name });
       items.push({ rz, draw: () => {
-        if (rTrue >= 3) drawBody(sx, sy, r, m.meta.color, false, lightX, lightY);
+        if (rTrue >= 3) {
+          const ok = sphereGL.draw(ctx, { sx, sy, r, color: m.meta.color, light: lightWorld, viewRows,
+            axes: moonAxesAt(m, t), textureName: m.name });
+          if (!ok) drawBody(sx, sy, r, m.meta.color, false, lightX, lightY);
+          drawAtmosphere(ctx, m.name, sx, sy, r);
+        }
         else drawSmallBodyMarker(sx, sy, rTrue, r, m.meta.color);
         ctx.fillStyle = "rgba(232,237,247,0.85)";
         ctx.font = "11px system-ui, sans-serif";
@@ -8673,6 +9152,7 @@
     const dtMs = now - lastFrameTime;
     lastFrameTime = now;
 
+    sphereDaysPerFrame = paused ? 0 : Math.abs(speedMultiplier * BASE_DAYS_PER_MS * dtMs);
     if (!paused && speedMultiplier !== 0) {
       const daysElapsed = speedMultiplier * BASE_DAYS_PER_MS * dtMs;
       simDate = new Date(simDate.getTime() + daysElapsed * 86400000);
@@ -9069,7 +9549,9 @@
         r: abs.sat.rKm / AU_KM, e: abs.sat.e, i: abs.sat.i, a: abs.sat.a / AU_KM,
         rKmFromPrimary: abs.sat.rKm,
         primaryGmKm3Day2: abs.primaryGmKm3Day2,
-        radiusKm: meta.radiusKm, dimensionsKm: meta.dimensionsKm, shapeNote: meta.shapeNote
+        radiusKm: meta.radiusKm, dimensionsKm: meta.dimensionsKm, shapeNote: meta.shapeNote,
+        // Tidally locked: lets the sphere renderer orient its surface map.
+        axes: lockedMoonAxes(abs.sat.posAU, abs.sat.velAU)
       });
     }
 
@@ -9165,21 +9647,13 @@
       }
     }
 
-    // Consistent depth ordering: whichever rotated side currently faces the
-    // viewer is drawn last, on top. This is SMALLER rz, not larger --
-    // verified against real astronomical fact (not just internal self-
-    // consistency, which the previous `a.rz - b.rz` direction also had,
-    // making this bug easy to miss): at yaw=4.13deg/pitch=78.72deg, on
-    // 2022-05-31 Mercury sits in front of Sol (rz=-0.46) and was rendered
-    // hidden behind it under the old ascending sort; on 2024-03-18 Mercury
-    // sits behind Sol (rz=+0.30) and was rendered in front of it. Both
-    // were backwards -- `rotateWorld`'s pitch rotation is a proper,
-    // sign-consistent rotation with no inherent flip (confirmed
-    // separately), so this was a real, orientation-independent inversion
-    // in the sort direction itself, not a case-by-case edge condition.
+    // Depth ordering: farthest (largest rz) first, nearest last, on top.
+    // See rotateWorld for which way rz points.
     bodies.sort((a, b) => b.rz - a.rz);
 
     renderedBodies = [];
+    const viewRows = viewBasisRows();
+    const tNow = daysSinceJ2000(simDate);
     bodies.forEach((b) => {
       // Direction from this body toward Sol (Sol sits at the world
       // origin, so this is simply -pos, normalized), rotated through the
@@ -9202,7 +9676,28 @@
           lightDirY = -ry / screenMag;
         }
       }
-      drawBody(b.sx, b.sy, b.screenR, b.color, b.isSun, lightDirX, lightDirY);
+      // Lit sphere for planets, moons and small bodies big enough to show
+      // it; a planet with a known orientation also gets its map. Sol,
+      // spacecraft markers and tiny dots keep the flat 2D drawing.
+      let drawn = false;
+      const toSol = distFromSol > 1e-9 ? [-b.pos[0] / distFromSol, -b.pos[1] / distFromSol, -b.pos[2] / distFromSol] : null;
+      // Saturn's rings: far half under the planet, near half over it.
+      const ringed = b.name === "Saturn" && b.primary === "Sol" && toSol && b.screenR >= 2;
+      const ringScale = ringed ? b.screenR / PLANET_META.Saturn.radiusKm : 0;
+      if (ringed) drawSaturnRingsHalf(ctx, "back", b.sx, b.sy, ringScale, toSol, viewRows);
+      if (!b.isSun && !b.isFlight && b.screenR >= 4 && toSol) {
+        const rot = b.primary === "Sol" ? BODY_ROTATION[b.name] : null;
+        const axes = rot ? iauBodyAxes(rot, tNow) : (b.axes || null);
+        drawn = sphereGL.draw(ctx, { sx: b.sx, sy: b.sy, r: b.screenR, color: b.color, viewRows,
+          light: toSol, axes, textureName: axes ? b.name : null,
+          flattening: rot ? rot.flattening : 0, ambient: 0.12, limb: LIMB_DARKENING[b.name] || 0,
+          // The rings' shadow on the planet only once it's big enough to
+          // show cleanly; at a few px it aliases into a jagged line.
+          rings: ringed && b.screenR >= 30 ? bodyRingsForShader("Saturn") : null });
+      }
+      if (!drawn) drawBody(b.sx, b.sy, b.screenR, b.color, b.isSun, lightDirX, lightDirY);
+      else drawAtmosphere(ctx, b.name, b.sx, b.sy, b.screenR);
+      if (ringed) drawSaturnRingsHalf(ctx, "front", b.sx, b.sy, ringScale, toSol, viewRows);
       renderedBodies.push(b);
     });
 
@@ -9368,6 +9863,12 @@
       // malformed data/bodies/info.json.
       console.error("Failed to load body info:", err);
     }
+    try {
+      await loadTextureInfo();
+    } catch (err) {
+      // Bodies just render untextured (lit colour spheres) without it.
+      console.error("Failed to load surface map list:", err);
+    }
     buildFlightsLegend();
     applyInitialURLState();
     // Small, permanent, read-only hook for offline verification tooling
@@ -9386,6 +9887,7 @@
       getSolvedFlight, OUTER_MOONS, computeSatelliteOffset,
       getSolvedPlanetocentricLeg, planetocentricOffsetKm, planetocentricStateAt, primaryUnitKm, getPlanetTours, getPlanetOrbiters, orbiterPhaseAt, orbiterOffsetKm,
       getFlightTimeline, bodyTimelineRows, tlTicks, openTimeline,
+      viewBasisRows, iauBodyAxes, lockedMoonAxes, BODY_ROTATION, rotateWorld, systemPrimary, getCam: () => ({ yaw, pitch }), svHits: () => (systemView && systemView.hits) || [],
     };
     requestAnimationFrame(frame);
   }

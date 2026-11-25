@@ -22,5 +22,8 @@ tools/.venv*/
 # Horizons API response cache for tools/check_horizons.py -- regenerable.
 tools/.horizons_cache/
 
+# Downloaded source maps for tools/build_textures.py -- regenerable.
+tools/.texture_cache/
+
 # Python bytecode
 __pycache__/

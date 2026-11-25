@@ -1,0 +1,249 @@
+{
+ "Callisto": {
+  "file": "data/images/textures/callisto.jpg",
+  "title": "Callisto Voyager / Galileo SSI global mosaic",
+  "credit": "NASA/JPL/USGS Astrogeology Science Center",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Callisto_USGS_global_small.jpg",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/9/96/Callisto_USGS_global_small.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled"
+  ]
+ },
+ "Charon": {
+  "file": "data/images/textures/charon.jpg",
+  "title": "Charon global map from New Horizons (NASA 3D Resources)",
+  "credit": "NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute; NASA 3D Resources",
+  "license": "NASA media, not copyrighted (NASA 3D Resources; NASA media usage guidelines)",
+  "sourcePage": "https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Pluto%20-%20Charon",
+  "downloadedFrom": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures/Pluto%20-%20Charon/Pluto%20-%20Charon.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled"
+  ]
+ },
+ "Deimos": {
+  "file": "data/images/textures/deimos.jpg",
+  "title": "Deimos global map (NASA 3D Resources)",
+  "credit": "NASA/JPL; NASA 3D Resources",
+  "license": "NASA media, not copyrighted (NASA 3D Resources; NASA media usage guidelines)",
+  "sourcePage": "https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Mars%20-%20Deimos",
+  "downloadedFrom": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures/Mars%20-%20Deimos/Mars%20-%20Deimos.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled"
+  ]
+ },
+ "Dione": {
+  "file": "data/images/textures/dione.jpg",
+  "title": "Cassini global colour map of Dione",
+  "credit": "NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Dione_Color_Map.jpg",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Dione_Color_Map.jpg/3840px-Dione_Color_Map.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled",
+   "colour saturation reduced to 30% (source is an enhanced IR/green/UV composite)"
+  ]
+ },
+ "Earth": {
+  "file": "data/images/textures/earth.jpg",
+  "title": "Blue Marble: land surface and ocean (NASA Visible Earth)",
+  "credit": "NASA Goddard Space Flight Center; image by Reto Stöckli, enhancements by Robert Simmon",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Whole_world_-_land_and_oceans_12000.jpg",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Whole_world_-_land_and_oceans_12000.jpg/3840px-Whole_world_-_land_and_oceans_12000.jpg",
+  "processing": [
+   "resized to 2048x1024",
+   "polar no-data filled"
+  ]
+ },
+ "Enceladus": {
+  "file": "data/images/textures/enceladus.jpg",
+  "title": "Cassini global colour map of Enceladus (PIA18435)",
+  "credit": "NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Enceladus_Color_Map.jpg",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Enceladus_Color_Map.jpg/3840px-Enceladus_Color_Map.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled",
+   "colour saturation reduced to 30% (source is an enhanced IR/green/UV composite)"
+  ]
+ },
+ "Europa": {
+  "file": "data/images/textures/europa.jpg",
+  "title": "Europa Voyager / Galileo SSI global mosaic",
+  "credit": "NASA/JPL/USGS Astrogeology Science Center",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Europa_Voyager_GalileoSSI_global_mosaic.jpg",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/2/26/Europa_Voyager_GalileoSSI_global_mosaic.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled"
+  ]
+ },
+ "Ganymede": {
+  "file": "data/images/textures/ganymede.jpg",
+  "title": "Ganymede global map, Voyager and Galileo imagery (NASA 3D Resources)",
+  "credit": "NASA/JPL/USGS; NASA 3D Resources",
+  "license": "NASA media, not copyrighted (NASA 3D Resources; NASA media usage guidelines)",
+  "sourcePage": "https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Jupiter%20-%20Ganymede",
+  "downloadedFrom": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures/Jupiter%20-%20Ganymede/Jupiter%20-%20Ganymede.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled",
+   "contrast reduced 35% toward the mean"
+  ]
+ },
+ "Iapetus": {
+  "file": "data/images/textures/iapetus.jpg",
+  "title": "Cassini global colour map of Iapetus",
+  "credit": "NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Iapetus_Color_Map.jpg",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Iapetus_Color_Map.jpg/3840px-Iapetus_Color_Map.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled",
+   "colour saturation reduced to 30% (source is an enhanced IR/green/UV composite)"
+  ]
+ },
+ "Io": {
+  "file": "data/images/textures/io.jpg",
+  "title": "Io global map, Galileo and Voyager imagery (NASA 3D Resources)",
+  "credit": "NASA/JPL/USGS; NASA 3D Resources",
+  "license": "NASA media, not copyrighted (NASA 3D Resources; NASA media usage guidelines)",
+  "sourcePage": "https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Jupiter%20-%20Io%20(A)",
+  "downloadedFrom": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures/Jupiter%20-%20Io%20(A)/Jupiter%20-%20Io%20(A).jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled"
+  ]
+ },
+ "Jupiter": {
+  "file": "data/images/textures/jupiter.jpg",
+  "title": "Cassini Jupiter cylindrical map, December 2000 (PIA07782)",
+  "credit": "NASA/JPL/Space Science Institute",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Jupiter_Cylindrical_Map_-_Dec_2000_PIA07782.jpg",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/1/1e/Jupiter_Cylindrical_Map_-_Dec_2000_PIA07782.jpg",
+  "processing": [
+   "resized to 2048x1024",
+   "polar no-data filled"
+  ]
+ },
+ "Mars": {
+  "file": "data/images/textures/mars.jpg",
+  "title": "Mars global colour map (NASA 3D Resources)",
+  "credit": "NASA/JPL/USGS; NASA 3D Resources",
+  "license": "NASA media, not copyrighted (NASA 3D Resources; NASA media usage guidelines)",
+  "sourcePage": "https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Mars",
+  "downloadedFrom": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures/Mars/Mars.jpg",
+  "processing": [
+   "resized to 2048x1024",
+   "polar no-data filled"
+  ]
+ },
+ "Mercury": {
+  "file": "data/images/textures/mercury.jpg",
+  "title": "MESSENGER MDIS global monochrome basemap (2,500 m/px)",
+  "credit": "NASA/Johns Hopkins University Applied Physics Laboratory/Carnegie Institution of Washington",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mercury_-_complete_mono_basemap_2500mpp_equirectangular.png",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Mercury_-_complete_mono_basemap_2500mpp_equirectangular.png/3840px-Mercury_-_complete_mono_basemap_2500mpp_equirectangular.png",
+  "processing": [
+   "resized to 2048x1024",
+   "polar no-data filled"
+  ]
+ },
+ "Moon": {
+  "file": "data/images/textures/moon.jpg",
+  "title": "CGI Moon Kit colour map, from LRO Wide Angle Camera mosaics",
+  "credit": "NASA's Scientific Visualization Studio (Ernie Wright); LRO data NASA/GSFC/Arizona State University",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://svs.gsfc.nasa.gov/4720",
+  "downloadedFrom": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_poles_2k.tif",
+  "processing": [
+   "resized to 2048x1024",
+   "polar no-data filled"
+  ]
+ },
+ "Phobos": {
+  "file": "data/images/textures/phobos.jpg",
+  "title": "Phobos global map (NASA 3D Resources)",
+  "credit": "NASA/JPL; NASA 3D Resources",
+  "license": "NASA media, not copyrighted (NASA 3D Resources; NASA media usage guidelines)",
+  "sourcePage": "https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Mars%20-%20Phobos",
+  "downloadedFrom": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures/Mars%20-%20Phobos/Mars%20-%20Phobos.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled"
+  ]
+ },
+ "Pluto": {
+  "file": "data/images/textures/pluto.jpg",
+  "title": "Pluto global map from New Horizons; the unseen southern hemisphere is filled (NASA 3D Resources)",
+  "credit": "NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute; NASA 3D Resources",
+  "license": "NASA media, not copyrighted (NASA 3D Resources; NASA media usage guidelines)",
+  "sourcePage": "https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Pluto",
+  "downloadedFrom": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures/Pluto/Pluto.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled"
+  ]
+ },
+ "Rhea": {
+  "file": "data/images/textures/rhea.jpg",
+  "title": "Cassini global colour map of Rhea (PIA18438)",
+  "credit": "NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Rhea_Color_Map.jpg",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Rhea_Color_Map.jpg/3840px-Rhea_Color_Map.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled",
+   "colour saturation reduced to 30% (source is an enhanced IR/green/UV composite)"
+  ]
+ },
+ "Saturn": {
+  "file": "data/images/textures/saturn.jpg",
+  "title": "Saturn band map (NASA 3D Resources), recoloured here",
+  "credit": "NASA/JPL; NASA 3D Resources",
+  "license": "NASA media, not copyrighted (NASA 3D Resources; NASA media usage guidelines)",
+  "sourcePage": "https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Saturn",
+  "downloadedFrom": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures/Saturn/Saturn.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled",
+   "recoloured by luminance toward Cassini natural colour"
+  ]
+ },
+ "Tethys": {
+  "file": "data/images/textures/tethys.jpg",
+  "title": "Cassini global colour map of Tethys",
+  "credit": "NASA/JPL-Caltech/Space Science Institute/Lunar and Planetary Institute",
+  "license": "Public domain (NASA)",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Tethys_Color_Map.jpg",
+  "downloadedFrom": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Tethys_Color_Map.jpg/3840px-Tethys_Color_Map.jpg",
+  "processing": [
+   "resized to 1024x512",
+   "polar no-data filled",
+   "colour saturation reduced to 30% (source is an enhanced IR/green/UV composite)"
+  ]
+ },
+ "Titan": {
+  "file": "data/images/textures/titan.jpg",
+  "title": "Titan in visible light: its orange haze (NASA 3D Resources)",
+  "credit": "NASA/JPL; NASA 3D Resources",
+  "license": "NASA media, not copyrighted (NASA 3D Resources; NASA media usage guidelines)",
+  "sourcePage": "https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Saturn%20-%20Titan",
+  "downloadedFrom": "https://raw.githubusercontent.com/nasa/NASA-3D-Resources/master/Images%20and%20Textures/Saturn%20-%20Titan/Saturn%20-%20Titan.jpg",
+  "processing": [
+   "resized to 512x256",
+   "polar no-data filled"
+  ]
+ }
+}

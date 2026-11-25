@@ -4,6 +4,48 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## Unreleased (branch `textured-spheres`, local only)
+
+- **Lit, textured spheres.** Planets, moons and small bodies are drawn as
+  spheres lit by Sol (WebGL, copied into the 2D canvas in the same depth
+  order as before), with an exact terminator for any Sun/camera geometry:
+  crescents and gibbous phases instead of a gradient that always faced
+  the Sun. Jupiter and Saturn are oblate. Jupiter, Io, Europa, Ganymede
+  and Callisto carry public-domain surface maps (`tools/build_textures.py`);
+  Jupiter turns at its IAU System III rate with its real pole, and the
+  moons keep their planet-facing side toward Jupiter. The system view's
+  "Compare true sizes" chart uses the same renderer. Without WebGL the old
+  gradient discs are drawn.
+- **Surface maps for 21 bodies.** Mercury, Earth, the Moon, Mars, Phobos,
+  Deimos, Jupiter and the four Galilean moons, Saturn, Titan, Mimas,
+  Enceladus, Tethys, Dione, Rhea, Iapetus, Pluto and Charon, all from
+  NASA/JPL/USGS sources (public domain or NASA media). Cassini's
+  enhanced-colour moon maps are toned down toward the moons' near-grey
+  look; Venus stays a featureless cloud deck by design. Moons in the
+  Solar System view are oriented too (planet-facing side toward the
+  planet). Longitudes checked against known features on every Jupiter-
+  system map.
+- **Saturn's rings and shadows.** The rings cast their shadow on Saturn,
+  Saturn's shadow falls across the rings, and the rings dim when seen from
+  their unlit side or when the Sun is low over them.
+- **Limb darkening and atmospheres.** The giants darken toward the limb;
+  Venus, Earth, Titan and Mars get a thin atmosphere halo.
+- **Sources and credits.** `docs/CREDITS.md` lists every map, dataset and
+  reference with its credit and licence; each map's credit and source link
+  is shown in its body's info panel. `tools/build_textures.py` keeps the
+  manifest and the CREDITS table in sync. An audit of the older gallery
+  images (167, credits not yet recorded) is on `docs/TODO.md`.
+- **To-do and plans.** `docs/TODO.md` (data refresh and a refresh
+  schedule, image audit, rendering, catalog) and
+  `docs/instruments-plan.md` (spacecraft instruments and public data
+  feeds, plan only).
+- **Fixed: depth order was mirror-imaged.** Positions were drawn as seen
+  from ecliptic north, but every overlap test assumed a viewer on the
+  south side, so which body (or which half of Saturn's rings) passed in
+  front was backwards. One sign in `rotateWorld`; the earlier "Mercury in
+  front of Sol" fix had checked against Earth's viewpoint, not the
+  camera's.
+
 ## Unreleased (local prototype, not yet pushed) — planet system views
 
 - **Classification in info panels.** Every info panel and system view

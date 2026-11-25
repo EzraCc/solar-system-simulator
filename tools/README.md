@@ -147,6 +147,38 @@ flight is touched, as text, so the rest of the file stays as it was.
 
     python3 tools/timeline_data.py
 
+## `build_textures.py` — surface maps for the sphere renderer
+
+Downloads surface maps (NASA / JPL / USGS: public domain or NASA media)
+and writes them to `data/images/textures/<name>.jpg`:
+- equirectangular, 2:1, power-of-two sizes (WebGL 1 can only mipmap those);
+- longitude 0 at the centre with east to the right;
+- polar no-data margins filled.
+
+Each entry in `SOURCES` carries the citation (title, credit, licence,
+source page). The script writes them to `data/images/textures/manifest.json`,
+which the app loads for texture paths and the in-panel credit line. It also
+regenerates the map table in `docs/CREDITS.md`. Downloads are cached in
+`tools/.texture_cache/` (gitignored).
+
+Large Wikimedia Commons originals are fetched as standard-size thumbnails
+(3840 px). The file servers rate-limit and reject full-size requests for
+100-megapixel mosaics, and ask clients to use thumbnails.
+
+```
+tools/.venv/bin/python tools/build_textures.py            # all
+tools/.venv/bin/python tools/build_textures.py europa io  # some (by file name)
+```
+
+To add a body:
+1. Add an entry to `SOURCES` with full citation fields.
+2. Run the script.
+3. Make sure the body has an orientation: `BODY_ROTATION` in app.js for a
+   planet. Tidally locked moons get theirs from their orbit.
+
+Check the longitude convention against a known surface feature and note
+it in the comment above `SOURCES`.
+
 ## `check_lambert_sweep.py` — multi-revolution screening
 
 > For flights with a Horizons ID, prefer `check_horizons.py`. This script

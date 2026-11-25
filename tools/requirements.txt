@@ -10,4 +10,5 @@
 hapsira
 playwright
 numpy>=2.3
+pillow  # tools/build_textures.py (also pulled in by matplotlib)
 matplotlib>=3.10
