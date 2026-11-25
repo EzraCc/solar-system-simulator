@@ -34,8 +34,12 @@ Read-only report to run at the start of every data-refresh pass (see
 
 ```
 tools/.venv/bin/python tools/refresh_check.py --out report.md
-tools/.venv/bin/python tools/refresh_check.py --update-baseline   # after the pass
+tools/.venv/bin/python tools/refresh_check.py --update-baseline --log "what changed" --pr "#N"   # after the pass
+tools/.venv/bin/python tools/refresh_check.py --todo   # is a pull due? (no network)
 ```
+
+Pulls are logged in `docs/data-pulls.md`; `--todo` adds a "data pull due"
+item to `docs/TODO.md` once the last one is more than 10 days old.
 
 To extend a fitted planet orbit past its last phase without refitting
 its history: `tools/build_orbit_phases.py <flight> --primary Mars --stop

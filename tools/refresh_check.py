@@ -28,10 +28,19 @@ It checks three things:
 
 Output is markdown on stdout (or --out FILE).
 
+Pull log and to-do reminder (no scheduler; pulls are done by hand):
+  --log "summary" [--pr "#N"]  records a pull in docs/data-pulls.md.
+  --todo                       rewrites the "data pulls" block in
+                               docs/TODO.md: the last pull's date and,
+                               once it's more than DUE_DAYS old, a
+                               "data pull due" item. No network.
+CLAUDE.md asks for --todo at the start of each work session.
+
 Usage:
   tools/.venv/bin/python tools/refresh_check.py
   tools/.venv/bin/python tools/refresh_check.py --since 2026-11-17 --out report.md
-  tools/.venv/bin/python tools/refresh_check.py --update-baseline   # after a pass
+  tools/.venv/bin/python tools/refresh_check.py --update-baseline --log "what changed" --pr "#12"
+  tools/.venv/bin/python tools/refresh_check.py --todo   # is a pull due?
 """
 import argparse
 import datetime as dt
@@ -51,6 +60,9 @@ IDS = os.path.join(HERE, "horizons_ids.json")
 BASELINE = os.path.join(HERE, "horizons_baseline.json")
 API = "https://ssd.jpl.nasa.gov/api/horizons.api"
 UA = "solar-sim-refresh-check/1.0 (educational)"
+PULL_LOG = os.path.join(ROOT, "docs", "data-pulls.md")
+TODO = os.path.join(ROOT, "docs", "TODO.md")
+DUE_DAYS = 10
 
 MONTHS = {m: i for i, m in enumerate(
     ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1)}
@@ -145,6 +157,54 @@ def ongoing_entries(flights):
     return rows
 
 
+def pull_dates():
+    """Dates of logged pulls, newest first."""
+    if not os.path.exists(PULL_LOG):
+        return []
+    return [dt.date.fromisoformat(m.group(1))
+            for m in re.finditer(r"^\|\s*(\d{4}-\d{2}-\d{2})\s*\|", open(PULL_LOG).read(), re.M)]
+
+
+def log_pull(today, summary, pr):
+    text = open(PULL_LOG).read()
+    head = "|---|---|---|\n"
+    assert head in text, "data-pulls.md has no log table"
+    row = f"| {today.isoformat()} | {summary.replace('|', '/')} | {pr or ''} |\n"
+    text = text.replace(head, head + row, 1)
+    with open(PULL_LOG, "w") as f:
+        f.write(text)
+
+
+def update_todo(today):
+    """Rewrite the generated block in docs/TODO.md. Returns its text."""
+    dates = pull_dates()
+    start, end = "<!-- pulls:start -->", "<!-- pulls:end -->"
+    if dates:
+        last = max(dates)
+        age = (today - last).days
+        due = last + dt.timedelta(days=DUE_DAYS)
+        lines = [f"**Last data pull: {last.isoformat()}** ({age} day{'s' if age != 1 else ''} ago; "
+                 f"log: `docs/data-pulls.md`)."]
+        if age > DUE_DAYS:
+            lines.append(f"- [ ] **Data pull due.** The last one was {age} days ago (more than {DUE_DAYS}). "
+                         "Follow the steps in `docs/data-pulls.md`, then log it with "
+                         "`refresh_check.py --update-baseline --log ...`.")
+        else:
+            lines.append(f"Next pull due after {due.isoformat()}.")
+    else:
+        lines = ["- [ ] **Data pull due.** No pull logged yet in `docs/data-pulls.md`."]
+    block = "\n".join(lines)
+    text = open(TODO).read()
+    if start not in text:
+        print("docs/TODO.md has no pulls markers; not updated", file=sys.stderr)
+        return block
+    pre, rest = text.split(start, 1)
+    _, post = rest.split(end, 1)
+    with open(TODO, "w") as f:
+        f.write(pre + start + "\n" + block + "\n" + end + post)
+    return block
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--since", default=None, help="last pass date (default: baseline's date)")
@@ -152,11 +212,21 @@ def main():
     ap.add_argument("--update-baseline", action="store_true",
                     help="record the current Horizons headers as the new baseline")
     ap.add_argument("--no-horizons", action="store_true", help="skip network checks")
+    ap.add_argument("--log", metavar="SUMMARY", help="record a completed pull in docs/data-pulls.md")
+    ap.add_argument("--pr", default="", help="PR number for --log")
+    ap.add_argument("--todo", action="store_true",
+                    help="only refresh the data-pull block in docs/TODO.md (no network)")
     args = ap.parse_args()
 
     today = dt.date.today()
+    if args.todo and not (args.log or args.update_baseline):
+        print(update_todo(today))
+        return 0
     baseline = json.load(open(BASELINE)) if os.path.exists(BASELINE) else {"date": None, "targets": {}}
-    since = dt.date.fromisoformat(args.since or baseline.get("date") or "2026-11-17")
+    logged = pull_dates()
+    since = (dt.date.fromisoformat(args.since) if args.since
+             else max(logged) if logged
+             else dt.date.fromisoformat(baseline.get("date") or "2026-11-17"))
     ids = {k: v for k, v in json.load(open(IDS)).items() if isinstance(v, dict)}
     flights = load_flights()
 
@@ -249,6 +319,12 @@ def main():
             json.dump(baseline, f, indent=1)
             f.write("\n")
         print(f"baseline updated ({len(current)} targets)", file=sys.stderr)
+
+    if args.log:
+        log_pull(today, args.log, args.pr)
+        print(f"logged pull {today.isoformat()} in docs/data-pulls.md", file=sys.stderr)
+    if args.log or args.todo:
+        update_todo(today)
 
 
 if __name__ == "__main__":
