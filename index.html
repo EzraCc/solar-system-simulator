@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=49">
+<link rel="stylesheet" href="src/css/style.css?v=51">
 </head>
 <body>
 
@@ -120,6 +120,12 @@
          any .panel-classed ancestor (its original spot, near
          #flight-scrubber-panel), where position:fixed correctly escapes
          to the viewport as intended. -->
+    <!-- Which simulation these controls are driving: the whole Solar System,
+         or a planet-system view. Updated (and briefly highlighted) by
+         setTimeScope in app.js whenever the view changes. -->
+    <div class="row" id="time-scope" aria-live="polite">
+      <span id="time-scope-flag" title="Time controls apply to this view">&#9737; Solar System</span>
+    </div>
     <div class="row" id="speed-row">
       <span class="label">Speed</span>
       <span class="speed-field" id="speed-field" tabindex="0" role="button" title="Click to type a speed">1 yr/min</span>
@@ -128,6 +134,15 @@
     </div>
     <div class="row">
       <input type="range" id="speed-slider" min="-300" max="300" value="100" step="1">
+    </div>
+    <!-- Planet-system speed presets; shown only in a system view, where the
+         useful range is minutes to weeks per second. -->
+    <div class="row" id="sv-speed-presets">
+      <button data-sv-speed="0.00694">10 min/s</button>
+      <button data-sv-speed="0.0417">1 h/s</button>
+      <button data-sv-speed="0.25">6 h/s</button>
+      <button data-sv-speed="1">1 d/s</button>
+      <button data-sv-speed="7">1 wk/s</button>
     </div>
     <div class="row">
       <button id="playpause">Pause</button>
@@ -141,6 +156,7 @@
   <div class="panel" id="date-panel">
     <span class="label">Date</span>
     <input type="date" id="date-input" readonly>
+    <span id="date-time-utc" title="Simulation time of day (UTC)"></span>
     <button id="edit-date-btn" title="Pause and edit the date directly">Edit</button>
     <button id="apply-date" title="Jump to this date">Go to date</button>
     <button id="cancel-edit-date-btn" title="Cancel editing">✕</button>
@@ -262,15 +278,6 @@
     <button id="system-exit-btn" title="Back to the Solar System view">&larr; Solar System</button>
     <span id="system-panel-title">Jupiter system</span>
   </div>
-  <div class="system-section-label">Time</div>
-  <div id="system-clock" title="Simulation time (UTC)"></div>
-  <div id="system-speed-row">
-    <button data-sv-speed="0.00694">10 min/s</button>
-    <button data-sv-speed="0.0417">1 h/s</button>
-    <button data-sv-speed="0.25">6 h/s</button>
-    <button data-sv-speed="1">1 d/s</button>
-    <button data-sv-speed="7">1 wk/s</button>
-  </div>
   <div class="system-section-label" id="system-moons-label">Moons</div>
   <div id="system-moon-rows"></div>
   <label class="sv-row sv-showall" id="sv-true-sizes-row" title="The planet and its moons side by side at true relative size. In the view itself, a moon too small to see is drawn as a true-size dot inside a ring."><input type="checkbox" id="sv-true-sizes"> Compare true sizes</label>
@@ -330,6 +337,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=89"></script>
+<script src="src/js/app.js?v=91"></script>
 </body>
 </html>
