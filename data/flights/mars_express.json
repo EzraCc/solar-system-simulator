@@ -30,7 +30,7 @@
   "planetOrbit": {
     "primaryBody": "Mars",
     "timeScale": "UTC",
-    "_comment": "Orbit phases fitted 2026-11-19 by tools/build_orbit_phases.py to JPL Horizons (target -41, center 499): mean elements per window, worst position error 1,402 km.",
+    "_comment": "Orbit phases fitted 2026-11-19 and extended 2026-11-25 by tools/build_orbit_phases.py to JPL Horizons (target -41, center 499): mean elements per window, worst position error 1,402 km.",
     "phases": [
       {"start": "2003-12-25T03:28:55Z", "end": "2003-12-28T21:28:55Z", "epochDays": 1453.64509046, "elements": {"aKm": 95279.86, "e": 0.960087, "iDeg": 17.3737, "OmDeg0": 73.6316, "wDeg0": 196.3485, "M0Deg": 0.5493, "periodSiderealDays": 10.33671565, "nodalPeriodDays": 35960.1, "apsidalPeriodDays": -331376.0}},
       {"start": "2003-12-28T21:28:55Z", "end": "2003-12-29T19:58:55Z", "epochDays": 1457.39509046, "elements": {"aKm": 95385.11, "e": 0.958195, "iDeg": 17.0087, "OmDeg0": 73.3118, "wDeg0": 196.7062, "M0Deg": 131.1187, "periodSiderealDays": 10.34688489, "nodalPeriodDays": 4665.4, "apsidalPeriodDays": -38917.1}},
@@ -527,7 +527,9 @@
       {"start": "2026-08-14T19:58:50Z", "end": "2026-08-29T19:58:50Z", "epochDays": 9722.33253259, "elements": {"aKm": 8820.71, "e": 0.568262, "iDeg": 113.6294, "OmDeg0": 91.9066, "wDeg0": 121.261, "M0Deg": 304.578, "periodSiderealDays": 0.2909943123, "nodalPeriodDays": 5945.38, "apsidalPeriodDays": -586.857}},
       {"start": "2026-08-29T19:58:50Z", "end": "2026-09-28T19:58:50Z", "epochDays": 9737.33253259, "elements": {"aKm": 8820.53, "e": 0.568019, "iDeg": 113.7128, "OmDeg0": 90.9499, "wDeg0": 112.0397, "M0Deg": 141.873, "periodSiderealDays": 0.2909845028, "nodalPeriodDays": 5848.05, "apsidalPeriodDays": -586.695}},
       {"start": "2026-09-28T19:58:50Z", "end": "2026-10-28T19:58:50Z", "epochDays": 9767.33253259, "elements": {"aKm": 8820.62, "e": 0.567933, "iDeg": 113.7952, "OmDeg0": 89.0858, "wDeg0": 93.6268, "M0Deg": 177.238, "periodSiderealDays": 0.2909890829, "nodalPeriodDays": 5660.78, "apsidalPeriodDays": -585.894}},
-      {"start": "2026-10-28T19:58:50Z", "end": "2026-11-16T23:58:50Z", "epochDays": 9797.33253259, "elements": {"aKm": 8820.72, "e": 0.568033, "iDeg": 113.8449, "OmDeg0": 87.2005, "wDeg0": 75.2018, "M0Deg": 212.0007, "periodSiderealDays": 0.2909933375, "nodalPeriodDays": 5592.96, "apsidalPeriodDays": -585.613}}
+      {"start": "2026-10-28T19:58:50Z", "end": "2026-11-16T23:58:50Z", "epochDays": 9797.33253259, "elements": {"aKm": 8820.72, "e": 0.568033, "iDeg": 113.8449, "OmDeg0": 87.2005, "wDeg0": 75.2018, "M0Deg": 212.0007, "periodSiderealDays": 0.2909933375, "nodalPeriodDays": 5592.96, "apsidalPeriodDays": -585.613}},
+      {"start": "2026-11-16T23:58:50Z", "end": "2026-12-16T23:58:50Z", "epochDays": 9816.49918982, "elements": {"aKm": 8820.85, "e": 0.568198, "iDeg": 113.8701, "OmDeg0": 85.9597, "wDeg0": 63.4789, "M0Deg": 163.876, "periodSiderealDays": 0.2909968581, "nodalPeriodDays": 5585.83, "apsidalPeriodDays": -586.913}},
+      {"start": "2026-12-16T23:58:50Z", "end": "2027-01-14T23:58:50Z", "epochDays": 9846.49918982, "elements": {"aKm": 8821.0, "e": 0.568703, "iDeg": 113.881, "OmDeg0": 84.0369, "wDeg0": 45.0667, "M0Deg": 197.6519, "periodSiderealDays": 0.2909998766, "nodalPeriodDays": 5661.6, "apsidalPeriodDays": -586.115}}
     ]
   },
   "timeline": [

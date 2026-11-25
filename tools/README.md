@@ -21,6 +21,30 @@ Scripts:
   structural limitation of that same Lambert solver — see its own section
   below, and read its docstring before trusting its output.
 
+## `refresh_check.py` — what's out of date
+
+Read-only report to run at the start of every data-refresh pass (see
+`docs/project-transfer.md` §3.4 and `docs/TODO.md`):
+
+- Horizons trajectories revised since `horizons_baseline.json` (revision
+  date, trajectory kernels, "data fit through" line);
+- dated `statusNote` placeholders that have passed or are marked
+  planned/estimated;
+- `ongoing` timeline entries to confirm.
+
+```
+tools/.venv/bin/python tools/refresh_check.py --out report.md
+tools/.venv/bin/python tools/refresh_check.py --update-baseline --log "what changed" --pr "#N"   # after the pass
+tools/.venv/bin/python tools/refresh_check.py --todo   # is a pull due? (no network)
+```
+
+Pulls are logged in `docs/data-pulls.md`; `--todo` adds a "data pull due"
+item to `docs/TODO.md` once the last one is more than 10 days old.
+
+To extend a fitted planet orbit past its last phase without refitting
+its history: `tools/build_orbit_phases.py <flight> --primary Mars --stop
+<date> --append`.
+
 ## `check_horizons.py` — real-ephemeris verification
 
 For every Lambert leg of a flight, samples the position the app really

@@ -5,7 +5,7 @@
   "payload": "Juno orbiter (3,625 kg)",
   "status": "Success",
   "significance": "Juno was launched to determine how Jupiter formed and thereby test competing theories of solar-system formation, since Jupiter's composition and interior structure preserve conditions from the early solar nebula that most other planets have erased. It was the first spacecraft to fly in a polar orbit around Jupiter and to carry microwave radiometers deep enough to probe below the cloud tops, and the first mission to map a giant planet's gravity and magnetic fields with enough precision to probe its interior directly. Juno found that Jupiter's core is not compact but large, \"fuzzy,\" and diluted with heavy elements gradually blended into the surrounding hydrogen, a structure unpredicted by prior models and likely the result of a giant impact early in its history. It also discovered that Jupiter's atmospheric jet streams penetrate roughly 3,000 kilometers deep, detected the first time-varying (\"secular\") magnetic field ever measured on a planet beyond Earth, and revealed a chaotic dynamo region containing an intense magnetic anomaly known as the Great Blue Spot.",
-  "statusNote": "Jupiter interior, atmosphere, and magnetosphere study. Single Earth gravity assist (2013-10-09) following two deep-space maneuvers near aphelion (2012-08-30, 2012-09-14) that precisely targeted the flyby -- not separately modeled here, since this simulator's Lambert-leg endpoints already anchor directly to the real recorded flyby date/position, which is what those maneuvers were aiming for. Jupiter orbit insertion 2016-07-05 into a 53-day polar orbit (a planned reduction to 14 days was cancelled over a helium check-valve issue). Moon flybys in the extended mission shortened the orbit: Ganymede 2021-06-07 (~1,038 km), Europa 2022-09-29 (~352 km), and Io 2023-12-30 and 2024-02-03 (~1,500 km each). NASA's funded extended mission ran through September 2025 and originally ended with a deliberate plunge into Jupiter, but Juno was reported still operating in 2026 with further funding uncertain, and JPL Horizons' trajectory (target -61) continues; the orbital tour here is built from that trajectory through 2026-11-17 and doesn't model a mission end.",
+  "statusNote": "Jupiter interior, atmosphere, and magnetosphere study. Single Earth gravity assist (2013-10-09) following two deep-space maneuvers near aphelion (2012-08-30, 2012-09-14) that precisely targeted the flyby -- not separately modeled here, since this simulator's Lambert-leg endpoints already anchor directly to the real recorded flyby date/position, which is what those maneuvers were aiming for. Jupiter orbit insertion 2016-07-05 into a 53-day polar orbit (a planned reduction to 14 days was cancelled over a helium check-valve issue). Moon flybys in the extended mission shortened the orbit: Ganymede 2021-06-07 (~1,038 km), Europa 2022-09-29 (~352 km), and Io 2023-12-30 and 2024-02-03 (~1,500 km each). NASA's funded extended mission ran through September 2025 and originally ended with a deliberate plunge into Jupiter, but Juno was reported still operating in 2026 with further funding uncertain, and JPL Horizons' trajectory (target -61) continues. NASA's Astronomy Picture of the Day for 2026-11-22 still describes Juno on its 33-day orbit. The orbital tour here is built from that trajectory through 2028-09-01, the end of JPL's reference trajectory (spk_ref_260808_280902): orbits after late November 2026 are JPL's prediction, not confirmed operations, and no mission end is modeled.",
   "legs": [
     {
       "_comment": "Real Juno trajectory (JPL Horizons, target -61, checked 2026-07) sweeps ~422 degrees around the Sun during this Earth->Earth loop (reaching ~2.27 AU near 2012-08-30, past Mars) -- more than one full lap, which a plain 2-point Lambert solve misreads, producing an unconstrained a=1.78 AU / e=0.94 orbit. Split through two real recorded positions so each third stays under 180 degrees of sweep.",
@@ -85,7 +85,7 @@
       },
       "departDate": "2016-07-04",
       "arrivalDate": "2016-07-05T01:44:00Z",
-      "_comment": "Jupiter tour built 2026-11-17 by tools/build_planet_tour.py from JPL Horizons (target -61, 2016-07-04 -> 2026-11-17): one planetocentric Lambert arc per piece between real periapses, moon flybys (pinned to the moon's modeled position) and filler waypoints keeping each piece under 60 deg / 8 d."
+      "_comment": "Jupiter tour built 2026-11-25 by tools/build_planet_tour.py from JPL Horizons (target -61, 2016-07-04 -> 2028-09-01): one planetocentric Lambert arc per piece between real periapses, moon flybys (pinned to the moon's modeled position) and filler waypoints keeping each piece under 60 deg / 8 d."
     },
     {
       "type": "planetocentric",
@@ -16230,13 +16230,3233 @@
       },
       "toBody": {
         "relPos": [
-          502522.9,
-          226937.2,
-          -3042891.6
+          1006338.7,
+          -161618.6,
+          -4733930.8
         ]
       },
       "departDate": "2026-11-13T17:50:00Z",
-      "arrivalDate": "2026-11-17T00:00:00Z"
+      "arrivalDate": "2026-11-21T18:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1006338.7,
+          -161618.6,
+          -4733930.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1429252.0,
+          -744807.4,
+          -5585499.5
+        ]
+      },
+      "departDate": "2026-11-21T18:00:00Z",
+      "arrivalDate": "2026-11-29T18:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1429252.0,
+          -744807.4,
+          -5585499.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1387669.0,
+          -1087207.2,
+          -4619575.8
+        ]
+      },
+      "departDate": "2026-11-29T18:00:00Z",
+      "arrivalDate": "2026-12-07T18:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1387669.0,
+          -1087207.2,
+          -4619575.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          382926.2,
+          -560265.9,
+          -697894.6
+        ]
+      },
+      "departDate": "2026-12-07T18:00:00Z",
+      "arrivalDate": "2026-12-15T18:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          382926.2,
+          -560265.9,
+          -697894.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          54603.3,
+          -141216.4,
+          36460.5
+        ]
+      },
+      "departDate": "2026-12-15T18:00:00Z",
+      "arrivalDate": "2026-12-16T06:12:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          54603.3,
+          -141216.4,
+          36460.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -20286.4,
+          11304.5,
+          77077.8
+        ]
+      },
+      "departDate": "2026-12-16T06:12:00Z",
+      "arrivalDate": "2026-12-16T07:14:00Z",
+      "periapsisAltKm": 10589
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -20286.4,
+          11304.5,
+          77077.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -47430.0,
+          94192.7,
+          29348.8
+        ]
+      },
+      "departDate": "2026-12-16T07:14:00Z",
+      "arrivalDate": "2026-12-16T07:46:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -47430.0,
+          94192.7,
+          29348.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -53558.7,
+          255841.4,
+          -301059.0
+        ]
+      },
+      "departDate": "2026-12-16T07:46:00Z",
+      "arrivalDate": "2026-12-16T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -53558.7,
+          255841.4,
+          -301059.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          985278.2,
+          -103457.3,
+          -4745842.8
+        ]
+      },
+      "departDate": "2026-12-16T11:00:00Z",
+      "arrivalDate": "2026-12-24T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          985278.2,
+          -103457.3,
+          -4745842.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1407186.9,
+          -674766.9,
+          -5598133.8
+        ]
+      },
+      "departDate": "2026-12-24T11:00:00Z",
+      "arrivalDate": "2027-01-01T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1407186.9,
+          -674766.9,
+          -5598133.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1371308.0,
+          -1027630.4,
+          -4627088.2
+        ]
+      },
+      "departDate": "2027-01-01T11:00:00Z",
+      "arrivalDate": "2027-01-09T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1371308.0,
+          -1027630.4,
+          -4627088.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          367546.9,
+          -534182.5,
+          -658813.3
+        ]
+      },
+      "departDate": "2027-01-09T11:00:00Z",
+      "arrivalDate": "2027-01-17T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          367546.9,
+          -534182.5,
+          -658813.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          54452.6,
+          -139002.2,
+          36855.2
+        ]
+      },
+      "departDate": "2027-01-17T11:00:00Z",
+      "arrivalDate": "2027-01-17T22:16:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          54452.6,
+          -139002.2,
+          36855.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -19097.3,
+          7933.5,
+          78154.2
+        ]
+      },
+      "departDate": "2027-01-17T22:16:00Z",
+      "arrivalDate": "2027-01-17T23:16:00Z",
+      "periapsisAltKm": 10933
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -19097.3,
+          7933.5,
+          78154.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -47643.9,
+          91808.1,
+          32665.8
+        ]
+      },
+      "departDate": "2027-01-17T23:16:00Z",
+      "arrivalDate": "2027-01-17T23:48:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -47643.9,
+          91808.1,
+          32665.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -57626.3,
+          258010.4,
+          -293284.8
+        ]
+      },
+      "departDate": "2027-01-17T23:48:00Z",
+      "arrivalDate": "2027-01-18T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -57626.3,
+          258010.4,
+          -293284.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          961842.6,
+          -43259.8,
+          -4750554.3
+        ]
+      },
+      "departDate": "2027-01-18T03:00:00Z",
+      "arrivalDate": "2027-01-26T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          961842.6,
+          -43259.8,
+          -4750554.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1384539.6,
+          -603064.4,
+          -5611197.7
+        ]
+      },
+      "departDate": "2027-01-26T03:00:00Z",
+      "arrivalDate": "2027-02-03T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1384539.6,
+          -603064.4,
+          -5611197.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1356444.2,
+          -967571.8,
+          -4643560.3
+        ]
+      },
+      "departDate": "2027-02-03T03:00:00Z",
+      "arrivalDate": "2027-02-11T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1356444.2,
+          -967571.8,
+          -4643560.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          368040.6,
+          -524328.7,
+          -663819.0
+        ]
+      },
+      "departDate": "2027-02-11T03:00:00Z",
+      "arrivalDate": "2027-02-19T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          368040.6,
+          -524328.7,
+          -663819.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          55776.1,
+          -139166.2,
+          35521.8
+        ]
+      },
+      "departDate": "2027-02-19T03:00:00Z",
+      "arrivalDate": "2027-02-19T14:14:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          55776.1,
+          -139166.2,
+          35521.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -18618.7,
+          6450.2,
+          78773.1
+        ]
+      },
+      "departDate": "2027-02-19T14:14:00Z",
+      "arrivalDate": "2027-02-19T15:14:00Z",
+      "periapsisAltKm": 11289
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -18618.7,
+          6450.2,
+          78773.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -48189.1,
+          90649.0,
+          34749.3
+        ]
+      },
+      "departDate": "2027-02-19T15:14:00Z",
+      "arrivalDate": "2027-02-19T15:46:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -48189.1,
+          90649.0,
+          34749.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -61425.4,
+          261878.9,
+          -291985.0
+        ]
+      },
+      "departDate": "2027-02-19T15:46:00Z",
+      "arrivalDate": "2027-02-19T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -61425.4,
+          261878.9,
+          -291985.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          937095.4,
+          15502.4,
+          -4755531.4
+        ]
+      },
+      "departDate": "2027-02-19T19:00:00Z",
+      "arrivalDate": "2027-02-27T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          937095.4,
+          15502.4,
+          -4755531.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1360076.5,
+          -532923.5,
+          -5623495.1
+        ]
+      },
+      "departDate": "2027-02-27T19:00:00Z",
+      "arrivalDate": "2027-03-07T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1360076.5,
+          -532923.5,
+          -5623495.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1340120.8,
+          -908815.3,
+          -4658460.8
+        ]
+      },
+      "departDate": "2027-03-07T19:00:00Z",
+      "arrivalDate": "2027-03-15T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1340120.8,
+          -908815.3,
+          -4658460.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          366981.8,
+          -513433.9,
+          -664810.8
+        ]
+      },
+      "departDate": "2027-03-15T19:00:00Z",
+      "arrivalDate": "2027-03-23T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          366981.8,
+          -513433.9,
+          -664810.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          56483.7,
+          -138454.6,
+          34933.8
+        ]
+      },
+      "departDate": "2027-03-23T19:00:00Z",
+      "arrivalDate": "2027-03-24T06:08:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          56483.7,
+          -138454.6,
+          34933.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -18780.3,
+          6495.9,
+          79131.1
+        ]
+      },
+      "departDate": "2027-03-24T06:08:00Z",
+      "arrivalDate": "2027-03-24T07:08:00Z",
+      "periapsisAltKm": 11677
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -18780.3,
+          6495.9,
+          79131.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -48992.4,
+          90543.9,
+          35941.9
+        ]
+      },
+      "departDate": "2027-03-24T07:08:00Z",
+      "arrivalDate": "2027-03-24T07:40:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -48992.4,
+          90543.9,
+          35941.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -68482.7,
+          235654.1,
+          -203721.3
+        ]
+      },
+      "departDate": "2027-03-24T07:40:00Z",
+      "arrivalDate": "2027-03-24T09:56:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -68482.7,
+          235654.1,
+          -203721.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          908799.9,
+          76651.5,
+          -4750649.7
+        ]
+      },
+      "departDate": "2027-03-24T09:56:00Z",
+      "arrivalDate": "2027-04-01T10:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          908799.9,
+          76651.5,
+          -4750649.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1333941.0,
+          -460932.6,
+          -5636063.1
+        ]
+      },
+      "departDate": "2027-04-01T10:00:00Z",
+      "arrivalDate": "2027-04-09T10:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1333941.0,
+          -460932.6,
+          -5636063.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1324621.0,
+          -849350.4,
+          -4684301.0
+        ]
+      },
+      "departDate": "2027-04-09T10:00:00Z",
+      "arrivalDate": "2027-04-17T10:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1324621.0,
+          -849350.4,
+          -4684301.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          384458.7,
+          -519745.5,
+          -720062.5
+        ]
+      },
+      "departDate": "2027-04-17T10:00:00Z",
+      "arrivalDate": "2027-04-25T10:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          384458.7,
+          -519745.5,
+          -720062.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          59725.9,
+          -141680.1,
+          31192.6
+        ]
+      },
+      "departDate": "2027-04-25T10:00:00Z",
+      "arrivalDate": "2027-04-25T22:06:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          59725.9,
+          -141680.1,
+          31192.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -18455.5,
+          5497.8,
+          79664.4
+        ]
+      },
+      "departDate": "2027-04-25T22:06:00Z",
+      "arrivalDate": "2027-04-25T23:08:00Z",
+      "periapsisAltKm": 12048
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -18455.5,
+          5497.8,
+          79664.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -49580.3,
+          89668.7,
+          37729.4
+        ]
+      },
+      "departDate": "2027-04-25T23:08:00Z",
+      "arrivalDate": "2027-04-25T23:40:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -49580.3,
+          89668.7,
+          37729.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -71792.8,
+          237509.2,
+          -200060.2
+        ]
+      },
+      "departDate": "2027-04-25T23:40:00Z",
+      "arrivalDate": "2027-04-26T01:56:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -71792.8,
+          237509.2,
+          -200060.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          882655.9,
+          133556.8,
+          -4754647.2
+        ]
+      },
+      "departDate": "2027-04-26T01:56:00Z",
+      "arrivalDate": "2027-05-04T02:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          882655.9,
+          133556.8,
+          -4754647.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1308304.8,
+          -392477.2,
+          -5649081.3
+        ]
+      },
+      "departDate": "2027-05-04T02:00:00Z",
+      "arrivalDate": "2027-05-12T02:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1308304.8,
+          -392477.2,
+          -5649081.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1308408.6,
+          -791814.9,
+          -4703941.9
+        ]
+      },
+      "departDate": "2027-05-12T02:00:00Z",
+      "arrivalDate": "2027-05-20T02:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1308408.6,
+          -791814.9,
+          -4703941.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          392417.6,
+          -516397.8,
+          -747956.3
+        ]
+      },
+      "departDate": "2027-05-20T02:00:00Z",
+      "arrivalDate": "2027-05-28T02:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          392417.6,
+          -516397.8,
+          -747956.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          61991.7,
+          -143302.9,
+          28667.9
+        ]
+      },
+      "departDate": "2027-05-28T02:00:00Z",
+      "arrivalDate": "2027-05-28T14:32:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          61991.7,
+          -143302.9,
+          28667.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -19325.0,
+          7142.5,
+          79764.8
+        ]
+      },
+      "departDate": "2027-05-28T14:32:00Z",
+      "arrivalDate": "2027-05-28T15:36:00Z",
+      "periapsisAltKm": 12472
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -19325.0,
+          7142.5,
+          79764.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -52030.5,
+          94843.4,
+          34373.9
+        ]
+      },
+      "departDate": "2027-05-28T15:36:00Z",
+      "arrivalDate": "2027-05-28T16:10:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -52030.5,
+          94843.4,
+          34373.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -74580.5,
+          253887.8,
+          -233387.9
+        ]
+      },
+      "departDate": "2027-05-28T16:10:00Z",
+      "arrivalDate": "2027-05-28T18:48:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -74580.5,
+          253887.8,
+          -233387.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          857775.3,
+          188319.0,
+          -4762125.1
+        ]
+      },
+      "departDate": "2027-05-28T18:48:00Z",
+      "arrivalDate": "2027-06-05T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          857775.3,
+          188319.0,
+          -4762125.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1281800.8,
+          -326734.4,
+          -5657034.7
+        ]
+      },
+      "departDate": "2027-06-05T19:00:00Z",
+      "arrivalDate": "2027-06-13T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1281800.8,
+          -326734.4,
+          -5657034.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1288290.8,
+          -735944.0,
+          -4707555.9
+        ]
+      },
+      "departDate": "2027-06-13T19:00:00Z",
+      "arrivalDate": "2027-06-21T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1288290.8,
+          -735944.0,
+          -4707555.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          376911.1,
+          -493568.5,
+          -707160.3
+        ]
+      },
+      "departDate": "2027-06-21T19:00:00Z",
+      "arrivalDate": "2027-06-29T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          376911.1,
+          -493568.5,
+          -707160.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          61322.4,
+          -140351.0,
+          29844.2
+        ]
+      },
+      "departDate": "2027-06-29T19:00:00Z",
+      "arrivalDate": "2027-06-30T06:36:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          61322.4,
+          -140351.0,
+          29844.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -18590.1,
+          5238.5,
+          80413.9
+        ]
+      },
+      "departDate": "2027-06-30T06:36:00Z",
+      "arrivalDate": "2027-06-30T07:38:00Z",
+      "periapsisAltKm": 12790
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -18590.1,
+          5238.5,
+          80413.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -52419.0,
+          93352.7,
+          36688.5
+        ]
+      },
+      "departDate": "2027-06-30T07:38:00Z",
+      "arrivalDate": "2027-06-30T08:12:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -52419.0,
+          93352.7,
+          36688.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -78100.2,
+          253494.6,
+          -223372.1
+        ]
+      },
+      "departDate": "2027-06-30T08:12:00Z",
+      "arrivalDate": "2027-06-30T10:46:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -78100.2,
+          253494.6,
+          -223372.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          831500.2,
+          243864.0,
+          -4763484.2
+        ]
+      },
+      "departDate": "2027-06-30T10:46:00Z",
+      "arrivalDate": "2027-07-08T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          831500.2,
+          243864.0,
+          -4763484.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1255468.6,
+          -259590.7,
+          -5665882.2
+        ]
+      },
+      "departDate": "2027-07-08T11:00:00Z",
+      "arrivalDate": "2027-07-16T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1255468.6,
+          -259590.7,
+          -5665882.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1270480.8,
+          -679123.1,
+          -4720554.7
+        ]
+      },
+      "departDate": "2027-07-16T11:00:00Z",
+      "arrivalDate": "2027-07-24T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1270480.8,
+          -679123.1,
+          -4720554.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          377321.7,
+          -484127.4,
+          -713247.5
+        ]
+      },
+      "departDate": "2027-07-24T11:00:00Z",
+      "arrivalDate": "2027-08-01T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          377321.7,
+          -484127.4,
+          -713247.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          62631.9,
+          -140521.0,
+          28442.2
+        ]
+      },
+      "departDate": "2027-08-01T11:00:00Z",
+      "arrivalDate": "2027-08-01T22:36:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          62631.9,
+          -140521.0,
+          28442.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -17972.1,
+          3567.4,
+          81019.2
+        ]
+      },
+      "departDate": "2027-08-01T22:36:00Z",
+      "arrivalDate": "2027-08-01T23:38:00Z",
+      "periapsisAltKm": 13154
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -17972.1,
+          3567.4,
+          81019.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -52846.3,
+          91982.1,
+          38899.1
+        ]
+      },
+      "departDate": "2027-08-01T23:38:00Z",
+      "arrivalDate": "2027-08-02T00:12:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -52846.3,
+          91982.1,
+          38899.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -81478.4,
+          254174.5,
+          -216231.6
+        ]
+      },
+      "departDate": "2027-08-02T00:12:00Z",
+      "arrivalDate": "2027-08-02T02:44:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -81478.4,
+          254174.5,
+          -216231.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          803599.7,
+          299257.5,
+          -4764444.9
+        ]
+      },
+      "departDate": "2027-08-02T02:44:00Z",
+      "arrivalDate": "2027-08-10T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          803599.7,
+          299257.5,
+          -4764444.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1226636.5,
+          -193350.1,
+          -5673693.9
+        ]
+      },
+      "departDate": "2027-08-10T03:00:00Z",
+      "arrivalDate": "2027-08-18T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1226636.5,
+          -193350.1,
+          -5673693.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1249897.1,
+          -623375.1,
+          -4731538.4
+        ]
+      },
+      "departDate": "2027-08-18T03:00:00Z",
+      "arrivalDate": "2027-08-26T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1249897.1,
+          -623375.1,
+          -4731538.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          374614.7,
+          -473215.2,
+          -711648.5
+        ]
+      },
+      "departDate": "2027-08-26T03:00:00Z",
+      "arrivalDate": "2027-09-03T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          374614.7,
+          -473215.2,
+          -711648.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          64818.2,
+          -142125.7,
+          25757.5
+        ]
+      },
+      "departDate": "2027-09-03T03:00:00Z",
+      "arrivalDate": "2027-09-03T14:26:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          64818.2,
+          -142125.7,
+          25757.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -18814.9,
+          5174.5,
+          81134.6
+        ]
+      },
+      "departDate": "2027-09-03T14:26:00Z",
+      "arrivalDate": "2027-09-03T15:30:00Z",
+      "periapsisAltKm": 13537
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -18814.9,
+          5174.5,
+          81134.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -53947.1,
+          92958.1,
+          39158.5
+        ]
+      },
+      "departDate": "2027-09-03T15:30:00Z",
+      "arrivalDate": "2027-09-03T16:04:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -53947.1,
+          92958.1,
+          39158.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -84849.6,
+          270595.2,
+          -247923.7
+        ]
+      },
+      "departDate": "2027-09-03T16:04:00Z",
+      "arrivalDate": "2027-09-03T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -84849.6,
+          270595.2,
+          -247923.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          776723.7,
+          353463.5,
+          -4766677.4
+        ]
+      },
+      "departDate": "2027-09-03T19:00:00Z",
+      "arrivalDate": "2027-09-11T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          776723.7,
+          353463.5,
+          -4766677.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1198769.6,
+          -127709.1,
+          -5681959.1
+        ]
+      },
+      "departDate": "2027-09-11T19:00:00Z",
+      "arrivalDate": "2027-09-19T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1198769.6,
+          -127709.1,
+          -5681959.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1230373.9,
+          -567800.0,
+          -4743666.1
+        ]
+      },
+      "departDate": "2027-09-19T19:00:00Z",
+      "arrivalDate": "2027-09-27T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1230373.9,
+          -567800.0,
+          -4743666.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          374634.7,
+          -464071.3,
+          -717676.3
+        ]
+      },
+      "departDate": "2027-09-27T19:00:00Z",
+      "arrivalDate": "2027-10-05T19:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          374634.7,
+          -464071.3,
+          -717676.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          66253.2,
+          -142470.2,
+          24106.6
+        ]
+      },
+      "departDate": "2027-10-05T19:00:00Z",
+      "arrivalDate": "2027-10-06T06:26:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          66253.2,
+          -142470.2,
+          24106.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -17956.2,
+          3083.1,
+          81785.1
+        ]
+      },
+      "departDate": "2027-10-06T06:26:00Z",
+      "arrivalDate": "2027-10-06T07:30:00Z",
+      "periapsisAltKm": 13879
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -17956.2,
+          3083.1,
+          81785.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -54200.9,
+          91251.6,
+          41587.6
+        ]
+      },
+      "departDate": "2027-10-06T07:30:00Z",
+      "arrivalDate": "2027-10-06T08:04:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -54200.9,
+          91251.6,
+          41587.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -88474.7,
+          272581.0,
+          -243338.3
+        ]
+      },
+      "departDate": "2027-10-06T08:04:00Z",
+      "arrivalDate": "2027-10-06T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -88474.7,
+          272581.0,
+          -243338.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          747783.6,
+          407427.1,
+          -4766660.2
+        ]
+      },
+      "departDate": "2027-10-06T11:00:00Z",
+      "arrivalDate": "2027-10-14T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          747783.6,
+          407427.1,
+          -4766660.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1168749.8,
+          -62878.0,
+          -5689244.0
+        ]
+      },
+      "departDate": "2027-10-14T11:00:00Z",
+      "arrivalDate": "2027-10-22T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1168749.8,
+          -62878.0,
+          -5689244.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1209210.2,
+          -513071.6,
+          -4755838.7
+        ]
+      },
+      "departDate": "2027-10-22T11:00:00Z",
+      "arrivalDate": "2027-10-30T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1209210.2,
+          -513071.6,
+          -4755838.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          375413.5,
+          -456118.2,
+          -727104.4
+        ]
+      },
+      "departDate": "2027-10-30T11:00:00Z",
+      "arrivalDate": "2027-11-07T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          375413.5,
+          -456118.2,
+          -727104.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          67893.0,
+          -143210.9,
+          22089.0
+        ]
+      },
+      "departDate": "2027-11-07T11:00:00Z",
+      "arrivalDate": "2027-11-07T22:30:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          67893.0,
+          -143210.9,
+          22089.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -16696.0,
+          275.5,
+          82458.2
+        ]
+      },
+      "departDate": "2027-11-07T22:30:00Z",
+      "arrivalDate": "2027-11-07T23:34:00Z",
+      "periapsisAltKm": 14221
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -16696.0,
+          275.5,
+          82458.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -54165.1,
+          88991.6,
+          44368.7
+        ]
+      },
+      "departDate": "2027-11-07T23:34:00Z",
+      "arrivalDate": "2027-11-08T00:08:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -54165.1,
+          88991.6,
+          44368.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -91023.3,
+          256855.1,
+          -198673.3
+        ]
+      },
+      "departDate": "2027-11-08T00:08:00Z",
+      "arrivalDate": "2027-11-08T02:36:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -91023.3,
+          256855.1,
+          -198673.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          719209.0,
+          461244.0,
+          -4765818.8
+        ]
+      },
+      "departDate": "2027-11-08T02:36:00Z",
+      "arrivalDate": "2027-11-16T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          719209.0,
+          461244.0,
+          -4765818.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1139356.7,
+          2666.9,
+          -5697739.5
+        ]
+      },
+      "departDate": "2027-11-16T03:00:00Z",
+      "arrivalDate": "2027-11-24T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1139356.7,
+          2666.9,
+          -5697739.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1189081.2,
+          -457276.6,
+          -4773106.4
+        ]
+      },
+      "departDate": "2027-11-24T03:00:00Z",
+      "arrivalDate": "2027-12-02T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1189081.2,
+          -457276.6,
+          -4773106.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          383996.3,
+          -453105.3,
+          -761798.6
+        ]
+      },
+      "departDate": "2027-12-02T03:00:00Z",
+      "arrivalDate": "2027-12-10T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          383996.3,
+          -453105.3,
+          -761798.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          69520.8,
+          -143785.7,
+          19961.6
+        ]
+      },
+      "departDate": "2027-12-10T03:00:00Z",
+      "arrivalDate": "2027-12-10T15:04:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          69520.8,
+          -143785.7,
+          19961.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -15492.7,
+          -2315.0,
+          82927.7
+        ]
+      },
+      "departDate": "2027-12-10T15:04:00Z",
+      "arrivalDate": "2027-12-10T16:08:00Z",
+      "periapsisAltKm": 14483
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -15492.7,
+          -2315.0,
+          82927.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -54138.5,
+          86851.2,
+          46816.4
+        ]
+      },
+      "departDate": "2027-12-10T16:08:00Z",
+      "arrivalDate": "2027-12-10T16:42:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -54138.5,
+          86851.2,
+          46816.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -95862.2,
+          288556.9,
+          -263886.0
+        ]
+      },
+      "departDate": "2027-12-10T16:42:00Z",
+      "arrivalDate": "2027-12-10T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -95862.2,
+          288556.9,
+          -263886.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          692061.1,
+          511991.8,
+          -4767655.2
+        ]
+      },
+      "departDate": "2027-12-10T20:00:00Z",
+      "arrivalDate": "2027-12-18T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          692061.1,
+          511991.8,
+          -4767655.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1109720.8,
+          63988.9,
+          -5699127.4
+        ]
+      },
+      "departDate": "2027-12-18T20:00:00Z",
+      "arrivalDate": "2027-12-26T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1109720.8,
+          63988.9,
+          -5699127.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1165912.9,
+          -405223.0,
+          -4769567.9
+        ]
+      },
+      "departDate": "2027-12-26T20:00:00Z",
+      "arrivalDate": "2028-01-03T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1165912.9,
+          -405223.0,
+          -4769567.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          364217.3,
+          -430796.8,
+          -705977.1
+        ]
+      },
+      "departDate": "2028-01-03T20:00:00Z",
+      "arrivalDate": "2028-01-11T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          364217.3,
+          -430796.8,
+          -705977.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          67921.3,
+          -139973.7,
+          22260.1
+        ]
+      },
+      "departDate": "2028-01-11T20:00:00Z",
+      "arrivalDate": "2028-01-12T06:54:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          67921.3,
+          -139973.7,
+          22260.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -15635.0,
+          -2177.8,
+          83200.8
+        ]
+      },
+      "departDate": "2028-01-12T06:54:00Z",
+      "arrivalDate": "2028-01-12T07:56:00Z",
+      "periapsisAltKm": 14774
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -15635.0,
+          -2177.8,
+          83200.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -54806.8,
+          86738.7,
+          47832.8
+        ]
+      },
+      "departDate": "2028-01-12T07:56:00Z",
+      "arrivalDate": "2028-01-12T08:30:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -54806.8,
+          86738.7,
+          47832.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -96743.0,
+          256912.3,
+          -185223.6
+        ]
+      },
+      "departDate": "2028-01-12T08:30:00Z",
+      "arrivalDate": "2028-01-12T10:54:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -96743.0,
+          256912.3,
+          -185223.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          660103.7,
+          566555.6,
+          -4758110.9
+        ]
+      },
+      "departDate": "2028-01-12T10:54:00Z",
+      "arrivalDate": "2028-01-20T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          660103.7,
+          566555.6,
+          -4758110.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1077518.0,
+          130812.0,
+          -5706310.1
+        ]
+      },
+      "departDate": "2028-01-20T11:00:00Z",
+      "arrivalDate": "2028-01-28T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1077518.0,
+          130812.0,
+          -5706310.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1144425.2,
+          -348199.7,
+          -4793258.2
+        ]
+      },
+      "departDate": "2028-01-28T11:00:00Z",
+      "arrivalDate": "2028-02-05T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1144425.2,
+          -348199.7,
+          -4793258.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          383656.6,
+          -435010.6,
+          -778466.5
+        ]
+      },
+      "departDate": "2028-02-05T11:00:00Z",
+      "arrivalDate": "2028-02-13T11:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          383656.6,
+          -435010.6,
+          -778466.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          71666.4,
+          -143573.1,
+          16973.8
+        ]
+      },
+      "departDate": "2028-02-13T11:00:00Z",
+      "arrivalDate": "2028-02-13T23:10:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          71666.4,
+          -143573.1,
+          16973.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -14318.5,
+          -4845.6,
+          83544.1
+        ]
+      },
+      "departDate": "2028-02-13T23:10:00Z",
+      "arrivalDate": "2028-02-14T00:14:00Z",
+      "periapsisAltKm": 14990
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -14318.5,
+          -4845.6,
+          83544.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -54623.2,
+          84508.2,
+          50189.7
+        ]
+      },
+      "departDate": "2028-02-14T00:14:00Z",
+      "arrivalDate": "2028-02-14T00:48:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -54623.2,
+          84508.2,
+          50189.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -102636.4,
+          289185.5,
+          -247584.7
+        ]
+      },
+      "departDate": "2028-02-14T00:48:00Z",
+      "arrivalDate": "2028-02-14T04:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -102636.4,
+          289185.5,
+          -247584.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          633634.8,
+          616400.4,
+          -4762148.8
+        ]
+      },
+      "departDate": "2028-02-14T04:00:00Z",
+      "arrivalDate": "2028-02-22T04:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          633634.8,
+          616400.4,
+          -4762148.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1047929.3,
+          191449.6,
+          -5708378.0
+        ]
+      },
+      "departDate": "2028-02-22T04:00:00Z",
+      "arrivalDate": "2028-03-01T04:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1047929.3,
+          191449.6,
+          -5708378.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1121242.8,
+          -296510.9,
+          -4791033.8
+        ]
+      },
+      "departDate": "2028-03-01T04:00:00Z",
+      "arrivalDate": "2028-03-09T04:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1121242.8,
+          -296510.9,
+          -4791033.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          367044.6,
+          -415765.2,
+          -731817.1
+        ]
+      },
+      "departDate": "2028-03-09T04:00:00Z",
+      "arrivalDate": "2028-03-17T04:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          367044.6,
+          -415765.2,
+          -731817.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          71085.9,
+          -141192.7,
+          17831.7
+        ]
+      },
+      "departDate": "2028-03-17T04:00:00Z",
+      "arrivalDate": "2028-03-17T15:10:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          71085.9,
+          -141192.7,
+          17831.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -16024.0,
+          -1667.5,
+          83598.6
+        ]
+      },
+      "departDate": "2028-03-17T15:10:00Z",
+      "arrivalDate": "2028-03-17T16:14:00Z",
+      "periapsisAltKm": 15226
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -16024.0,
+          -1667.5,
+          83598.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -57858.4,
+          91015.4,
+          46422.3
+        ]
+      },
+      "departDate": "2028-03-17T16:14:00Z",
+      "arrivalDate": "2028-03-17T16:50:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -57858.4,
+          91015.4,
+          46422.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -106196.9,
+          292024.3,
+          -245458.3
+        ]
+      },
+      "departDate": "2028-03-17T16:50:00Z",
+      "arrivalDate": "2028-03-17T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -106196.9,
+          292024.3,
+          -245458.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          603252.8,
+          667679.7,
+          -4759310.9
+        ]
+      },
+      "departDate": "2028-03-17T20:00:00Z",
+      "arrivalDate": "2028-03-25T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          603252.8,
+          667679.7,
+          -4759310.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1015591.2,
+          254015.5,
+          -5712048.8
+        ]
+      },
+      "departDate": "2028-03-25T20:00:00Z",
+      "arrivalDate": "2028-04-02T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1015591.2,
+          254015.5,
+          -5712048.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1097453.7,
+          -243149.6,
+          -4800287.8
+        ]
+      },
+      "departDate": "2028-04-02T20:00:00Z",
+      "arrivalDate": "2028-04-10T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1097453.7,
+          -243149.6,
+          -4800287.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          367203.4,
+          -407461.7,
+          -741298.3
+        ]
+      },
+      "departDate": "2028-04-10T20:00:00Z",
+      "arrivalDate": "2028-04-18T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          367203.4,
+          -407461.7,
+          -741298.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          72747.2,
+          -141861.1,
+          15360.3
+        ]
+      },
+      "departDate": "2028-04-18T20:00:00Z",
+      "arrivalDate": "2028-04-19T07:14:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          72747.2,
+          -141861.1,
+          15360.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -14595.3,
+          -4488.8,
+          83891.5
+        ]
+      },
+      "departDate": "2028-04-19T07:14:00Z",
+      "arrivalDate": "2028-04-19T08:18:00Z",
+      "periapsisAltKm": 15359
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -14595.3,
+          -4488.8,
+          83891.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -55904.0,
+          84346.4,
+          51833.8
+        ]
+      },
+      "departDate": "2028-04-19T08:18:00Z",
+      "arrivalDate": "2028-04-19T08:52:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -55904.0,
+          84346.4,
+          51833.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -109139.7,
+          290849.2,
+          -235564.2
+        ]
+      },
+      "departDate": "2028-04-19T08:52:00Z",
+      "arrivalDate": "2028-04-19T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -109139.7,
+          290849.2,
+          -235564.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          574614.9,
+          717844.1,
+          -4753833.3
+        ]
+      },
+      "departDate": "2028-04-19T12:00:00Z",
+      "arrivalDate": "2028-04-27T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          574614.9,
+          717844.1,
+          -4753833.3
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          984883.8,
+          315885.7,
+          -5711711.4
+        ]
+      },
+      "departDate": "2028-04-27T12:00:00Z",
+      "arrivalDate": "2028-05-05T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          984883.8,
+          315885.7,
+          -5711711.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1074416.7,
+          -189938.3,
+          -4802609.8
+        ]
+      },
+      "departDate": "2028-05-05T12:00:00Z",
+      "arrivalDate": "2028-05-13T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1074416.7,
+          -189938.3,
+          -4802609.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          359601.6,
+          -394131.1,
+          -724399.6
+        ]
+      },
+      "departDate": "2028-05-13T12:00:00Z",
+      "arrivalDate": "2028-05-21T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          359601.6,
+          -394131.1,
+          -724399.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          71827.9,
+          -139016.1,
+          16565.6
+        ]
+      },
+      "departDate": "2028-05-21T12:00:00Z",
+      "arrivalDate": "2028-05-21T22:50:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          71827.9,
+          -139016.1,
+          16565.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -13793.1,
+          -6085.1,
+          84059.2
+        ]
+      },
+      "departDate": "2028-05-21T22:50:00Z",
+      "arrivalDate": "2028-05-21T23:52:00Z",
+      "periapsisAltKm": 15489
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -13793.1,
+          -6085.1,
+          84059.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -55999.8,
+          82886.4,
+          53486.8
+        ]
+      },
+      "departDate": "2028-05-21T23:52:00Z",
+      "arrivalDate": "2028-05-22T00:26:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -55999.8,
+          82886.4,
+          53486.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -107622.2,
+          260065.1,
+          -168301.9
+        ]
+      },
+      "departDate": "2028-05-22T00:26:00Z",
+      "arrivalDate": "2028-05-22T02:48:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -107622.2,
+          260065.1,
+          -168301.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          542322.5,
+          769562.4,
+          -4744759.7
+        ]
+      },
+      "departDate": "2028-05-22T02:48:00Z",
+      "arrivalDate": "2028-05-30T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          542322.5,
+          769562.4,
+          -4744759.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          951531.4,
+          380553.8,
+          -5717788.4
+        ]
+      },
+      "departDate": "2028-05-30T03:00:00Z",
+      "arrivalDate": "2028-06-07T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          951531.4,
+          380553.8,
+          -5717788.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1051500.4,
+          -133398.5,
+          -4826196.6
+        ]
+      },
+      "departDate": "2028-06-07T03:00:00Z",
+      "arrivalDate": "2028-06-15T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1051500.4,
+          -133398.5,
+          -4826196.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          380465.8,
+          -396574.8,
+          -807476.6
+        ]
+      },
+      "departDate": "2028-06-15T03:00:00Z",
+      "arrivalDate": "2028-06-23T03:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          380465.8,
+          -396574.8,
+          -807476.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          77327.5,
+          -144594.3,
+          8295.4
+        ]
+      },
+      "departDate": "2028-06-23T03:00:00Z",
+      "arrivalDate": "2028-06-23T15:16:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          77327.5,
+          -144594.3,
+          8295.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -12915.1,
+          -7758.3,
+          84162.1
+        ]
+      },
+      "departDate": "2028-06-23T15:16:00Z",
+      "arrivalDate": "2028-06-23T16:22:00Z",
+      "periapsisAltKm": 15589
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -12915.1,
+          -7758.3,
+          84162.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -55991.7,
+          81367.4,
+          55083.5
+        ]
+      },
+      "departDate": "2028-06-23T16:22:00Z",
+      "arrivalDate": "2028-06-23T16:56:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -55991.7,
+          81367.4,
+          55083.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -115123.7,
+          291106.5,
+          -222196.6
+        ]
+      },
+      "departDate": "2028-06-23T16:56:00Z",
+      "arrivalDate": "2028-06-23T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -115123.7,
+          291106.5,
+          -222196.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          514703.5,
+          818485.6,
+          -4744034.2
+        ]
+      },
+      "departDate": "2028-06-23T20:00:00Z",
+      "arrivalDate": "2028-07-01T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          514703.5,
+          818485.6,
+          -4744034.2
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          920510.0,
+          440708.5,
+          -5715930.9
+        ]
+      },
+      "departDate": "2028-07-01T20:00:00Z",
+      "arrivalDate": "2028-07-09T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          920510.0,
+          440708.5,
+          -5715930.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1026824.9,
+          -81865.8,
+          -4821245.5
+        ]
+      },
+      "departDate": "2028-07-09T20:00:00Z",
+      "arrivalDate": "2028-07-17T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1026824.9,
+          -81865.8,
+          -4821245.5
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          364011.6,
+          -379044.3,
+          -759648.4
+        ]
+      },
+      "departDate": "2028-07-17T20:00:00Z",
+      "arrivalDate": "2028-07-25T20:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          364011.6,
+          -379044.3,
+          -759648.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          75758.3,
+          -140916.5,
+          10418.1
+        ]
+      },
+      "departDate": "2028-07-25T20:00:00Z",
+      "arrivalDate": "2028-07-26T07:16:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          75758.3,
+          -140916.5,
+          10418.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -13069.5,
+          -7494.8,
+          84196.7
+        ]
+      },
+      "departDate": "2028-07-26T07:16:00Z",
+      "arrivalDate": "2028-07-26T08:20:00Z",
+      "periapsisAltKm": 15623
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -13069.5,
+          -7494.8,
+          84196.7
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -56642.7,
+          81356.9,
+          55655.4
+        ]
+      },
+      "departDate": "2028-07-26T08:20:00Z",
+      "arrivalDate": "2028-07-26T08:54:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -56642.7,
+          81356.9,
+          55655.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -118573.2,
+          294132.4,
+          -221802.8
+        ]
+      },
+      "departDate": "2028-07-26T08:54:00Z",
+      "arrivalDate": "2028-07-26T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -118573.2,
+          294132.4,
+          -221802.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          483759.4,
+          866929.8,
+          -4739311.0
+        ]
+      },
+      "departDate": "2028-07-26T12:00:00Z",
+      "arrivalDate": "2028-08-03T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          483759.4,
+          866929.8,
+          -4739311.0
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          887233.1,
+          500798.5,
+          -5717118.9
+        ]
+      },
+      "departDate": "2028-08-03T12:00:00Z",
+      "arrivalDate": "2028-08-11T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          887233.1,
+          500798.5,
+          -5717118.9
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          1002061.4,
+          -29715.5,
+          -4828834.6
+        ]
+      },
+      "departDate": "2028-08-11T12:00:00Z",
+      "arrivalDate": "2028-08-19T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          1002061.4,
+          -29715.5,
+          -4828834.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          364960.6,
+          -370792.6,
+          -773068.1
+        ]
+      },
+      "departDate": "2028-08-19T12:00:00Z",
+      "arrivalDate": "2028-08-27T12:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          364960.6,
+          -370792.6,
+          -773068.1
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          76197.5,
+          -139873.4,
+          9675.4
+        ]
+      },
+      "departDate": "2028-08-27T12:00:00Z",
+      "arrivalDate": "2028-08-27T23:26:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          76197.5,
+          -139873.4,
+          9675.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -13356.2,
+          -7032.9,
+          84295.4
+        ]
+      },
+      "departDate": "2028-08-27T23:26:00Z",
+      "arrivalDate": "2028-08-28T00:30:00Z",
+      "periapsisAltKm": 15725
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -13356.2,
+          -7032.9,
+          84295.4
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -59272.7,
+          85886.8,
+          53388.6
+        ]
+      },
+      "departDate": "2028-08-28T00:30:00Z",
+      "arrivalDate": "2028-08-28T01:06:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -59272.7,
+          85886.8,
+          53388.6
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          -120596.4,
+          288842.9,
+          -205605.8
+        ]
+      },
+      "departDate": "2028-08-28T01:06:00Z",
+      "arrivalDate": "2028-08-28T04:00:00Z"
+    },
+    {
+      "type": "planetocentric",
+      "primaryBody": "Jupiter",
+      "fromBody": {
+        "relPos": [
+          -120596.4,
+          288842.9,
+          -205605.8
+        ]
+      },
+      "toBody": {
+        "relPos": [
+          148059.6,
+          920106.4,
+          -3253976.5
+        ]
+      },
+      "departDate": "2028-08-28T04:00:00Z",
+      "arrivalDate": "2028-09-01T00:00:00Z"
     }
   ],
   "assets": {
