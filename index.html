@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=55">
+<link rel="stylesheet" href="src/css/style.css?v=56">
 </head>
 <body>
 
@@ -102,7 +102,10 @@
 </div>
 
 <div class="panel" id="size-compare-panel">
-  <div class="title">Relative diameters (to scale)</div>
+  <div class="panel-title-row">
+    <div class="title">Relative diameters (to scale)</div>
+    <button type="button" class="panel-close" id="size-compare-close" title="Close (turns off Compare true sizes)" aria-label="Close">&times;</button>
+  </div>
   <div id="size-row"></div>
 </div>
 
@@ -297,7 +300,10 @@
   <div id="system-info-body"></div>
 </div>
 <div class="panel" id="system-size-panel">
-  <div class="title" id="system-size-title">Diameters to scale</div>
+  <div class="panel-title-row">
+    <div class="title" id="system-size-title">Diameters to scale</div>
+    <button type="button" class="panel-close" id="system-size-close" title="Close (turns off Compare true sizes)" aria-label="Close">&times;</button>
+  </div>
   <div id="system-size-row"></div>
 </div>
 
@@ -337,6 +343,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=99"></script>
+<script src="src/js/app.js?v=100"></script>
 </body>
 </html>

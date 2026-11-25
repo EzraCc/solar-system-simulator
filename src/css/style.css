@@ -368,6 +368,13 @@
   }
   #size-compare-panel.visible { display: block; }
   #size-compare-panel .title { font-weight: 600; margin-bottom: 8px; font-size: 13px; }
+  /* Title with a close x at the right (size comparison panels). */
+  .panel-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .panel-close {
+    background: transparent; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 18px; line-height: 1; padding: 0 2px; margin: -2px -4px 0 0;
+  }
+  .panel-close:hover, .panel-close:focus-visible { color: var(--text-primary); }
 
   /* Top-center, same spot #demo-caption uses -- NOT bottom-left, since
      #legend-panel can grow to fill nearly the full viewport height

@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "47";
+  const BUILD_VERSION = "48";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -4217,11 +4217,14 @@
   }
   buildSizeComparePanel();
 
-  sizeToggleLabel.addEventListener("click", () => {
-    showTrueSizes = !showTrueSizes;
+  function setShowTrueSizes(on) {
+    showTrueSizes = on;
     sizeSwitch.classList.toggle("on", showTrueSizes);
     sizeComparePanel.classList.toggle("visible", showTrueSizes);
-  });
+  }
+  sizeToggleLabel.addEventListener("click", () => setShowTrueSizes(!showTrueSizes));
+  // The panel's own x does the same as switching the toggle off.
+  document.getElementById("size-compare-close").addEventListener("click", () => setShowTrueSizes(false));
 
   /* =========================================================================
      BROAD / FOCUSED SCENE VISIBILITY TOGGLE
@@ -8765,6 +8768,13 @@
     systemView.trueSizes = e.target.checked;
     if (systemView.trueSizes) buildSystemSizePanel();
     systemSizePanel.classList.toggle("visible", systemView.trueSizes);
+  });
+  // The panel's own x: same as unticking "Compare true sizes".
+  document.getElementById("system-size-close").addEventListener("click", () => {
+    if (!systemView) return;
+    systemView.trueSizes = false;
+    document.getElementById("sv-true-sizes").checked = false;
+    systemSizePanel.classList.remove("visible");
   });
 
   function niceKm(x) {
