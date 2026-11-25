@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "37";
+  const BUILD_VERSION = "38";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -197,6 +197,17 @@
     const res = await fetch(`data/bodies/info.json?v=${BUILD_VERSION}`);
     if (!res.ok) throw new Error("Failed to load data/bodies/info.json: " + res.status);
     Object.assign(BODY_INFO, await res.json());
+  }
+
+  // Surface maps for the sphere renderer: body name -> { file, title,
+  // credit, license, sourcePage, downloadedFrom, processing }, written by
+  // tools/build_textures.py. Used for the texture paths and for the credit
+  // line in each body's info panel (see textureCreditHtml).
+  const TEXTURE_INFO = {};
+  async function loadTextureInfo() {
+    const res = await fetch(`data/images/textures/manifest.json?v=${BUILD_VERSION}`);
+    if (!res.ok) throw new Error("Failed to load data/images/textures/manifest.json: " + res.status);
+    Object.assign(TEXTURE_INFO, await res.json());
   }
 
   async function loadFlightsRaw() {
@@ -7162,7 +7173,7 @@
       let sections = "";
       if (satInfo && satInfo.significance) sections += lpSectionHtml("Why it matters", satInfo.significance);
       sections += bodyMissionsHtml(b.name);
-      lockedPanelBody.innerHTML = rows + (satInfo ? learnMoreHtml(satInfo.assets) : "") + sections + (satInfo ? assetGalleryHtml(satInfo.assets) : "");
+      lockedPanelBody.innerHTML = rows + (satInfo ? learnMoreHtml(satInfo.assets) : "") + sections + (satInfo ? assetGalleryHtml(satInfo.assets) : "") + textureCreditHtml(b.name);
       return;
     }
 
@@ -7190,7 +7201,8 @@
     const systemBtn = sysPrimary
       ? `<div class="lp-jump-row lp-system-btn"><button type="button" class="lp-jump-btn" data-open-system="${sysPrimary}">Open ${sysPrimary} system view</button></div>`
       : "";
-    lockedPanelBody.innerHTML = rows + systemBtn + (info ? learnMoreHtml(info.assets) : "") + sections + (info ? assetGalleryHtml(info.assets) : "");
+    lockedPanelBody.innerHTML = rows + systemBtn + (info ? learnMoreHtml(info.assets) : "") + sections + (info ? assetGalleryHtml(info.assets) : "") +
+      textureCreditHtml(b.name === "Pluto and Charon" ? "Pluto" : b.name);
   }
 
   // The locked panel is event-based, not per-frame: formatLockedPanelContent
@@ -7693,15 +7705,24 @@
      unavailable or the body is too small for any of this to show.
   ========================================================================= */
 
-  // Equirectangular maps from tools/build_textures.py: longitude 0 at the
-  // centre, east to the right, north up.
-  const SPHERE_TEXTURES = {
-    Jupiter: "data/images/textures/jupiter.jpg",
-    Io: "data/images/textures/io.jpg",
-    Europa: "data/images/textures/europa.jpg",
-    Ganymede: "data/images/textures/ganymede.jpg",
-    Callisto: "data/images/textures/callisto.jpg",
-  };
+  // Surface map path for a body, from TEXTURE_INFO (see loadTextureInfo).
+  // Maps are equirectangular: longitude 0 at the centre, east to the
+  // right, north up. Venus deliberately has none: to the eye it is a
+  // featureless cloud deck, and its radar surface maps would misrepresent
+  // what it looks like.
+  function textureSrc(name) {
+    const t = TEXTURE_INFO[name];
+    return t ? `${t.file}?v=${BUILD_VERSION}` : null;
+  }
+
+  // "Surface map: <title>. <credit>. <license>." with a link to the source
+  // page, for the info panels of bodies that are drawn with a map.
+  function textureCreditHtml(name) {
+    const t = TEXTURE_INFO[name];
+    if (!t) return "";
+    const esc = (x) => String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    return `<div class="lp-credit">Surface map: <a href="${esc(t.sourcePage)}" target="_blank" rel="noopener noreferrer">${esc(t.title)}</a>. ${esc(t.credit)}. ${esc(t.license)}.</div>`;
+  }
 
   // IAU WGCCRE 2015 (Archinal et al. 2018) pole and prime meridian, without
   // the small periodic terms: pole RA/Dec (deg, ICRF) at J2000, and
@@ -7720,6 +7741,32 @@
     Neptune: { ra: 299.36,   dec: 43.46,   W0: 249.978,  Wdot: 541.1397757, flattening: 0.01708 },
     Pluto:   { ra: 132.993,  dec: -6.163,  W0: 302.695,  Wdot: 56.3625225, flattening: 0 },
   };
+
+  // Gas giants darken toward the limb (light leaves their deep
+  // atmospheres at a grazing angle); solid bodies follow plain Lambert.
+  const LIMB_DARKENING = { Jupiter: 0.35, Saturn: 0.35, Uranus: 0.3, Neptune: 0.3 };
+  // Ring shadows on the planet: ring radii in equatorial radii.
+  function bodyRingsForShader(name) {
+    if (name !== "Saturn") return null;
+    const R = PLANET_META.Saturn.radiusKm;
+    return SATURN_RINGS.map((g) => ({ r0: g.r0 / R, r1: g.r1 / R, alpha: g.alpha }));
+  }
+
+  // A thin halo for bodies with a substantial atmosphere: colour and peak
+  // opacity. Drawn in 2D just outside the limb, after the sphere.
+  const ATMOSPHERES = {
+    Venus: ["#fff1c8", 0.35], Earth: ["#8fc0ff", 0.35], Titan: ["#f0a860", 0.45], Mars: ["#f2b48a", 0.12],
+  };
+  function drawAtmosphere(target, name, x, y, r) {
+    const atm = ATMOSPHERES[name];
+    if (!atm || r < 8) return;
+    const outer = r + Math.min(r * 0.07, 10); // a real atmosphere is a thin shell: cap the halo on big discs
+    const g = target.createRadialGradient(x, y, r * 0.98, x, y, outer);
+    g.addColorStop(0, hexWithAlpha(atm[0], atm[1]));
+    g.addColorStop(1, hexWithAlpha(atm[0], 0));
+    target.fillStyle = g;
+    target.beginPath(); target.arc(x, y, outer, 0, 2 * Math.PI); target.fill();
+  }
 
   const OBLIQUITY_J2000 = 23.4392911 * D2R;
   const eqToEcl = (v) => [v[0],
@@ -7779,6 +7826,10 @@
       uniform float uHasTex;
       uniform vec3 uColor;
       uniform float uAmbient;
+      uniform float uLimb;         // limb-darkening exponent (gas giants), 0 = off
+      uniform vec4 uRingR0;        // up to 4 rings in the equatorial plane:
+      uniform vec4 uRingR1;        //   inner/outer radius (equatorial radii)
+      uniform vec4 uRingA;         //   and opacity; all zero = no rings
       const float PI = 3.141592653589793;
       void main() {
         vec2 q = mix(uRect.xy, uRect.zw, vUv);
@@ -7805,6 +7856,21 @@
         vec3 albedo = uHasTex > 0.5 ? texture2D(uTex, vec2(u, 0.5 - lat / PI)).rgb : uColor;
         float ndl = dot(n, uLight);
         float lit = clamp(ndl, 0.0, 1.0);
+        // Ring shadow: follow the ray from this point toward the Sun to the
+        // ring plane (the body's equator) and dim by the ring it crosses.
+        if (uRingA != vec4(0.0) && abs(uLight.z) > 1e-4) {
+          float tr = -p.z / uLight.z;
+          if (tr > 0.0) {
+            float rho = length(p.xy + tr * uLight.xy);
+            vec4 inR = step(uRingR0, vec4(rho)) * step(vec4(rho), uRingR1);
+            vec4 pass = vec4(1.0) - uRingA * inR;
+            lit *= pass.x * pass.y * pass.z * pass.w;
+          }
+        }
+        if (uLimb > 0.0) {
+          float mu = clamp(dot(n, -normalize(d)), 0.0, 1.0);
+          lit *= pow(mu, uLimb);
+        }
         vec3 col = albedo * (uAmbient + (1.0 - uAmbient) * lit);
         gl_FragColor = vec4(col * alpha, alpha);
       }`;
@@ -7826,7 +7892,8 @@
         gl.linkProgram(prog);
         if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
         gl.useProgram(prog);
-        ["uRect", "uViewToBody", "uLight", "uPolar", "uPxPerR", "uTex", "uHasTex", "uColor", "uAmbient"]
+        ["uRect", "uViewToBody", "uLight", "uPolar", "uPxPerR", "uTex", "uHasTex", "uColor", "uAmbient",
+         "uLimb", "uRingR0", "uRingR1", "uRingA"]
           .forEach((n) => { loc[n] = gl.getUniformLocation(prog, n); });
         const buf = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -7844,7 +7911,8 @@
     }
 
     function texture(name) {
-      if (!SPHERE_TEXTURES[name]) return null;
+      const src = textureSrc(name);
+      if (!src) return null;
       if (textures[name]) return textures[name].ready ? textures[name].tex : null;
       const entry = textures[name] = { tex: null, ready: false };
       const img = new Image();
@@ -7862,8 +7930,8 @@
         entry.tex = tex; entry.ready = true;
         onTextureReady.forEach((f) => f(name));
       };
-      img.onerror = () => console.warn("Texture failed to load:", SPHERE_TEXTURES[name]);
-      img.src = SPHERE_TEXTURES[name];
+      img.onerror = () => console.warn("Texture failed to load:", src);
+      img.src = src;
       return null;
     }
 
@@ -7875,8 +7943,10 @@
     // viewport), so a planet zoomed far past the screen only costs the
     // pixels actually visible. Returns false if nothing was drawn and the
     // caller should fall back to the flat disc.
+    // rings: [{ r0, r1, alpha }] in equatorial radii (ring shadow on the
+    // body); limb: limb-darkening exponent.
     function draw(target, { sx, sy, r, color, light, axes, viewRows, textureName, flattening = 0,
-                            ambient = 0.06, scale = dpr, clip = null }) {
+                            ambient = 0.06, scale = dpr, clip = null, rings = null, limb = 0 }) {
       if (!init()) return false;
       const B = axes || [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
       const V = viewRows;
@@ -7908,6 +7978,11 @@
       gl.uniform1f(loc.uPolar, 1 - flattening);
       gl.uniform1f(loc.uPxPerR, r * scale * down);
       gl.uniform1f(loc.uAmbient, ambient);
+      gl.uniform1f(loc.uLimb, limb);
+      const rg = [0, 1, 2, 3].map((k) => (rings && rings[k]) || { r0: 0, r1: 0, alpha: 0 });
+      gl.uniform4f(loc.uRingR0, rg[0].r0, rg[1].r0, rg[2].r0, rg[3].r0);
+      gl.uniform4f(loc.uRingR1, rg[0].r1, rg[1].r1, rg[2].r1, rg[3].r1);
+      gl.uniform4f(loc.uRingA, rg[0].alpha, rg[1].alpha, rg[2].alpha, rg[3].alpha);
       const tex = textureName ? texture(textureName) : null;
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -8338,6 +8413,7 @@
       extra = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-sv-follow-moon="${m.name}">Follow</button></div>`;
       if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
       sections += bodyMissionsHtml(m.name);
+      sections += textureCreditHtml(m.name);
     } else {
       const name = systemBodyDisplayName(primary);
       title = name;
@@ -8348,6 +8424,7 @@
       addRow("Distance from Sol", `${Math.hypot(...meta.helio(t)).toFixed(3)} AU`);
       if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
       sections += bodyMissionsHtml(name);
+      sections += textureCreditHtml(primary);
     }
     if (rowsOnly) { const el = document.getElementById("system-info-rows"); if (el) el.innerHTML = rows; return; }
     systemInfoTitle.textContent = title;
@@ -8413,6 +8490,7 @@
       const rot = b.primary ? BODY_ROTATION[primary] : null;
       const ok = r >= 1.5 && sphereGL.draw(c2, { sx: mid, sy: mid, r, color: b.color, light: SIZE_CHART_LIGHT,
         viewRows: IDENTITY_ROWS, axes: SIZE_CHART_AXES, textureName: b.name, flattening: rot ? rot.flattening : 0,
+        limb: b.primary ? (LIMB_DARKENING[primary] || 0) : 0,
         clip: { x0: 0, y0: 0, x1: box, y1: box } });
       if (!ok) { // too small for shading, or no WebGL: a flat disc
         c2.fillStyle = b.color;
@@ -8620,8 +8698,10 @@
       if (jrTrue >= 5) {
         const rot = BODY_ROTATION[primary];
         const ok = sphereGL.draw(ctx, { sx: jx, sy: jy, r: jr, color: meta.color, light: lightWorld, viewRows,
-          axes: rot ? iauBodyAxes(rot, t) : null, textureName: primary, flattening: rot ? rot.flattening : 0 });
+          axes: rot ? iauBodyAxes(rot, t) : null, textureName: primary, flattening: rot ? rot.flattening : 0,
+          rings: bodyRingsForShader(primary), limb: LIMB_DARKENING[primary] || 0 });
         if (!ok) drawBody(jx, jy, jr, meta.color, false, lightX, lightY);
+        drawAtmosphere(ctx, primary, jx, jy, jr);
         return;
       }
       drawSmallBodyMarker(jx, jy, jrTrue, 7, meta.color);
@@ -8651,18 +8731,42 @@
     // (the far half goes behind the disc, the near half in front).
     if (primary === "Saturn") {
       const B = refPoleBasis(SATURN_POLE);
-      const N = 72;
-      const ringPt = (r, th) => svProject([0, 1, 2].map((k) => r * (Math.cos(th) * B[0][k] + Math.sin(th) * B[1][k])));
+      const pole = B[2];
+      const N = 180;
+      const dot3 = (u, v) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+      const ringW = (r, th) => [0, 1, 2].map((k) => r * (Math.cos(th) * B[0][k] + Math.sin(th) * B[1][k]));
+      // Saturn's shadow on the rings: a point is shadowed when it lies on
+      // the night side and within the planet's (oblate) cross-section seen
+      // from the Sun.
+      const Req = meta.radiusKm, Rpol = Req * (1 - BODY_ROTATION.Saturn.flattening);
+      const inShadow = (w) => {
+        const sL = dot3(w, lightWorld);
+        if (sL >= 0) return 0;
+        const perp = [w[0] - sL * lightWorld[0], w[1] - sL * lightWorld[1], w[2] - sL * lightWorld[2]];
+        const pp = dot3(perp, pole);
+        const pe2 = Math.max(0, dot3(perp, perp) - pp * pp);
+        return pe2 / (Req * Req) + (pp * pp) / (Rpol * Rpol) < 1 ? 1 : 0;
+      };
+      // Seen from the side the Sun isn't on, the rings glow only by light
+      // scattered through them: much dimmer. Brightness also falls as the
+      // Sun's elevation above the ring plane drops (zero at equinox).
+      const sunUp = dot3(pole, lightWorld), viewUp = dot3(pole, viewRows[2]);
+      const litSide = Math.sign(sunUp) === Math.sign(viewUp);
+      const bright = (litSide ? 1 : 0.4) * (0.45 + 0.55 * Math.min(1, Math.abs(sunUp) / 0.4));
       SATURN_RINGS.forEach((ring) => {
         for (let k = 0; k < N; k++) {
           const th0 = (k / N) * 2 * Math.PI, th1 = ((k + 1.04) / N) * 2 * Math.PI;
-          const q = [ringPt(ring.r0, th0), ringPt(ring.r1, th0), ringPt(ring.r1, th1), ringPt(ring.r0, th1)];
+          const w = [ringW(ring.r0, th0), ringW(ring.r1, th0), ringW(ring.r1, th1), ringW(ring.r0, th1)];
+          const q = w.map(svProject);
           const rz = (q[0][2] + q[1][2] + q[2][2] + q[3][2]) / 4;
+          const shade = (inShadow(w[0]) + inShadow(w[1]) + inShadow(w[2]) + inShadow(w[3])) / 4;
+          const f = bright * (1 - 0.92 * shade);
+          const fill = `rgba(${Math.round(216 * f)},${Math.round(200 * f)},${Math.round(160 * f)},${ring.alpha * (0.6 + 0.4 * (1 - shade))})`;
           items.push({ rz, draw: () => {
             ctx.beginPath(); ctx.moveTo(q[0][0], q[0][1]);
             for (let j = 1; j < 4; j++) ctx.lineTo(q[j][0], q[j][1]);
             ctx.closePath();
-            ctx.fillStyle = `rgba(216,200,160,${ring.alpha})`; ctx.fill();
+            ctx.fillStyle = fill; ctx.fill();
           } });
         }
       });
@@ -8686,6 +8790,7 @@
           const ok = sphereGL.draw(ctx, { sx, sy, r, color: m.meta.color, light: lightWorld, viewRows,
             axes: moonAxesAt(m, t), textureName: m.name });
           if (!ok) drawBody(sx, sy, r, m.meta.color, false, lightX, lightY);
+          drawAtmosphere(ctx, m.name, sx, sy, r);
         }
         else drawSmallBodyMarker(sx, sy, rTrue, r, m.meta.color);
         ctx.fillStyle = "rgba(232,237,247,0.85)";
@@ -9211,7 +9316,9 @@
         r: abs.sat.rKm / AU_KM, e: abs.sat.e, i: abs.sat.i, a: abs.sat.a / AU_KM,
         rKmFromPrimary: abs.sat.rKm,
         primaryGmKm3Day2: abs.primaryGmKm3Day2,
-        radiusKm: meta.radiusKm, dimensionsKm: meta.dimensionsKm, shapeNote: meta.shapeNote
+        radiusKm: meta.radiusKm, dimensionsKm: meta.dimensionsKm, shapeNote: meta.shapeNote,
+        // Tidally locked: lets the sphere renderer orient its surface map.
+        axes: lockedMoonAxes(abs.sat.posAU, abs.sat.velAU)
       });
     }
 
@@ -9342,12 +9449,14 @@
       let drawn = false;
       if (!b.isSun && !b.isFlight && b.screenR >= 4 && distFromSol > 1e-9) {
         const rot = b.primary === "Sol" ? BODY_ROTATION[b.name] : null;
+        const axes = rot ? iauBodyAxes(rot, tNow) : (b.axes || null);
         drawn = sphereGL.draw(ctx, { sx: b.sx, sy: b.sy, r: b.screenR, color: b.color, viewRows,
           light: [-b.pos[0] / distFromSol, -b.pos[1] / distFromSol, -b.pos[2] / distFromSol],
-          axes: rot ? iauBodyAxes(rot, tNow) : null, textureName: rot ? b.name : null,
-          flattening: rot ? rot.flattening : 0, ambient: 0.12 });
+          axes, textureName: axes ? b.name : null,
+          flattening: rot ? rot.flattening : 0, ambient: 0.12, limb: LIMB_DARKENING[b.name] || 0 });
       }
       if (!drawn) drawBody(b.sx, b.sy, b.screenR, b.color, b.isSun, lightDirX, lightDirY);
+      else drawAtmosphere(ctx, b.name, b.sx, b.sy, b.screenR);
       renderedBodies.push(b);
     });
 
@@ -9512,6 +9621,12 @@
       // and move on rather than blocking the whole app over a missing or
       // malformed data/bodies/info.json.
       console.error("Failed to load body info:", err);
+    }
+    try {
+      await loadTextureInfo();
+    } catch (err) {
+      // Bodies just render untextured (lit colour spheres) without it.
+      console.error("Failed to load surface map list:", err);
     }
     buildFlightsLegend();
     applyInitialURLState();

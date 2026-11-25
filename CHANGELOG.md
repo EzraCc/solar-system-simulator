@@ -16,6 +16,29 @@ published package), so entries are dated instead.
   moons keep their planet-facing side toward Jupiter. The system view's
   "Compare true sizes" chart uses the same renderer. Without WebGL the old
   gradient discs are drawn.
+- **Surface maps for 21 bodies.** Mercury, Earth, the Moon, Mars, Phobos,
+  Deimos, Jupiter and the four Galilean moons, Saturn, Titan, Mimas,
+  Enceladus, Tethys, Dione, Rhea, Iapetus, Pluto and Charon, all from
+  NASA/JPL/USGS sources (public domain or NASA media). Cassini's
+  enhanced-colour moon maps are toned down toward the moons' near-grey
+  look; Venus stays a featureless cloud deck by design. Moons in the
+  Solar System view are oriented too (planet-facing side toward the
+  planet). Longitudes checked against known features on every Jupiter-
+  system map.
+- **Saturn's rings and shadows.** The rings cast their shadow on Saturn,
+  Saturn's shadow falls across the rings, and the rings dim when seen from
+  their unlit side or when the Sun is low over them.
+- **Limb darkening and atmospheres.** The giants darken toward the limb;
+  Venus, Earth, Titan and Mars get a thin atmosphere halo.
+- **Sources and credits.** `docs/CREDITS.md` lists every map, dataset and
+  reference with its credit and licence; each map's credit and source link
+  is shown in its body's info panel. `tools/build_textures.py` keeps the
+  manifest and the CREDITS table in sync. An audit of the older gallery
+  images (167, credits not yet recorded) is on `docs/TODO.md`.
+- **To-do and plans.** `docs/TODO.md` (data refresh and a refresh
+  schedule, image audit, rendering, catalog) and
+  `docs/instruments-plan.md` (spacecraft instruments and public data
+  feeds, plan only).
 - **Fixed: depth order was mirror-imaged.** Positions were drawn as seen
   from ecliptic north, but every overlap test assumed a viewer on the
   south side, so which body (or which half of Saturn's rings) passed in

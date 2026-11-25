@@ -110,18 +110,17 @@ Flights (real interplanetary missions) use a universal-variable Lambert solver:
 - `worldToScreen(x, y, z)` → `[screenX, screenY, rz]`
   - Screen Y is **flipped**: `cy - ry * pxPerAU` (increasing world Y = upward on screen = decreasing pixel Y)
   - This flip must be accounted for anywhere that converts a world-space direction vector to screen space (e.g., the lighting direction for sphere shading)
+  - **`rz` is depth, growing away from the viewer.** It is the *negated* third rotated axis: with x right and y up, the viewer sits on the +z2 side (the default view looks down from ecliptic north; orbits run counterclockwise). Draw order is largest `rz` first. Before 2026-11-25 the sign was the other way, which mirror-imaged every overlap; don't flip it back (see the comment on `rotateWorld`).
 - Zoom: `pxPerAU`, range 2–20,000. Ceiling was raised from 4,000 this session to make the Moon's orbital inclination visually perceptible
 - Camera follow: when a body is locked (`lockedBodyName`), `camX`/`camY` are adjusted each frame to keep the body centered
 
-### 3.6 Sphere Shading
+### 3.6 Sphere Rendering
 
-Planets render as directionally-lit spheres, not flat circles. Per-frame, per-body:
-1. Compute world-space direction from body toward Sol: `-normalize(body.pos)`
-2. Rotate through `rotateWorld()` to get camera-space direction
-3. **Flip the Y component** to match screen-space sign convention
-4. Pass `(lightDirX, lightDirY)` to `drawBody()`
-5. `drawBody` creates an offset radial gradient: hotspot at `0.42 * screenR` toward the light direction, outer radius `1.35 * screenR`, clipped to the body's circle. Color stops: full color at hotspot → 55% darkened at terminator → 88% darkened at shadow edge
-6. Sol itself is **not** shaded (it's the light source) — it gets a flat fill plus a glow gradient only
+Bodies are drawn as lit, optionally textured spheres by `sphereGL` (the SPHERE RENDERER section of `app.js`), a small offscreen WebGL canvas copied into the 2D canvas with `drawImage` at the point in the depth-sorted draw order where the disc belongs. Per pixel, the fragment shader casts a ray into the body's own frame, hits the (oblate) spheroid, samples the equirectangular map at that latitude/longitude, and lights it by the angle to Sol, so the terminator is exact for any Sun/camera geometry.
+- Orientation: `BODY_ROTATION` (IAU WGCCRE 2015 pole and prime meridian) for planets via `iauBodyAxes`; tidally locked moons via `lockedMoonAxes` (pole = orbit normal, prime meridian toward the planet).
+- Maps: `data/images/textures/`, built by `tools/build_textures.py`, listed with credits in `data/images/textures/manifest.json` (loaded as `TEXTURE_INFO`). Credits are shown in the info panels and in `docs/CREDITS.md`.
+- Extras: Saturn's ring shadow on the planet (shader), the planet's shadow on the rings (2D ring sectors), limb darkening for the giants, thin atmosphere halos (`ATMOSPHERES`).
+- Fallback: `drawBody`'s offset radial gradient (the earlier shading) when WebGL is unavailable, for bodies under 4 px, and for Sol (flat fill plus glow).
 
 ---
 
