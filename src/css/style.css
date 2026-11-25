@@ -108,6 +108,24 @@
   #time-panel .row { display: flex; align-items: center; gap: 8px; }
   #time-panel .label { color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
   #speed-slider { flex: 1; }
+  /* View flag (see setTimeScope in app.js). */
+  #time-scope { justify-content: flex-start; }
+  #time-scope-flag {
+    font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px solid var(--panel-border); border-radius: 999px;
+    padding: 2px 9px;
+  }
+  #time-scope-flag.system { color: #ffd27a; border-color: rgba(255, 210, 122, 0.45); }
+  #time-scope-flag.flash { animation: time-scope-flash 1.6s ease-out; }
+  @keyframes time-scope-flash {
+    0% { background: rgba(255, 210, 122, 0.45); color: #fff; }
+    100% { background: transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) { #time-scope-flag.flash { animation: none; } }
+  #sv-speed-presets { display: none !important; gap: 4px; flex-wrap: wrap; }
+  body.system-view #sv-speed-presets { display: flex !important; }
+  #date-time-utc { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--text-primary); }
   /* Clickable readout chip (see startSpeedEdit in app.js) -- click to type
      a new speed directly, shown as "N yr/min" (years of simulated time per
      real minute). */
@@ -1240,14 +1258,12 @@
   #system-panel-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
   #system-panel-title { font-weight: 600; font-size: 14px; }
   #system-clock { font-variant-numeric: tabular-nums; font-size: 13px; margin: 2px 0 6px; }
-  #system-exit-btn, #system-speed-row button, .sv-jump {
+  #system-exit-btn, #sv-speed-presets button, .sv-jump {
     background: #16203a; color: var(--text-primary);
     border: 1px solid var(--panel-border); border-radius: 6px;
     font-family: inherit; font-size: 12px; cursor: pointer; padding: 3px 8px;
   }
-  #system-exit-btn:hover, #system-speed-row button:hover, .sv-jump:hover { background: #1f2c4d; }
-  #system-speed-row { display: flex; gap: 4px; flex-wrap: wrap; }
-  #system-speed-row button.active { border-color: #8fb4ff; }
+  #system-exit-btn:hover, #sv-speed-presets button:hover, .sv-jump:hover { background: #1f2c4d; }
   .system-section-label {
     margin-top: 10px; margin-bottom: 3px;
     font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim);
