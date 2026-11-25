@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "35";
+  const BUILD_VERSION = "36";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -4612,6 +4612,52 @@
     dwarf_planet: { label: "DP", title: "Dwarf planet" },
   };
 
+  // Classification line shown under an info panel's title ("Asteroid ·
+  // Jupiter trojan", "Spacecraft", "Moon of Saturn"). SMALL_BODIES.types
+  // gives the broad kind; this adds where the body lives, keyed by
+  // SMALL_BODIES key. A body missing here just shows its broad kind.
+  const SMALL_BODY_GROUP = {
+    '67P': "Jupiter-family comet", tempel1: "Jupiter-family comet",
+    wild2: "Jupiter-family comet", borrelly: "Jupiter-family comet",
+    hyakutake: "long-period comet", mcnaught_hartley: "long-period comet",
+    mcnaught: "long-period comet",
+    bennu: "near-Earth", ryugu: "near-Earth", didymos: "near-Earth, binary",
+    itokawa: "near-Earth", toutatis: "near-Earth", eros: "near-Earth",
+    kamooalewa: "near-Earth, quasi-satellite of Earth",
+    braille: "Mars-crosser",
+    vesta: "main belt", ceres: "main belt", psyche: "main belt",
+    gaspra: "main belt", ida: "main belt", annefrank: "main belt",
+    dinkinesh: "main belt", donaldjohanson: "main belt",
+    eurybates: "Jupiter trojan", polymele: "Jupiter trojan",
+    leucus: "Jupiter trojan", orus: "Jupiter trojan",
+    patroclus: "Jupiter trojan, binary",
+    pluto: "Kuiper belt",
+  };
+  const PLANET_CLASS = {
+    Mercury: "rocky", Venus: "rocky", Earth: "rocky", Mars: "rocky",
+    Jupiter: "gas giant", Saturn: "gas giant", Uranus: "ice giant", Neptune: "ice giant",
+  };
+  const SMALL_BODY_TYPE_LABEL = { asteroid: "Asteroid", comet: "Comet", dwarf_planet: "Dwarf planet" };
+  // primaryName: set for a moon (its planet or parent body's name).
+  function bodyClassification(name, { isFlight = false, primaryName = null } = {}) {
+    if (isFlight) return "Spacecraft";
+    if (name === "Sol") return "Star";
+    if (primaryName && primaryName !== "Sol") {
+      return `Moon of ${primaryName.replace(/ and Charon$/, "").replace(/ \([^)]*\)$/, "")}`;
+    }
+    if (PLANET_CLASS[name]) return `Planet · ${PLANET_CLASS[name]}`;
+    const entry = Object.entries(SMALL_BODIES).find(([k, sb]) => sb.name === name || k === String(name).toLowerCase());
+    if (!entry) return "";
+    const [key, sb] = entry;
+    const kinds = (sb.types || []).map((t) => SMALL_BODY_TYPE_LABEL[t] || t);
+    const group = SMALL_BODY_GROUP[key];
+    // "Comet · Jupiter-family comet" repeats itself; let the group stand alone.
+    if (group && /comet$/.test(group)) return group[0].toUpperCase() + group.slice(1);
+    // Ceres: "Asteroid and dwarf planet".
+    const kindText = kinds.map((k, i) => (i ? k.toLowerCase() : k)).join(" and ");
+    return [kindText, group].filter(Boolean).join(" · ");
+  }
+
   // key -> row element, so the per-frame visibility highlight (see
   // updateSmallBodiesLegendActiveState) can toggle a class on the existing
   // rows without rebuilding the whole legend every frame -- same pattern
@@ -5323,6 +5369,7 @@
   const lockedPanelBody = document.getElementById("locked-panel-body");
   const lockedPanelClose = document.getElementById("locked-panel-close");
   const lockedPanelHeader = document.getElementById("locked-panel-header");
+  const lockedPanelKind = document.getElementById("locked-panel-kind");
 
   // Hides the panel WITHOUT touching lockedBodyName/selectedFlightKey --
   // camera tracking (and the highlight ring/connector, and the flight
@@ -5726,28 +5773,36 @@
     if (!isMultiLeg(raw)) getSolvedFlight(key);
   }
 
-  // Drag-to-reposition: mousedown on the header (but not the close button)
-  // starts a drag; mousemove writes directly to lockedPanelPos and the
-  // DOM style right here, event-driven, since the frame loop no longer
-  // touches the panel's position at all once it's been placed (see
-  // drawLockedPanelConnector). mousemove/mouseup are on window, not the
-  // header, so the drag doesn't break if the cursor outruns the (small)
-  // header element mid-drag.
-  let lockedPanelDrag = null; // { startMouseX, startMouseY, startX, startY } while dragging
-  lockedPanelHeader.style.cursor = "grab";
-  lockedPanelHeader.addEventListener("mousedown", (e) => {
-    if (isMobileLayout) return; // mobile uses the touch snap-drag below instead
-    if (e.target === lockedPanelClose) return;
+  // Drag-to-reposition. The header is the drag handle, EXCEPT its text
+  // (title and classification line) and its buttons: text stays selectable
+  // so the name can be copied, and a press on text starts a normal text
+  // selection instead of a drag. The grip glyph and the header's empty
+  // space are the handle, signalled by cursor: grab (CSS). Pointer events
+  // with setPointerCapture keep the drag attached to the header even when
+  // the pointer outruns it, cover mouse and pen with one code path, and
+  // release cleanly on pointercancel. mousemove writes lockedPanelPos and
+  // the DOM style directly, since the frame loop doesn't touch the panel's
+  // position once placed (see drawLockedPanelConnector).
+  let lockedPanelDrag = null; // { pointerId, startMouseX, startMouseY, startX, startY } while dragging
+  function isLockedPanelDragHandle(target) {
+    return !target.closest("button, a, input, #locked-panel-title, #locked-panel-kind");
+  }
+  lockedPanelHeader.addEventListener("pointerdown", (e) => {
+    if (isMobileLayout) return; // mobile panel is a fixed full-screen modal
+    if (e.button !== 0 || !e.isPrimary) return;
+    if (!isLockedPanelDragHandle(e.target)) return;
     if (!lockedPanelPos) return; // nothing locked yet, nothing to drag
-    e.preventDefault();
+    e.preventDefault(); // no text selection or native drag from the handle area
+    lockedPanelHeader.setPointerCapture(e.pointerId);
     lockedPanelDrag = {
+      pointerId: e.pointerId,
       startMouseX: e.clientX, startMouseY: e.clientY,
       startX: lockedPanelPos.x, startY: lockedPanelPos.y
     };
-    lockedPanelHeader.style.cursor = "grabbing";
+    lockedPanelHeader.classList.add("dragging");
   });
-  window.addEventListener("mousemove", (e) => {
-    if (!lockedPanelDrag) return;
+  lockedPanelHeader.addEventListener("pointermove", (e) => {
+    if (!lockedPanelDrag || e.pointerId !== lockedPanelDrag.pointerId) return;
     const panelRect = lockedPanel.getBoundingClientRect();
     let px = lockedPanelDrag.startX + (e.clientX - lockedPanelDrag.startMouseX);
     let py = lockedPanelDrag.startY + (e.clientY - lockedPanelDrag.startMouseY);
@@ -5757,11 +5812,14 @@
     lockedPanel.style.left = px + "px";
     lockedPanel.style.top = py + "px";
   });
-  window.addEventListener("mouseup", () => {
-    if (!lockedPanelDrag) return;
+  function endLockedPanelDrag(e) {
+    if (!lockedPanelDrag || e.pointerId !== lockedPanelDrag.pointerId) return;
     lockedPanelDrag = null;
-    lockedPanelHeader.style.cursor = "grab";
-  });
+    lockedPanelHeader.classList.remove("dragging");
+    if (lockedPanelHeader.hasPointerCapture(e.pointerId)) lockedPanelHeader.releasePointerCapture(e.pointerId);
+  }
+  lockedPanelHeader.addEventListener("pointerup", endLockedPanelDrag);
+  lockedPanelHeader.addEventListener("pointercancel", endLockedPanelDrag);
 
   // Mobile: no drag-to-dismiss or peek/full snapping -- the panel is a
   // full-screen modal now (see body.mobile #locked-panel in the CSS),
@@ -7147,6 +7205,7 @@
 
     if (lockedBodyName !== _lastLockedBodyForPanel) {
       lockedPanelTitle.textContent = b.name;
+      lockedPanelKind.textContent = bodyClassification(b.name, { isFlight: !!b.isFlight, primaryName: b.primary });
       formatLockedPanelContent(b);
       // Scrolling #locked-panel-body doesn't recreate it, so without this
       // a new target inherits whatever scroll position the PREVIOUS one
@@ -7900,6 +7959,7 @@
   /* ---- System view: click a body or spacecraft for its info card ---- */
   const systemInfoPanel = document.getElementById("system-info-panel");
   const systemInfoTitle = document.getElementById("system-info-title");
+  const systemInfoKind = document.getElementById("system-info-kind");
   const systemInfoBody = document.getElementById("system-info-body");
 
   function handleSystemClick(mx, my) {
@@ -7939,11 +7999,12 @@
     let rows = "";
     const addRow = (k, v) => { rows += `<div class="lp-row"><span class="lp-key">${k}</span><span class="lp-val">${v}</span></div>`; };
     const fmt = (x) => Math.round(x).toLocaleString();
-    let title, extra = "", sections = "";
+    let title, kind, extra = "", sections = "";
     if (target.kind === "flight") {
       const raw = FLIGHTS_RAW[target.key];
       const m = getSystemMissions(primary).find((x) => x.key === target.key);
       title = raw.name;
+      kind = bodyClassification(raw.name, { isFlight: true });
       addRow("Status", raw.status);
       if (m) addRow(`At ${primary}`, `${tlDate(m.tStart)} → ${tlDate(m.tEnd)}`);
       const pos = m && missionOffsetKm(m, t);
@@ -7958,6 +8019,7 @@
     } else if (target.kind === "moon") {
       const m = findOuterMoon(primary, target.name);
       title = m.name;
+      kind = bodyClassification(m.name, { primaryName: systemBodyDisplayName(primary) });
       const st = computeSatelliteOffset(m.elements, t);
       const info = BODY_INFO[m.name];
       addRow("Size", `${fmt(2 * m.meta.radiusKm)} km diameter`);
@@ -7974,6 +8036,7 @@
     } else {
       const name = systemBodyDisplayName(primary);
       title = name;
+      kind = bodyClassification(name);
       const info = BODY_INFO[name];
       addRow("Size", `${fmt(2 * meta.radiusKm)} km diameter`);
       addRow("Moons shown", `${systemMoons(primary).length || "none"}`);
@@ -7983,6 +8046,7 @@
     }
     if (rowsOnly) { const el = document.getElementById("system-info-rows"); if (el) el.innerHTML = rows; return; }
     systemInfoTitle.textContent = title;
+    systemInfoKind.textContent = kind;
     systemInfoBody.innerHTML = `<div id="system-info-rows">${rows}</div>` + extra + sections;
     systemInfoBody.scrollTop = 0;
   }

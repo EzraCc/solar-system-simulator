@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=47">
+<link rel="stylesheet" href="src/css/style.css?v=48">
 </head>
 <body>
 
@@ -151,9 +151,11 @@
 <div class="panel" id="locked-panel">
   <div id="locked-panel-header">
     <div id="locked-panel-header-top">
+      <span id="locked-panel-grip" aria-hidden="true" title="Drag to move">&#x2807;&#x2807;</span>
       <span id="locked-panel-title"></span>
       <button id="locked-panel-close" title="Stop tracking">&times;</button>
     </div>
+    <div id="locked-panel-kind"></div>
   </div>
   <div id="locked-panel-body"></div>
 </div>
@@ -283,6 +285,7 @@
     <span id="system-info-title"></span>
     <button id="system-info-close" title="Close">&times;</button>
   </div>
+  <div id="system-info-kind"></div>
   <div id="system-info-body"></div>
 </div>
 <div class="panel" id="system-size-panel">
@@ -326,6 +329,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=87"></script>
+<script src="src/js/app.js?v=88"></script>
 </body>
 </html>

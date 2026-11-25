@@ -619,11 +619,33 @@
   #locked-panel-header {
     flex-shrink: 0; /* stays visible even if the body below scrolls */
     margin-bottom: 8px;
-    user-select: none; /* dragging the header shouldn't select the title text */
+    /* The header's empty space and the grip are the drag handle (see the
+       pointerdown handler in app.js); the title and classification stay
+       selectable so they can be copied. */
+    user-select: none;
+    cursor: grab;
   }
+  #locked-panel-header.dragging, #locked-panel-header.dragging * { cursor: grabbing; }
   #locked-panel-header-top {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; gap: 6px;
   }
+  #locked-panel-grip {
+    color: var(--text-dim); font-size: 12px; letter-spacing: -3px; line-height: 1;
+    padding: 4px 4px 4px 0; opacity: 0.7; flex-shrink: 0;
+  }
+  #locked-panel-header:hover #locked-panel-grip { opacity: 1; }
+  #locked-panel-title, #locked-panel-kind, #system-info-title, #system-info-kind {
+    user-select: text; cursor: text;
+  }
+  #locked-panel-close { margin-left: auto; }
+  #locked-panel-kind, #system-info-kind {
+    color: var(--text-dim); font-size: 13px; margin-top: 2px;
+    width: fit-content; /* only the text is a selection target; the rest of the row stays a drag handle */
+  }
+  #locked-panel-kind:empty, #system-info-kind:empty { display: none; }
+  #system-info-kind { margin: -4px 0 6px; }
+  body.mobile #locked-panel-grip { display: none; }
+  body.mobile #locked-panel-header { cursor: auto; }
   #locked-panel-title {
     font-family: Georgia, "Times New Roman", serif;
     font-weight: 700; font-size: 21px; letter-spacing: 0.01em;
@@ -852,7 +874,7 @@
     z-index: 95;
   }
   body.glossary-open #glossary-panel { display: flex; }
-  #glossary-panel-header { flex-shrink: 0; margin-bottom: 8px; user-select: none; }
+  #glossary-panel-header { flex-shrink: 0; margin-bottom: 8px; }
   #glossary-panel-header-top { display: flex; align-items: center; justify-content: space-between; }
   #glossary-panel-title { font-weight: 600; font-size: 14px; }
   #glossary-panel-close {

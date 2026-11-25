@@ -6,6 +6,14 @@ published package), so entries are dated instead.
 
 ## Unreleased (local prototype, not yet pushed) — planet system views
 
+- **Classification in info panels.** Every info panel and system view
+  card shows what the thing is under its title: "Spacecraft", "Planet ·
+  gas giant", "Moon of Jupiter", "Asteroid · Jupiter trojan, binary",
+  "Jupiter-family comet", "Dwarf planet · Kuiper belt".
+- **Selectable panel titles.** The info panel's title and classification
+  can be selected and copied again. Dragging now starts from the grip
+  (⠿) or the header's empty space, not from text or buttons, using
+  pointer events with pointer capture.
 - **Mission timelines.** A body's info panel (planets, moons, small
   bodies, and the system view's info card) now dates each mission in
   "Missions here", lists flybys and gravity assists separately, and has a
