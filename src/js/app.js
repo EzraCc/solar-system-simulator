@@ -784,7 +784,7 @@
   // tidally locked) -- it's Pluto's own extreme ~120° axial obliquity
   // showing up once Charon's orbit is expressed in the ecliptic frame,
   // the same effect already seen with the Uranian moons' iDeg~97.8°.
-  const GM_PLUTO_CHARON_KM3_S2 = 975.43; // combined system GM (Brozovic & Jacobson 2024) -- Charon is ~12% of Pluto's mass, non-negligible, so Kepler's-third-law period readouts use the combined value, same reasoning as GM_EARTH_MOON_KM3_DAY2
+  const GM_PLUTO_CHARON_KM3_S2 = 975.4; // combined system GM: GM_Pluto 869.3 + GM_Charon 106.1 (Brozovic & Jacobson 2024, AJ 167, 256, doi:10.3847/1538-3881/ad39f0) -- Charon is ~12% of Pluto's mass, non-negligible, so Kepler's-third-law period readouts use the combined value, same reasoning as GM_EARTH_MOON_KM3_DAY2
   const GM_PLUTO_CHARON_KM3_DAY2 = GM_PLUTO_CHARON_KM3_S2 * SEC_PER_DAY * SEC_PER_DAY;
   const CHARON_ELEMENTS = {
     aKm: 19595.8, e: 0.0, iDeg: 112.88879,
