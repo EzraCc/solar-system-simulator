@@ -123,6 +123,24 @@ flight is touched, as text, so the rest of the file stays as it was.
 
     python3 tools/timeline_data.py
 
+## `build_textures.py` — surface maps for the sphere renderer
+
+Downloads public-domain surface maps (NASA / JPL / USGS) and writes them to
+`data/images/textures/<name>.jpg`: equirectangular, 2:1, power-of-two
+sizes (WebGL 1 can only mipmap those), longitude 0 at the centre with east
+to the right. Polar no-data margins are filled from the nearest valid
+pixel. Sources and the features used to check each map's longitude are
+listed at the top of the script.
+
+```
+tools/.venv/bin/python tools/build_textures.py            # all
+tools/.venv/bin/python tools/build_textures.py europa io  # some
+```
+
+To add a body: a row in `SOURCES` here, an entry in `SPHERE_TEXTURES` in
+app.js, and an orientation (`BODY_ROTATION` for a planet; Galilean-style
+locked moons get theirs from their orbit).
+
 ## `check_lambert_sweep.py` — multi-revolution screening
 
 > For flights with a Horizons ID, prefer `check_horizons.py`. This script

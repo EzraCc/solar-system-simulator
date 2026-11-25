@@ -3721,6 +3721,19 @@
   // by yaw (about the world Z axis, spinning the system "in place" as seen
   // from above) then pitch (about the resulting X axis, tilting the whole
   // system toward/away from the viewer to reveal the 3rd dimension).
+  //
+  // Returns [right, up, depth], where depth grows AWAY from the viewer
+  // (every depth sort and "behind" test in this file assumes that). The
+  // depth is the NEGATED third rotated axis: x right / y up (screen y is
+  // flipped in worldToScreen) is a right-handed camera only with the viewer
+  // on the +z2 side, i.e. the default view looks down from ecliptic north
+  // and orbits run counterclockwise. Before 2026-11-25 depth was +z2, which
+  // put the viewer on the opposite side from the one the positions are
+  // drawn for: every overlap (planet over planet, Saturn's ring halves,
+  // moons crossing a disc) came out mirror-imaged. Invisible with flat
+  // discs, wrong with lit, textured spheres. The old "Mercury in front of
+  // Sol" check behind the previous sort fix reasoned from Earth's point of
+  // view, not this camera's.
   function rotateWorld(x, y, z) {
     const cosYaw = Math.cos(yaw), sinYaw = Math.sin(yaw);
     const x1 = x * cosYaw - y * sinYaw;
@@ -3731,7 +3744,7 @@
     const y2 = y1 * cosPitch - z1 * sinPitch;
     const z2 = y1 * sinPitch + z1 * cosPitch;
 
-    return [x1, y2, z2];
+    return [x1, y2, -z2];
   }
 
   function worldToScreen(xAU, yAU, zAU) {
@@ -7662,6 +7675,261 @@
   }
 
   /* =========================================================================
+     SPHERE RENDERER
+     Lit, optionally textured spheres (oblate spheroids for the giants),
+     drawn by WebGL into one small offscreen canvas and copied into the 2D
+     canvas with drawImage at the point where a flat disc used to be
+     painted. Everything else stays 2D, and depth order is unchanged: a
+     sphere is just another item in the same painter's-algorithm sort.
+
+     Per pixel, the fragment shader casts a ray along the view direction
+     into the body's own frame (pole = +z, prime meridian = +x), hits the
+     spheroid, takes the surface normal, looks up the map at that
+     latitude/longitude, and lights it by the angle to the Sun. So the
+     terminator is exact for any Sun/camera geometry (crescents included),
+     the planet turns at its real rate, and its pole tilts the real way.
+
+     Falls back to the 2D gradient disc (drawBody) when WebGL is
+     unavailable or the body is too small for any of this to show.
+  ========================================================================= */
+
+  // Equirectangular maps from tools/build_textures.py: longitude 0 at the
+  // centre, east to the right, north up.
+  const SPHERE_TEXTURES = {
+    Jupiter: "data/images/textures/jupiter.jpg",
+    Io: "data/images/textures/io.jpg",
+    Europa: "data/images/textures/europa.jpg",
+    Ganymede: "data/images/textures/ganymede.jpg",
+    Callisto: "data/images/textures/callisto.jpg",
+  };
+
+  // IAU WGCCRE 2015 (Archinal et al. 2018) pole and prime meridian, without
+  // the small periodic terms: pole RA/Dec (deg, ICRF) at J2000, and
+  // W = W0 + Wdot * d (deg; d in days from J2000). flattening = 1 - polar
+  // radius / equatorial radius. Jupiter's W is System III; its cloud
+  // features drift against it, so the Great Red Spot's position on the
+  // map is illustrative, not a prediction.
+  const BODY_ROTATION = {
+    Mercury: { ra: 281.0103, dec: 61.4155, W0: 329.5988, Wdot: 6.1385108, flattening: 0 },
+    Venus:   { ra: 272.76,   dec: 67.16,   W0: 160.20,   Wdot: -1.4813688, flattening: 0 },
+    Earth:   { ra: 0.0,      dec: 90.0,    W0: 190.147,  Wdot: 360.9856235, flattening: 0.00335 },
+    Mars:    { ra: 317.269202, dec: 54.432516, W0: 176.049863, Wdot: 350.891982443297, flattening: 0.00589 },
+    Jupiter: { ra: 268.056595, dec: 64.495303, W0: 284.95, Wdot: 870.5360000, flattening: 0.06487 },
+    Saturn:  { ra: 40.589,   dec: 83.537,  W0: 38.90,    Wdot: 810.7939024, flattening: 0.09796 },
+    Uranus:  { ra: 257.311,  dec: -15.175, W0: 203.81,   Wdot: -501.1600928, flattening: 0.02293 },
+    Neptune: { ra: 299.36,   dec: 43.46,   W0: 249.978,  Wdot: 541.1397757, flattening: 0.01708 },
+    Pluto:   { ra: 132.993,  dec: -6.163,  W0: 302.695,  Wdot: 56.3625225, flattening: 0 },
+  };
+
+  const OBLIQUITY_J2000 = 23.4392911 * D2R;
+  const eqToEcl = (v) => [v[0],
+    v[1] * Math.cos(OBLIQUITY_J2000) + v[2] * Math.sin(OBLIQUITY_J2000),
+    -v[1] * Math.sin(OBLIQUITY_J2000) + v[2] * Math.cos(OBLIQUITY_J2000)];
+  const vCross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const vNorm = (a) => { const m = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / m, a[1] / m, a[2] / m]; };
+
+  // Body-fixed axes [x (prime meridian), y (90 E), z (north pole)] in the
+  // ecliptic world frame, from the IAU model at day d.
+  function iauBodyAxes(rot, d) {
+    const a = rot.ra * D2R, dl = rot.dec * D2R, W = ((rot.W0 + rot.Wdot * d) % 360) * D2R;
+    const p = [Math.cos(dl) * Math.cos(a), Math.cos(dl) * Math.sin(a), Math.sin(dl)];
+    const Q = [-Math.sin(a), Math.cos(a), 0]; // ascending node of the body's equator on Earth's
+    const PQ = vCross(p, Q);
+    const x = [0, 1, 2].map((k) => Q[k] * Math.cos(W) + PQ[k] * Math.sin(W));
+    const y = vCross(p, x);
+    return [eqToEcl(x), eqToEcl(y), eqToEcl(p)];
+  }
+
+  // A tidally locked moon: pole along its orbit normal, prime meridian
+  // facing its planet (the IAU definition for these moons, to within their
+  // small librations). relPos/relVel: moon minus planet, any units.
+  function lockedMoonAxes(relPos, relVel) {
+    const z = vNorm(vCross(relPos, relVel));
+    const toPlanet = vNorm([-relPos[0], -relPos[1], -relPos[2]]);
+    const dz = toPlanet[0] * z[0] + toPlanet[1] * z[1] + toPlanet[2] * z[2];
+    const x = vNorm([toPlanet[0] - dz * z[0], toPlanet[1] - dz * z[1], toPlanet[2] - dz * z[2]]);
+    return [x, vCross(z, x), z];
+  }
+
+  // Camera basis: rows map a world vector to view space (right, up, toward
+  // the viewer). rotateWorld's depth grows away from the viewer, hence -.
+  function viewBasisRows() {
+    const c = [[1, 0, 0], [0, 1, 0], [0, 0, 1]].map((e) => rotateWorld(e[0], e[1], e[2]));
+    return [[c[0][0], c[1][0], c[2][0]], [c[0][1], c[1][1], c[2][1]], [-c[0][2], -c[1][2], -c[2][2]]];
+  }
+
+  const sphereGL = (() => {
+    let gl = null, prog = null, loc = {}, failed = false, hasDeriv = false;
+    const glCanvas = document.createElement("canvas");
+    const textures = {}; // name -> { tex, ready }
+    const onTextureReady = []; // callbacks, e.g. redraw the size chart
+    const MAX_PX = 2048;
+
+    const VS = `attribute vec2 aPos; varying vec2 vUv;
+      void main() { vUv = aPos * 0.5 + 0.5; gl_Position = vec4(aPos, 0.0, 1.0); }`;
+    const FS = (deriv) => `${deriv ? "#extension GL_OES_standard_derivatives : enable\n" : ""}
+      precision highp float;
+      varying vec2 vUv;
+      uniform vec4 uRect;          // view-plane x0, y0, x1, y1 in equatorial radii
+      uniform mat3 uViewToBody;
+      uniform vec3 uLight;         // toward the Sun, body frame
+      uniform float uPolar;        // polar / equatorial radius
+      uniform float uPxPerR;       // device pixels per equatorial radius
+      uniform sampler2D uTex;
+      uniform float uHasTex;
+      uniform vec3 uColor;
+      uniform float uAmbient;
+      const float PI = 3.141592653589793;
+      void main() {
+        vec2 q = mix(uRect.xy, uRect.zw, vUv);
+        vec3 o = uViewToBody * vec3(q, 2.0);
+        vec3 d = uViewToBody * vec3(0.0, 0.0, -1.0);
+        vec3 s = vec3(1.0, 1.0, 1.0 / uPolar);
+        vec3 os = o * s, ds = d * s;
+        float a = dot(ds, ds), b = dot(os, ds), c = dot(os, os) - 1.0;
+        float disc = b * b - a * c;
+        // Antialiased edge: disc falls off ~2a(1 - r) near the limb.
+        float alpha = clamp(disc * uPxPerR / (2.0 * a) + 0.5, 0.0, 1.0);
+        if (alpha <= 0.0) discard;
+        float t = (-b - sqrt(max(disc, 0.0))) / a;
+        vec3 p = o + t * d;
+        vec3 ps = p * s;
+        vec3 n = normalize(vec3(p.xy, p.z / (uPolar * uPolar)));
+        float lon = atan(ps.y, ps.x);
+        float lat = asin(clamp(ps.z, -1.0, 1.0));
+        float u = lon / (2.0 * PI) + 0.5;
+        ${deriv ? `// Mip seam at lon 180: pick whichever of two wrapped u's
+        // is continuous across this pixel's neighbours (Tarini 2012).
+        float u2 = fract(u + 0.5) - 0.5;
+        if (fwidth(u) > fwidth(u2) + 1e-5) u = u2;` : ""}
+        vec3 albedo = uHasTex > 0.5 ? texture2D(uTex, vec2(u, 0.5 - lat / PI)).rgb : uColor;
+        float ndl = dot(n, uLight);
+        float lit = clamp(ndl, 0.0, 1.0);
+        vec3 col = albedo * (uAmbient + (1.0 - uAmbient) * lit);
+        gl_FragColor = vec4(col * alpha, alpha);
+      }`;
+
+    function init() {
+      if (gl || failed) return !!gl;
+      try {
+        gl = glCanvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false, preserveDrawingBuffer: true });
+        if (!gl) throw new Error("no webgl");
+        hasDeriv = !!gl.getExtension("OES_standard_derivatives");
+        const sh = (type, src) => {
+          const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+          return s;
+        };
+        prog = gl.createProgram();
+        gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+        gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS(hasDeriv)));
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+        gl.useProgram(prog);
+        ["uRect", "uViewToBody", "uLight", "uPolar", "uPxPerR", "uTex", "uHasTex", "uColor", "uAmbient"]
+          .forEach((n) => { loc[n] = gl.getUniformLocation(prog, n); });
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        const aPos = gl.getAttribLocation(prog, "aPos");
+        gl.enableVertexAttribArray(aPos);
+        gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+        gl.uniform1i(loc.uTex, 0);
+        return true;
+      } catch (err) {
+        console.warn("Sphere renderer unavailable, using flat discs:", err.message);
+        gl = null; failed = true;
+        return false;
+      }
+    }
+
+    function texture(name) {
+      if (!SPHERE_TEXTURES[name]) return null;
+      if (textures[name]) return textures[name].ready ? textures[name].tex : null;
+      const entry = textures[name] = { tex: null, ready: false };
+      const img = new Image();
+      img.onload = () => {
+        if (!gl) return;
+        const tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
+        gl.generateMipmap(gl.TEXTURE_2D);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        entry.tex = tex; entry.ready = true;
+        onTextureReady.forEach((f) => f(name));
+      };
+      img.onerror = () => console.warn("Texture failed to load:", SPHERE_TEXTURES[name]);
+      img.src = SPHERE_TEXTURES[name];
+      return null;
+    }
+
+    // Draw a sphere centred at (sx, sy) with equatorial radius r (CSS px)
+    // into the 2D context target. axes: body-fixed axes in world coords
+    // (null: any orientation, fine without a texture). light: unit vector
+    // toward the Sun, world coords. viewRows: camera basis (viewBasisRows).
+    // clip: CSS-px rect of target to render within (defaults to the
+    // viewport), so a planet zoomed far past the screen only costs the
+    // pixels actually visible. Returns false if nothing was drawn and the
+    // caller should fall back to the flat disc.
+    function draw(target, { sx, sy, r, color, light, axes, viewRows, textureName, flattening = 0,
+                            ambient = 0.06, scale = dpr, clip = null }) {
+      if (!init()) return false;
+      const B = axes || [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+      const V = viewRows;
+      // viewToBody = B * V^T (V's rows are the view axes in world coords).
+      const M = B.map((bRow) => V.map((vRow) => bRow[0] * vRow[0] + bRow[1] * vRow[1] + bRow[2] * vRow[2]));
+      const L = B.map((bRow) => bRow[0] * light[0] + bRow[1] * light[1] + bRow[2] * light[2]);
+      // Visible part of the body's bounding square, in CSS px.
+      const cl = clip || { x0: 0, y0: 0, x1: viewW, y1: viewH };
+      const x0 = Math.max(sx - r, cl.x0), x1 = Math.min(sx + r, cl.x1);
+      const y0 = Math.max(sy - r, cl.y0), y1 = Math.min(sy + r, cl.y1);
+      if (x1 <= x0 || y1 <= y0) return true; // fully off-screen: nothing to draw, but not a failure
+      let pw = Math.ceil((x1 - x0) * scale), ph = Math.ceil((y1 - y0) * scale);
+      const down = Math.min(1, MAX_PX / Math.max(pw, ph));
+      pw = Math.max(1, Math.round(pw * down)); ph = Math.max(1, Math.round(ph * down));
+      if (glCanvas.width < pw || glCanvas.height < ph) {
+        glCanvas.width = Math.max(glCanvas.width, pw, 64);
+        glCanvas.height = Math.max(glCanvas.height, ph, 64);
+      }
+      // Render into the canvas's top-left pw x ph (GL's origin is bottom-left).
+      gl.viewport(0, glCanvas.height - ph, pw, ph);
+      gl.enable(gl.SCISSOR_TEST);
+      gl.scissor(0, glCanvas.height - ph, pw, ph);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      // View-plane rect in units of r, y up.
+      gl.uniform4f(loc.uRect, (x0 - sx) / r, (sy - y1) / r, (x1 - sx) / r, (sy - y0) / r);
+      gl.uniformMatrix3fv(loc.uViewToBody, false, [M[0][0], M[1][0], M[2][0], M[0][1], M[1][1], M[2][1], M[0][2], M[1][2], M[2][2]]);
+      gl.uniform3f(loc.uLight, L[0], L[1], L[2]);
+      gl.uniform1f(loc.uPolar, 1 - flattening);
+      gl.uniform1f(loc.uPxPerR, r * scale * down);
+      gl.uniform1f(loc.uAmbient, ambient);
+      const tex = textureName ? texture(textureName) : null;
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.uniform1f(loc.uHasTex, tex ? 1 : 0);
+      const rgb = hexToRgb01(color);
+      gl.uniform3f(loc.uColor, rgb[0], rgb[1], rgb[2]);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      gl.disable(gl.SCISSOR_TEST);
+      target.drawImage(glCanvas, 0, 0, pw, ph, x0, y0, x1 - x0, y1 - y0);
+      return true;
+    }
+
+    return { draw, available: () => init(), onTextureReady };
+  })();
+
+  function hexToRgb01(hex) {
+    const h = hex.replace("#", "");
+    const n = parseInt(h.length === 3 ? h.split("").map((c) => c + c).join("") : h, 16);
+    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+  }
+
+  /* =========================================================================
      PLANET SYSTEM VIEW (Jupiter first)
      A separate, primary-centered mode: Jupiter at the center, its modeled
      moons, and every mission's planetocentric tour legs (see PLANETOCENTRIC
@@ -7981,6 +8249,13 @@
     ctx.beginPath(); ctx.arc(x, y, ringR, 0, 2 * Math.PI); ctx.stroke();
   }
 
+  // A moon's body-fixed axes at day t (tidally locked; see lockedMoonAxes).
+  function moonAxesAt(m, t) {
+    const p0 = computeSatelliteOffset(m.elements, t).posAU;
+    const p1 = computeSatelliteOffset(m.elements, t + 0.01).posAU;
+    return lockedMoonAxes(p0, [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]]);
+  }
+
   // The name panels, BODY_INFO and timelines use for a system's primary.
   function systemBodyDisplayName(primary) {
     return primary === "Pluto" ? "Pluto and Charon" : primary;
@@ -8107,22 +8382,49 @@
 
   /* ---- System view: true-size comparison (planet and its moons) ---- */
   const systemSizePanel = document.getElementById("system-size-panel");
+  // Size chart: each body as a lit sphere at true relative diameter, seen
+  // from its equator with longitude 0 facing you (a moon's planet-facing
+  // side) and a fixed three-quarter light, so all of them read the same
+  // way. Bodies under a pixel can't be drawn true: a hairline dot, and
+  // the label says so instead of inflating it.
+  const SIZE_CHART_LIGHT = vNorm([-0.45, 0.35, 0.82]); // view coords: right, up, toward you
+  const SIZE_CHART_AXES = [[0, 0, 1], [1, 0, 0], [0, 1, 0]]; // lon 0 toward you, east right, north up
+  const IDENTITY_ROWS = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
   function buildSystemSizePanel() {
     const primary = systemView.primary;
     const meta = systemPrimary(primary);
     const maxPx = 60;
-    const item = (name, radiusKm, color) => {
-      const r = (radiusKm / meta.radiusKm) * maxPx;
-      const pct = (radiusKm / meta.radiusKm) * 100;
-      // Under a pixel the circle can't be drawn true; show a hairline dot
-      // and say so in the label instead of inflating it.
-      return `<div class="size-item"><div class="size-circle" style="width:${Math.max(1, 2 * r)}px;height:${Math.max(1, 2 * r)}px;background:${color}"></div>` +
-        `<div class="size-label">${name} (${pct < 1 ? pct.toFixed(2) : pct.toFixed(1)}%)${r < 0.5 ? " ·" : ""}</div></div>`;
-    };
-    document.getElementById("system-size-row").innerHTML = item(primary, meta.radiusKm, meta.color) +
-      systemMoons(primary).map((m) => item(m.name, m.meta.radiusKm, m.meta.color)).join("");
+    const bodies = [{ name: primary, radiusKm: meta.radiusKm, color: meta.color, primary: true }]
+      .concat(systemMoons(primary).map((m) => ({ name: m.name, radiusKm: m.meta.radiusKm, color: m.meta.color })));
+    const row = document.getElementById("system-size-row");
+    row.innerHTML = bodies.map((b, i) => {
+      const r = (b.radiusKm / meta.radiusKm) * maxPx;
+      const pct = (b.radiusKm / meta.radiusKm) * 100;
+      const box = Math.max(1, Math.ceil(2 * r));
+      return `<div class="size-item"><canvas class="size-sphere" data-i="${i}" width="${Math.ceil(box * dpr)}" height="${Math.ceil(box * dpr)}" style="width:${box}px;height:${box}px"></canvas>` +
+        `<div class="size-label">${b.name} (${pct < 1 ? pct.toFixed(2) : pct.toFixed(1)}%)${r < 0.5 ? " ·" : ""}</div></div>`;
+    }).join("");
+    row.querySelectorAll("canvas.size-sphere").forEach((cv) => {
+      const b = bodies[+cv.dataset.i];
+      const r = (b.radiusKm / meta.radiusKm) * maxPx;
+      const c2 = cv.getContext("2d");
+      c2.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const box = cv.width / dpr, mid = box / 2;
+      const rot = b.primary ? BODY_ROTATION[primary] : null;
+      const ok = r >= 1.5 && sphereGL.draw(c2, { sx: mid, sy: mid, r, color: b.color, light: SIZE_CHART_LIGHT,
+        viewRows: IDENTITY_ROWS, axes: SIZE_CHART_AXES, textureName: b.name, flattening: rot ? rot.flattening : 0,
+        clip: { x0: 0, y0: 0, x1: box, y1: box } });
+      if (!ok) { // too small for shading, or no WebGL: a flat disc
+        c2.fillStyle = b.color;
+        c2.beginPath(); c2.arc(mid, mid, Math.max(0.5, r), 0, 2 * Math.PI); c2.fill();
+      }
+    });
     document.getElementById("system-size-title").textContent = `${primary} and its moons (diameters to scale)`;
   }
+  // A map that finishes loading after the chart was drawn: redraw it.
+  sphereGL.onTextureReady.push(() => {
+    if (systemView && systemView.trueSizes) buildSystemSizePanel();
+  });
   document.getElementById("sv-true-sizes").addEventListener("change", (e) => {
     if (!systemView) return;
     systemView.trueSizes = e.target.checked;
@@ -8281,6 +8583,10 @@
     const [lx, ly] = rotateWorld(-primaryHelio[0] / dist, -primaryHelio[1] / dist, -primaryHelio[2] / dist);
     const lm = Math.hypot(lx, ly) || 1;
     const lightX = lx / lm, lightY = -ly / lm;
+    // For the sphere renderer: toward the Sun in world coords (the same for
+    // every body in the system, to well under a degree), and the camera.
+    const lightWorld = [-primaryHelio[0] / dist, -primaryHelio[1] / dist, -primaryHelio[2] / dist];
+    const viewRows = viewBasisRows();
 
     const items = []; // depth-sorted discs: { rz, draw() }
     // Spacecraft labels step down past ones already drawn this frame, so a
@@ -8311,7 +8617,13 @@
     const jrTrue = meta.radiusKm / systemView.kmPerPx;
     const jr = Math.max(5, jrTrue);
     items.push({ rz: jz, draw: () => {
-      if (jrTrue >= 5) { drawBody(jx, jy, jr, meta.color, false, lightX, lightY); return; }
+      if (jrTrue >= 5) {
+        const rot = BODY_ROTATION[primary];
+        const ok = sphereGL.draw(ctx, { sx: jx, sy: jy, r: jr, color: meta.color, light: lightWorld, viewRows,
+          axes: rot ? iauBodyAxes(rot, t) : null, textureName: primary, flattening: rot ? rot.flattening : 0 });
+        if (!ok) drawBody(jx, jy, jr, meta.color, false, lightX, lightY);
+        return;
+      }
       drawSmallBodyMarker(jx, jy, jrTrue, 7, meta.color);
     } });
     hits.push({ x: jx, y: jy, r: Math.max(jr, 12), rz: jz, kind: "primary", name: primary });
@@ -8370,7 +8682,11 @@
       const r = rTrue >= 3 ? rTrue : 5;
       hits.push({ x: sx, y: sy, r: Math.max(r, 10), rz, kind: "moon", name: m.name });
       items.push({ rz, draw: () => {
-        if (rTrue >= 3) drawBody(sx, sy, r, m.meta.color, false, lightX, lightY);
+        if (rTrue >= 3) {
+          const ok = sphereGL.draw(ctx, { sx, sy, r, color: m.meta.color, light: lightWorld, viewRows,
+            axes: moonAxesAt(m, t), textureName: m.name });
+          if (!ok) drawBody(sx, sy, r, m.meta.color, false, lightX, lightY);
+        }
         else drawSmallBodyMarker(sx, sy, rTrue, r, m.meta.color);
         ctx.fillStyle = "rgba(232,237,247,0.85)";
         ctx.font = "11px system-ui, sans-serif";
@@ -8991,21 +9307,13 @@
       }
     }
 
-    // Consistent depth ordering: whichever rotated side currently faces the
-    // viewer is drawn last, on top. This is SMALLER rz, not larger --
-    // verified against real astronomical fact (not just internal self-
-    // consistency, which the previous `a.rz - b.rz` direction also had,
-    // making this bug easy to miss): at yaw=4.13deg/pitch=78.72deg, on
-    // 2022-05-31 Mercury sits in front of Sol (rz=-0.46) and was rendered
-    // hidden behind it under the old ascending sort; on 2024-03-18 Mercury
-    // sits behind Sol (rz=+0.30) and was rendered in front of it. Both
-    // were backwards -- `rotateWorld`'s pitch rotation is a proper,
-    // sign-consistent rotation with no inherent flip (confirmed
-    // separately), so this was a real, orientation-independent inversion
-    // in the sort direction itself, not a case-by-case edge condition.
+    // Depth ordering: farthest (largest rz) first, nearest last, on top.
+    // See rotateWorld for which way rz points.
     bodies.sort((a, b) => b.rz - a.rz);
 
     renderedBodies = [];
+    const viewRows = viewBasisRows();
+    const tNow = daysSinceJ2000(simDate);
     bodies.forEach((b) => {
       // Direction from this body toward Sol (Sol sits at the world
       // origin, so this is simply -pos, normalized), rotated through the
@@ -9028,7 +9336,18 @@
           lightDirY = -ry / screenMag;
         }
       }
-      drawBody(b.sx, b.sy, b.screenR, b.color, b.isSun, lightDirX, lightDirY);
+      // Lit sphere for planets, moons and small bodies big enough to show
+      // it; a planet with a known orientation also gets its map. Sol,
+      // spacecraft markers and tiny dots keep the flat 2D drawing.
+      let drawn = false;
+      if (!b.isSun && !b.isFlight && b.screenR >= 4 && distFromSol > 1e-9) {
+        const rot = b.primary === "Sol" ? BODY_ROTATION[b.name] : null;
+        drawn = sphereGL.draw(ctx, { sx: b.sx, sy: b.sy, r: b.screenR, color: b.color, viewRows,
+          light: [-b.pos[0] / distFromSol, -b.pos[1] / distFromSol, -b.pos[2] / distFromSol],
+          axes: rot ? iauBodyAxes(rot, tNow) : null, textureName: rot ? b.name : null,
+          flattening: rot ? rot.flattening : 0, ambient: 0.12 });
+      }
+      if (!drawn) drawBody(b.sx, b.sy, b.screenR, b.color, b.isSun, lightDirX, lightDirY);
       renderedBodies.push(b);
     });
 
@@ -9212,6 +9531,7 @@
       getSolvedFlight, OUTER_MOONS, computeSatelliteOffset,
       getSolvedPlanetocentricLeg, planetocentricOffsetKm, planetocentricStateAt, primaryUnitKm, getPlanetTours, getPlanetOrbiters, orbiterPhaseAt, orbiterOffsetKm,
       getFlightTimeline, bodyTimelineRows, tlTicks, openTimeline,
+      viewBasisRows, iauBodyAxes, lockedMoonAxes, BODY_ROTATION, rotateWorld, systemPrimary, getCam: () => ({ yaw, pitch }), svHits: () => (systemView && systemView.hits) || [],
     };
     requestAnimationFrame(frame);
   }

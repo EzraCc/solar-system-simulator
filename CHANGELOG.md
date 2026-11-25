@@ -4,6 +4,25 @@ All notable changes to this project, grouped by day. This project has no
 version numbers (it's a continuously-deployed single-page app, not a
 published package), so entries are dated instead.
 
+## Unreleased (branch `textured-spheres`, local only)
+
+- **Lit, textured spheres.** Planets, moons and small bodies are drawn as
+  spheres lit by Sol (WebGL, copied into the 2D canvas in the same depth
+  order as before), with an exact terminator for any Sun/camera geometry:
+  crescents and gibbous phases instead of a gradient that always faced
+  the Sun. Jupiter and Saturn are oblate. Jupiter, Io, Europa, Ganymede
+  and Callisto carry public-domain surface maps (`tools/build_textures.py`);
+  Jupiter turns at its IAU System III rate with its real pole, and the
+  moons keep their planet-facing side toward Jupiter. The system view's
+  "Compare true sizes" chart uses the same renderer. Without WebGL the old
+  gradient discs are drawn.
+- **Fixed: depth order was mirror-imaged.** Positions were drawn as seen
+  from ecliptic north, but every overlap test assumed a viewer on the
+  south side, so which body (or which half of Saturn's rings) passed in
+  front was backwards. One sign in `rotateWorld`; the earlier "Mercury in
+  front of Sol" fix had checked against Earth's viewpoint, not the
+  camera's.
+
 ## Unreleased (local prototype, not yet pushed) — planet system views
 
 - **Classification in info panels.** Every info panel and system view
