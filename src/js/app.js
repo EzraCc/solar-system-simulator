@@ -8578,7 +8578,12 @@
       ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
       ctx.strokeStyle = "rgba(5,8,16,0.45)"; ctx.lineWidth = lw + 2; ctx.stroke();
     });
+    // Faint background paths (a full tour's other orbits, alpha < 0.3)
+    // aren't re-stroked at all: a tour like Juno's passes in front of the
+    // planet over a hundred times, and even faint copies stack into a
+    // solid wedge across the disc.
     frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
+      if (segAlpha(style) < 0.3) return;
       ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
       ctx.strokeStyle = style; ctx.lineWidth = lw; ctx.stroke();
     });
