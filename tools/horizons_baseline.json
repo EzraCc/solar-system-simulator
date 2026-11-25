@@ -1,0 +1,535 @@
+{
+ "_comment": "Horizons object headers at the last refresh pass. Written by tools/refresh_check.py --update-baseline; compared on the next run.",
+ "date": "2026-11-25",
+ "targets": {
+  "psp": {
+   "revised": "2026-11-03",
+   "kernels": [
+    {
+     "name": "spp_nom_20180812_20251001_v041_RO8",
+     "start": "2018-Aug-12 08:17",
+     "stop": "2025-Jun-25 06:00"
+    },
+    {
+     "name": "spp_pred_20250625_20251030_od242_V0.2",
+     "start": "2025-Jun-25 06:00",
+     "stop": "2025-Oct-08 12:00"
+    },
+    {
+     "name": "spp_pred_20251008_20251231_od247_V0.1",
+     "start": "2025-Oct-08 12:00",
+     "stop": "2025-Nov-24 18:00"
+    },
+    {
+     "name": "spp_pred_20251124_20260526_od254_V0.1",
+     "start": "2025-Nov-24 18:00",
+     "stop": "2026-Jan-15 00:00"
+    },
+    {
+     "name": "spp_pred_20260115_20260409_od257_V0.1",
+     "start": "2026-Jan-15 00:00",
+     "stop": "2026-Jan-28 16:44"
+    },
+    {
+     "name": "spp_pred_20260128_20260617_od258_V0.1",
+     "start": "2026-Jan-28 16:44",
+     "stop": "2026-May-26 00:00"
+    },
+    {
+     "name": "spp_pred_20260902_20270120_od267_V0.1",
+     "start": "2026-Sep-02 00:00",
+     "stop": "2026-Sep-30 00:00"
+    },
+    {
+     "name": "spp_pred_20260930_20270217_od268_v001",
+     "start": "2026-Sep-30 00:00",
+     "stop": "2027-Feb-17 00:00"
+    },
+    {
+     "name": "spp_nom_20180812_20300101_v044_PostV7",
+     "start": "2027-Jan-20 00:00",
+     "stop": "2030-Jan-01 00:00"
+    }
+   ],
+   "dataFit": null,
+   "name": "Parker Solar Probe / Sun"
+  },
+  "solar_orbiter": {
+   "revised": "2026-11-03",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Solar Orbiter Spacecraft / Sun"
+  },
+  "hayabusa": {
+   "revised": "2010-06-12",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Hayabusa Spacecraft"
+  },
+  "hayabusa2": {
+   "revised": "2026-11-03",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Hayabusa 2 Spacecraft / (Sun)"
+  },
+  "lucy": {
+   "revised": "2026-11-03",
+   "kernels": [],
+   "dataFit": "2026-10-20",
+   "name": "Lucy Spacecraft / Sun"
+  },
+  "messenger": {
+   "revised": "2015-04-03",
+   "kernels": [],
+   "dataFit": null,
+   "name": "MESSENGER Spacecraft"
+  },
+  "akatsuki": {
+   "revised": "2025-08-06",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Akatsuki / VCO / Planet-C (spacecraft)"
+  },
+  "bepicolombo": {
+   "revised": "2026-11-23",
+   "kernels": [
+    {
+     "name": "bc_mpo_fcp_00243_20181020_20270411_v01",
+     "start": "2018-Oct-20 02:14",
+     "stop": "2027-Apr-10 23:59"
+    }
+   ],
+   "dataFit": "2026-11-17",
+   "name": "MPO-BepiColombo / (Mercury)"
+  },
+  "stereo_a": {
+   "revised": "2026-11-03",
+   "kernels": [],
+   "dataFit": null,
+   "name": "STEREO-A Spacecraft"
+  },
+  "stereo_b": {
+   "revised": "2023-02-08",
+   "kernels": [],
+   "dataFit": null,
+   "name": "STEREO-B Spacecraft"
+  },
+  "nozomi": {
+   "revised": "2019-08-07",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Nozomi Spacecraft"
+  },
+  "cassini": {
+   "revised": "2018-09-28",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Cassini Spacecraft (interplanetary) / (Sun)"
+  },
+  "rosetta": {
+   "revised": "2016-10-24",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Rosetta Spacecraft"
+  },
+  "juice": {
+   "revised": "2026-11-03",
+   "kernels": [],
+   "dataFit": null,
+   "name": "JUICE Spacecraft / Sun-Jupiter-Ganymede"
+  },
+  "stardust": {
+   "revised": "2011-01-31",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Stardust Spacecraft Bus & NExT / (Sun)"
+  },
+  "osiris_rex": {
+   "revised": "2025-09-18",
+   "kernels": [],
+   "dataFit": null,
+   "name": "OSIRIS-REx/APEX Spacecraft / (Sun)"
+  },
+  "europa_clipper": {
+   "revised": "2026-11-20",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Europa Clipper (Spacecraft) / (Sun, Jupiter)"
+  },
+  "psyche": {
+   "revised": "2026-11-03",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Psyche Spacecraft / Sun"
+  },
+  "dawn": {
+   "revised": "2019-01-03",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Dawn Spacecraft (interplanetary) / (Sun)"
+  },
+  "galileo": {
+   "revised": "2008-02-23",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Galileo Spacecraft (Orbiter) / (Sun, Jupiter)"
+  },
+  "hera": {
+   "revised": "2026-11-03",
+   "kernels": [
+    {
+     "name": "hera_fsp_000106_241007_270113_v01",
+     "start": "2024-Oct-07 16:10",
+     "stop": "2027-Jan-13 00:00"
+    }
+   ],
+   "dataFit": null,
+   "name": "Hera / (Sun)"
+  },
+  "dart": {
+   "revised": "2024-03-01",
+   "kernels": [],
+   "dataFit": null,
+   "name": "DART Spacecraft / Sun"
+  },
+  "ulysses": {
+   "revised": "2009-08-13",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Ulysses Spacecraft (interplanetary) / (Sun)"
+  },
+  "roman": {
+   "revised": "2026-11-20",
+   "kernels": [
+    {
+     "name": "RST_EPH_PRED_NOMNVR_2026242_2026270_01",
+     "start": "2026-Aug-30 12:00",
+     "stop": "2026-Nov-16 13:00"
+    },
+    {
+     "name": "RST_EPH_PRED_LONG_2026320_2028320_01",
+     "start": "2026-Dec-14 13:00",
+     "stop": "2028-Nov-08 13:00"
+    }
+   ],
+   "dataFit": null,
+   "name": "Nancy Grace Roman Space Telescope"
+  },
+  "mmx": {
+   "revised": "2026-11-10",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Martian Moons eXploration (MMX) spacecraft / Mars"
+  },
+  "escapade": {
+   "revised": "2026-11-20",
+   "kernels": [
+    {
+     "name": "ESCB.2026_279.LongTerm_V0.1",
+     "start": "2027-Jan-18 00:01",
+     "stop": "2027-Sep-12 00:28"
+    }
+   ],
+   "dataFit": null,
+   "name": "EscaPADE-Blue Spacecraft / (E-S L2, Mars)"
+  },
+  "juno": {
+   "revised": "2026-11-03",
+   "kernels": [
+    {
+     "name": "spk_rec_110805_*_260824",
+     "start": "2011-Aug-05 17:19",
+     "stop": "2026-Sep-26 15:04"
+    },
+    {
+     "name": "juno_pred_orbit",
+     "start": "2026-Sep-26 15:04",
+     "stop": "2027-Jan-20 23:15"
+    },
+    {
+     "name": "spk_ref_260808_280902_260926",
+     "start": "2027-Jan-20 23:15",
+     "stop": "2028-Sep-02 01:37"
+    }
+   ],
+   "dataFit": null,
+   "name": "Juno Spacecraft"
+  },
+  "mars_odyssey": {
+   "revised": "2026-11-20",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Mars Odyssey (Spacecraft) / (Sun)"
+  },
+  "mars_express": {
+   "revised": "2026-11-03",
+   "kernels": [
+    {
+     "name": "ORHM_______________00030",
+     "start": "2003-Jun-02 19:13",
+     "stop": "2003-Dec-22 18:09"
+    },
+    {
+     "name": "ORMM_031222180906-261101",
+     "start": "2003-Dec-22 18:09",
+     "stop": "2026-Nov-19 11:40"
+    },
+    {
+     "name": "ORMF_______________01965",
+     "start": "2026-Nov-19 11:40",
+     "stop": "2032-Dec-31 23:59"
+    }
+   ],
+   "dataFit": null,
+   "name": "Mars Express / (Sun)"
+  },
+  "exomars_tgo": {
+   "revised": "2026-01-13",
+   "kernels": [
+    {
+     "name": "fsp_048_01_20160314_20181231_v02",
+     "start": "2016-Mar-14 08:14",
+     "stop": "2018-Nov-20 23:38"
+    },
+    {
+     "name": "fsp_065_01_20181120_20190429_v02",
+     "start": "2018-Nov-20 23:38",
+     "stop": "2019-Mar-18 18:41"
+    },
+    {
+     "name": "fsp_082_01_20190318_20190903_v02",
+     "start": "2019-Mar-18 18:41",
+     "stop": "2019-Jul-16 23:51"
+    },
+    {
+     "name": "fsp_099_01_20190716_20191228_v01",
+     "start": "2019-Jul-16 23:51",
+     "stop": "2019-Nov-11 23:53"
+    },
+    {
+     "name": "fsp_116_01_20191111_20200425_v01",
+     "start": "2019-Nov-11 23:53",
+     "stop": "2020-Mar-09 23:48"
+    },
+    {
+     "name": "fsp_133_01_20200309_20200822_v01",
+     "start": "2020-Mar-09 23:48",
+     "stop": "2020-Jul-06 23:33"
+    },
+    {
+     "name": "fsp_150_01_20200706_20201219_v01",
+     "start": "2020-Jul-06 23:33",
+     "stop": "2020-Nov-02 22:29"
+    },
+    {
+     "name": "fsp_167_01_20201102_20210417_v01",
+     "start": "2020-Nov-02 22:29",
+     "stop": "2021-Mar-01 23:55"
+    },
+    {
+     "name": "fsp_184_01_20210301_20211002_v01",
+     "start": "2021-Mar-01 23:55",
+     "stop": "2021-Apr-27 23:52"
+    },
+    {
+     "name": "fsp_201_01_20210628_20211211_v01",
+     "start": "2021-Jun-28 23:59",
+     "stop": "2021-Oct-25 23:54"
+    },
+    {
+     "name": "fsp_218_01_20211025_20220409_v01",
+     "start": "2021-Oct-25 23:54",
+     "stop": "2022-Feb-21 23:50"
+    },
+    {
+     "name": "fsp_235_01_20220221_20220806_v01",
+     "start": "2022-Feb-21 23:50",
+     "stop": "2022-May-28 00:00"
+    },
+    {
+     "name": "fsp_252_01_20220620_20221203_v01",
+     "start": "2022-Jun-20 23:59",
+     "stop": "2022-Sep-26 22:57"
+    },
+    {
+     "name": "fsp_267_01_20221004_20230318_v01",
+     "start": "2022-Oct-04 21:48",
+     "stop": "2023-Jan-24 12:26"
+    },
+    {
+     "name": "fsp_284_01_20230124_20230805_v01",
+     "start": "2023-Jan-24 12:26",
+     "stop": "2023-May-27 00:00"
+    },
+    {
+     "name": "fsp_301_01_20230527_20231111_v01",
+     "start": "2023-May-27 00:00",
+     "stop": "2023-Sep-25 12:37"
+    },
+    {
+     "name": "fsp_318_01_20230925_20240309_v01",
+     "start": "2023-Sep-25 12:37",
+     "stop": "2023-Jan-13 00:00"
+    },
+    {
+     "name": "fsp_335_01_20240113_20240706_v01",
+     "start": "2024-Jan-13 00:00",
+     "stop": "2024-May-20 22:46"
+    },
+    {
+     "name": "fsp_352_01_20240520_20241102_v01",
+     "start": "2024-May-20 22:46",
+     "stop": "2024-Sep-16 22:51"
+    },
+    {
+     "name": "fsp_369_01_20240916_20250301_v01",
+     "start": "2024-Sep-16 22:51",
+     "stop": "2024-Dec-30 23:36"
+    },
+    {
+     "name": "fsp_384_01_20241230_20250621_v01",
+     "start": "2024-Dec-30 23:36",
+     "stop": "2025-Jun-21 16:14"
+    },
+    {
+     "name": "flp_011_01_20250203_20390104_v01",
+     "start": "2025-Jun-21 16:14",
+     "stop": "2039-Jan-04 06:29"
+    }
+   ],
+   "dataFit": null,
+   "name": "ExoMars16 TGO Spacecraft"
+  },
+  "maven": {
+   "revised": "2026-02-13",
+   "kernels": [
+    {
+     "name": "trj_c_131118-140923_rec_v1",
+     "start": "2013-Nov-18 19:22",
+     "stop": "2014-Sep-23 12:00"
+    },
+    {
+     "name": "maven_orb_rec_******-******_v*",
+     "start": "2014-Sep-23 12:00",
+     "stop": "2025-Oct-01 00:00"
+    }
+   ],
+   "dataFit": null,
+   "name": "MAVEN Spacecraft Mission"
+  },
+  "mom_mangalyaan": {
+   "revised": "2022-06-11",
+   "kernels": [
+    {
+     "name": "ISRO-MOM-2020-0*-**-v1",
+     "start": "2020-May-15 00:01",
+     "stop": "2020-Jul-10 00:11"
+    },
+    {
+     "name": "ISRO-MOM-202*-**-**-OD2***-***-v*",
+     "start": "2020-Jul-10 00:11",
+     "stop": "2022-Nov-26 00:00"
+    }
+   ],
+   "dataFit": null,
+   "name": "Mars Orbiter Mission (MOM)"
+  },
+  "hope_mars": {
+   "revised": "2026-11-03",
+   "kernels": [
+    {
+     "name": "EMM_20200719-20270415_od03-198",
+     "start": "2020-Jul-19 23:07",
+     "stop": "2026-Apr-15 00:00"
+    }
+   ],
+   "dataFit": null,
+   "name": "Emirates Mars Mission (EMM, HOPE Probe)"
+  },
+  "mro": {
+   "revised": "2026-11-20",
+   "kernels": [
+    {
+     "name": "mro_cruise",
+     "start": "2005-Aug-12 12:42",
+     "stop": "2006-Mar-10 22:06"
+    },
+    {
+     "name": "mro_ab",
+     "start": "2006-Mar-10 22:06",
+     "stop": "2006-Sep-12 06:40"
+    },
+    {
+     "name": "mro_psp_rec",
+     "start": "2026-Oct-01 01:01",
+     "stop": "2026-Nov-15 03:42"
+    },
+    {
+     "name": "mro_psp",
+     "start": "2026-Nov-15 03:42",
+     "stop": "2027-Jan-18 14:18"
+    }
+   ],
+   "dataFit": null,
+   "name": "Mars Reconnaisance Orbiter (MRO)"
+  },
+  "venus_express": {
+   "revised": "2015-02-13",
+   "kernels": [],
+   "dataFit": null,
+   "name": "Venus Express Spacecraft"
+  },
+  "new_horizons": {
+   "revised": "2026-09-01",
+   "kernels": [
+    {
+     "name": "nh_pred_20060119_20070101_od021",
+     "start": "2006-Jan-19 19:52",
+     "stop": "2006-Dec-31 23:58"
+    },
+    {
+     "name": "nh_ref_20060119_20150925_v04",
+     "start": "2007-Dec-31 23:58",
+     "stop": "2007-Mar-19 00:00"
+    },
+    {
+     "name": "98_pred_20070319_20150101_od070",
+     "start": "2007-Mar-19 00:00",
+     "stop": "2012-May-01 13:47"
+    },
+    {
+     "name": "98_pred_20120501_20160913_od117",
+     "start": "2012-May-01 13:47",
+     "stop": "2014-Dec-08 05:13"
+    },
+    {
+     "name": "nh_recon_pluto_od122_v01",
+     "start": "2014-Dec-08 05:13",
+     "stop": "2015-Sep-27 06:13"
+    },
+    {
+     "name": "nh_recon_arrokoth_od147_v01",
+     "start": "2015-Sep-27 06:13",
+     "stop": "2019-Feb-07 00:00"
+    },
+    {
+     "name": "nh_pred_alleph_od151",
+     "start": "2019-Feb-07 00:00",
+     "stop": "2021-Oct-01 00:00"
+    },
+    {
+     "name": "98_pred_20211001_20500101_od165_v2",
+     "start": "2021-Oct-01 00:00",
+     "stop": "2024-Jun-05 05:58"
+    },
+    {
+     "name": "98_pred_20240605_20500101_od166",
+     "start": "2024-Jun-05 05:58",
+     "stop": "2050-Jan-01 00:00"
+    }
+   ],
+   "dataFit": null,
+   "name": "New Horizons Spacecraft"
+  }
+ }
+}

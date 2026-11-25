@@ -33,3 +33,13 @@ miss mid-session.
 hodograph dashboard locally only, but it got pushed anyway once
 verification passed, because there was no durable record of that
 instruction outside the conversation itself.)
+
+## Data pulls — check at the start of each session
+
+Run `tools/.venv/bin/python tools/refresh_check.py --todo` (no network).
+It rewrites the data-pull block in `docs/TODO.md` from the log in
+`docs/data-pulls.md`; if the last pull is more than 10 days old, it adds
+a "data pull due" item. Mention it to the user when one is due. Pulls
+are done by hand (no cron or scheduled routine, per the user,
+2026-11-25); after each one, log it with
+`refresh_check.py --update-baseline --log "what changed" --pr "#N"`.

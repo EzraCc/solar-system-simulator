@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "44";
+  const BUILD_VERSION = "45";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -3843,13 +3843,74 @@
     return sign + valueStr;
   }
 
+  // Which view the bottom-right time controls are driving: null for the
+  // Solar System, or the primary's name in a planet-system view. Set by
+  // setTimeScope (called from openSystemView/closeSystemView). Kept here,
+  // not read from systemView, because refreshSpeedField runs at startup
+  // before systemView is declared.
+  let timeScopePrimary = null;
+  const timeScopeFlag = document.getElementById("time-scope-flag");
+  const dateTimeUtc = document.getElementById("date-time-utc");
+  const PLANET_SYMBOL = { Mercury: "\u263F", Venus: "\u2640", Earth: "\u2641", Mars: "\u2642", Jupiter: "\u2643", Saturn: "\u2644", Uranus: "\u2645", Neptune: "\u2646", Pluto: "\u2647" };
+  function setTimeScope(primary) {
+    const changed = primary !== timeScopePrimary;
+    timeScopePrimary = primary;
+    timeScopeFlag.textContent = primary
+      ? `${PLANET_SYMBOL[primary] || ""} ${primary} system`.trim()
+      : "\u2609 Solar System";
+    timeScopeFlag.classList.toggle("system", !!primary);
+    refreshSpeedField();
+    if (changed) {
+      // Brief highlight so the switch is noticed; restart the animation.
+      timeScopeFlag.classList.remove("flash");
+      void timeScopeFlag.offsetWidth;
+      timeScopeFlag.classList.add("flash");
+    }
+  }
+  function refreshDateTime() {
+    dateTimeUtc.textContent = simDate.toISOString().slice(11, 16) + " UTC";
+  }
+
+  // Speed units. The Solar System view reads in years of simulated time
+  // per real minute ("yr/min"); a planet-system view reads in the
+  // minutes-to-weeks-per-second range its presets use, picked to keep
+  // the number between 1 and ~100. Both are the same speedMultiplier.
+  const SV_RATE_UNITS = [
+    { unit: "min/s", days: 1 / 1440 },
+    { unit: "h/s", days: 1 / 24 },
+    { unit: "d/s", days: 1 },
+    { unit: "wk/s", days: 7 },
+  ];
+  function daysPerSecFromMult(mult) { return mult * BASE_DAYS_PER_MS * 1000; }
+  function speedUnitFor(mult) {
+    if (!timeScopePrimary) return { unit: "yr/min", perUnit: 1 };
+    const dps = Math.abs(daysPerSecFromMult(mult));
+    let pick = SV_RATE_UNITS[0];
+    for (const u of SV_RATE_UNITS) if (dps >= u.days * 0.999) pick = u;
+    return { unit: pick.unit, perUnit: pick.days / (BASE_DAYS_PER_MS * 1000) };
+  }
+  // Typed speed: "6 h/s", "2 d/s", "1.5 yr/min", or a bare number in the
+  // unit currently shown. Returns a speedMultiplier or null.
+  function parseSpeed(text) {
+    const m = text.trim().toLowerCase().match(/^(-?[\d.]+)\s*(x|yr\/min|min\/s|h\/s|d\/s|wk\/s)?$/);
+    if (!m) return null;
+    const n = Number(m[1]);
+    if (!Number.isFinite(n)) return null;
+    const unit = m[2];
+    if (!unit) return n * speedUnitFor(speedMultiplier).perUnit;
+    if (unit === "x" || unit === "yr/min") return n;
+    const u = SV_RATE_UNITS.find((x) => x.unit === unit);
+    return n * u.days / (BASE_DAYS_PER_MS * 1000);
+  }
+
   // "N yr/min" -- years of simulated time per real minute. Used to show
   // two separate "Nx"/"N (yr/min)" chips (this app defines a year as
   // exactly 365.25 days, so an "x" multiplier and a yr/min rate were
   // always the same number anyway); simplified to just the one label
   // directly describing what the number means.
   function refreshSpeedField() {
-    speedField.textContent = `${formatSpeedBare(speedMultiplier)} yr/min`;
+    const u = speedUnitFor(speedMultiplier);
+    speedField.textContent = `${formatSpeedBare(speedMultiplier / u.perUnit)} ${u.unit}`;
   }
 
   // Slider position <-> speedMultiplier is the same squared curve both
@@ -3895,7 +3956,7 @@
     if (speedFieldsDisabled) return;
     speedEditing = true;
     speedField.style.display = "none";
-    speedEdit.value = formatSpeedBare(speedMultiplier);
+    speedEdit.value = formatSpeedBare(speedMultiplier / speedUnitFor(speedMultiplier).perUnit);
     speedEdit.classList.add("visible");
     speedEdit.focus();
     speedEdit.select();
@@ -3905,13 +3966,12 @@
   function endSpeedEdit(apply) {
     if (!speedEditing) return;
     if (apply) {
-      const raw = speedEdit.value.trim().toLowerCase().replace(/\s*(yr\/min|x)\s*$/, "");
-      const parsed = Number(raw);
+      const parsed = parseSpeed(speedEdit.value);
       // Unlike the slider (mechanically capped at -300..300, i.e.
       // |mult|<=9), a typed value isn't clamped -- only the slider's own
       // thumb position is, since typing doesn't have the slider's
       // drag-precision reason for a cap.
-      if (raw !== "" && Number.isFinite(parsed)) {
+      if (parsed !== null) {
         speedMultiplier = parsed;
         speedSlider.value = Math.max(-300, Math.min(300, sliderValueForMultiplier(speedMultiplier)));
         if (paused && speedMultiplier !== 0) setPaused(false);
@@ -4060,21 +4120,49 @@
         (lockedBodyName && !freeCameraMode ? "  [not meaningful while tracking]" : "") + `\n` +
       `tracking: ${lockedBodyName || "none"}\n` +
       `hold frame: ${freeCameraMode ? "on" : "off"}\n` +
-      `date: ${dateInputValue(simDate)}`;
+      `date: ${simDate.toISOString().slice(0, 16).replace("T", " ")} UTC` +
+      (systemView
+        ? `\nsystem view: ${systemView.primary}, ${Math.round(systemView.kmPerPx)} km/px, ` +
+          (systemView.follow ? `following ${systemView.follow.moon || systemView.follow.flight}`
+                             : `pan ${Math.round(systemView.panX)}, ${Math.round(systemView.panY)} px`)
+        : "");
+  }
+
+  // A URL that reopens the current view: date and time, camera angle and
+  // zoom, plus the system view's scale, pan/follow and path toggles. Read
+  // back by applyInitialURLState. Meant for sharing a repro ("look at
+  // this"), so it pins the clock (the date param pauses playback).
+  function shareableURL() {
+    const url = new URL(window.location.href);
+    const p = url.searchParams;
+    ["zoom", "yaw", "pitch", "hold", "camx", "camy", "system", "svkm", "svpan", "svfollow", "svorbit", "svall"]
+      .forEach((k) => p.delete(k));
+    p.set("date", simDate.toISOString().slice(0, 16));
+    p.set("yaw", (yaw * 180 / Math.PI).toFixed(2));
+    p.set("pitch", (pitch * 180 / Math.PI).toFixed(2));
+    if (systemView) {
+      p.set("system", systemView.primary);
+      p.set("svkm", systemView.kmPerPx.toFixed(1));
+      const f = systemView.follow;
+      if (f) p.set("svfollow", f.moon ? `moon:${f.moon}` : `flight:${f.flight}`);
+      else if (systemView.panX || systemView.panY) p.set("svpan", `${Math.round(systemView.panX)},${Math.round(systemView.panY)}`);
+      if (!svCurrentOrbitOnly) p.set("svorbit", "full");
+      if (systemView.showAll) p.set("svall", "1");
+    } else {
+      p.set("zoom", pxPerAU.toFixed(1));
+      if (freeCameraMode) {
+        p.set("hold", "1");
+        p.set("camx", camX.toFixed(0)); p.set("camy", camY.toFixed(0));
+      }
+    }
+    return url.toString();
   }
 
   sceneFramingCopyBtn.addEventListener("click", () => {
-    const yawDeg = (yaw * 180 / Math.PI).toFixed(2);
-    const pitchDeg = (pitch * 180 / Math.PI).toFixed(2);
-    // URL-fragment form (not the full readout text) -- directly usable as
-    // query params, e.g. pasted onto the end of this page's own URL, or
-    // (once embedding exists) an embed src. Only includes what's actually
-    // reproducible: zoom/yaw/pitch/hold always are; camX/camY are omitted
-    // since they're meaningless while tracking (the common case) and get
-    // overwritten by camera-follow anyway unless hold=1.
-    const params = `zoom=${pxPerAU.toFixed(1)}&yaw=${yawDeg}&pitch=${pitchDeg}` +
-      (freeCameraMode ? `&hold=1` : ``);
-    navigator.clipboard.writeText(params).catch(() => {}); // clipboard access can be denied; failing silently is fine for a copy-convenience button
+    const shareUrl = shareableURL();
+    navigator.clipboard.writeText(shareUrl).catch(() => {}); // clipboard access can be denied; failing silently is fine for a copy-convenience button
+    sceneFramingCopyBtn.textContent = "Copied";
+    setTimeout(() => { sceneFramingCopyBtn.textContent = "Copy shareable URL"; }, 1200);
   });
 
   /* =========================================================================
@@ -5073,10 +5161,32 @@
       setSimDateFromInputValue(date);
       dateInput.value = dateInputValue(simDate);
       setPaused(true);
+    } else if (date && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z?$/.test(date)) {
+      // Date and time (UTC), as written by shareableURL.
+      const d = new Date(date.endsWith("Z") ? date : date + "Z");
+      if (!isNaN(d)) { simDate = d; dateInput.value = dateInputValue(simDate); setPaused(true); }
     }
+    // Camera (written by shareableURL / the Scene Framing panel, backtick).
+    const num = (k) => { const v = params.get(k); const n = v === null ? NaN : Number(v); return Number.isFinite(n) ? n : null; };
+    if (num("yaw") !== null) yaw = num("yaw") * Math.PI / 180;
+    if (num("pitch") !== null) pitch = num("pitch") * Math.PI / 180;
+    if (num("zoom") !== null && num("zoom") > 0) pxPerAU = num("zoom");
+    if (freeCameraMode && num("camx") !== null && num("camy") !== null) { camX = num("camx"); camY = num("camy"); }
     const systemParam = params.get("system");
     if (systemParam && SYSTEM_VIEW_PRIMARIES.includes(systemParam)) {
-      setTimeout(() => openSystemView(systemParam), 0);
+      setTimeout(() => {
+        openSystemView(systemParam);
+        if (!systemView) return;
+        if (num("svkm") !== null) systemView.kmPerPx = Math.max(20, Math.min(2e5, num("svkm")));
+        if (params.get("svorbit") === "full") svCurrentOrbitOnly = false;
+        if (params.get("svall") === "1") systemView.showAll = true;
+        buildSystemPanel();
+        const f = params.get("svfollow");
+        const m = f && f.match(/^(moon|flight):(.+)$/);
+        if (m) setSystemFollow(m[1] === "moon" ? { moon: m[2] } : { flight: m[2] }, true);
+        const pan = (params.get("svpan") || "").split(",").map(Number);
+        if (!m && pan.length === 2 && pan.every(Number.isFinite)) { systemView.panX = pan[0]; systemView.panY = pan[1]; }
+      }, 0);
     }
     const flightKey = params.get("flight");
     const bodyName = params.get("body");
@@ -8175,11 +8285,49 @@
   // The shared date field shows whole days only, which at system-view
   // speeds (hours per second) looks frozen for seconds at a time while the
   // spacecraft visibly moves -- so the panel carries its own UTC clock.
-  const systemClock = document.getElementById("system-clock");
   const _tourCache = {};
 
   // Flights with planetocentric legs around `primary`, with a cached,
   // pre-sampled path (km, primary frame) and their flyby/periapsis events.
+  // System view "Current orbit only" (on by default): a tour shows just
+  // the revolution it's on, apoapsis to apoapsis, instead of every orbit
+  // at once (Juno and Galileo make dozens around Jupiter). Kept across
+  // visits to a system view within a session.
+  let svCurrentOrbitOnly = true;
+
+  // Apoapsis times of a tour: the farthest sample between each pair of
+  // consecutive periapses. Bounds for "current orbit" windows. Cached on
+  // the tour object.
+  function tourApoTimes(tour) {
+    if (tour.apoTimes) return tour.apoTimes;
+    const peri = tour.events.filter((e) => e.kind === 'peri').map((e) => e.t).sort((a, b) => a - b);
+    const apo = [];
+    let j = 0;
+    for (let i = 0; i + 1 < peri.length; i++) {
+      let best = null, bestR = -1;
+      while (j < tour.pts.length && tour.pts[j][0] < peri[i]) j++;
+      for (let k = j; k < tour.pts.length && tour.pts[k][0] <= peri[i + 1]; k++) {
+        const p = tour.pts[k];
+        const r = p[1] * p[1] + p[2] * p[2] + p[3] * p[3];
+        if (r > bestR) { bestR = r; best = p[0]; }
+      }
+      if (best !== null) apo.push(best);
+    }
+    return (tour.apoTimes = apo);
+  }
+
+  // [start, end] of the revolution containing t: the apoapses either side
+  // (the tour's own start/end where there's none).
+  function tourCurrentOrbitWindow(tour, t) {
+    const apo = tourApoTimes(tour);
+    let a = tour.tStart, b = tour.tEnd;
+    for (const x of apo) {
+      if (x <= t) a = x;
+      else { b = x; break; }
+    }
+    return [a, b];
+  }
+
   function getPlanetTours(primary) {
     if (_tourCache[primary]) return _tourCache[primary];
     const tours = [];
@@ -8260,6 +8408,7 @@
     document.getElementById("sv-true-sizes-row").style.display = moons.length ? "" : "none";
     document.getElementById("sv-true-sizes").checked = false;
     buildSystemPanel();
+    setTimeScope(primary);
     setSpeedDaysPerSec(SYSTEM_DEFAULT_SPEED[primary] || 0.25);
     updateURLParams({ system: primary });
   }
@@ -8274,7 +8423,7 @@
     pxPerAU = s.pxPerAU; camX = s.camX; camY = s.camY; yaw = s.yaw; pitch = s.pitch;
     speedMultiplier = s.speedMultiplier;
     speedSlider.value = Math.max(-300, Math.min(300, sliderValueForMultiplier(speedMultiplier)));
-    refreshSpeedField();
+    setTimeScope(null);
     if (s.lockedBodyName) lockBody(s.lockedBodyName);
     updateURLParams({ system: null });
   }
@@ -8318,6 +8467,7 @@
         `<div class="sv-sub">${d0} &rarr; ${d1} &middot; ${brief ? `flyby${flybys.length ? `, ${flybys.length} moon pass${flybys.length > 1 ? "es" : ""}` : ""}` : `${nPeri} periapses, ${flybys.length} moon flybys`}</div>` +
         `<details class="sv-events-wrap"><summary>Jump to an event</summary><div class="sv-events">${evBtns}</div></details></div>`;
     }).join("") : `<div class="sv-sub">No missions modeled yet.</div>`) +
+      `<label class="sv-row sv-showall" title="Show only the orbit each mission is on now (apoapsis to apoapsis), not every orbit of its tour"><input type="checkbox" id="sv-current-orbit"${svCurrentOrbitOnly ? " checked" : ""}> Current orbit only</label>` +
       `<label class="sv-row sv-showall"><input type="checkbox" id="sv-show-all"${systemView.showAll ? " checked" : ""}> Show other missions' paths</label>`;
   }
 
@@ -8333,10 +8483,13 @@
       `<details class="sv-events-wrap"><summary>Jump to an event</summary><div class="sv-events">${evBtns}</div></details></div>`;
   }
 
+  document.getElementById("sv-speed-presets").addEventListener("click", (e) => {
+    const sp = e.target.closest("[data-sv-speed]");
+    if (sp) { setSpeedDaysPerSec(Number(sp.dataset.svSpeed)); if (paused) setPaused(false); }
+  });
+
   systemPanel.addEventListener("click", (e) => {
     if (e.target.closest("#system-exit-btn")) { closeSystemView(); return; }
-    const sp = e.target.closest("[data-sv-speed]");
-    if (sp) { setSpeedDaysPerSec(Number(sp.dataset.svSpeed)); if (paused) setPaused(false); return; }
     const j = e.target.closest("[data-sv-jump]");
     if (j) {
       svJumpTo(Number(j.dataset.svJump));
@@ -8347,6 +8500,7 @@
       return;
     }
     if (e.target.id === "sv-show-all") { systemView.showAll = e.target.checked; return; }
+    if (e.target.id === "sv-current-orbit") { svCurrentOrbitOnly = e.target.checked; return; }
     const fm = e.target.closest("[data-sv-follow-moon]");
     if (fm) { setSystemFollow({ moon: fm.dataset.svFollowMoon }); return; }
     const ff = e.target.closest("[data-sv-follow-flight]");
@@ -8639,7 +8793,8 @@
     const blocked = (x, y) => {
       const right = x > viewW / 2;
       const lbl = right ? [x - 44 - w, x - 36] : [x + 36, x + 44 + w];
-      return hit(x - 14, y - 14, x + 14, y + 14) ||
+      // 28 px half-size: the glyph plus its ecliptic axis arrows (AX = 24).
+      return hit(x - 28, y - 28, x + 28, y + 28) ||
         hit(lbl[0], y - 6 * lines.length - 8, lbl[1], y + 7 * lines.length + 4);
     };
     let k = s;
@@ -8857,15 +9012,20 @@
       } });
     });
 
-    // Mission tours: faint full path, brighter +/- 30 days, marker now.
+    // Mission tours. Full path mode: the whole tour faint, brighter +/- 30
+    // days. Current-orbit mode: only the revolution in progress
+    // (apoapsis to apoapsis). Either way the past stretch is bright, the
+    // stretch ahead dimmer, and the spacecraft is marked.
     const WINDOW = 30;
     getPlanetTours(primary).forEach((tour) => {
       const active = t >= tour.tStart && t <= tour.tEnd;
       if (!active && !systemView.showAll) return;
-      strokePath(tour.pts.map((p) => svProject([p[1], p[2], p[3]])), hexWithAlpha(tour.color, active ? 0.10 : 0.06), 1);
+      if (!active || !svCurrentOrbitOnly) {
+        strokePath(tour.pts.map((p) => svProject([p[1], p[2], p[3]])), hexWithAlpha(tour.color, active ? 0.10 : 0.06), 1);
+      }
       if (!active) return;
-      // Recent past (bright) and near future (dimmer).
-      [[t - WINDOW, t, 0.95, 1.6], [t, t + WINDOW, 0.35, 1.2]].forEach(([a, b, alpha, lw]) => {
+      const [wa, wb] = svCurrentOrbitOnly ? tourCurrentOrbitWindow(tour, t) : [t - WINDOW, t + WINDOW];
+      [[wa, t, 0.95, 1.6], [t, wb, svCurrentOrbitOnly ? 0.45 : 0.35, 1.2]].forEach(([a, b, alpha, lw]) => {
         const pts = [];
         const st = planetocentricStateAt(tour.key, t);
         // The upcoming stretch starts at the spacecraft itself, not at the
@@ -8880,7 +9040,7 @@
       });
       // Flyby markers near the current time.
       tour.events.forEach((ev) => {
-        if (ev.kind !== 'flyby' || Math.abs(ev.t - t) > WINDOW) return;
+        if (ev.kind !== 'flyby' || ev.t < wa - 0.01 || ev.t > wb + 0.01) return;
         const [sx, sy] = svProject(ev.pos);
         ctx.save();
         ctx.translate(sx, sy); ctx.rotate(Math.PI / 4);
@@ -8948,13 +9108,27 @@
     // reads against a bright planet.
     ctx.save();
     ctx.lineCap = "round";
-    frontSegs.forEach(([x0, y0, x1, y1, , lw]) => {
-      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
-      ctx.strokeStyle = "rgba(5,8,16,0.55)"; ctx.lineWidth = lw + 2.5; ctx.stroke();
-    });
+    // Each segment is re-stroked exactly as it was first drawn: a path
+    // in front of the planet should look the same as anywhere else, not
+    // brighter. (Boosting these to full opacity turned pale moon orbits
+    // white across a sunlit disc, and painted every faint perijove pass of
+    // a full tour as a bright line.) Only the strong spacecraft paths
+    // (alpha >= 0.6) get a thin dark halo so they read against the
+    // planet's bright face.
+    const segAlpha = (style) => { const m = style.match(/,\s*([\d.]+)\)$/); return m ? Number(m[1]) : 1; };
     frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
+      if (segAlpha(style) < 0.6) return;
       ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
-      ctx.strokeStyle = style.replace(/,\s*[\d.]+\)$/, ",0.95)"); ctx.lineWidth = lw + 0.3; ctx.stroke();
+      ctx.strokeStyle = "rgba(5,8,16,0.45)"; ctx.lineWidth = lw + 2; ctx.stroke();
+    });
+    // Faint background paths (a full tour's other orbits, alpha < 0.3)
+    // aren't re-stroked at all: a tour like Juno's passes in front of the
+    // planet over a hundred times, and even faint copies stack into a
+    // solid wedge across the disc.
+    frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
+      if (segAlpha(style) < 0.3) return;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+      ctx.strokeStyle = style; ctx.lineWidth = lw; ctx.stroke();
     });
     ctx.restore();
 
@@ -8970,7 +9144,6 @@
     ctx.stroke();
     ctx.fillStyle = "rgba(232,237,247,0.8)"; ctx.font = "11px system-ui, sans-serif";
     ctx.fillText(`${barKm.toLocaleString()} km (${(barKm / meta.radiusKm).toFixed(barKm < meta.radiusKm * 10 ? 1 : 0)} ${meta.unit})`, x0, y0 - 8);
-    systemClock.textContent = simDate.toISOString().slice(0, 16).replace("T", " ") + " UTC";
     systemScaleReadout.textContent = `${Math.round(systemView.kmPerPx).toLocaleString()} km per pixel · scroll to zoom, drag to rotate, right-drag to pan, Esc to exit`;
   }
 
@@ -8985,6 +9158,7 @@
       simDate = new Date(simDate.getTime() + daysElapsed * 86400000);
       dateInput.value = dateInputValue(simDate);
     }
+    refreshDateTime();
 
     ctx.clearRect(0, 0, viewW, viewH);
 
@@ -9707,7 +9881,7 @@
     // has side effects or is reachable without deliberately scripting
     // against the page.
     window.__VERIFY__ = {
-      FLIGHTS_RAW, isMultiLeg, getSolvedLeg, getGAChain, getGAEvents,
+      FLIGHTS_RAW, shareableURL, isMultiLeg, getSolvedLeg, getGAChain, getGAEvents,
       daysSinceJ2000, parseFlightDate, computeFlightPosition,
       getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,
       getSolvedFlight, OUTER_MOONS, computeSatelliteOffset,
