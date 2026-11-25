@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "37";
+  const BUILD_VERSION = "41";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -7779,6 +7779,45 @@
 
   // Flights with planetocentric legs around `primary`, with a cached,
   // pre-sampled path (km, primary frame) and their flyby/periapsis events.
+  // System view "Current orbit only" (on by default): a tour shows just
+  // the revolution it's on, apoapsis to apoapsis, instead of every orbit
+  // at once (Juno and Galileo make dozens around Jupiter). Kept across
+  // visits to a system view within a session.
+  let svCurrentOrbitOnly = true;
+
+  // Apoapsis times of a tour: the farthest sample between each pair of
+  // consecutive periapses. Bounds for "current orbit" windows. Cached on
+  // the tour object.
+  function tourApoTimes(tour) {
+    if (tour.apoTimes) return tour.apoTimes;
+    const peri = tour.events.filter((e) => e.kind === 'peri').map((e) => e.t).sort((a, b) => a - b);
+    const apo = [];
+    let j = 0;
+    for (let i = 0; i + 1 < peri.length; i++) {
+      let best = null, bestR = -1;
+      while (j < tour.pts.length && tour.pts[j][0] < peri[i]) j++;
+      for (let k = j; k < tour.pts.length && tour.pts[k][0] <= peri[i + 1]; k++) {
+        const p = tour.pts[k];
+        const r = p[1] * p[1] + p[2] * p[2] + p[3] * p[3];
+        if (r > bestR) { bestR = r; best = p[0]; }
+      }
+      if (best !== null) apo.push(best);
+    }
+    return (tour.apoTimes = apo);
+  }
+
+  // [start, end] of the revolution containing t: the apoapses either side
+  // (the tour's own start/end where there's none).
+  function tourCurrentOrbitWindow(tour, t) {
+    const apo = tourApoTimes(tour);
+    let a = tour.tStart, b = tour.tEnd;
+    for (const x of apo) {
+      if (x <= t) a = x;
+      else { b = x; break; }
+    }
+    return [a, b];
+  }
+
   function getPlanetTours(primary) {
     if (_tourCache[primary]) return _tourCache[primary];
     const tours = [];
@@ -7917,6 +7956,7 @@
         `<div class="sv-sub">${d0} &rarr; ${d1} &middot; ${brief ? `flyby${flybys.length ? `, ${flybys.length} moon pass${flybys.length > 1 ? "es" : ""}` : ""}` : `${nPeri} periapses, ${flybys.length} moon flybys`}</div>` +
         `<details class="sv-events-wrap"><summary>Jump to an event</summary><div class="sv-events">${evBtns}</div></details></div>`;
     }).join("") : `<div class="sv-sub">No missions modeled yet.</div>`) +
+      `<label class="sv-row sv-showall" title="Show only the orbit each mission is on now (apoapsis to apoapsis), not every orbit of its tour"><input type="checkbox" id="sv-current-orbit"${svCurrentOrbitOnly ? " checked" : ""}> Current orbit only</label>` +
       `<label class="sv-row sv-showall"><input type="checkbox" id="sv-show-all"${systemView.showAll ? " checked" : ""}> Show other missions' paths</label>`;
   }
 
@@ -7946,6 +7986,7 @@
       return;
     }
     if (e.target.id === "sv-show-all") { systemView.showAll = e.target.checked; return; }
+    if (e.target.id === "sv-current-orbit") { svCurrentOrbitOnly = e.target.checked; return; }
     const fm = e.target.closest("[data-sv-follow-moon]");
     if (fm) { setSystemFollow({ moon: fm.dataset.svFollowMoon }); return; }
     const ff = e.target.closest("[data-sv-follow-flight]");
@@ -8378,15 +8419,20 @@
       } });
     });
 
-    // Mission tours: faint full path, brighter +/- 30 days, marker now.
+    // Mission tours. Full path mode: the whole tour faint, brighter +/- 30
+    // days. Current-orbit mode: only the revolution in progress
+    // (apoapsis to apoapsis). Either way the past stretch is bright, the
+    // stretch ahead dimmer, and the spacecraft is marked.
     const WINDOW = 30;
     getPlanetTours(primary).forEach((tour) => {
       const active = t >= tour.tStart && t <= tour.tEnd;
       if (!active && !systemView.showAll) return;
-      strokePath(tour.pts.map((p) => svProject([p[1], p[2], p[3]])), hexWithAlpha(tour.color, active ? 0.10 : 0.06), 1);
+      if (!active || !svCurrentOrbitOnly) {
+        strokePath(tour.pts.map((p) => svProject([p[1], p[2], p[3]])), hexWithAlpha(tour.color, active ? 0.10 : 0.06), 1);
+      }
       if (!active) return;
-      // Recent past (bright) and near future (dimmer).
-      [[t - WINDOW, t, 0.95, 1.6], [t, t + WINDOW, 0.35, 1.2]].forEach(([a, b, alpha, lw]) => {
+      const [wa, wb] = svCurrentOrbitOnly ? tourCurrentOrbitWindow(tour, t) : [t - WINDOW, t + WINDOW];
+      [[wa, t, 0.95, 1.6], [t, wb, svCurrentOrbitOnly ? 0.45 : 0.35, 1.2]].forEach(([a, b, alpha, lw]) => {
         const pts = [];
         const st = planetocentricStateAt(tour.key, t);
         // The upcoming stretch starts at the spacecraft itself, not at the
@@ -8401,7 +8447,7 @@
       });
       // Flyby markers near the current time.
       tour.events.forEach((ev) => {
-        if (ev.kind !== 'flyby' || Math.abs(ev.t - t) > WINDOW) return;
+        if (ev.kind !== 'flyby' || ev.t < wa - 0.01 || ev.t > wb + 0.01) return;
         const [sx, sy] = svProject(ev.pos);
         ctx.save();
         ctx.translate(sx, sy); ctx.rotate(Math.PI / 4);
@@ -8469,13 +8515,21 @@
     // reads against a bright planet.
     ctx.save();
     ctx.lineCap = "round";
-    frontSegs.forEach(([x0, y0, x1, y1, , lw]) => {
+    // Each segment keeps its own weight: an emphasized path (alpha >= 0.3)
+    // is boosted to full strength with a halo, a faint one (a full tour's
+    // other orbits) only doubled. Boosting every faint orbit to full
+    // strength painted dozens of bright perijove passes across the disc.
+    const segAlpha = (style) => { const m = style.match(/,\s*([\d.]+)\)$/); return m ? Number(m[1]) : 1; };
+    frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
+      if (segAlpha(style) < 0.3) return;
       ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
       ctx.strokeStyle = "rgba(5,8,16,0.55)"; ctx.lineWidth = lw + 2.5; ctx.stroke();
     });
     frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
+      const a = segAlpha(style);
       ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
-      ctx.strokeStyle = style.replace(/,\s*[\d.]+\)$/, ",0.95)"); ctx.lineWidth = lw + 0.3; ctx.stroke();
+      ctx.strokeStyle = style.replace(/,\s*[\d.]+\)$/, `,${a >= 0.3 ? 0.95 : Math.min(0.3, a * 2)})`);
+      ctx.lineWidth = a >= 0.3 ? lw + 0.3 : lw; ctx.stroke();
     });
     ctx.restore();
 
