@@ -50,28 +50,172 @@ used to imply endorsement ([NASA media usage guidelines](https://www.nasa.gov/na
 Partner institutions named in a credit line (SSI, JHUAPL, SwRI, LPI,
 ASU, USGS) are credited as the original sources ask.
 
-## Body and mission images (info panel galleries) ⚠️
+## Body and mission images (info panel galleries) 📝
 
 Photos of bodies, spacecraft and rockets in `data/images/bodies/`,
 `data/images/missions/` and `data/images/rockets/`, referenced from the
 `assets` blocks in `data/bodies/info.json` and `data/flights/*.json`.
 
-**Status: not yet audited.** Each asset records only a title and an
-`infoUrl` (132 of 167 point at a Wikipedia article, not at the image's own
-file page), so the creator and licence of most images are not recorded.
-Some Wikimedia images are Creative Commons BY or BY-SA and require
-attribution in the app. The audit is on `docs/TODO.md`; until it's done,
-treat these images as unverified for redistribution.
+**Audit status (2026-11-25, `tools/audit_images.py`):** 131 distinct
+images.
+- **103 verified:** the original file was found (Commons file page or
+  NASA Image Library record), and its creator and licence are recorded
+  in `data/images/credits.json`. Matches are by visual comparison with
+  our copy. The app shows the creator and licence under each gallery
+  tile, linked to the file page (which also has the full-resolution
+  original). Licences include public domain (NASA and others), CC0,
+  CC BY and CC BY-SA, so the in-app credit line is what satisfies BY and
+  BY-SA.
+- **3 to replace:** the source is a fair-use (non-free) Wikipedia file,
+  which doesn't cover redistribution here (ExoMars TGO, Hope,
+  Tianwen-1).
+- **25 unverified:** no matching file found. Most link to NASA pages
+  (photojournal, mission pages, SVS) and are probably NASA images, but
+  that hasn't been confirmed per image. The tile says "Credit not yet
+  verified".
 
-Planned schema per asset (in addition to `title`, `infoUrl`, `localImage`):
+Corrections the visual matcher can't make go in `MANUAL` at the top of
+`tools/audit_images.py`.
 
-```json
-"credit": "NASA/JPL-Caltech",
-"license": "Public domain",
-"licenseUrl": "https://...",
-"sourcePage": "https://commons.wikimedia.org/wiki/File:...",
-"modified": "cropped"
-```
+### Per-image credits (generated)
+
+Written by `tools/audit_images.py` from `data/images/credits.json`.
+
+<!-- gallery:start -->
+| Image | Source file | Credit | Licence |
+|---|---|---|---|
+| `images/bodies/67p.jpg` | [Comet 67P True color.jpg](https://commons.wikimedia.org/wiki/File:Comet_67P_True_color.jpg) | ESA/Rosetta/MPS for OSIRIS Team MPS/UPD/LAM/IAA/SSO/INTA/UPM/DASP/IDA | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `images/bodies/ariel.jpg` | [Ariel - Highest Resolution Color Picture](https://images.nasa.gov/details/PIA00041) | NASA/JPL | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/bennu.png` | [Bennu mosaic OSIRIS-REx (square).png](https://commons.wikimedia.org/wiki/File:Bennu_mosaic_OSIRIS-REx_(square).png) | NASA/Goddard/University of Arizona | Public domain |
+| `images/bodies/callisto.png` | [Callisto VGR2 C2060635 OGB.png](https://commons.wikimedia.org/wiki/File:Callisto_VGR2_C2060635_OGB.png) | zelario12 | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
+| `images/bodies/ceres.jpg` | [Ceres - RC3 - Haulani Crater (22381131691) (cropped).jpg](https://commons.wikimedia.org/wiki/File:Ceres_-_RC3_-_Haulani_Crater_(22381131691)_(cropped).jpg) | Justin Cowart | Public domain |
+| `images/bodies/charon.png` | [Charon in True Color - High-Res.png](https://commons.wikimedia.org/wiki/File:Charon_in_True_Color_-_High-Res.png) | NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute/Alex Parker | Public domain |
+| `images/bodies/deimos.jpg` | [Martian Moon Deimos in High Resolution](https://images.nasa.gov/details/PIA11826) | NASA/JPL-Caltech/University of Arizona | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/didymos.png` | [page](https://en.wikipedia.org/wiki/65803_Didymos) |  | ⚠️ unverified |
+| `images/bodies/dinkinesh.png` | [page](https://www.nasa.gov/image-article/nasas-lucy-spacecraft-discovers-2nd-asteroid-during-dinkinesh-flyby/) |  | ⚠️ unverified |
+| `images/bodies/dione.jpg` | [Dione in natural light.jpg](https://commons.wikimedia.org/wiki/File:Dione_in_natural_light.jpg) | NASA | Public domain |
+| `images/bodies/donaldjohanson.png` | [page](https://science.nasa.gov/blogs/lucy/2025/07/02/nasas-lucy-mission-provides-full-view-of-asteroid-donaldjohanson/) |  | ⚠️ unverified |
+| `images/bodies/earth.jpg` | [ARC-1972-AS17-148-22727](https://images.nasa.gov/details/ARC-1972-AS17-148-22727) | NASA/ARC | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/enceladus.jpg` | [PIA17202 - Approaching Enceladus.jpg](https://commons.wikimedia.org/wiki/File:PIA17202_-_Approaching_Enceladus.jpg) | National Aeronautics and Space Administration (NASA) / Jet Propulsion Laboratory (JPL) | Public domain |
+| `images/bodies/europa.jpg` | [Europa Stunning Surface](https://images.nasa.gov/details/PIA19048) | NASA/JPL-Caltech/SETI Institute | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/eurybates.jpg` | [3548 Eurybates lightcurve shape model 2023.jpg](https://commons.wikimedia.org/wiki/File:3548_Eurybates_lightcurve_shape_model_2023.jpg) | Stefano Mottola et al. (The Planetary Science Journal/American Astronomical Society) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/bodies/ganymede.jpg` | [page](https://science.nasa.gov/photojournal/ganymede-color-global/) |  | ⚠️ unverified |
+| `images/bodies/iapetus.jpg` | [Iapetus as seen by Cassini True Color.png](https://commons.wikimedia.org/wiki/File:Iapetus_as_seen_by_Cassini_True_Color.png) | Anonymsiy | Public domain |
+| `images/bodies/io.jpg` | [Global image of Io true color](https://images.nasa.gov/details/PIA02308) | NASA/JPL/University of Arizona | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/itokawa.jpg` | [Asteroid (25143) Itokawa seen in close-up (eso1405c).jpg](https://commons.wikimedia.org/wiki/File:Asteroid_(25143)_Itokawa_seen_in_close-up_(eso1405c).jpg) | JAXA | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/bodies/jupiter.png` | [Jupiter OPAL 2024.png](https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png) | NASA/STSCI (S.T.A.R.S) | Public domain |
+| `images/bodies/kamooalewa.jpg` | [page](https://en.wikipedia.org/wiki/File:First_look_at_Kamo%CA%BBoalewa_from_Tianwen-2.jpg) |  | ⚠️ unverified |
+| `images/bodies/leucus.jpg` | [11351 Leucus lightcurve shape model 2020.jpg](https://commons.wikimedia.org/wiki/File:11351_Leucus_lightcurve_shape_model_2020.jpg) | Stefano Mottola et al. (The Planetary Science Journal/American Astronomical Society) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/bodies/mars.jpg` | [Global Color Views of Mars](https://images.nasa.gov/details/PIA00407) | NASA/JPL/USGS | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/mercury.jpg` | [page](https://science.nasa.gov/photojournal/mercurys-true-color-is-in-the-eye-of-the-beholder/) |  | ⚠️ unverified |
+| `images/bodies/miranda.jpg` | [Miranda - High Resolution Mosaic](https://images.nasa.gov/details/PIA00043) | NASA/JPL | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/moon.jpg` | [Full disc of moon photographed by Apollo 17 crewmen during transearth coast](https://images.nasa.gov/details/as17-152-23311) | NASA/JSC | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/neptune.png` | [Neptune Voyager2 color calibrated.png](https://commons.wikimedia.org/wiki/File:Neptune_Voyager2_color_calibrated.png) | NASA / Voyager 2 / PDS / OPUS / Ardenau4 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `images/bodies/oberon.jpg` | [Oberon at Voyager Closest Approach](https://images.nasa.gov/details/PIA00034) | NASA/JPL | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/orus.jpg` | [21900 Orus lightcurve shape model 2023.jpg](https://commons.wikimedia.org/wiki/File:21900_Orus_lightcurve_shape_model_2023.jpg) | Stefano Mottola et al. (The Planetary Science Journal/American Astronomical Society) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/bodies/patroclus.jpg` | [617 Patroclus Hubble.jpg](https://commons.wikimedia.org/wiki/File:617_Patroclus_Hubble.jpg) | Hubble Space Telescope/SwRI | Public domain |
+| `images/bodies/phobos.jpg` | [Phobos from 5,800 Kilometers Color](https://images.nasa.gov/details/PIA10369) | NASA/JPL-Caltech/University of Arizona | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/pluto_charon.jpg` | [page](https://science.nasa.gov/image-detail/pluto-and-charon-1920x640/) |  | ⚠️ unverified |
+| `images/bodies/polymele.png` | [Polymele occultation satellite discovery.png](https://commons.wikimedia.org/wiki/File:Polymele_occultation_satellite_discovery.png) | NASA's Goddard Space Flight Center | Public domain ⚠️ unverified |
+| `images/bodies/psyche.jpg` | [Psyche asteroid eso.jpg](https://commons.wikimedia.org/wiki/File:Psyche_asteroid_eso.jpg) | ESO/LAM | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/bodies/rhea.jpg` | [PIA07763 Rhea full globe5.jpg](https://commons.wikimedia.org/wiki/File:PIA07763_Rhea_full_globe5.jpg) | NASA/JPL/Space Science Institute | Public domain |
+| `images/bodies/ryugu.png` | [162173 Ryugu brightened.png](https://commons.wikimedia.org/wiki/File:162173_Ryugu_brightened.png) | Original image taken by JAXA/ISAS, processed by User:Anonymsiy, image adjusted by User:Nrco0e | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/bodies/saturn.png` | [Saturn global view from Cassini, rings open Better Colour.png](https://commons.wikimedia.org/wiki/File:Saturn_global_view_from_Cassini,_rings_open_Better_Colour.png) | NASA / JPL-Caltech / SSI / color composite by Gordan Ugarkovic | Public domain |
+| `images/bodies/sol.jpg` | [page](https://svs.gsfc.nasa.gov/3988/) |  | ⚠️ unverified |
+| `images/bodies/tempel1.jpg` | [page](https://science.nasa.gov/photojournal/tempel-1-composite-map) |  | ⚠️ unverified |
+| `images/bodies/tethys.jpg` | [Global view of Tethys from Cassini.jpg](https://commons.wikimedia.org/wiki/File:Global_view_of_Tethys_from_Cassini.jpg) | NASA / JPL-Caltech / SSI / Gordan Ugarkovic | Public domain |
+| `images/bodies/titan.jpg` | [Titan in true color by Kevin M. Gill.jpg](https://commons.wikimedia.org/wiki/File:Titan_in_true_color_by_Kevin_M._Gill.jpg) | NASA/JPL-Caltech/SSI/Kevin M. Gill | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `images/bodies/titania.jpg` | [Titania - Highest Resolution Voyager Picture](https://images.nasa.gov/details/PIA00039) | NASA/JPL | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/toutatis.jpg` | [Asteroid 4179 Toutatis close-up.jpg](https://commons.wikimedia.org/wiki/File:Asteroid_4179_Toutatis_close-up.jpg) | Yun Jiang, Jianghui Ji, Jiangchuan Huang, Simone Marchi, Yuan Li & Wing-Huen Ip | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/bodies/triton.png` | [Triton Reprocessed.png](https://commons.wikimedia.org/wiki/File:Triton_Reprocessed.png) | NASA | Public domain |
+| `images/bodies/umbriel.jpg` | [Umbriel at Closest Approach](https://images.nasa.gov/details/PIA00040) | NASA/JPL | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/bodies/uranus.png` | [Uranus Voyager2 color calibrated.png](https://commons.wikimedia.org/wiki/File:Uranus_Voyager2_color_calibrated.png) | Ardenau4 | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `images/bodies/venus.jpg` | [Venus-real color.jpg](https://commons.wikimedia.org/wiki/File:Venus-real_color.jpg) | NASA or Ricardo Nunes | Public domain |
+| `images/bodies/vesta.jpg` | [Vesta in natural color.jpg](https://commons.wikimedia.org/wiki/File:Vesta_in_natural_color.jpg) | NASA / JPL / MPS / DLR / IDA / Björn Jónsson | Public domain |
+| `images/missions/aditya_l1/spacecraft.png` | [page](https://en.wikipedia.org/wiki/Aditya-L1) |  | ⚠️ unverified |
+| `images/missions/akatsuki/spacecraft.jpg` | [Akatsuki PressConf01.jpg](https://commons.wikimedia.org/wiki/File:Akatsuki_PressConf01.jpg) | 宇宙航空研究開発機構・宇宙科学研究所(JAXA/ISAS)、https://www.isas.jaxa.jp/en/researchers/data-policy/ 、https://www.isas.jaxa.jp/researchers/data-policy/ | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/missions/bepicolombo/spacecraft.jpg` | [BepiColombo stack cropped.jpg](https://commons.wikimedia.org/wiki/File:BepiColombo_stack_cropped.jpg) | ESA–C. Carreau | [CC BY-SA 3.0 igo](https://creativecommons.org/licenses/by-sa/3.0/igo/deed.en) |
+| `images/missions/cassini/rocket.jpg` | [Titan4B on Launch Complex 40.jpg](https://commons.wikimedia.org/wiki/File:Titan4B_on_Launch_Complex_40.jpg) | NASA | Public domain |
+| `images/missions/cassini/spacecraft.jpg` | [page](https://en.wikipedia.org/wiki/Cassini%E2%80%93Huygens) |  | ⚠️ unverified |
+| `images/missions/chunge2_toutatis/spacecraft.jpg` | [Chang'e-2 mockup at BASM.jpg](https://commons.wikimedia.org/wiki/File:Chang%27e-2_mockup_at_BASM.jpg) | Shujianyang | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `images/missions/curiosity/spacecraft.jpg` | [Curiosity Self-Portrait at 'Big Sky' Drilling Site.jpg](https://commons.wikimedia.org/wiki/File:Curiosity_Self-Portrait_at_%27Big_Sky%27_Drilling_Site.jpg) | NASA | Public domain |
+| `images/missions/dart/spacecraft.jpg` | [Dart-poster3.jpg](https://commons.wikimedia.org/wiki/File:Dart-poster3.jpg) | NASA/Johns Hopkins Applied Physics Lab | Public domain |
+| `images/missions/dawn/spacecraft.png` | [Dawn logo.png](https://commons.wikimedia.org/wiki/File:Dawn_logo.png) | NASA | Public domain |
+| `images/missions/deep_impact/spacecraft.jpg` | [Deep Impact.jpg](https://commons.wikimedia.org/wiki/File:Deep_Impact.jpg) | NASA/JPL | Public domain |
+| `images/missions/deep_space_1/spacecraft.jpg` | [Deep Space 1 spacecraft.jpg](https://commons.wikimedia.org/wiki/File:Deep_Space_1_spacecraft.jpg) | NASA | Public domain |
+| `images/missions/escapade/spacecraft.png` | [EscaPADE.png](https://commons.wikimedia.org/wiki/File:EscaPADE.png) | NASA's Scientific Visualization Studio - TRAX International/Kristen Perrin | Public domain |
+| `images/missions/europa_clipper/spacecraft.png` | [Europa Clipper spacecraft model.png](https://commons.wikimedia.org/wiki/File:Europa_Clipper_spacecraft_model.png) | National Aeronautics and Space Administration (NASA) · Jet Propulsion Laboratory | Public domain |
+| `images/missions/exomars_tgo/lander.JPG` | [Schiaparelli Lander Model at ESOC.JPG](https://commons.wikimedia.org/wiki/File:Schiaparelli_Lander_Model_at_ESOC.JPG) | Gerbil | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `images/missions/exomars_tgo/spacecraft.png` | [ExoMars 2016 TGO and EDM trans-small.png](https://en.wikipedia.org/wiki/File:ExoMars_2016_TGO_and_EDM_trans-small.png) | http://exploration.esa.int/mars/56673-exomars-2016-trace-gas-orbiter-and-schiaparelli/ (image link) | Fair use ⚠️ unverified |
+| `images/missions/galileo/rocket.jpg` | [STS-34 Launch 1.jpg](https://commons.wikimedia.org/wiki/File:STS-34_Launch_1.jpg) | NASA | Public domain |
+| `images/missions/galileo/spacecraft.jpg` | [page](https://en.wikipedia.org/wiki/Galileo_(spacecraft)) |  | ⚠️ unverified |
+| `images/missions/genesis/spacecraft.jpg` | [GenSC collection2 150dpi.jpg](https://commons.wikimedia.org/wiki/File:GenSC_collection2_150dpi.jpg) | NASA/JPL | Public domain |
+| `images/missions/hayabusa/spacecraft.jpg` | [Hayabusa hover.jpg](https://commons.wikimedia.org/wiki/File:Hayabusa_hover.jpg) | JGarry at English Wikipedia | Public domain |
+| `images/missions/hayabusa2/spacecraft.jpg` | [Hayabusa2 Ion thruster.jpg](https://commons.wikimedia.org/wiki/File:Hayabusa2_Ion_thruster.jpg) | DLR German Aerospace Center | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) |
+| `images/missions/hera/spacecraft.jpg` | [Hera in orbit.jpg](https://commons.wikimedia.org/wiki/File:Hera_in_orbit.jpg) | ESA – Science Office | [CC BY-SA 3.0 igo](https://creativecommons.org/licenses/by-sa/3.0/igo/deed.en) |
+| `images/missions/hope_mars/spacecraft.png` | [Mars Hope Probe.png](https://en.wikipedia.org/wiki/File:Mars_Hope_Probe.png) | Original work: MBRSC; Depiction: MBRSC | Fair use ⚠️ unverified |
+| `images/missions/insight/spacecraft.jpg` | [PIA19664-MarsInSightLander-Assembly-20150430.jpg](https://commons.wikimedia.org/wiki/File:PIA19664-MarsInSightLander-Assembly-20150430.jpg) | NASA/JPL-Caltech/Lockheed Martin | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/missions/juice/spacecraft.png` | [Juice launch kit cover close-up.png](https://commons.wikimedia.org/wiki/File:Juice_launch_kit_cover_close-up.png) | ESA | [CC BY-SA 3.0 igo](https://creativecommons.org/licenses/by-sa/3.0/igo/deed.en) |
+| `images/missions/juno/spacecraft.png` | [Juno spacecraft model 1.png](https://commons.wikimedia.org/wiki/File:Juno_spacecraft_model_1.png) | National Aeronautics and Space Administration (NASA) | Public domain |
+| `images/missions/lucy/spacecraft.png` | [Lucy-PatroclusMenoetius-art.png](https://commons.wikimedia.org/wiki/File:Lucy-PatroclusMenoetius-art.png) | NASA’s Goddard Space Flight Center/Conceptual Image Lab/Adriana Gutierrez | Public domain |
+| `images/missions/magellan/rocket.jpg` | [page](https://en.wikipedia.org/wiki/STS-30) |  | ⚠️ unverified |
+| `images/missions/magellan/spacecraft.jpg` | [Magellan at Kennedy Space Center.jpg](https://commons.wikimedia.org/wiki/File:Magellan_at_Kennedy_Space_Center.jpg) | NASA | Public domain |
+| `images/missions/mars_climate_orbiter/spacecraft.jpg` | [Mars Climate Orbiter 2.jpg](https://commons.wikimedia.org/wiki/File:Mars_Climate_Orbiter_2.jpg) | NASA/JPL/Corby Waste | Public domain |
+| `images/missions/mars_express/lander.jpg` | [Beagle 2 replica.jpg](https://commons.wikimedia.org/wiki/File:Beagle_2_replica.jpg) | user:geni | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `images/missions/mars_express/spacecraft.jpg` | [Mars Express illustration highlighting MARSIS antenna.jpg](https://commons.wikimedia.org/wiki/File:Mars_Express_illustration_highlighting_MARSIS_antenna.jpg) | NASA/JPL/Corby Waste | Public domain |
+| `images/missions/mars_global_surveyor/spacecraft.jpg` | [page](https://en.wikipedia.org/wiki/Mars_Global_Surveyor) |  | ⚠️ unverified |
+| `images/missions/mars_observer/rocket.jpg` | [Commercial Titan 3 launching Mars Observer.jpg](https://commons.wikimedia.org/wiki/File:Commercial_Titan_3_launching_Mars_Observer.jpg) |  | Public domain |
+| `images/missions/mars_observer/spacecraft.jpg` | [Mars Observer preparations.jpg](https://commons.wikimedia.org/wiki/File:Mars_Observer_preparations.jpg) | NASA Marshall Space Flight Center (NASA-MSFC), Image-ID: MSFC-9261352 | Public domain |
+| `images/missions/mars_odyssey/spacecraft.png` | [Mars Odyssey spacecraft model.png](https://commons.wikimedia.org/wiki/File:Mars_Odyssey_spacecraft_model.png) | National Aeronautics and Space Administration (NASA) | Public domain |
+| `images/missions/mars_pathfinder/spacecraft.jpg` | [Mars Pathfinder Lander preparations.jpg](https://commons.wikimedia.org/wiki/File:Mars_Pathfinder_Lander_preparations.jpg) | NASA | Public domain |
+| `images/missions/mars_polar_lander/spacecraft.jpg` | [page](https://en.wikipedia.org/wiki/Mars_Polar_Lander) |  | ⚠️ unverified |
+| `images/missions/maven/spacecraft.jpg` | [page](https://en.wikipedia.org/wiki/MAVEN) |  | ⚠️ unverified |
+| `images/missions/messenger/spacecraft.jpg` | [MESSENGER - spacecraft at mercury - atmercury lg.jpg](https://commons.wikimedia.org/wiki/File:MESSENGER_-_spacecraft_at_mercury_-_atmercury_lg.jpg) | NASA / JHU/APL | Public domain |
+| `images/missions/mmx/spacecraft.jpg` | [MMX-CG02.jpg](https://commons.wikimedia.org/wiki/File:MMX-CG02.jpg) | This work is licensed under the Government of Japan Standard Terms of Use (Ver.2.0). The Terms of Use are compatible with the Creative Commons Attribution License 4.0 International. For the terms of use of this work, see this license page. The Government of Japan Standard Terms of Use (Version 2.0) was revised in 2024 and replaced by the Public Data License (Version 1.0). Accordingly, updates to the copyright policies are currently in progress on the websites of public institutions, such as national and local governments. For content on websites where the updates have already been completed, please use {{PDL1.0}} instead. العربية ∙ বাংলা ∙ English ∙ español ∙ 日本語 ∙ 한국어 ∙ македонски ∙ português ∙ русский ∙ slovenščina ∙ svenska ∙ Tiếng Việt ∙ 中文 ∙ +/− ; This file is licensed under the Creative Commons Attribution 4.0 International license. You are free: to share – to copy, distribute and transmit the work to remix – to adapt the work Under the following conditions: attribution – You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use. https://creativecommons.org/licenses/by/4.0CC BY 4.0 Creative Commons Attribution 4.0 truetrue | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/missions/mom_mangalyaan/spacecraft.jpg` | [Mars Orbiter Mission Over Mars (15237158879).jpg](https://commons.wikimedia.org/wiki/File:Mars_Orbiter_Mission_Over_Mars_(15237158879).jpg) | Kevin Gill from Nashua, NH, United States | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) |
+| `images/missions/mro/spacecraft.jpg` | [Mars Reconnaissance Orbiter, front view, artist's concept (PIA07245).jpg](https://commons.wikimedia.org/wiki/File:Mars_Reconnaissance_Orbiter,_front_view,_artist%27s_concept_(PIA07245).jpg) | NASA/JPL/Corby Waste | Public domain |
+| `images/missions/near_shoemaker/rocket.jpg` | [page](https://en.wikipedia.org/wiki/Delta_II) |  | ⚠️ unverified |
+| `images/missions/near_shoemaker/spacecraft.jpg` | [NEARCraft.jpg](https://commons.wikimedia.org/wiki/File:NEARCraft.jpg) | NASA | Public domain |
+| `images/missions/new_horizons/spacecraft.png` | [New Horizons spacecraft model 1.png](https://commons.wikimedia.org/wiki/File:New_Horizons_spacecraft_model_1.png) | National Aeronautics and Space Administration (NASA), Applied Physics Laboratory | Public domain |
+| `images/missions/nozomi/spacecraft.jpg` | [Planet B.gif](https://commons.wikimedia.org/wiki/File:Planet_B.gif) | NASA/NSSDC | Public domain |
+| `images/missions/opportunity_mer_b/spacecraft.jpg` | [NASA Mars Rover.jpg](https://commons.wikimedia.org/wiki/File:NASA_Mars_Rover.jpg) | NASA/JPL/Cornell University, Maas Digital LLC | Public domain |
+| `images/missions/osiris_rex/spacecraft.png` | [OSIRIS-REx spacecraft model.png](https://commons.wikimedia.org/wiki/File:OSIRIS-REx_spacecraft_model.png) | National Aeronautics and Space Administration (NASA) / Goddard Space Flight Center (GSFC) / University of Arizona / Lockheed Martin | Public domain |
+| `images/missions/perseverance/spacecraft.gif` | [Perseverance-Selfie-at-Rochette-Horizontal-V2.gif](https://commons.wikimedia.org/wiki/File:Perseverance-Selfie-at-Rochette-Horizontal-V2.gif) | NASA/JPL-Caltech | Public domain |
+| `images/missions/phobos_1/spacecraft.jpg` | [Автоматическая межпланетная станция Фобос (14988562882).jpg](https://commons.wikimedia.org/wiki/File:%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B5%D0%B6%D0%BF%D0%BB%D0%B0%D0%BD%D0%B5%D1%82%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D0%B0%D0%BD%D1%86%D0%B8%D1%8F_%D0%A4%D0%BE%D0%B1%D0%BE%D1%81_(14988562882).jpg) | Музей Космонавтики from Россия | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `images/missions/phobos_2/spacecraft.jpg` | [Автоматическая межпланетная станция Фобос (14988562882).jpg](https://commons.wikimedia.org/wiki/File:%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B5%D0%B6%D0%BF%D0%BB%D0%B0%D0%BD%D0%B5%D1%82%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D0%B0%D0%BD%D1%86%D0%B8%D1%8F_%D0%A4%D0%BE%D0%B1%D0%BE%D1%81_(14988562882).jpg) | Музей Космонавтики from Россия | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) |
+| `images/missions/phoenix/spacecraft.jpg` | [Phoenix landing.jpg](https://commons.wikimedia.org/wiki/File:Phoenix_landing.jpg) | NASA/JPL/Corby Waste | Public domain |
+| `images/missions/psp/spacecraft.png` | [Parker Solar Probe spacecraft model.png](https://commons.wikimedia.org/wiki/File:Parker_Solar_Probe_spacecraft_model.png) | National Aeronautics and Space Administration (NASA) | Public domain |
+| `images/missions/psyche/spacecraft.jpg` | [PIA21499 - Artist's Concept of Psyche Spacecraft with Five-Panel Array.jpg](https://commons.wikimedia.org/wiki/File:PIA21499_-_Artist%27s_Concept_of_Psyche_Spacecraft_with_Five-Panel_Array.jpg) | NASA/JPL-Caltech/Arizona State Univ./Space Systems Loral/Peter Rubin | Public domain |
+| `images/missions/rosetta/spacecraft.jpg` | [page](https://en.wikipedia.org/wiki/Rosetta_(spacecraft)) |  | ⚠️ unverified |
+| `images/missions/solar_orbiter/spacecraft.jpg` | [Solar Orbiter ESA20813950.jpg](https://commons.wikimedia.org/wiki/File:Solar_Orbiter_ESA20813950.jpg) | European Space Agency | [CC BY-SA 3.0 igo](https://creativecommons.org/licenses/by-sa/3.0/igo/deed.en) |
+| `images/missions/spirit_mer_a/spacecraft.jpg` | [KSC-03PD-0786.jpg](https://commons.wikimedia.org/wiki/File:KSC-03PD-0786.jpg) | NASA | Public domain |
+| `images/missions/stardust/spacecraft.jpg` | [Stardust - ksc9901117.jpg](https://commons.wikimedia.org/wiki/File:Stardust_-_ksc9901117.jpg) | NASA/JPL | Public domain |
+| `images/missions/stereo_a/spacecraft.jpg` | [Deployment of STEREO spacecraft panels (crop).jpg](https://commons.wikimedia.org/wiki/File:Deployment_of_STEREO_spacecraft_panels_(crop).jpg) | NASA/Johns Hopkins University Applied Physics Laboratory | Public domain |
+| `images/missions/stereo_b/spacecraft.jpg` | [Deployment of STEREO spacecraft panels (crop).jpg](https://commons.wikimedia.org/wiki/File:Deployment_of_STEREO_spacecraft_panels_(crop).jpg) | NASA/Johns Hopkins University Applied Physics Laboratory | Public domain |
+| `images/missions/tianwen1/lander.png` | [Zhurong rover 3x2 crop.png](https://commons.wikimedia.org/wiki/File:Zhurong_rover_3x2_crop.png) | 中国新闻网 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/missions/tianwen1/spacecraft.png` | [Mars Global Remote Sensing Orbiter and Small Rover (2020).png](https://en.wikipedia.org/wiki/File:Mars_Global_Remote_Sensing_Orbiter_and_Small_Rover_(2020).png) | China Aerospace Technology Corporation | Fair use ⚠️ unverified |
+| `images/missions/tianwen2/spacecraft.png` | [Rendering of Tianwen 2 asteroid mission 03 cropped rotated.png](https://commons.wikimedia.org/wiki/File:Rendering_of_Tianwen_2_asteroid_mission_03_cropped_rotated.png) | 中国新闻社 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
+| `images/missions/ulysses/rocket.jpg` | [STS-41 launch.jpg](https://commons.wikimedia.org/wiki/File:STS-41_launch.jpg) | NASA | Public domain |
+| `images/missions/ulysses/spacecraft.jpg` | [STS-41 Ulysses deployment.jpg](https://commons.wikimedia.org/wiki/File:STS-41_Ulysses_deployment.jpg) | NASA | Public domain |
+| `images/missions/venus_express/spacecraft.jpg` | [Venus Express in orbit (crop).jpg](https://commons.wikimedia.org/wiki/File:Venus_Express_in_orbit_(crop).jpg) | Andrzej Mirecki | Public domain |
+| `images/rockets/ariane_5.jpg` | [Ariane 5 with James Webb Space Telescope Prelaunch (51773093465).jpg](https://commons.wikimedia.org/wiki/File:Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(51773093465).jpg) | Chris Gunn | Public domain |
+| `images/rockets/atlas_v.png` | [page](https://en.wikipedia.org/wiki/Atlas_V) |  | ⚠️ unverified |
+| `images/rockets/delta_ii.jpg` | [page](https://en.wikipedia.org/wiki/Delta_II) |  | ⚠️ unverified |
+| `images/rockets/delta_iv_heavy.jpg` | [page](https://en.wikipedia.org/wiki/Delta_IV_Heavy) |  | ⚠️ unverified |
+| `images/rockets/falcon_9.jpg` | [ORBCOMM-2 First-Stage Landing (23271687254).jpg](https://commons.wikimedia.org/wiki/File:ORBCOMM-2_First-Stage_Landing_(23271687254).jpg) | SpaceX | [CC0](http://creativecommons.org/publicdomain/zero/1.0/deed.en) ⚠️ unverified |
+| `images/rockets/falcon_heavy.jpg` | [page](https://en.wikipedia.org/wiki/Falcon_Heavy) |  | ⚠️ unverified |
+| `images/rockets/h3.jpg` | [H3 rocket launch.jpg](https://commons.wikimedia.org/wiki/File:H3_rocket_launch.jpg) | AF991 | Public domain |
+| `images/rockets/h_iia.jpg` | [H IIA No. F23 with GPM on its way to the launchpad.jpg](https://commons.wikimedia.org/wiki/File:H_IIA_No._F23_with_GPM_on_its_way_to_the_launchpad.jpg) | Bill Ingalls | Public domain |
+| `images/rockets/long_march_3b.jpg` | [CZ-3B rendering.jpg](https://commons.wikimedia.org/wiki/File:CZ-3B_rendering.jpg) | Shujianyang | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `images/rockets/long_march_3c.jpg` | [CZ-3C rendering.jpg](https://commons.wikimedia.org/wiki/File:CZ-3C_rendering.jpg) | Shujianyang | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) |
+| `images/rockets/long_march_5.jpg` | [Launching Tianhe Core Module.jpg](https://commons.wikimedia.org/wiki/File:Launching_Tianhe_Core_Module.jpg) | China News Service | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/rockets/m_v.jpeg` | [M-V launching ASTRO-E2.jpeg](https://commons.wikimedia.org/wiki/File:M-V_launching_ASTRO-E2.jpeg) |  | Public domain |
+| `images/rockets/new_glenn.jpg` | [New Glenn - BlueBird 7 Launch (9628277) (cropped).jpg](https://commons.wikimedia.org/wiki/File:New_Glenn_-_BlueBird_7_Launch_(9628277)_(cropped).jpg) | U.S. Space Force photo by Gwendolyn Kurzen | Public domain |
+| `images/rockets/polar_satellite_launch_vehicle.png` | [PSLVC62.webp](https://commons.wikimedia.org/wiki/File:PSLVC62.webp) | ISRO, Dept. of Space, Govtd of India | [GODL-India](https://data.gov.in/sites/default/files/Gazette_Notification_OGDL.pdf) |
+| `images/rockets/proton_k.jpg` | [page](https://en.wikipedia.org/wiki/Proton-K) |  | ⚠️ unverified |
+| `images/rockets/proton_m.jpg` | [Night start of Proton-M rocket with Blagovest satellite 17.08.2017.jpg](https://commons.wikimedia.org/wiki/File:Night_start_of_Proton-M_rocket_with_Blagovest_satellite_17.08.2017.jpg) | Unknown authorUnknown author | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
+| `images/rockets/soyuz_fg.jpg` | [Soyuz TMA-3 launch.jpg](https://commons.wikimedia.org/wiki/File:Soyuz_TMA-3_launch.jpg) | Bill Ingalls | Public domain |
+<!-- gallery:end -->
 
 ## Orbital and physical data 📝
 

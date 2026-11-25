@@ -45,6 +45,22 @@ To extend a fitted planet orbit past its last phase without refitting
 its history: `tools/build_orbit_phases.py <flight> --primary Mars --stop
 <date> --append`.
 
+## `audit_images.py` — gallery image credits
+
+Finds the original file, creator and licence of every info-panel gallery
+image and writes `data/images/credits.json` (shown under each tile) plus
+the per-image table in `docs/CREDITS.md`. It matches each image against
+the files used in its linked Wikipedia article by visual comparison;
+corrections go in `MANUAL`. Wikimedia throttles anonymous clients, so it
+waits 8 s between uncached requests (a full run takes about an hour;
+downloads are cached in `tools/.image_audit_cache/`).
+
+```
+tools/.venv/bin/python tools/audit_images.py               # new/unverified images
+tools/.venv/bin/python tools/audit_images.py --redo        # everything
+tools/.venv/bin/python tools/audit_images.py --report-only # rewrite CREDITS.md table
+```
+
 ## `check_horizons.py` — real-ephemeris verification
 
 For every Lambert leg of a flight, samples the position the app really

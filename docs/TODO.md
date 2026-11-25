@@ -59,17 +59,15 @@ Next pull due after 2026-12-05.
 
 ## 2. Image attribution audit
 
-See `docs/CREDITS.md`, "Body and mission images".
+Done 2026-11-25 (`tools/audit_images.py`, results in
+`data/images/credits.json` and `docs/CREDITS.md`): 103 of 131 images
+verified, with creator and licence shown under each gallery tile.
 
-- [ ] For each of the 167 gallery images:
-  - find its original file page (most are on Wikimedia Commons or NASA);
-  - record `credit`, `license`, `licenseUrl` and `sourcePage`.
-- [ ] Show the credit and licence in the gallery tile. BY and BY-SA
-  images require it.
-- [ ] Replace any image whose licence isn't compatible, or whose source
-  can't be found.
-- [ ] Write a script for the Commons part: the API returns the
-  `LicenseShortName`, `Artist` and `Credit` fields per file.
+- [ ] **Replace 3 fair-use images** with freely licensed ones: ExoMars
+  TGO, Hope, Tianwen-1 spacecraft.
+- [ ] **25 unverified images:** find each original (most are NASA pages)
+  and add it to `MANUAL` in the tool, or replace the image. List: the
+  "unverified" rows in `docs/CREDITS.md`.
 
 ## 3. Spacecraft instruments and data feeds (plan only)
 
