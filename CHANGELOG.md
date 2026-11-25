@@ -14,6 +14,9 @@ published package), so entries are dated instead.
   can be selected and copied again. Dragging now starts from the grip
   (⠿) or the header's empty space, not from text or buttons, using
   pointer events with pointer capture.
+- **Draggable timeline.** The mission timeline can be moved by its grip
+  or header, sharing the info panel's drag code; its title stays
+  selectable, and a moved timeline reopens where it was left.
 - **Mission timelines.** A body's info panel (planets, moons, small
   bodies, and the system view's info card) now dates each mission in
   "Missions here", lists flybys and gravity assists separately, and has a

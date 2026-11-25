@@ -23,7 +23,7 @@
      source itself checks out fine (verified content missing on some
      panels but not others, exactly the kind of partial staleness a
      cached JS file mid-series-of-edits would produce). -->
-<link rel="stylesheet" href="src/css/style.css?v=48">
+<link rel="stylesheet" href="src/css/style.css?v=49">
 </head>
 <body>
 
@@ -149,9 +149,9 @@
 </div>
 
 <div class="panel" id="locked-panel">
-  <div id="locked-panel-header">
+  <div id="locked-panel-header" class="drag-header">
     <div id="locked-panel-header-top">
-      <span id="locked-panel-grip" aria-hidden="true" title="Drag to move">&#x2807;&#x2807;</span>
+      <span id="locked-panel-grip" class="drag-grip" aria-hidden="true" title="Drag to move">&#x2807;&#x2807;</span>
       <span id="locked-panel-title"></span>
       <button id="locked-panel-close" title="Stop tracking">&times;</button>
     </div>
@@ -244,7 +244,8 @@
 <!-- Mission timeline for one body (see MISSION TIMELINES in app.js):
      opened from a body's "See timeline" button; floats over the scene. -->
 <div class="panel" id="timeline-panel">
-  <div id="timeline-header">
+  <div id="timeline-header" class="drag-header">
+    <span class="drag-grip" aria-hidden="true" title="Drag to move">&#x2807;&#x2807;</span>
     <span id="timeline-title">Mission timeline</span>
     <button id="timeline-close" title="Close">&times;</button>
   </div>
@@ -329,6 +330,6 @@
   <button type="button" id="demo-exit-btn">Exit demo</button>
 </div>
 
-<script src="src/js/app.js?v=88"></script>
+<script src="src/js/app.js?v=89"></script>
 </body>
 </html>

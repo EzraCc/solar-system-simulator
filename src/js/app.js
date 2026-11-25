@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "36";
+  const BUILD_VERSION = "37";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -5773,53 +5773,61 @@
     if (!isMultiLeg(raw)) getSolvedFlight(key);
   }
 
-  // Drag-to-reposition. The header is the drag handle, EXCEPT its text
-  // (title and classification line) and its buttons: text stays selectable
-  // so the name can be copied, and a press on text starts a normal text
-  // selection instead of a drag. The grip glyph and the header's empty
-  // space are the handle, signalled by cursor: grab (CSS). Pointer events
-  // with setPointerCapture keep the drag attached to the header even when
-  // the pointer outruns it, cover mouse and pen with one code path, and
-  // release cleanly on pointercancel. mousemove writes lockedPanelPos and
-  // the DOM style directly, since the frame loop doesn't touch the panel's
-  // position once placed (see drawLockedPanelConnector).
-  let lockedPanelDrag = null; // { pointerId, startMouseX, startMouseY, startX, startY } while dragging
-  function isLockedPanelDragHandle(target) {
-    return !target.closest("button, a, input, #locked-panel-title, #locked-panel-kind");
-  }
-  lockedPanelHeader.addEventListener("pointerdown", (e) => {
-    if (isMobileLayout) return; // mobile panel is a fixed full-screen modal
-    if (e.button !== 0 || !e.isPrimary) return;
-    if (!isLockedPanelDragHandle(e.target)) return;
-    if (!lockedPanelPos) return; // nothing locked yet, nothing to drag
-    e.preventDefault(); // no text selection or native drag from the handle area
-    lockedPanelHeader.setPointerCapture(e.pointerId);
-    lockedPanelDrag = {
-      pointerId: e.pointerId,
-      startMouseX: e.clientX, startMouseY: e.clientY,
-      startX: lockedPanelPos.x, startY: lockedPanelPos.y
+  // Drag-to-reposition for floating panels (the info panel, the mission
+  // timeline). The header is the drag handle EXCEPT its text and buttons:
+  // text stays selectable so a title can be copied, and a press on text
+  // starts a normal text selection instead of a drag. A grip glyph and the
+  // header's empty space are the handle, signalled by cursor: grab (CSS,
+  // .drag-header). Pointer events with setPointerCapture keep the drag
+  // attached even when the pointer outruns the header, cover mouse and pen
+  // with one code path, and release cleanly on pointercancel.
+  //   getPos() -> {x, y} or null (null: nothing to drag right now)
+  //   setPos({x, y}) applies an already-clamped position.
+  function makePanelDraggable({ panel, header, textSelector, getPos, setPos }) {
+    let drag = null; // { pointerId, startMouseX, startMouseY, startX, startY }
+    header.addEventListener("pointerdown", (e) => {
+      if (isMobileLayout) return; // mobile panels are fixed sheets
+      if (e.button !== 0 || !e.isPrimary) return;
+      if (e.target.closest("button, a, input, select, " + textSelector)) return;
+      const pos = getPos();
+      if (!pos) return;
+      e.preventDefault(); // no text selection or native drag from the handle area
+      header.setPointerCapture(e.pointerId);
+      drag = { pointerId: e.pointerId, startMouseX: e.clientX, startMouseY: e.clientY, startX: pos.x, startY: pos.y };
+      header.classList.add("dragging");
+    });
+    header.addEventListener("pointermove", (e) => {
+      if (!drag || e.pointerId !== drag.pointerId) return;
+      const r = panel.getBoundingClientRect();
+      const x = drag.startX + (e.clientX - drag.startMouseX);
+      const y = drag.startY + (e.clientY - drag.startMouseY);
+      setPos({
+        x: Math.max(8, Math.min(x, viewW - r.width - 8)),
+        y: Math.max(8, Math.min(y, viewH - r.height - 8)),
+      });
+    });
+    const end = (e) => {
+      if (!drag || e.pointerId !== drag.pointerId) return;
+      drag = null;
+      header.classList.remove("dragging");
+      if (header.hasPointerCapture(e.pointerId)) header.releasePointerCapture(e.pointerId);
     };
-    lockedPanelHeader.classList.add("dragging");
-  });
-  lockedPanelHeader.addEventListener("pointermove", (e) => {
-    if (!lockedPanelDrag || e.pointerId !== lockedPanelDrag.pointerId) return;
-    const panelRect = lockedPanel.getBoundingClientRect();
-    let px = lockedPanelDrag.startX + (e.clientX - lockedPanelDrag.startMouseX);
-    let py = lockedPanelDrag.startY + (e.clientY - lockedPanelDrag.startMouseY);
-    px = Math.max(8, Math.min(px, viewW - panelRect.width - 8));
-    py = Math.max(8, Math.min(py, viewH - panelRect.height - 8));
-    lockedPanelPos = { x: px, y: py };
-    lockedPanel.style.left = px + "px";
-    lockedPanel.style.top = py + "px";
-  });
-  function endLockedPanelDrag(e) {
-    if (!lockedPanelDrag || e.pointerId !== lockedPanelDrag.pointerId) return;
-    lockedPanelDrag = null;
-    lockedPanelHeader.classList.remove("dragging");
-    if (lockedPanelHeader.hasPointerCapture(e.pointerId)) lockedPanelHeader.releasePointerCapture(e.pointerId);
+    header.addEventListener("pointerup", end);
+    header.addEventListener("pointercancel", end);
   }
-  lockedPanelHeader.addEventListener("pointerup", endLockedPanelDrag);
-  lockedPanelHeader.addEventListener("pointercancel", endLockedPanelDrag);
+
+  // The frame loop doesn't touch the info panel's position once placed
+  // (see drawLockedPanelConnector), so the drag owns lockedPanelPos.
+  makePanelDraggable({
+    panel: lockedPanel, header: lockedPanelHeader,
+    textSelector: "#locked-panel-title, #locked-panel-kind",
+    getPos: () => lockedPanelPos,
+    setPos: (p) => {
+      lockedPanelPos = p;
+      lockedPanel.style.left = p.x + "px";
+      lockedPanel.style.top = p.y + "px";
+    },
+  });
 
   // Mobile: no drag-to-dismiss or peek/full snapping -- the panel is a
   // full-screen modal now (see body.mobile #locked-panel in the CSS),
@@ -6198,8 +6206,30 @@
       .filter((k) => k === "transit" ? rows.some((r) => r.transit) : rows.some((r) => r.entries.some((e) => e.kind === k)))
       .map((k) => `<span class="tl-key">${tlGlyphSvg(k)}${TL_KINDS[k].label}</span>`).join("");
     timelinePanel.classList.add("visible");
+    // A position the user dragged to sticks across opens; pull it back on
+    // screen if the window has shrunk since.
+    if (timelinePanelPos) setTimelinePanelPos(timelinePanelPos);
     renderTimeline();
   }
+  // null until first dragged: CSS centres the panel at the top until then.
+  let timelinePanelPos = null;
+  function setTimelinePanelPos(p) {
+    const r = timelinePanel.getBoundingClientRect();
+    p = { x: Math.max(8, Math.min(p.x, viewW - r.width - 8)), y: Math.max(8, Math.min(p.y, viewH - r.height - 8)) };
+    timelinePanelPos = p;
+    timelinePanel.classList.add("moved"); // drops the centring transform
+    timelinePanel.style.left = p.x + "px";
+    timelinePanel.style.top = p.y + "px";
+  }
+  makePanelDraggable({
+    panel: timelinePanel, header: document.getElementById("timeline-header"),
+    textSelector: "#timeline-title",
+    getPos: () => {
+      const r = timelinePanel.getBoundingClientRect();
+      return { x: r.left, y: r.top };
+    },
+    setPos: setTimelinePanelPos,
+  });
   function closeTimeline() {
     timelineState = null;
     timelinePanel.classList.remove("visible");
