@@ -2,12 +2,13 @@
 
 ## Push policy — check this before every `git push`
 
-**Current mode: LOCAL ONLY.** Set 2026-11-17 for the Jupiter-system
-zoom prototype; that work (system views, timelines, info panels) was
-pushed to main on 2026-11-25 at the user's explicit request. Still LOCAL
-ONLY for the textured-sphere rendering branch started that day. Commit
-locally (or don't even commit), but do not run `git push` under any
-circumstances until explicitly told to switch back.
+**Current mode: PUSH FREELY (feature branches only).** Switched
+2026-11-25 at the user's request ("Let's start pushing on these
+changes. Make branches for the parallel tasks and push them"). Push
+verified work to its topic branch and open a PR; never push straight to
+`main` -- merging is done through PRs after review. (Earlier history:
+LOCAL ONLY from 2026-11-17 for the system-view prototype, pushed to main
+2026-11-25; the textured-sphere branch was local-only until this switch.)
 
 The other mode is **PUSH FREELY**: OK to push after each verified,
 working commit without asking each time.
