@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "46";
+  const BUILD_VERSION = "47";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -208,6 +208,18 @@
     const res = await fetch(`data/images/textures/manifest.json?v=${BUILD_VERSION}`);
     if (!res.ok) throw new Error("Failed to load data/images/textures/manifest.json: " + res.status);
     Object.assign(TEXTURE_INFO, await res.json());
+  }
+
+  // Per-image attribution for the info-panel galleries, keyed by
+  // localImage path. Written by tools/audit_images.py; see docs/CREDITS.md.
+  const IMAGE_CREDITS = {};
+  async function loadImageCredits() {
+    const res = await fetch(`data/images/credits.json?v=${BUILD_VERSION}`);
+    if (!res.ok) throw new Error("Failed to load data/images/credits.json: " + res.status);
+    Object.assign(IMAGE_CREDITS, await res.json());
+  }
+  function escapeHtml(s) {
+    return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
   async function loadFlightsRaw() {
@@ -6084,7 +6096,24 @@
         // click target on the thumbnail -- the whole tile still links out
         // to infoUrl on click, this just makes that discoverable without
         // having to guess or hover.
-        return `<a class="lp-asset" href="${a.infoUrl}" target="_blank" rel="noopener noreferrer">${img}<span class="lp-asset-caption">${a.title}</span><span class="lp-asset-source">${sourceLabel(a.infoUrl)} ↗</span></a>`;
+        // Credit line under the tile (tools/audit_images.py): creator and
+        // licence, linking to the image's own file page, which also has
+        // the full-resolution original. A separate link from the tile's
+        // main one (links can't nest).
+        const cr = a.localImage ? IMAGE_CREDITS[a.localImage] : null;
+        let credit = "";
+        if (cr && cr.status === "verified") {
+          const who = cr.credit || "Unknown creator";
+          const lic = cr.license || "licence not stated";
+          const full = `Image: ${who}. ${lic}.${cr.sourceTitle ? " Source: " + cr.sourceTitle : ""}`;
+          credit = `<a class="lp-asset-credit" href="${escapeHtml(cr.sourcePage)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(full)}">${escapeHtml(who)} · ${escapeHtml(lic)}</a>`;
+        } else if (cr) {
+          const why = cr.status === "replace"
+            ? "This image isn't freely licensed and is due to be replaced (docs/CREDITS.md)"
+            : "The creator and licence of this image haven't been confirmed yet (docs/CREDITS.md)";
+          credit = `<span class="lp-asset-credit unverified" title="${why}">Credit not yet verified</span>`;
+        }
+        return `<div class="lp-asset"><a class="lp-asset-link" href="${a.infoUrl}" target="_blank" rel="noopener noreferrer">${img}<span class="lp-asset-caption">${a.title}</span><span class="lp-asset-source">${sourceLabel(a.infoUrl)} ↗</span></a>${credit}</div>`;
       });
     if (tiles.length === 0) return "";
     return `<div class="lp-assets">${tiles.join("")}</div>`;
@@ -9916,6 +9945,12 @@
     } catch (err) {
       // Bodies just render untextured (lit colour spheres) without it.
       console.error("Failed to load surface map list:", err);
+    }
+    try {
+      await loadImageCredits();
+    } catch (err) {
+      // Gallery tiles fall back to the source-site label without it.
+      console.error("Failed to load image credits:", err);
     }
     buildFlightsLegend();
     applyInitialURLState();
