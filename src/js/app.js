@@ -784,7 +784,7 @@
   // tidally locked) -- it's Pluto's own extreme ~120° axial obliquity
   // showing up once Charon's orbit is expressed in the ecliptic frame,
   // the same effect already seen with the Uranian moons' iDeg~97.8°.
-  const GM_PLUTO_CHARON_KM3_S2 = 975.43; // combined system GM (Brozovic & Jacobson 2024) -- Charon is ~12% of Pluto's mass, non-negligible, so Kepler's-third-law period readouts use the combined value, same reasoning as GM_EARTH_MOON_KM3_DAY2
+  const GM_PLUTO_CHARON_KM3_S2 = 975.4; // combined system GM: GM_Pluto 869.3 + GM_Charon 106.1 (Brozovic & Jacobson 2024, AJ 167, 256, doi:10.3847/1538-3881/ad39f0) -- Charon is ~12% of Pluto's mass, non-negligible, so Kepler's-third-law period readouts use the combined value, same reasoning as GM_EARTH_MOON_KM3_DAY2
   const GM_PLUTO_CHARON_KM3_DAY2 = GM_PLUTO_CHARON_KM3_S2 * SEC_PER_DAY * SEC_PER_DAY;
   const CHARON_ELEMENTS = {
     aKm: 19595.8, e: 0.0, iDeg: 112.88879,
@@ -3819,13 +3819,74 @@
     return sign + valueStr;
   }
 
+  // Which view the bottom-right time controls are driving: null for the
+  // Solar System, or the primary's name in a planet-system view. Set by
+  // setTimeScope (called from openSystemView/closeSystemView). Kept here,
+  // not read from systemView, because refreshSpeedField runs at startup
+  // before systemView is declared.
+  let timeScopePrimary = null;
+  const timeScopeFlag = document.getElementById("time-scope-flag");
+  const dateTimeUtc = document.getElementById("date-time-utc");
+  const PLANET_SYMBOL = { Mercury: "\u263F", Venus: "\u2640", Earth: "\u2641", Mars: "\u2642", Jupiter: "\u2643", Saturn: "\u2644", Uranus: "\u2645", Neptune: "\u2646", Pluto: "\u2647" };
+  function setTimeScope(primary) {
+    const changed = primary !== timeScopePrimary;
+    timeScopePrimary = primary;
+    timeScopeFlag.textContent = primary
+      ? `${PLANET_SYMBOL[primary] || ""} ${primary} system`.trim()
+      : "\u2609 Solar System";
+    timeScopeFlag.classList.toggle("system", !!primary);
+    refreshSpeedField();
+    if (changed) {
+      // Brief highlight so the switch is noticed; restart the animation.
+      timeScopeFlag.classList.remove("flash");
+      void timeScopeFlag.offsetWidth;
+      timeScopeFlag.classList.add("flash");
+    }
+  }
+  function refreshDateTime() {
+    dateTimeUtc.textContent = simDate.toISOString().slice(11, 16) + " UTC";
+  }
+
+  // Speed units. The Solar System view reads in years of simulated time
+  // per real minute ("yr/min"); a planet-system view reads in the
+  // minutes-to-weeks-per-second range its presets use, picked to keep
+  // the number between 1 and ~100. Both are the same speedMultiplier.
+  const SV_RATE_UNITS = [
+    { unit: "min/s", days: 1 / 1440 },
+    { unit: "h/s", days: 1 / 24 },
+    { unit: "d/s", days: 1 },
+    { unit: "wk/s", days: 7 },
+  ];
+  function daysPerSecFromMult(mult) { return mult * BASE_DAYS_PER_MS * 1000; }
+  function speedUnitFor(mult) {
+    if (!timeScopePrimary) return { unit: "yr/min", perUnit: 1 };
+    const dps = Math.abs(daysPerSecFromMult(mult));
+    let pick = SV_RATE_UNITS[0];
+    for (const u of SV_RATE_UNITS) if (dps >= u.days * 0.999) pick = u;
+    return { unit: pick.unit, perUnit: pick.days / (BASE_DAYS_PER_MS * 1000) };
+  }
+  // Typed speed: "6 h/s", "2 d/s", "1.5 yr/min", or a bare number in the
+  // unit currently shown. Returns a speedMultiplier or null.
+  function parseSpeed(text) {
+    const m = text.trim().toLowerCase().match(/^(-?[\d.]+)\s*(x|yr\/min|min\/s|h\/s|d\/s|wk\/s)?$/);
+    if (!m) return null;
+    const n = Number(m[1]);
+    if (!Number.isFinite(n)) return null;
+    const unit = m[2];
+    if (!unit) return n * speedUnitFor(speedMultiplier).perUnit;
+    if (unit === "x" || unit === "yr/min") return n;
+    const u = SV_RATE_UNITS.find((x) => x.unit === unit);
+    return n * u.days / (BASE_DAYS_PER_MS * 1000);
+  }
+
   // "N yr/min" -- years of simulated time per real minute. Used to show
   // two separate "Nx"/"N (yr/min)" chips (this app defines a year as
   // exactly 365.25 days, so an "x" multiplier and a yr/min rate were
   // always the same number anyway); simplified to just the one label
   // directly describing what the number means.
   function refreshSpeedField() {
-    speedField.textContent = `${formatSpeedBare(speedMultiplier)} yr/min`;
+    const u = speedUnitFor(speedMultiplier);
+    speedField.textContent = `${formatSpeedBare(speedMultiplier / u.perUnit)} ${u.unit}`;
   }
 
   // Slider position <-> speedMultiplier is the same squared curve both
@@ -3871,7 +3932,7 @@
     if (speedFieldsDisabled) return;
     speedEditing = true;
     speedField.style.display = "none";
-    speedEdit.value = formatSpeedBare(speedMultiplier);
+    speedEdit.value = formatSpeedBare(speedMultiplier / speedUnitFor(speedMultiplier).perUnit);
     speedEdit.classList.add("visible");
     speedEdit.focus();
     speedEdit.select();
@@ -3881,13 +3942,12 @@
   function endSpeedEdit(apply) {
     if (!speedEditing) return;
     if (apply) {
-      const raw = speedEdit.value.trim().toLowerCase().replace(/\s*(yr\/min|x)\s*$/, "");
-      const parsed = Number(raw);
+      const parsed = parseSpeed(speedEdit.value);
       // Unlike the slider (mechanically capped at -300..300, i.e.
       // |mult|<=9), a typed value isn't clamped -- only the slider's own
       // thumb position is, since typing doesn't have the slider's
       // drag-precision reason for a cap.
-      if (raw !== "" && Number.isFinite(parsed)) {
+      if (parsed !== null) {
         speedMultiplier = parsed;
         speedSlider.value = Math.max(-300, Math.min(300, sliderValueForMultiplier(speedMultiplier)));
         if (paused && speedMultiplier !== 0) setPaused(false);
@@ -7824,7 +7884,6 @@
   // The shared date field shows whole days only, which at system-view
   // speeds (hours per second) looks frozen for seconds at a time while the
   // spacecraft visibly moves -- so the panel carries its own UTC clock.
-  const systemClock = document.getElementById("system-clock");
   const _tourCache = {};
 
   // Flights with planetocentric legs around `primary`, with a cached,
@@ -7948,6 +8007,7 @@
     document.getElementById("sv-true-sizes-row").style.display = moons.length ? "" : "none";
     document.getElementById("sv-true-sizes").checked = false;
     buildSystemPanel();
+    setTimeScope(primary);
     setSpeedDaysPerSec(SYSTEM_DEFAULT_SPEED[primary] || 0.25);
     updateURLParams({ system: primary });
   }
@@ -7962,7 +8022,7 @@
     pxPerAU = s.pxPerAU; camX = s.camX; camY = s.camY; yaw = s.yaw; pitch = s.pitch;
     speedMultiplier = s.speedMultiplier;
     speedSlider.value = Math.max(-300, Math.min(300, sliderValueForMultiplier(speedMultiplier)));
-    refreshSpeedField();
+    setTimeScope(null);
     if (s.lockedBodyName) lockBody(s.lockedBodyName);
     updateURLParams({ system: null });
   }
@@ -8022,10 +8082,13 @@
       `<details class="sv-events-wrap"><summary>Jump to an event</summary><div class="sv-events">${evBtns}</div></details></div>`;
   }
 
+  document.getElementById("sv-speed-presets").addEventListener("click", (e) => {
+    const sp = e.target.closest("[data-sv-speed]");
+    if (sp) { setSpeedDaysPerSec(Number(sp.dataset.svSpeed)); if (paused) setPaused(false); }
+  });
+
   systemPanel.addEventListener("click", (e) => {
     if (e.target.closest("#system-exit-btn")) { closeSystemView(); return; }
-    const sp = e.target.closest("[data-sv-speed]");
-    if (sp) { setSpeedDaysPerSec(Number(sp.dataset.svSpeed)); if (paused) setPaused(false); return; }
     const j = e.target.closest("[data-sv-jump]");
     if (j) {
       svJumpTo(Number(j.dataset.svJump));
@@ -8292,7 +8355,8 @@
     const blocked = (x, y) => {
       const right = x > viewW / 2;
       const lbl = right ? [x - 44 - w, x - 36] : [x + 36, x + 44 + w];
-      return hit(x - 14, y - 14, x + 14, y + 14) ||
+      // 28 px half-size: the glyph plus its ecliptic axis arrows (AX = 24).
+      return hit(x - 28, y - 28, x + 28, y + 28) ||
         hit(lbl[0], y - 6 * lines.length - 8, lbl[1], y + 7 * lines.length + 4);
     };
     let k = s;
@@ -8601,7 +8665,6 @@
     ctx.stroke();
     ctx.fillStyle = "rgba(232,237,247,0.8)"; ctx.font = "11px system-ui, sans-serif";
     ctx.fillText(`${barKm.toLocaleString()} km (${(barKm / meta.radiusKm).toFixed(barKm < meta.radiusKm * 10 ? 1 : 0)} ${meta.unit})`, x0, y0 - 8);
-    systemClock.textContent = simDate.toISOString().slice(0, 16).replace("T", " ") + " UTC";
     systemScaleReadout.textContent = `${Math.round(systemView.kmPerPx).toLocaleString()} km per pixel · scroll to zoom, drag to rotate, right-drag to pan, Esc to exit`;
   }
 
@@ -8615,6 +8678,7 @@
       simDate = new Date(simDate.getTime() + daysElapsed * 86400000);
       dateInput.value = dateInputValue(simDate);
     }
+    refreshDateTime();
 
     ctx.clearRect(0, 0, viewW, viewH);
 
