@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "41";
+  const BUILD_VERSION = "43";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -4036,21 +4036,49 @@
         (lockedBodyName && !freeCameraMode ? "  [not meaningful while tracking]" : "") + `\n` +
       `tracking: ${lockedBodyName || "none"}\n` +
       `hold frame: ${freeCameraMode ? "on" : "off"}\n` +
-      `date: ${dateInputValue(simDate)}`;
+      `date: ${simDate.toISOString().slice(0, 16).replace("T", " ")} UTC` +
+      (systemView
+        ? `\nsystem view: ${systemView.primary}, ${Math.round(systemView.kmPerPx)} km/px, ` +
+          (systemView.follow ? `following ${systemView.follow.moon || systemView.follow.flight}`
+                             : `pan ${Math.round(systemView.panX)}, ${Math.round(systemView.panY)} px`)
+        : "");
+  }
+
+  // A URL that reopens the current view: date and time, camera angle and
+  // zoom, plus the system view's scale, pan/follow and path toggles. Read
+  // back by applyInitialURLState. Meant for sharing a repro ("look at
+  // this"), so it pins the clock (the date param pauses playback).
+  function shareableURL() {
+    const url = new URL(window.location.href);
+    const p = url.searchParams;
+    ["zoom", "yaw", "pitch", "hold", "camx", "camy", "system", "svkm", "svpan", "svfollow", "svorbit", "svall"]
+      .forEach((k) => p.delete(k));
+    p.set("date", simDate.toISOString().slice(0, 16));
+    p.set("yaw", (yaw * 180 / Math.PI).toFixed(2));
+    p.set("pitch", (pitch * 180 / Math.PI).toFixed(2));
+    if (systemView) {
+      p.set("system", systemView.primary);
+      p.set("svkm", systemView.kmPerPx.toFixed(1));
+      const f = systemView.follow;
+      if (f) p.set("svfollow", f.moon ? `moon:${f.moon}` : `flight:${f.flight}`);
+      else if (systemView.panX || systemView.panY) p.set("svpan", `${Math.round(systemView.panX)},${Math.round(systemView.panY)}`);
+      if (!svCurrentOrbitOnly) p.set("svorbit", "full");
+      if (systemView.showAll) p.set("svall", "1");
+    } else {
+      p.set("zoom", pxPerAU.toFixed(1));
+      if (freeCameraMode) {
+        p.set("hold", "1");
+        p.set("camx", camX.toFixed(0)); p.set("camy", camY.toFixed(0));
+      }
+    }
+    return url.toString();
   }
 
   sceneFramingCopyBtn.addEventListener("click", () => {
-    const yawDeg = (yaw * 180 / Math.PI).toFixed(2);
-    const pitchDeg = (pitch * 180 / Math.PI).toFixed(2);
-    // URL-fragment form (not the full readout text) -- directly usable as
-    // query params, e.g. pasted onto the end of this page's own URL, or
-    // (once embedding exists) an embed src. Only includes what's actually
-    // reproducible: zoom/yaw/pitch/hold always are; camX/camY are omitted
-    // since they're meaningless while tracking (the common case) and get
-    // overwritten by camera-follow anyway unless hold=1.
-    const params = `zoom=${pxPerAU.toFixed(1)}&yaw=${yawDeg}&pitch=${pitchDeg}` +
-      (freeCameraMode ? `&hold=1` : ``);
-    navigator.clipboard.writeText(params).catch(() => {}); // clipboard access can be denied; failing silently is fine for a copy-convenience button
+    const shareUrl = shareableURL();
+    navigator.clipboard.writeText(shareUrl).catch(() => {}); // clipboard access can be denied; failing silently is fine for a copy-convenience button
+    sceneFramingCopyBtn.textContent = "Copied";
+    setTimeout(() => { sceneFramingCopyBtn.textContent = "Copy shareable URL"; }, 1200);
   });
 
   /* =========================================================================
@@ -5049,10 +5077,32 @@
       setSimDateFromInputValue(date);
       dateInput.value = dateInputValue(simDate);
       setPaused(true);
+    } else if (date && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z?$/.test(date)) {
+      // Date and time (UTC), as written by shareableURL.
+      const d = new Date(date.endsWith("Z") ? date : date + "Z");
+      if (!isNaN(d)) { simDate = d; dateInput.value = dateInputValue(simDate); setPaused(true); }
     }
+    // Camera (written by shareableURL / the Scene Framing panel, backtick).
+    const num = (k) => { const v = params.get(k); const n = v === null ? NaN : Number(v); return Number.isFinite(n) ? n : null; };
+    if (num("yaw") !== null) yaw = num("yaw") * Math.PI / 180;
+    if (num("pitch") !== null) pitch = num("pitch") * Math.PI / 180;
+    if (num("zoom") !== null && num("zoom") > 0) pxPerAU = num("zoom");
+    if (freeCameraMode && num("camx") !== null && num("camy") !== null) { camX = num("camx"); camY = num("camy"); }
     const systemParam = params.get("system");
     if (systemParam && SYSTEM_VIEW_PRIMARIES.includes(systemParam)) {
-      setTimeout(() => openSystemView(systemParam), 0);
+      setTimeout(() => {
+        openSystemView(systemParam);
+        if (!systemView) return;
+        if (num("svkm") !== null) systemView.kmPerPx = Math.max(20, Math.min(2e5, num("svkm")));
+        if (params.get("svorbit") === "full") svCurrentOrbitOnly = false;
+        if (params.get("svall") === "1") systemView.showAll = true;
+        buildSystemPanel();
+        const f = params.get("svfollow");
+        const m = f && f.match(/^(moon|flight):(.+)$/);
+        if (m) setSystemFollow(m[1] === "moon" ? { moon: m[2] } : { flight: m[2] }, true);
+        const pan = (params.get("svpan") || "").split(",").map(Number);
+        if (!m && pan.length === 2 && pan.every(Number.isFinite)) { systemView.panX = pan[0]; systemView.panY = pan[1]; }
+      }, 0);
     }
     const flightKey = params.get("flight");
     const bodyName = params.get("body");
@@ -8515,21 +8565,22 @@
     // reads against a bright planet.
     ctx.save();
     ctx.lineCap = "round";
-    // Each segment keeps its own weight: an emphasized path (alpha >= 0.3)
-    // is boosted to full strength with a halo, a faint one (a full tour's
-    // other orbits) only doubled. Boosting every faint orbit to full
-    // strength painted dozens of bright perijove passes across the disc.
+    // Each segment is re-stroked exactly as it was first drawn: a path
+    // in front of the planet should look the same as anywhere else, not
+    // brighter. (Boosting these to full opacity turned pale moon orbits
+    // white across a sunlit disc, and painted every faint perijove pass of
+    // a full tour as a bright line.) Only the strong spacecraft paths
+    // (alpha >= 0.6) get a thin dark halo so they read against the
+    // planet's bright face.
     const segAlpha = (style) => { const m = style.match(/,\s*([\d.]+)\)$/); return m ? Number(m[1]) : 1; };
     frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
-      if (segAlpha(style) < 0.3) return;
+      if (segAlpha(style) < 0.6) return;
       ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
-      ctx.strokeStyle = "rgba(5,8,16,0.55)"; ctx.lineWidth = lw + 2.5; ctx.stroke();
+      ctx.strokeStyle = "rgba(5,8,16,0.45)"; ctx.lineWidth = lw + 2; ctx.stroke();
     });
     frontSegs.forEach(([x0, y0, x1, y1, style, lw]) => {
-      const a = segAlpha(style);
       ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
-      ctx.strokeStyle = style.replace(/,\s*[\d.]+\)$/, `,${a >= 0.3 ? 0.95 : Math.min(0.3, a * 2)})`);
-      ctx.lineWidth = a >= 0.3 ? lw + 0.3 : lw; ctx.stroke();
+      ctx.strokeStyle = style; ctx.lineWidth = lw; ctx.stroke();
     });
     ctx.restore();
 
@@ -9260,7 +9311,7 @@
     // has side effects or is reachable without deliberately scripting
     // against the page.
     window.__VERIFY__ = {
-      FLIGHTS_RAW, isMultiLeg, getSolvedLeg, getGAChain, getGAEvents,
+      FLIGHTS_RAW, shareableURL, isMultiLeg, getSolvedLeg, getGAChain, getGAEvents,
       daysSinceJ2000, parseFlightDate, computeFlightPosition,
       getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,
       getSolvedFlight, OUTER_MOONS, computeSatelliteOffset,
