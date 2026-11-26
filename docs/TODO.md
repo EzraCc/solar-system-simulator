@@ -59,15 +59,13 @@ Next pull due after 2026-12-05.
 
 ## 2. Image attribution audit
 
-Done 2026-11-25 (`tools/audit_images.py`, results in
-`data/images/credits.json` and `docs/CREDITS.md`): 103 of 131 images
-verified, with creator and licence shown under each gallery tile.
+Done 2026-11-25: all 130 gallery images verified, with creator and
+licence under each tile (`tools/audit_images.py`, `docs/CREDITS.md`).
 
-- [ ] **Replace 3 fair-use images** with freely licensed ones: ExoMars
-  TGO, Hope, Tianwen-1 spacecraft.
-- [ ] **25 unverified images:** find each original (most are NASA pages)
-  and add it to `MANUAL` in the tool, or replace the image. List: the
-  "unverified" rows in `docs/CREDITS.md`.
+- [ ] **Kamoʻoalewa** has no image: add one when a freely licensed
+  Tianwen-2 image appears.
+- [ ] When adding images, prefer the NASA Image and Video Library for
+  NASA material and record the source in `MANUAL` (`nasa_id` or `file`).
 
 ## 3. Spacecraft instruments and data feeds (plan only)
 
