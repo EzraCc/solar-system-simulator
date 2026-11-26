@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "48";
+  const BUILD_VERSION = "49";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -6068,8 +6068,8 @@
       .filter((k) => assets[k])
       .map((k) => {
         const a = assets[k];
-        // localImage is stored relative to data/ (e.g. "images/rockets/atlas_v.png"
-        // matches the real path data/images/rockets/atlas_v.png on disk) -- but the
+        // localImage is stored relative to data/ (e.g. "images/rockets/atlas_v.jpg"
+        // matches the real path data/images/rockets/atlas_v.jpg on disk) -- but the
         // <img> src is resolved relative to index.html at the project root, so it
         // needs the "data/" prefix added here. Never verified in a real browser
         // until now: every asset across every flight/body JSON file had this same
@@ -8656,6 +8656,7 @@
       extra = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-sv-follow-flight="${target.key}">Follow</button></div>` +
         `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-sv-open-flight="${target.key}">Full mission info (Solar System view)</button></div>`;
       if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
+      sections += assetGalleryHtml(raw.assets);
     } else if (target.kind === "moon") {
       const m = findOuterMoon(primary, target.name);
       title = m.name;
@@ -8673,6 +8674,8 @@
       extra = `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-sv-follow-moon="${m.name}">Follow</button></div>`;
       if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
       sections += bodyMissionsHtml(m.name);
+      // Photo gallery (from data/bodies/info.json), as in the Solar System view.
+      sections += assetGalleryHtml(info && info.assets);
       sections += textureCreditHtml(m.name);
     } else {
       const name = systemBodyDisplayName(primary);
@@ -8684,6 +8687,7 @@
       addRow("Distance from Sol", `${Math.hypot(...meta.helio(t)).toFixed(3)} AU`);
       if (info && info.significance) sections += lpSectionHtml("Why it matters", info.significance);
       sections += bodyMissionsHtml(name);
+      sections += assetGalleryHtml(info && info.assets);
       sections += textureCreditHtml(primary);
     }
     if (rowsOnly) { const el = document.getElementById("system-info-rows"); if (el) el.innerHTML = rows; return; }

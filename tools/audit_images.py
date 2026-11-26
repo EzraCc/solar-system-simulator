@@ -61,21 +61,42 @@ MAX_CANDIDATES = 8    # per article: lead image, then closest aspect ratio
 REQUEST_DELAY = 8.0   # seconds between uncached requests     # skip candidates whose aspect ratio differs more than this
 
 # Per-image corrections. Keys are localImage paths; values replace or add
-# fields in the generated record. Use "file" to point the matcher at a
-# specific Commons file when the visual search can't find it.
+# fields in the generated record. Use "nasa_id" (NASA Image and Video
+# Library, images.nasa.gov; preferred for NASA material) or "file" (a
+# Commons file title) to name the source directly.
 MANUAL = {
-    # Visual check 2026-11-25: the named/matched file is a different image.
-    "images/bodies/polymele.png": {"status": "unverified",
-        "method": "infoUrl's Commons file is an occultation chart, not this render; source not found"},
-    "images/rockets/falcon_9.jpg": {"status": "unverified",
-        "method": "closest Commons match (0.81) is a different launch photo; source not found"},
-    # Fair use on English Wikipedia doesn't cover redistribution here.
-    "images/missions/exomars_tgo/spacecraft.png": {"status": "replace",
-        "method": "source found, but it's a fair-use (non-free) file: replace with a freely licensed image"},
-    "images/missions/hope_mars/spacecraft.png": {"status": "replace",
-        "method": "source found, but it's a fair-use (non-free) file: replace with a freely licensed image"},
-    "images/missions/tianwen1/spacecraft.png": {"status": "replace",
-        "method": "source found, but it's a fair-use (non-free) file: replace with a freely licensed image"},
+    # Replacements chosen 2026-11-25 for images whose source couldn't be
+    # found or wasn't free (fair use). NASA material comes from the NASA
+    # Image and Video Library; ESA, ISRO, CNSA, UAE, SpaceX and newer NASA
+    # images (not yet in the library) from Commons. Each local copy is a
+    # <=800 px rendition of the named original.
+    "images/bodies/didymos.png": {"file": "High-Resolution Didymos and Dimorphos - North Up.png"},
+    "images/bodies/dinkinesh.png": {"file": "Dinkinesh First Look L'LORRI.png"},
+    "images/bodies/donaldjohanson.png": {"file": "Donaldjohanson Combined.png"},
+    "images/bodies/ganymede.jpg": {"nasa_id": "PIA00716"},
+    "images/bodies/mercury.jpg": {"nasa_id": "PIA11245"},
+    "images/bodies/pluto_charon.jpg": {"nasa_id": "PIA19966"},
+    "images/bodies/polymele.png": {"file": "Polymele occultation satellite discovery.png"},
+    "images/bodies/sol.jpg": {"file": "SDO 20250309 001038 4096 HMII (HMI).jpg"},
+    "images/bodies/tempel1.jpg": {"nasa_id": "PIA02127"},
+    "images/missions/aditya_l1/spacecraft.jpg": {"file": "Aditya-L1 spacecraft.jpg"},
+    "images/missions/cassini/spacecraft.jpg": {"nasa_id": "PIA03883"},
+    "images/missions/exomars_tgo/spacecraft.jpg": {"file": "ExoMars Trace Gas Orbiter Model at ESOC.JPG"},
+    "images/missions/galileo/spacecraft.jpg": {"nasa_id": "PIA18176"},
+    "images/missions/hope_mars/spacecraft.jpg": {"file": "Emirates Mars Mission mockup at IAC 2021 01 (cropped).jpg"},
+    "images/missions/magellan/rocket.jpg": {"nasa_id": "8905993"},
+    "images/missions/mars_global_surveyor/spacecraft.jpg": {"nasa_id": "PIA17486"},
+    "images/missions/mars_polar_lander/spacecraft.jpg": {"file": "Mars Polar Lander - artist depiction.png"},
+    "images/missions/maven/spacecraft.jpg": {"nasa_id": "PIA17487"},
+    "images/missions/near_shoemaker/rocket.jpg": {"nasa_id": "201407020006HQ"},
+    "images/missions/rosetta/spacecraft.jpg": {"file": "Rosetta spacecraft model.png"},
+    "images/missions/tianwen1/spacecraft.jpg": {"file": "Tianwen-1 in Mars orbit.jpg"},
+    "images/rockets/atlas_v.jpg": {"nasa_id": "201311180001HQ"},
+    "images/rockets/delta_ii.jpg": {"nasa_id": "KSC-07PD-2590"},
+    "images/rockets/delta_iv_heavy.jpg": {"file": "Delta IV Heavy in 2018.jpg"},
+    "images/rockets/falcon_9.jpg": {"file": "Iridium-1 Launch (32312419215).jpg"},
+    "images/rockets/falcon_heavy.jpg": {"nasa_id": "NHQ202310110005"},
+    "images/rockets/proton_k.jpg": {"file": "Proton-K-Zarya.jpg"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},
@@ -295,6 +316,18 @@ def nasa_library(nasa_id):
     center = d.get("center", "")
     if not credit:
         credit = f"NASA{('/' + center) if center else ''}"
+    # NASA's public-domain status covers work by NASA. Library items credited
+    # to someone else (a contractor such as SpaceX, a university without
+    # NASA) may carry that party's terms, so they aren't marked verified.
+    nasa_made = "nasa" in credit.lower() or not (d.get("secondary_creator") or d.get("photographer"))
+    if not nasa_made:
+        return {
+            "sourcePage": f"https://images.nasa.gov/details/{nasa_id}",
+            "sourceTitle": d.get("title", nasa_id), "credit": credit, "creditDetail": "",
+            "license": "", "licenseUrl": "", "attributionRequired": True,
+            "status": "unverified",
+            "method": "NASA Image Library record credited to a non-NASA party; check its terms",
+        }
     return {
         "sourcePage": f"https://images.nasa.gov/details/{nasa_id}",
         "sourceTitle": d.get("title", nasa_id),
@@ -318,8 +351,13 @@ def audit_one(rel, uses):
     manual = MANUAL.get(rel, {})
     sig = local_signature(rel)
 
-    if manual.get("file"):
-        rec = commons_file(manual["file"], sig, "manual: named file")
+    if manual.get("nasa_id"):
+        rec = nasa_library(manual["nasa_id"])
+        if rec:
+            rec["method"] = "manual: NASA Image Library record"
+    elif manual.get("file"):
+        title = manual["file"] if manual["file"].startswith("File:") else "File:" + manual["file"]
+        rec = commons_file(title, sig, "manual: named file")
     elif "commons.wikimedia.org/wiki/File:" in url:
         title = urllib.parse.unquote(url.split("/wiki/")[1]).replace("_", " ")
         rec = commons_file(title, sig, "infoUrl is the file page")
@@ -356,7 +394,7 @@ def audit_one(rel, uses):
         rec = {"sourcePage": url, "credit": "", "license": "", "licenseUrl": "",
                "attributionRequired": False, "status": "unverified",
                "method": "no match found"}
-    rec.update({k: v for k, v in manual.items() if k != "file"})
+    rec.update({k: v for k, v in manual.items() if k not in ("file", "nasa_id")})
     rec["title"] = uses[0]["title"]
     rec["usedBy"] = sorted({u["_src"] for u in uses})
     return rec
