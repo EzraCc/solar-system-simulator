@@ -10,6 +10,13 @@
   "status": "En Route",
   "significance": "MMX aims to settle a long-standing debate over Phobos and Deimos's origin -- whether Mars's two small moons are captured asteroids or debris flung into orbit by an ancient giant impact on Mars -- by returning the first-ever sample from either moon. It carries the DLR/CNES rover IDEFIX, which will land on Phobos ahead of the main spacecraft to scout terrain in Phobos's extremely low gravity, and it will also make close flybys of Deimos. The mission's own trajectory design keeps it in the Mars system for roughly three years (2027-2030) before returning a Phobos surface sample to Earth in 2031, making MMX the first sample-return mission from the Martian system.",
   "statusNote": "Modeled here as a direct Earth-to-Mars transfer only -- the outbound cruise, which is real, well-constrained two-body orbital mechanics regardless of the exact launch slip. Real Mars transfers in this launch window are the most predictable kind of trajectory this simulator handles: unlike MMX's multi-year Phobos-system operations and Earth-return leg (2027-2030 in orbit around Mars/Phobos, sample departure ~2030, Earth arrival 2031), which involve areocentric proximity operations this simulator doesn't yet model at the necessary scale (see the geocentric_orbit generalization -- the same architecture used for Mangalyaan/Aditya-L1 -- as the likely path for a future update once Mars-system zoom exists), a direct heliocentric transfer is exactly this simulator's strong suit. DATES: MMX launched 2026-10-19 19:41:03 UTC (2026-10-20 04:41 JST) on H3 flight No. 10 from Tanegashima -- the first time H3 has sent a spacecraft onto an interplanetary trajectory -- separating ~71 minutes later onto its planned Earth-departure trajectory. JAXA has not published an exact Mars orbit-insertion date; CNES's mission schedule gives August 2027 for Mars orbit insertion (Phobos orbit September 2027). The 2027-08-31 arrival used here is an estimate: JPL Horizons' predicted MMX cruise trajectory (target -239, published through 2026-12-21) coast-propagated forward makes its closest approach to Mars around 2027-08-31, consistent with CNES's month. Replace with the real insertion date once it happens.",
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -239 (MMX)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-239%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "MMX spacecraft",

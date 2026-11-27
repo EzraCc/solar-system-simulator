@@ -10368,6 +10368,13 @@
       "arrivalDate": "2003-09-21T00:00:00Z"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -77 (Galileo)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-77%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Galileo (spacecraft)",

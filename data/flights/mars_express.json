@@ -10,6 +10,13 @@
   "status": "Partial Success",
   "significance": "Mars Express was Europe's first mission to another planet, launched to conduct a comprehensive orbital survey of Mars's surface, subsurface, and atmosphere to resolve questions about the planet's water history and atmospheric evolution. It carried the first radar sounder (MARSIS) flown to probe kilometers beneath the Martian surface and the first high-resolution stereo camera to produce detailed 3D topographic maps of the entire planet. The mission found evidence of a planet-wide ancient groundwater system, including buried ice deposits and interconnected subsurface lakes, detected the first Martian aurorae, identified minerals that form only in liquid water, and reported the controversial detection of atmospheric methane, a possible biological or geological marker. It also returned evidence suggesting Martian volcanism persisted more recently than previously thought and produced close-up imagery of the moon Phobos.",
   "statusNote": "Orbiter fully successful, still operating. Beagle 2 lander was lost on arrival (cause: partial solar panel deployment prevented communication).",
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -41 (Mars Express)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-41%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Mars Express",

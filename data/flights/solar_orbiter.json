@@ -1505,6 +1505,13 @@
       "periapsisKm": 2650
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -144 (Solar Orbiter)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-144%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Solar Orbiter",

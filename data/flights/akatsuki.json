@@ -714,6 +714,13 @@
       "arrivalDate": "2015-12-07"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -5 (Akatsuki)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-5%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Akatsuki (spacecraft)",

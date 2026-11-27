@@ -13214,6 +13214,17 @@
       "flybyName": "GOI"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -28 (JUICE)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-28%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    },
+    {
+      "title": "ESA JUICE trajectory profile, CReMA 5.2 (Jupiter tour)",
+      "url": "https://www.cosmos.esa.int/web/juice/trajectory-profile"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Jupiter Icy Moons Explorer",

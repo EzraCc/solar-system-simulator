@@ -36,6 +36,13 @@
       "arrivalDate": "2018-12-03"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -64 (OSIRIS-REx)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-64%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "OSIRIS-REx",

@@ -15,6 +15,13 @@
       "arrivalDate": "2022-09-26"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -135 (DART)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-135%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Double Asteroid Redirection Test",

@@ -40,6 +40,13 @@
       "arrivalDate": "2027-09-09"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -9 (ESCAPADE)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-9%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris; ESCAPADE-Blue; Gold is -10"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "ESCAPADE",
