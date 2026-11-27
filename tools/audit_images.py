@@ -97,6 +97,11 @@ MANUAL = {
     "images/rockets/falcon_9.jpg": {"file": "Iridium-1 Launch (32312419215).jpg"},
     "images/rockets/falcon_heavy.jpg": {"nasa_id": "NHQ202310110005"},
     "images/rockets/proton_k.jpg": {"file": "Proton-K-Zarya.jpg"},
+    # Helios 1/2 (KSC photos and the San Diego Air & Space Museum launch photo).
+    "images/missions/helios_1/spacecraft.jpg": {"file": "Helios spacecraft.jpg", "credit": "NASA/KSC (KSC-74P-0223)"},
+    "images/missions/helios_2/spacecraft.jpg": {"file": "Helios spacecraft 2.jpg", "credit": "NASA/KSC (KSC-74P-0222)"},
+    "images/missions/helios_1/rocket.jpg": {"file": "Titan 3E Centaur with Helios 1.jpg", "credit": "NASA/KSC (KSC-74P-0298)"},
+    "images/missions/helios_2/rocket.jpg": {"file": "Helios B launch.jpg"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},

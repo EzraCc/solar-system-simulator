@@ -61,6 +61,20 @@ tools/.venv/bin/python tools/audit_images.py --redo        # everything
 tools/.venv/bin/python tools/audit_images.py --report-only # rewrite CREDITS.md table
 ```
 
+## `build_helios.py` — Helios 1/2 from SPDF data
+
+Horizons has no Helios ephemeris, so the two probes' legs come from the
+mission's own daily orbit files at NASA SPDF (`helorb1.asc`,
+`helorb2.asc`). The script converts their B1950 ecliptic coordinates to
+J2000 and writes Lambert legs between real positions every 15 days. For
+Helios 1's last years, which the file doesn't cover, it fits an orbit
+and projects it as `"estimate": true` legs. Run it, then rebuild the
+flight files' `legs` from `tools/.helios_cache/helios{1,2}_legs.json`.
+
+```
+tools/.venv/bin/python tools/build_helios.py --check   # data span, fit, perihelion
+```
+
 ## `check_horizons.py` — real-ephemeris verification
 
 For every Lambert leg of a flight, samples the position the app really

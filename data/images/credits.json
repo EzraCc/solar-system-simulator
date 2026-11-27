@@ -1053,6 +1053,70 @@
    "hayabusa2"
   ]
  },
+ "images/missions/helios_1/rocket.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Titan_3E_Centaur_with_Helios_1.jpg",
+  "sourceTitle": "Titan 3E Centaur with Helios 1.jpg",
+  "credit": "NASA/KSC (KSC-74P-0298)",
+  "creditDetail": "",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Titan IIIE-Centaur with Helios 1",
+  "usedBy": [
+   "helios_1"
+  ]
+ },
+ "images/missions/helios_1/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Helios_spacecraft.jpg",
+  "sourceTitle": "Helios spacecraft.jpg",
+  "credit": "NASA/KSC (KSC-74P-0223)",
+  "creditDetail": "",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Helios spacecraft (KSC, 1974)",
+  "usedBy": [
+   "helios_1"
+  ]
+ },
+ "images/missions/helios_2/rocket.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Helios_B_launch.jpg",
+  "sourceTitle": "Helios B launch.jpg",
+  "credit": "San Diego Air & Space Museum",
+  "creditDetail": "https://www.flickr.com/photos/sdasmarchives/6996846626/in/set-72157627981313215/",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Titan IIIE-Centaur launching Helios 2",
+  "usedBy": [
+   "helios_2"
+  ]
+ },
+ "images/missions/helios_2/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Helios_spacecraft_2.jpg",
+  "sourceTitle": "Helios spacecraft 2.jpg",
+  "credit": "NASA/KSC (KSC-74P-0222)",
+  "creditDetail": "",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Helios spacecraft (KSC)",
+  "usedBy": [
+   "helios_2"
+  ]
+ },
  "images/missions/hera/spacecraft.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Hera_in_orbit.jpg",
   "sourceTitle": "Hera in orbit.jpg",
