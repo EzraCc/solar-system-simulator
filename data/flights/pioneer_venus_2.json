@@ -48,5 +48,8 @@
       "start": "1978-12-09T20:21:52Z",
       "label": "Bus burned up in the upper atmosphere"
     }
+  ],
+  "dataSources": [
+    {"title": "NASA NSSDCA Master Catalog: Pioneer Venus Probe Bus (1978-078A)", "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1978-078A", "note": "launch date, vehicle and mission events checked against this record"}
   ]
 }

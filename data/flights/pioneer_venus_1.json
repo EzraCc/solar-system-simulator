@@ -36,5 +36,8 @@
       "start": "1992-10-08",
       "label": "Fuel exhausted; burned up in the atmosphere"
     }
+  ],
+  "dataSources": [
+    {"title": "NASA NSSDCA Master Catalog: Pioneer Venus Orbiter (1978-051A)", "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1978-051A", "note": "launch date, vehicle and mission events checked against this record"}
   ]
 }

@@ -1389,4 +1389,6 @@
   /* Trajectory data sources in the flight panel (trajectorySourcesHtml). */
   .lp-sources { margin: 0; padding-left: 16px; }
   .lp-sources li { margin: 2px 0; }
+  .lp-sources a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  .lp-sources a:hover { color: var(--text-primary); }
   .lp-dim { color: var(--text-dim); font-size: 11px; }
