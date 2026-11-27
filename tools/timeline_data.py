@@ -68,6 +68,18 @@ T = {
                    bar("Mars", "ground", "2021-02-18", label="Perseverance rover (and Ingenuity)", ongoing=True)],
   "nozomi": [ev("Mars", "flyby", "2003-12-14", "Orbit insertion abandoned; flew past Mars")],
   # ---- Venus ----
+  # Venera landers: surface times from NSSDCA (127 and 60 min); landing clock
+  # times from secondary sources. The buses flew past during the landing.
+  "venera_13": [ev("Venus", "landing", "1982-03-01T03:57:21Z", "Lander touched down east of Phoebe Regio"),
+                bar("Venus", "ground", "1982-03-01T03:57:21Z", "1982-03-01T06:04:21Z", "Lander worked 127 minutes; first colour surface images"),
+                ev("Venus", "flyby", "1982-03-01T03:57:21Z", "Bus flew past, relaying the lander's data")],
+  "venera_14": [ev("Venus", "landing", "1982-03-05T07:00:10Z", "Lander touched down on a basalt plain"),
+                bar("Venus", "ground", "1982-03-05T07:00:10Z", "1982-03-05T08:00:10Z", "Lander worked about 60 minutes"),
+                ev("Venus", "flyby", "1982-03-05T07:00:10Z", "Bus flew past, relaying the lander's data")],
+  # Venera 15/16: "operated for approximately one year" (PDS/NSSDCA); the end
+  # dates are approximate.
+  "venera_15": [bar("Venus", "orbit", "1983-10-10", "1984-10-10", "Radar-mapping orbit (about a year; end approximate)")],
+  "venera_16": [bar("Venus", "orbit", "1983-10-11", "1984-10-11", "Radar-mapping orbit (about a year; end approximate)")],
   "magellan": [bar("Venus", "orbit", "1990-08-10", "1994-10-12", "Radar mapping orbit"),
                ev("Venus", "entry", "1994-10-13", "Deliberately entered the atmosphere")],
   "venus_express": [bar("Venus", "orbit", "2006-04-11", "2014-11-28", "Orbit (contact lost)"),

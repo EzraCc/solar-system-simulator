@@ -107,6 +107,11 @@ MANUAL = {
     "images/missions/giotto/spacecraft.jpg": {"file": "Giotto Whipple shield ESA239195.jpg"},
     "images/rockets/ariane_1.jpg": {"file": "Ariane 1 Le Bourget FRA 001.jpg"},
     "images/rockets/mu_3sii.jpg": {"file": "M-3SII exhibition model.jpg"},
+    # Pre-1988 Veneras (added 2026-11-26). No free photo of either spacecraft
+    # type was found: the 1982 USSR stamp shows Venera 13/14; Venera 15/16
+    # use a map made from their radar altimetry (PDS Geosciences data).
+    "images/missions/venera_13/spacecraft.jpg": {"file": "1982 CPA 5278.jpg"},
+    "images/missions/venera_15/spacecraft.jpg": {"file": "VenusTopoVenera.jpg"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},

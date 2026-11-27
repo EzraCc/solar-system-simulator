@@ -1817,6 +1817,40 @@
    "ulysses"
   ]
  },
+ "images/missions/venera_13/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:1982_CPA_5278.jpg",
+  "sourceTitle": "1982 CPA 5278.jpg",
+  "credit": "Post of Soviet Union",
+  "creditDetail": "This image was scanned or photoreproduced by Andrew Butko. Contact infоrmation - e-mail: abutko@gmail.com. Other scans see here.",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Venera 13 and 14 (Soviet stamp, 1982)",
+  "usedBy": [
+   "venera_13",
+   "venera_14"
+  ]
+ },
+ "images/missions/venera_15/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:VenusTopoVenera.jpg",
+  "sourceTitle": "VenusTopoVenera.jpg",
+  "credit": "Zamonin",
+  "creditDetail": "Own work",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Venus topography from Venera 15/16 radar altimetry",
+  "usedBy": [
+   "venera_15",
+   "venera_16"
+  ]
+ },
  "images/missions/venus_express/spacecraft.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Venus_Express_in_orbit_(crop).jpg",
   "sourceTitle": "Venus Express in orbit (crop).jpg",

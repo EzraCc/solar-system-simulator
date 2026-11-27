@@ -213,6 +213,8 @@ Written by `tools/audit_images.py` from `data/images/credits.json`.
 | `images/missions/tianwen2/spacecraft.png` | [Rendering of Tianwen 2 asteroid mission 03 cropped rotated.png](https://commons.wikimedia.org/wiki/File:Rendering_of_Tianwen_2_asteroid_mission_03_cropped_rotated.png) | 中国新闻社 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | `images/missions/ulysses/rocket.jpg` | [STS-41 launch.jpg](https://commons.wikimedia.org/wiki/File:STS-41_launch.jpg) | NASA | Public domain |
 | `images/missions/ulysses/spacecraft.jpg` | [STS-41 Ulysses deployment.jpg](https://commons.wikimedia.org/wiki/File:STS-41_Ulysses_deployment.jpg) | NASA | Public domain |
+| `images/missions/venera_13/spacecraft.jpg` | [1982 CPA 5278.jpg](https://commons.wikimedia.org/wiki/File:1982_CPA_5278.jpg) | Post of Soviet Union | Public domain |
+| `images/missions/venera_15/spacecraft.jpg` | [VenusTopoVenera.jpg](https://commons.wikimedia.org/wiki/File:VenusTopoVenera.jpg) | Zamonin | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) |
 | `images/missions/venus_express/spacecraft.jpg` | [Venus Express in orbit (crop).jpg](https://commons.wikimedia.org/wiki/File:Venus_Express_in_orbit_(crop).jpg) | Andrzej Mirecki | Public domain |
 | `images/rockets/ariane_1.jpg` | [Ariane 1 Le Bourget FRA 001.jpg](https://commons.wikimedia.org/wiki/File:Ariane_1_Le_Bourget_FRA_001.jpg) | ignis | [CC BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/) |
 | `images/rockets/ariane_5.jpg` | [Ariane 5 with James Webb Space Telescope Prelaunch (51773093465).jpg](https://commons.wikimedia.org/wiki/File:Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(51773093465).jpg) | Chris Gunn | Public domain |
