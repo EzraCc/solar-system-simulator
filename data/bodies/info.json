@@ -379,6 +379,26 @@
       }
     }
   },
+  "Halley (1P)": {
+    "significance": "Halley's Comet is the best-known comet, returning to the inner Solar System about every 76 years on a steep, backward (retrograde) orbit that stretches from inside Venus's orbit to beyond Neptune's. Edmond Halley showed in 1705 that the bright comets of 1531, 1607 and 1682 were one object and predicted its 1758 return, the first proof that comets orbit the Sun. In March 1986 an international fleet of five spacecraft (two Soviet Vegas, Europe's Giotto and Japan's Sakigake and Suisei) met it, and Giotto's pictures from 596 km revealed a dark, peanut-shaped nucleus about 15 km long, blacker than coal, with gas and dust escaping from only a few active patches. Those findings set the modern picture of comets as dusty ice bodies with dark crusts. Its next closest approach to the Sun is in 2061.",
+    "assets": {
+      "image": {
+        "title": "Halley's Comet in 1986 (NASA/W. Liller)",
+        "infoUrl": "https://en.wikipedia.org/wiki/Halley%27s_Comet",
+        "localImage": "images/bodies/halley.jpg"
+      }
+    }
+  },
+  "Grigg–Skjellerup (26P)": {
+    "significance": "26P/Grigg–Skjellerup is a small Jupiter-family comet with a 5.3-year orbit, worn down by many passes near the Sun into a faint, weakly active body a few kilometres across. In July 1992 it became the second comet visited by Giotto, which passed within about 200 km, the closest anyone had flown to a comet at the time. Giotto's camera had been destroyed at Halley, so no image of the nucleus exists, but its surviving instruments measured the comet's dust and its interaction with the solar wind and showed how much less active an old comet is than Halley.",
+    "assets": {
+      "image": {
+        "title": "Comet Grigg–Skjellerup on 10 July 1992 (ESO)",
+        "infoUrl": "https://en.wikipedia.org/wiki/26P/Grigg%E2%80%93Skjellerup",
+        "localImage": "images/bodies/grigg_skjellerup.jpg"
+      }
+    }
+  },
   "Psyche (16)": {
     "significance": "16 Psyche is the largest M-type (metallic) asteroid in the main belt, with a mean diameter of about 226 km and a mass representing close to 1% of the total mass of the asteroid belt. Radar and thermal observations indicate an unusually high metal content -- modeled at roughly 30-60% Fe-Ni metal by volume -- and its radar albedo of 0.42 is among the highest measured for any asteroid. The leading hypothesis holds that Psyche is the exposed iron-nickel core of a shattered protoplanetesimal that lost its rocky mantle and crust in one or more early collisions, though some spectral and density modeling instead favors a differentiated body with localized metal-rich patches rather than a pure core. Its irregular, slightly ellipsoidal shape and heterogeneous surface composition make it a rare natural laboratory for studying planetary interiors that are otherwise inaccessible. No spacecraft has visited Psyche yet -- NASA's Psyche mission is en route, with arrival expected in 2029.",
     "assets": {

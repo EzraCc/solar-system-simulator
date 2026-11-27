@@ -1,0 +1,89 @@
+{
+  "key": "vega_2",
+  "name": "Vega 2",
+  "rocket": "Proton-K / Blok D",
+  "payload": "Halley flyby bus + Venus descent module (lander and balloon), ~4,900 kg",
+  "status": "Success",
+  "significance": "Vega 2 repeated its twin's double mission a few days behind it. Its Venus lander reached the surface and analysed a soil sample, and its balloon added a second track through the clouds, so the two together gave the first measurements of wind across a large stretch of the Venusian atmosphere. At Halley it passed even closer than Vega 1, refining the comet's position for Giotto and confirming that the nucleus was a single dark, irregular body rather than the double object the first blurry images had suggested.",
+  "statusNote": "Twin of Vega 1, launched 1984-12-21. Descent module entered Venus's atmosphere on 1985-06-15 (lander ~57 min of surface data at Rusalka Planitia; balloon floated ~46 h). The bus flew past Venus at ~24,500 km and passed Halley's nucleus at 8,030 km on 1986-03-09 07:20 UT. Contact ended 1987-03-24. Modeled as Lambert legs between the real launch, Venus flyby and Halley encounter dates; no JPL Horizons ephemeris exists. Sources: NASA NSSDCA (COSPAR 1984-128A; nssdc.gsfc.nasa.gov/planetary/planets/cometpage.html), the mission's Wikipedia article and its cited references (Siddiqi 2018, Beyond Earth, NASA SP-2018-4041), and agency pages.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "1984-12-21",
+      "arrivalDate": "1985-06-15"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "1985-06-15",
+      "periapsisKm": 24500
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "halley",
+      "departDate": "1985-06-15",
+      "arrivalDate": "1986-03-09T07:20:00Z"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Vega 2 (illustration)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Vega_2",
+      "imagePage": "https://commons.wikimedia.org/wiki/File:Vega-mission.jpg",
+      "imageCredit": "Soviet illustration, via NASA NSSDCA"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "dataSources": [
+    {
+      "title": "NASA NSSDCA Master Catalog: Vega 2 (1984-128A)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1984-128A"
+    },
+    {
+      "title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958-2016 (NASA SP-2018-4041)",
+      "url": "https://www.nasa.gov/history/history-publications-and-resources/nasa-history-series/beyond-earth-a-chronicle-of-deep-space-exploration/"
+    },
+    {
+      "title": "JPL Horizons: comet 1P/Halley (DES=1P;CAP<1990), encounter positions",
+      "url": "https://ssd.jpl.nasa.gov/horizons/app.html#/?sstr=1P"
+    },
+    {
+      "title": "No JPL Horizons ephemeris exists for this spacecraft; legs are Lambert arcs between the published launch and encounter dates",
+      "url": "https://en.wikipedia.org/wiki/Vega_2"
+    }
+  ],
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1985-06-15",
+      "label": "Descent module entered; balloon floated in the clouds ~46 h"
+    },
+    {
+      "body": "Venus",
+      "kind": "landing",
+      "start": "1985-06-15",
+      "label": "Lander touched down in Rusalka Planitia"
+    },
+    {
+      "body": "Venus",
+      "kind": "ground",
+      "start": "1985-06-15",
+      "end": "1985-06-15",
+      "label": "Lander on the surface (~57 min)"
+    },
+    {
+      "body": "halley",
+      "kind": "flyby",
+      "start": "1986-03-09",
+      "label": "Flyby at 8,030 km"
+    }
+  ]
+}

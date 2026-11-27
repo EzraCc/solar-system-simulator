@@ -1,0 +1,322 @@
+{
+  "key": "giotto",
+  "name": "Giotto",
+  "rocket": "Ariane 1 (V14)",
+  "payload": "Comet flyby spacecraft with dust shield and 10 instruments (960 kg at launch)",
+  "status": "Success",
+  "significance": "Giotto was Europe's first deep-space mission and flew closer to Halley's Comet than any other spacecraft, passing just 596 km from the nucleus. Its images showed for the first time what a comet nucleus looks like: a dark, peanut-shaped body about 15 km long, blacker than coal, with only a few active patches venting jets of gas and dust. It survived a sandblasting by dust that knocked it off balance, was steered back to Earth for a gravity assist, and in 1992 became the first spacecraft to visit two comets, flying within about 200 km of Grigg–Skjellerup.",
+  "statusNote": "ESA mission, launched 1985-07-02 on Ariane 1 flight V14. Passed Halley's nucleus at 596 km on 1986-03-14 ~00:03 UT; a dust impact seconds before closest approach tilted its spin axis and the camera was lost. Retargeted to Earth, flew by at 22,730 km on 1990-07-02, then passed comet 26P/Grigg–Skjellerup at ~200 km on 1992-07-10 (relative speed ~14 km/s), and was switched off on 1992-07-23. A distant 1999 Earth pass is not modeled. No JPL Horizons ephemeris exists. The two post-Halley legs are multi-revolution (about 5 orbits to the 1990 Earth flyby, 1 more to the comet), which the app's single-revolution Lambert solver can't draw directly, so they were solved offline as multi-revolution two-body transfers between the real endpoints (JPL Horizons positions of Halley, Earth and 26P) and split into sub-orbit arcs at fixedPos waypoints. The revolution counts were chosen so that Giotto's speed relative to Earth is conserved across the 1990 flyby (3.53 vs 3.46 km/s); the result reproduces the real post-Halley orbit (0.73–1.04 AU, 305-day period), a flyby periapsis within 4% of the real altitude, and the ~14 km/s encounter speed at 26P. Small trajectory-correction burns are not modeled. Sources: NASA NSSDCA (COSPAR 1985-056A; nssdc.gsfc.nasa.gov/planetary/planets/cometpage.html), the mission's Wikipedia article and its cited references (Siddiqi 2018, Beyond Earth, NASA SP-2018-4041), and agency pages. Halley/26P encounter details: NSSDCA Giotto page (nssdc.gsfc.nasa.gov/planetary/giotto.html).",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "halley",
+      "departDate": "1985-07-02",
+      "arrivalDate": "1986-03-14T00:03:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": "halley",
+      "toBody": {
+        "fixedPos": [
+          0.854002838156,
+          0.310080921972,
+          0.033191661561
+        ]
+      },
+      "departDate": "1986-03-14T00:03:00Z",
+      "arrivalDate": "1986-08-18T03:26:42Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.854002838156,
+          0.310080921972,
+          0.033191661561
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.403377558625,
+          -0.838758392262,
+          -0.020322827013
+        ]
+      },
+      "departDate": "1986-08-18T03:26:42Z",
+      "arrivalDate": "1987-01-22T06:50:24Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.403377558625,
+          -0.838758392262,
+          -0.020322827013
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.7553047994,
+          0.449254891983,
+          0.030529948608
+        ]
+      },
+      "departDate": "1987-01-22T06:50:24Z",
+      "arrivalDate": "1987-06-28T10:14:05Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.7553047994,
+          0.449254891983,
+          0.030529948608
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.264043696028,
+          -0.919899276939,
+          -0.015791372394
+        ]
+      },
+      "departDate": "1987-06-28T10:14:05Z",
+      "arrivalDate": "1987-12-02T13:37:47Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.264043696028,
+          -0.919899276939,
+          -0.015791372394
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.627462825142,
+          0.570961321343,
+          0.026689326704
+        ]
+      },
+      "departDate": "1987-12-02T13:37:47Z",
+      "arrivalDate": "1988-05-07T17:01:30Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.627462825142,
+          0.570961321343,
+          0.026689326704
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.116727448505,
+          -0.973452438962,
+          -0.010784013796
+        ]
+      },
+      "departDate": "1988-05-07T17:01:30Z",
+      "arrivalDate": "1988-10-11T20:25:12Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.116727448505,
+          -0.973452438962,
+          -0.010784013796
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.472754533615,
+          0.668035857634,
+          0.021704697507
+        ]
+      },
+      "departDate": "1988-10-11T20:25:12Z",
+      "arrivalDate": "1989-03-17T23:48:54Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.472754533615,
+          0.668035857634,
+          0.021704697507
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.033895298443,
+          -0.999829029594,
+          -0.005473851148
+        ]
+      },
+      "departDate": "1989-03-17T23:48:54Z",
+      "arrivalDate": "1989-08-22T03:12:36Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.033895298443,
+          -0.999829029594,
+          -0.005473851148
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.295559612659,
+          0.733063461015,
+          0.015685858413
+        ]
+      },
+      "departDate": "1989-08-22T03:12:36Z",
+      "arrivalDate": "1990-01-26T06:36:18Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.295559612659,
+          0.733063461015,
+          0.015685858413
+        ]
+      },
+      "toBody": "Earth",
+      "departDate": "1990-01-26T06:36:18Z",
+      "arrivalDate": "1990-07-02T10:00:00Z"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Earth",
+      "date": "1990-07-02T10:00:00Z",
+      "periapsisKm": 22730
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": {
+        "fixedPos": [
+          0.327142232354,
+          1.110896355407,
+          0.050581057216
+        ]
+      },
+      "departDate": "1990-07-02T10:00:00Z",
+      "arrivalDate": "1991-01-03T05:19:45Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.327142232354,
+          1.110896355407,
+          0.050581057216
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.496229193976,
+          -0.859342386651,
+          -0.062272782855
+        ]
+      },
+      "departDate": "1991-01-03T05:19:45Z",
+      "arrivalDate": "1991-07-07T00:39:30Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.496229193976,
+          -0.859342386651,
+          -0.062272782855
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.840899306382,
+          0.797494914588,
+          0.093997325538
+        ]
+      },
+      "departDate": "1991-07-07T00:39:30Z",
+      "arrivalDate": "1992-01-07T19:59:15Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.840899306382,
+          0.797494914588,
+          0.093997325538
+        ]
+      },
+      "toBody": "grigg_skjellerup",
+      "departDate": "1992-01-07T19:59:15Z",
+      "arrivalDate": "1992-07-10T15:19:00Z"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Giotto (spacecraft, with its Whipple dust shield)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Giotto_(spacecraft)",
+      "localImage": "images/missions/giotto/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Ariane 1",
+      "infoUrl": "https://en.wikipedia.org/wiki/Ariane_1",
+      "localImage": "images/rockets/ariane_1.jpg"
+    }
+  },
+  "dataSources": [
+    {
+      "title": "NASA NSSDCA Master Catalog: Giotto (1985-056A)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1985-056A"
+    },
+    {
+      "title": "NASA NSSDCA: Giotto (encounter details)",
+      "url": "https://nssdc.gsfc.nasa.gov/planetary/giotto.html"
+    },
+    {
+      "title": "ESA: Giotto overview",
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Giotto_overview"
+    },
+    {
+      "title": "JPL Horizons: comet 1P/Halley (DES=1P;CAP<1990), encounter positions",
+      "url": "https://ssd.jpl.nasa.gov/horizons/app.html#/?sstr=1P"
+    },
+    {
+      "title": "JPL Horizons: comet 26P/Grigg-Skjellerup (DES=26P;CAP<1995), encounter position",
+      "url": "https://ssd.jpl.nasa.gov/horizons/app.html#/?sstr=26P"
+    },
+    {
+      "title": "JPL Horizons: Earth (399), 1990 flyby position",
+      "url": "https://ssd.jpl.nasa.gov/horizons/app.html#/?sstr=399"
+    },
+    {
+      "title": "No Horizons ephemeris for Giotto; post-Halley legs reconstructed as multi-revolution Lambert transfers (see statusNote)",
+      "url": "https://en.wikipedia.org/wiki/Giotto_(spacecraft)"
+    }
+  ],
+  "timeline": [
+    {
+      "body": "halley",
+      "kind": "flyby",
+      "start": "1986-03-14",
+      "label": "Flyby at 596 km: the closest look at Halley's nucleus"
+    },
+    {
+      "body": "grigg_skjellerup",
+      "kind": "flyby",
+      "start": "1992-07-10",
+      "label": "Flyby at ~200 km: first spacecraft to visit two comets"
+    }
+  ]
+}
