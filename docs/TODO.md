@@ -51,6 +51,8 @@ Still open:
   the last pull is more than 10 days old. Each pull: positions and
   status of in-flight missions, new launches, placeholders, end-of-
   mission events. Extend the Mars orbiters' fits again before 2027-01-15.
+  STEREO-A's path ends at its last Horizons waypoint (2026-11-20): add
+  one about every 11 months.
 
 <!-- pulls:start -->
 **Last data pull: 2026-11-25** (0 days ago; log: `docs/data-pulls.md`).
