@@ -1,0 +1,57 @@
+{
+  "key": "suisei",
+  "name": "Suisei",
+  "rocket": "M-3SII",
+  "payload": "Ultraviolet imager and solar-wind instrument (139.5 kg)",
+  "status": "Success",
+  "significance": "Suisei (\"comet\") was Japan's main Halley probe. From 151,000 km it imaged the comet's huge cloud of hydrogen in ultraviolet light and watched it breathe in and out, revealing that the nucleus rotated in about 2.2 days, one of the first direct measurements of a comet's spin. Together with its sister Sakigake it made Japan one of only four space agencies in the international Halley Armada.",
+  "statusNote": "ISAS (Japan), launched 1985-08-18 on an M-3SII from Uchinoura. Passed Halley at 151,000 km on 1986-03-08 (sunward side), imaging its hydrogen corona in ultraviolet. A planned 1998 Giacobini–Zinner/Tempel-Tuttle extension was abandoned when propellant ran out in 1991; operations ended 1991-02-22. Modeled as one Lambert arc from launch to Halley; no JPL Horizons ephemeris exists. Sources: NASA NSSDCA (COSPAR 1985-073A; nssdc.gsfc.nasa.gov/planetary/planets/cometpage.html), the mission's Wikipedia article and its cited references (Siddiqi 2018, Beyond Earth, NASA SP-2018-4041), and agency pages.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "halley",
+      "departDate": "1985-08-18",
+      "arrivalDate": "1986-03-08T13:06:00Z"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Suisei (PLANET-A)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Suisei_(spacecraft)",
+      "imagePage": "https://www.isas.jaxa.jp/en/missions/spacecraft/past/suisei.html",
+      "imageCredit": "ISAS/JAXA"
+    },
+    "rocket": {
+      "title": "M-3SII",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mu_(rocket)",
+      "localImage": "images/rockets/mu_3sii.jpg"
+    }
+  },
+  "dataSources": [
+    {
+      "title": "NASA NSSDCA Master Catalog: Suisei (1985-073A)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1985-073A"
+    },
+    {
+      "title": "ISAS/JAXA: Suisei",
+      "url": "https://www.isas.jaxa.jp/en/missions/spacecraft/past/suisei.html"
+    },
+    {
+      "title": "JPL Horizons: comet 1P/Halley (DES=1P;CAP<1990), encounter positions",
+      "url": "https://ssd.jpl.nasa.gov/horizons/app.html#/?sstr=1P"
+    },
+    {
+      "title": "No JPL Horizons ephemeris exists for this spacecraft; legs are Lambert arcs between the published launch and encounter dates",
+      "url": "https://en.wikipedia.org/wiki/Suisei_(spacecraft)"
+    }
+  ],
+  "timeline": [
+    {
+      "body": "halley",
+      "kind": "flyby",
+      "start": "1986-03-08",
+      "label": "Flyby at 151,000 km; ultraviolet images of the hydrogen cloud"
+    }
+  ]
+}

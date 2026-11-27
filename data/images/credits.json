@@ -250,6 +250,38 @@
    "Ganymede"
   ]
  },
+ "images/bodies/grigg_skjellerup.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Grigg-Skjellerup_19920710.jpg",
+  "sourceTitle": "Grigg-Skjellerup 19920710.jpg",
+  "credit": "ESO",
+  "creditDetail": "https://www.eso.org/public/images/eso9210a/",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Comet Grigg–Skjellerup on 10 July 1992 (ESO)",
+  "usedBy": [
+   "Grigg–Skjellerup (26P)"
+  ]
+ },
+ "images/bodies/halley.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Lspn_comet_halley_(cropped).jpg",
+  "sourceTitle": "Lspn comet halley (cropped).jpg",
+  "credit": "NASA/W. Liller",
+  "creditDetail": "NSSDC's Photo Gallery (NASA): http://nssdc.gsfc.nasa.gov/photo_gallery/photogallery-comets.html http://nssdc.gsfc.nasa.gov/image/planetary/comet/lspn_comet_halley1.jpg",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Halley's Comet in 1986 (NASA/W. Liller)",
+  "usedBy": [
+   "Halley (1P)"
+  ]
+ },
  "images/bodies/iapetus.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Iapetus_as_seen_by_Cassini_True_Color.png",
   "sourceTitle": "Iapetus as seen by Cassini True Color.png",
@@ -1021,6 +1053,22 @@
    "genesis"
   ]
  },
+ "images/missions/giotto/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Giotto_Whipple_shield_ESA239195.jpg",
+  "sourceTitle": "Giotto Whipple shield ESA239195.jpg",
+  "credit": "European Space Agency",
+  "creditDetail": "http://www.esa.int/spaceinimages/Images/2009/02/Giotto_Whipple_shield",
+  "license": "CC BY-SA 3.0 igo",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/deed.en",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Giotto (spacecraft, with its Whipple dust shield)",
+  "usedBy": [
+   "giotto"
+  ]
+ },
  "images/missions/hayabusa/spacecraft.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Hayabusa_hover.jpg",
   "sourceTitle": "Hayabusa hover.jpg",
@@ -1785,6 +1833,22 @@
    "venus_express"
   ]
  },
+ "images/rockets/ariane_1.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Ariane_1_Le_Bourget_FRA_001.jpg",
+  "sourceTitle": "Ariane 1 Le Bourget FRA 001.jpg",
+  "credit": "ignis",
+  "creditDetail": "Own work",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Ariane 1",
+  "usedBy": [
+   "giotto"
+  ]
+ },
  "images/rockets/ariane_5.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(51773093465).jpg",
   "sourceTitle": "Ariane 5 with James Webb Space Telescope Prelaunch (51773093465).jpg",
@@ -2004,6 +2068,23 @@
   "usedBy": [
    "hayabusa",
    "nozomi"
+  ]
+ },
+ "images/rockets/mu_3sii.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:M-3SII_exhibition_model.jpg",
+  "sourceTitle": "M-3SII exhibition model.jpg",
+  "credit": "Naritama (NARITA Masahiro)",
+  "creditDetail": "photo taken by Naritama (NARITA Masahiro)",
+  "license": "CC BY 2.1 jp",
+  "licenseUrl": "https://creativecommons.org/licenses/by/2.1/jp/deed.en",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "M-3SII",
+  "usedBy": [
+   "sakigake",
+   "suisei"
   ]
  },
  "images/rockets/new_glenn.jpg": {

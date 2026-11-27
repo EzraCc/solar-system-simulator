@@ -119,6 +119,19 @@ T = {
   "deep_space_1": [ev("braille", "flyby", "1999-07-29", "Flyby"),
                    ev("borrelly", "flyby", "2001-09-22", "Flyby")],
   "lucy": [ev("patroclus", "flyby", "2033-03-03", "Flyby of the Patroclus–Menoetius binary (planned)")],
+  # ---- Halley Armada (1984-86) ----
+  "vega_1": [ev("Venus", "entry", "1985-06-11", "Descent module entered; balloon floated in the clouds ~46 h"),
+             ev("Venus", "landing", "1985-06-11", "Lander touched down north of Aphrodite Terra"),
+             bar("Venus", "ground", "1985-06-11", "1985-06-11", "Lander on the surface (~56 min)"),
+             ev("halley", "flyby", "1986-03-06", "Flyby at 8,889 km: first close images of a comet nucleus")],
+  "vega_2": [ev("Venus", "entry", "1985-06-15", "Descent module entered; balloon floated in the clouds ~46 h"),
+             ev("Venus", "landing", "1985-06-15", "Lander touched down in Rusalka Planitia"),
+             bar("Venus", "ground", "1985-06-15", "1985-06-15", "Lander on the surface (~57 min)"),
+             ev("halley", "flyby", "1986-03-09", "Flyby at 8,030 km")],
+  "sakigake": [ev("halley", "flyby", "1986-03-11", "Distant flyby (7 million km), monitoring the solar wind")],
+  "suisei": [ev("halley", "flyby", "1986-03-08", "Flyby at 151,000 km; ultraviolet images of the hydrogen cloud")],
+  "giotto": [ev("halley", "flyby", "1986-03-14", "Flyby at 596 km: the closest look at Halley's nucleus"),
+             ev("grigg_skjellerup", "flyby", "1992-07-10", "Flyby at ~200 km: first spacecraft to visit two comets")],
 }
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")

@@ -38,6 +38,9 @@ landing, flyby, entry, impact, lost.
 
 ## To add: reached interplanetary space (55)
 
+**Added so far:** Vega 1, Vega 2, Sakigake, Giotto, Suisei (2026-11-27,
+with comets 1P/Halley and 26P/Grigg–Skjellerup as catalog bodies).
+
 ### 1960s
 
 | Mission | Agency | Launch | Target | Key events | Outcome |

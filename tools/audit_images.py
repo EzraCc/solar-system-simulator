@@ -97,6 +97,16 @@ MANUAL = {
     "images/rockets/falcon_9.jpg": {"file": "Iridium-1 Launch (32312419215).jpg"},
     "images/rockets/falcon_heavy.jpg": {"nasa_id": "NHQ202310110005"},
     "images/rockets/proton_k.jpg": {"file": "Proton-K-Zarya.jpg"},
+    # Halley Armada flights (1984-85). No NASA Image Library originals for
+    # these (non-NASA missions); Commons. Sakigake, Suisei and Vega use
+    # link-only tiles: the only images are ISAS or Soviet drawings (NSSDCA
+    # hosts copies tagged NASA public domain, but that doesn't make them
+    # NASA works).
+    "images/bodies/halley.jpg": {"file": "Lspn comet halley (cropped).jpg"},
+    "images/bodies/grigg_skjellerup.jpg": {"file": "Grigg-Skjellerup 19920710.jpg"},
+    "images/missions/giotto/spacecraft.jpg": {"file": "Giotto Whipple shield ESA239195.jpg"},
+    "images/rockets/ariane_1.jpg": {"file": "Ariane 1 Le Bourget FRA 001.jpg"},
+    "images/rockets/mu_3sii.jpg": {"file": "M-3SII exhibition model.jpg"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},

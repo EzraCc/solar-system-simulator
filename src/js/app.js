@@ -534,6 +534,35 @@
       meta: { color: '#a8a098', radiusKm: 3.0, dimensionsKm: [7.6, 4.9], shapeNote: 'elongated nucleus' },
       targetOfFlights: ['deep_impact'],
     },
+    // Halley's Comet: retrograde (i ~162 deg), 76-year orbit reaching past
+    // Neptune. Elements are a JPL Horizons heliocentric state vector at
+    // 1986-03-10 (the "Halley Armada" encounters, 6-14 March 1986) run
+    // through the same state-vector-to-elements conversion as the Ulysses
+    // comets below, so the 1985-86 apparition is reproduced closely;
+    // planetary perturbations and outgassing make this two-body orbit drift
+    // over decades, which doesn't matter for the missions it serves.
+    halley: {
+      name: 'Halley (1P)', types: ['comet'],
+      elements: { a: 17.94105255688898, e: 0.9672759717738842, iDeg: 162.24219736667658,
+                  OmDeg: 58.86005633585703, wDeg: 111.86559580076681, M0Deg: 0.37017928207989387,
+                  epochDays: -5045.5 },
+      // dimensionsKm: Giotto/Vega imaging -- a dark, peanut-shaped nucleus
+      // about 15 x 8 x 8 km (Keller et al. 1986; Sagdeev et al. 1986).
+      meta: { color: '#b8b4a8', radiusKm: 5.5, dimensionsKm: [15, 8, 8], shapeNote: 'peanut-shaped nucleus' },
+      targetOfFlights: ['vega_1', 'vega_2', 'sakigake', 'giotto', 'suisei'],
+    },
+    // Giotto's second comet (1992). Horizons state vector at the encounter
+    // date, 1992-07-10, converted the same way as Halley's.
+    grigg_skjellerup: {
+      name: 'Grigg–Skjellerup (26P)', types: ['comet'],
+      elements: { a: 2.9633563747918275, e: 0.6643367486557651, iDeg: 21.098816181422134,
+                  OmDeg: 213.3403034652402, wDeg: 359.2648773160157, M0Deg: 357.65503144176296,
+                  epochDays: -2731.5 },
+      // Nucleus never imaged (Giotto's camera was disabled at Halley);
+      // ~2.6 km diameter is a ground-based estimate (Boehnhardt et al. 1999).
+      meta: { color: '#a8a49a', radiusKm: 1.3 },
+      targetOfFlights: ['giotto'],
+    },
     psyche: {
       name: 'Psyche (16)', types: ['asteroid'],
       elements: { a: 2.925720466462538, e: 0.1349324738201893, iDeg: 3.098749116151128,
@@ -4745,6 +4774,7 @@
   // SMALL_BODIES key. A body missing here just shows its broad kind.
   const SMALL_BODY_GROUP = {
     '67P': "Jupiter-family comet", tempel1: "Jupiter-family comet",
+    halley: "Halley-type comet (76-year orbit)", grigg_skjellerup: "Jupiter-family comet",
     wild2: "Jupiter-family comet", borrelly: "Jupiter-family comet",
     hyakutake: "long-period comet", mcnaught_hartley: "long-period comet",
     mcnaught: "long-period comet",

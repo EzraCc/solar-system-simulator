@@ -1,0 +1,78 @@
+{
+  "key": "sakigake",
+  "name": "Sakigake",
+  "rocket": "M-3SII",
+  "payload": "Solar-wind and magnetic-field instruments (138 kg)",
+  "status": "Success",
+  "significance": "Sakigake (\"pioneer\") was Japan's first interplanetary spacecraft and the first deep-space probe launched by any country other than the United States or the Soviet Union. It was an engineering test for its sister Suisei and a monitor of the solar wind upstream of Halley's Comet, measuring the conditions the comet was immersed in while the other Halley probes flew through its coma. Its success established the deep-space tracking and navigation that later Japanese missions such as Nozomi, Hayabusa and Akatsuki built on.",
+  "statusNote": "ISAS (Japan) test probe and solar-wind monitor, launched 1985-01-07 on an M-3SII from Uchinoura. Passed Halley at 6.99 million km on 1986-03-11 04:18 UT. Later made Earth swing-bys (1992-01-08 and later) not modeled here. Telemetry ended 1995-11-15; beacon heard until 1999-01-07. ESTIMATED PATH: no Horizons ephemeris or published state vectors exist, and a single arc from launch to the comet would swing out to 2.1 AU, far from Sakigake's real ~1 AU orbit (the 428-day cruise is more than one revolution). The path is drawn as two arcs through one waypoint (a stand-in for its 1985 course corrections), chosen to keep it near its real ~1 AU orbit; the second arc ends at Halley itself, although Sakigake actually passed 7 million km away on an unpublished bearing. Sources: NASA NSSDCA (COSPAR 1985-001A; nssdc.gsfc.nasa.gov/planetary/planets/cometpage.html), the mission's Wikipedia article and its cited references (Siddiqi 2018, Beyond Earth, NASA SP-2018-4041), and agency pages.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": {
+        "fixedPos": [
+          0.0,
+          -0.95,
+          0.0
+        ]
+      },
+      "departDate": "1985-01-07",
+      "arrivalDate": "1985-06-06T19:27:00Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0,
+          -0.95,
+          0.0
+        ]
+      },
+      "toBody": "halley",
+      "departDate": "1985-06-06T19:27:00Z",
+      "arrivalDate": "1986-03-11T04:18:00Z",
+      "estimate": true
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Sakigake (MS-T5)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Sakigake",
+      "imagePage": "https://www.isas.jaxa.jp/en/missions/spacecraft/past/sakigake.html",
+      "imageCredit": "ISAS/JAXA"
+    },
+    "rocket": {
+      "title": "M-3SII",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mu_(rocket)",
+      "localImage": "images/rockets/mu_3sii.jpg"
+    }
+  },
+  "dataSources": [
+    {
+      "title": "NASA NSSDCA Master Catalog: Sakigake (1985-001A)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1985-001A"
+    },
+    {
+      "title": "ISAS/JAXA: Sakigake",
+      "url": "https://www.isas.jaxa.jp/en/missions/spacecraft/past/sakigake.html"
+    },
+    {
+      "title": "JPL Horizons: comet 1P/Halley (DES=1P;CAP<1990), encounter positions",
+      "url": "https://ssd.jpl.nasa.gov/horizons/app.html#/?sstr=1P"
+    },
+    {
+      "title": "Path estimated here: no ephemeris or published waypoints exist (see statusNote)",
+      "url": "https://en.wikipedia.org/wiki/Sakigake"
+    }
+  ],
+  "timeline": [
+    {
+      "body": "halley",
+      "kind": "flyby",
+      "start": "1986-03-11",
+      "label": "Distant flyby (7 million km), monitoring the solar wind"
+    }
+  ]
+}

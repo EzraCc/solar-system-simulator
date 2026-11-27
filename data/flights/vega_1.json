@@ -1,0 +1,89 @@
+{
+  "key": "vega_1",
+  "name": "Vega 1",
+  "rocket": "Proton-K / Blok D",
+  "payload": "Halley flyby bus + Venus descent module (lander and balloon), ~4,900 kg",
+  "status": "Success",
+  "significance": "Vega 1 was the first of two Soviet spacecraft that combined a Venus mission with a visit to Halley's Comet, using Venus's gravity to bend their path toward the comet's 1986 return. At Venus it released a descent module carrying a lander and the first balloon ever flown on another planet, which drifted for two days in the cloud layer measuring winds and turbulence. Three months before Giotto, the bus flew through Halley's coma and took the first close images of a comet nucleus, and its tracking was used to aim Giotto's much closer pass, an early example of spacecraft from rival nations working together.",
+  "statusNote": "Soviet Venus–Halley mission (Vega = VEnera + GAllei, Russian for Halley). Launched 1984-12-15. Released its descent module two days before the Venus flyby; the module entered on 1985-06-11 (lander touched down north of Aphrodite Terra, ~56 min of surface data; balloon floated ~46 h at ~54 km). The bus flew past Venus at ~39,000 km and used the gravity assist to reach Halley, passing the nucleus at 8,889 km on 1986-03-06 07:20 UT and returning the first close images of a comet nucleus. Attitude-control propellant ran out on 1987-01-30. Modeled as Lambert legs between the real launch, Venus flyby and Halley encounter dates; no JPL Horizons ephemeris exists for Vega. After the Venus flyby the app draws the patched-conic continuation of the gravity assist, which arrives about 0.03 AU (4 million km) from Halley because the real post-flyby course corrections aren't modeled. Sources: NASA NSSDCA (COSPAR 1984-125A; nssdc.gsfc.nasa.gov/planetary/planets/cometpage.html), the mission's Wikipedia article and its cited references (Siddiqi 2018, Beyond Earth, NASA SP-2018-4041), and agency pages.",
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "1984-12-15",
+      "arrivalDate": "1985-06-11"
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "1985-06-11",
+      "periapsisKm": 39000
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "halley",
+      "departDate": "1985-06-11",
+      "arrivalDate": "1986-03-06T07:20:00Z"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Vega 1 (illustration)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Vega_1",
+      "imagePage": "https://commons.wikimedia.org/wiki/File:Vega-mission.jpg",
+      "imageCredit": "Soviet illustration, via NASA NSSDCA"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "dataSources": [
+    {
+      "title": "NASA NSSDCA Master Catalog: Vega 1 (1984-125A)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1984-125A"
+    },
+    {
+      "title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958-2016 (NASA SP-2018-4041)",
+      "url": "https://www.nasa.gov/history/history-publications-and-resources/nasa-history-series/beyond-earth-a-chronicle-of-deep-space-exploration/"
+    },
+    {
+      "title": "JPL Horizons: comet 1P/Halley (DES=1P;CAP<1990), encounter positions",
+      "url": "https://ssd.jpl.nasa.gov/horizons/app.html#/?sstr=1P"
+    },
+    {
+      "title": "No JPL Horizons ephemeris exists for this spacecraft; legs are Lambert arcs between the published launch and encounter dates",
+      "url": "https://en.wikipedia.org/wiki/Vega_1"
+    }
+  ],
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1985-06-11",
+      "label": "Descent module entered; balloon floated in the clouds ~46 h"
+    },
+    {
+      "body": "Venus",
+      "kind": "landing",
+      "start": "1985-06-11",
+      "label": "Lander touched down north of Aphrodite Terra"
+    },
+    {
+      "body": "Venus",
+      "kind": "ground",
+      "start": "1985-06-11",
+      "end": "1985-06-11",
+      "label": "Lander on the surface (~56 min)"
+    },
+    {
+      "body": "halley",
+      "kind": "flyby",
+      "start": "1986-03-06",
+      "label": "Flyby at 8,889 km: first close images of a comet nucleus"
+    }
+  ]
+}
