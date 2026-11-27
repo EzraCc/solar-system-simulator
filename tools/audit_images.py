@@ -126,6 +126,11 @@ MANUAL = {
         "credit": "NASA/Ames Research Center (art by Paul Hudson)"},
     "images/rockets/atlas_centaur.jpg": {"nasa_id": "9019350"},
     "images/missions/venera_12/lander.jpg": {"file": "Cut-away model of a Soviet Venera 12 lander.jpg"},
+    # Helios 1/2 (KSC photos and the San Diego Air & Space Museum launch photo).
+    "images/missions/helios_1/spacecraft.jpg": {"file": "Helios spacecraft.jpg", "credit": "NASA/KSC (KSC-74P-0223)"},
+    "images/missions/helios_2/spacecraft.jpg": {"file": "Helios spacecraft 2.jpg", "credit": "NASA/KSC (KSC-74P-0222)"},
+    "images/missions/helios_1/rocket.jpg": {"file": "Titan 3E Centaur with Helios 1.jpg", "credit": "NASA/KSC (KSC-74P-0298)"},
+    "images/missions/helios_2/rocket.jpg": {"file": "Helios B launch.jpg"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},

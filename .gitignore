@@ -28,3 +28,4 @@ tools/.texture_cache/
 # Python bytecode
 __pycache__/
 tools/.image_audit_cache/
+tools/.helios_cache/
