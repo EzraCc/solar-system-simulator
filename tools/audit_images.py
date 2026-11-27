@@ -97,6 +97,15 @@ MANUAL = {
     "images/rockets/falcon_9.jpg": {"file": "Iridium-1 Launch (32312419215).jpg"},
     "images/rockets/falcon_heavy.jpg": {"nasa_id": "NHQ202310110005"},
     "images/rockets/proton_k.jpg": {"file": "Proton-K-Zarya.jpg"},
+    # 1978 Venus fleet (added 2026-11-26). The two NASA Ames artworks were
+    # commissioned by NASA; the library record names the artist only in its
+    # description, so the credit says so.
+    "images/missions/pioneer_venus_1/spacecraft.jpg": {"nasa_id": "ARC-1977-AC77-0475-11",
+        "credit": "NASA/Ames Research Center (art by Don Davis)"},
+    "images/missions/pioneer_venus_2/spacecraft.jpg": {"nasa_id": "ARC-1978-AC78-9245",
+        "credit": "NASA/Ames Research Center (art by Paul Hudson)"},
+    "images/rockets/atlas_centaur.jpg": {"nasa_id": "9019350"},
+    "images/missions/venera_12/lander.jpg": {"file": "Cut-away model of a Soviet Venera 12 lander.jpg"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},

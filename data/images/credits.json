@@ -1561,6 +1561,36 @@
    "phoenix"
   ]
  },
+ "images/missions/pioneer_venus_1/spacecraft.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/ARC-1977-AC77-0475-11",
+  "sourceTitle": "ARC-1977-AC77-0475-11",
+  "credit": "NASA/Ames Research Center (art by Don Davis)",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Pioneer Venus Orbiter (art by Don Davis)",
+  "usedBy": [
+   "pioneer_venus_1"
+  ]
+ },
+ "images/missions/pioneer_venus_2/spacecraft.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/ARC-1978-AC78-9245",
+  "sourceTitle": "ARC-1978-AC78-9245",
+  "credit": "NASA/Ames Research Center (art by Paul Hudson)",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Pioneer Venus Multiprobe (art by Paul Hudson)",
+  "usedBy": [
+   "pioneer_venus_2"
+  ]
+ },
  "images/missions/psp/spacecraft.png": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Parker_Solar_Probe_spacecraft_model.png",
   "sourceTitle": "Parker Solar Probe spacecraft model.png",
@@ -1769,6 +1799,23 @@
    "ulysses"
   ]
  },
+ "images/missions/venera_12/lander.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Cut-away_model_of_a_Soviet_Venera_12_lander.jpg",
+  "sourceTitle": "Cut-away model of a Soviet Venera 12 lander.jpg",
+  "credit": "Don S. Montgomery, U.S. Navy (Ret.)",
+  "creditDetail": "http://www.defenseimagery.mil; VIRIN: DN-SC-86-01099",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Venera 11/12 lander (identical design; cut-away model)",
+  "usedBy": [
+   "venera_11",
+   "venera_12"
+  ]
+ },
  "images/missions/venus_express/spacecraft.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Venus_Express_in_orbit_(crop).jpg",
   "sourceTitle": "Venus Express in orbit (crop).jpg",
@@ -1801,6 +1848,22 @@
    "bepicolombo",
    "juice",
    "rosetta"
+  ]
+ },
+ "images/rockets/atlas_centaur.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/9019350",
+  "sourceTitle": "Early Rockets",
+  "credit": "NASA/MSFC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Atlas-Centaur",
+  "usedBy": [
+   "pioneer_venus_1",
+   "pioneer_venus_2"
   ]
  },
  "images/rockets/atlas_v.jpg": {

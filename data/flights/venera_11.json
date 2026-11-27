@@ -1,0 +1,46 @@
+{
+  "key": "venera_11",
+  "name": "Venera 11",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1978-09-09",
+  "arrival": "1978-12-25",
+  "rocket": "Proton-K / Blok D-1",
+  "payload": "Flyby bus (flight platform) and descent lander",
+  "status": "Success",
+  "significance": "Venera 11 and its twin Venera 12 were the Soviet Union's 1978 return to the surface of Venus, each pairing a lander with a flyby bus that relayed the lander's signal to Earth. Venera 11's lander came down on Christmas Day 1978 and kept working for 95 minutes in heat around 450 C and pressure roughly 90 times Earth's. It measured the composition of the lower atmosphere and saw what may have been lightning in its radio data, but its cameras returned nothing because their lens covers never came off. The flyby bus carried gamma-ray burst detectors that, with Venera 12 and other spacecraft, built the first catalog of these mysterious cosmic explosions by timing each burst at widely separated points in space.",
+  "statusNote": "Direct Earth->Venus transfer, no gravity assists; the arc ends at the lander's touchdown. The lander separated 1978-12-23 and touched down 1978-12-25 03:24 UT (14 S, 299 E), returning data via the bus for 95 min until the bus flew out of range. The bus passed Venus at ~35,000 km and continued into solar orbit (its post-flyby heliocentric path isn't drawn); its last reported gamma-ray burst was 1980-01-27. No JPL Horizons ephemeris. Sources: NASA NSSDCA Venus chronology (its Venera 11 catalog records, 1978-084A and -084D, returned a database error on 2026-11-26) and the standard mission record (Wikipedia, citing NSSDCA).",
+  "assets": {
+    "lander": {
+      "title": "Venera 11/12 lander (identical design; cut-away model)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_12",
+      "localImage": "images/missions/venera_12/lander.jpg"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "landing",
+      "start": "1978-12-25T03:24:00Z",
+      "label": "Lander touched down"
+    },
+    {
+      "body": "Venus",
+      "kind": "ground",
+      "start": "1978-12-25T03:24:00Z",
+      "end": "1978-12-25T04:59:00Z",
+      "label": "Lander: 95 min relayed via the bus"
+    },
+    {
+      "body": "Venus",
+      "kind": "flyby",
+      "start": "1978-12-25T05:00:00Z",
+      "label": "Bus flew past (~35,000 km), into solar orbit"
+    }
+  ]
+}
