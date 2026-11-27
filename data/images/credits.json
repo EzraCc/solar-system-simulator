@@ -453,6 +453,21 @@
    "Neptune"
   ]
  },
+ "images/bodies/nereid.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA00054",
+  "sourceTitle": "Nereid",
+  "credit": "NASA/JPL",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Nereid (Voyager 2, 1989, from 4.7 million km)",
+  "usedBy": [
+   "Nereid"
+  ]
+ },
  "images/bodies/oberon.jpg": {
   "sourcePage": "https://images.nasa.gov/details/PIA00034",
   "sourceTitle": "Oberon at Voyager Closest Approach",

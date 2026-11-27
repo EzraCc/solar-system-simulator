@@ -289,6 +289,16 @@
       }
     }
   },
+  "Nereid": {
+    "significance": "Nereid is Neptune's third-largest moon and has the most stretched-out orbit of any known moon: it swings from about 1.4 million to 9.6 million km from Neptune once a year (360 days). Gerard Kuiper found it in 1949, the last Neptunian moon discovered before Voyager 2. Until Voyager 2 photographed it on 24 August 1989, from 4.7 million km, only its orbit and brightness were known; the images showed a dark grey body reflecting about 12% of sunlight, first estimated at about 170 km across and now put at about 340 km (JPL: mean radius 170 km). Its odd orbit suggests it was disturbed, or captured, when Neptune captured Triton.",
+    "assets": {
+      "image": {
+        "title": "Nereid (Voyager 2, 1989, from 4.7 million km)",
+        "infoUrl": "https://images.nasa.gov/details/PIA00054",
+        "localImage": "images/bodies/nereid.jpg"
+      }
+    }
+  },
   "Charon": {
     "significance": "Charon is Pluto's largest moon and, at roughly half Pluto's diameter, is massive enough relative to its primary that the two bodies orbit a common barycenter located outside Pluto itself, forming what is often described as a binary system. Its surface is dominated by Serenity Chasma, an enormous belt of canyons and fault-bounded troughs extending over 1,600 kilometers, with individual chasms reaching 7-9 kilometers deep, evidence of a global tensional fracturing event likely caused by the freezing and expansion of a subsurface liquid water ocean early in its history. The moon's most visually distinctive feature is Mordor Macula, a dark reddish-brown polar cap at its north pole formed from methane gas that escapes Pluto's thin atmosphere, becomes gravitationally captured by Charon, freezes onto its extremely cold pole during a decades-long polar night, and is chemically converted by ultraviolet radiation into complex reddish organic compounds called tholins. Unlike Pluto, Charon shows no evidence of current geologic or atmospheric activity, but its ancient, heavily fractured terrain preserves a record of past cryovolcanism, including a smooth region called Vulcan Planitia thought to have been resurfaced by cryovolcanic flows of water-ice slush.",
     "assets": {

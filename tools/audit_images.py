@@ -75,6 +75,7 @@ MANUAL = {
     "images/bodies/donaldjohanson.png": {"file": "Donaldjohanson Combined.png"},
     "images/bodies/ganymede.jpg": {"nasa_id": "PIA00716"},
     "images/bodies/mercury.jpg": {"nasa_id": "PIA11245"},
+    "images/bodies/nereid.jpg": {"nasa_id": "PIA00054"},
     "images/bodies/pluto_charon.jpg": {"nasa_id": "PIA19966"},
     "images/bodies/polymele.png": {"file": "Polymele occultation satellite discovery.png"},
     "images/bodies/sol.jpg": {"file": "SDO 20250309 001038 4096 HMII (HMI).jpg"},

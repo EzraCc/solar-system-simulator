@@ -408,17 +408,31 @@
       { name: 'Iapetus',   elements: { aKm: 3560829.4, e: 0.028325, iDeg: 17.16748, OmDeg0: 139.59149, wDeg0: 229.0266, M0Deg: 208.74963, periodSiderealDays: 79.336264, nodalPeriodDays: 3687283.27, apsidalPeriodDays: 916650.96 }, meta: { color: '#a09080', radiusKm:  735.6 } },
     ],
     Uranus: [
-      { name: 'Miranda', elements: { aKm: 129390, e: 0.0013, iDeg: 97.8, OmDeg0: 167.4, wDeg0:  68.3, M0Deg:  45, periodSiderealDays:  1.4135 }, meta: { color: '#b0a898', radiusKm: 235.8 } },
-      { name: 'Ariel',   elements: { aKm: 190900, e: 0.0012, iDeg: 97.8, OmDeg0: 167.4, wDeg0: 115.3, M0Deg: 115, periodSiderealDays:  2.5204 }, meta: { color: '#c0bcb0', radiusKm: 578.9 } },
-      { name: 'Umbriel', elements: { aKm: 266300, e: 0.0039, iDeg: 97.8, OmDeg0: 167.4, wDeg0:  84.7, M0Deg:  84, periodSiderealDays:  4.1442 }, meta: { color: '#706860', radiusKm: 584.7 } },
-      { name: 'Titania', elements: { aKm: 435910, e: 0.0011, iDeg: 97.8, OmDeg0: 167.4, wDeg0: 284.4, M0Deg: 299, periodSiderealDays:  8.7059 }, meta: { color: '#a89888', radiusKm: 788.9 } },
-      { name: 'Oberon',  elements: { aKm: 583520, e: 0.0014, iDeg: 97.8, OmDeg0: 167.4, wDeg0: 104.4, M0Deg: 273, periodSiderealDays: 13.4632 }, meta: { color: '#887870', radiusKm: 761.4 } },
+      // Fitted 2026-11-27 to JPL Horizons (tools/fit_moon_elements.py) in the
+      // frame of Uranus's spin pole (RA 77.311, Dec +15.175: the IAU north pole
+      // RA 257.311, Dec -15.175 reversed, since Uranus spins retrograde; with
+      // the IAU pole the orbits sit at i~180 deg, where node and periapsis are
+      // undefined). Ariel-Oberon over 1980-2030: max error 572 km (Umbriel) to
+      // 1,960 km (Oberon); at the Voyager 2 encounter (1986-01-20..28) 377-1,398 km.
+      // Miranda wobbles by a few thousand km (resonance terms a mean-element fit
+      // can't follow), so it is fitted over 1985-1987 for the encounter: 174 km
+      // on 1986-01-20..28 (Voyager 2 passed 29,000 km from it), drifting to
+      // ~13,000 km by 2030. A 1980-2030 fit would be 3,200 km off at the encounter.
+      { name: 'Miranda', elements: { aKm: 129848.0, e: 0.001483, iDeg: 4.42855, OmDeg0: 95.90765, wDeg0: 133.67234, M0Deg: 91.90527, periodSiderealDays: 1.41376261, refPoleRaDec: [77.311, 15.175], nodalPeriodDays: 6499.52, apsidalPeriodDays: 3388.72 }, meta: { color: '#b0a898', radiusKm: 235.8 } },
+      { name: 'Ariel', elements: { aKm: 190927.7, e: 0.001204, iDeg: 0.00544, OmDeg0: 315.70943, wDeg0: 95.40063, M0Deg: 147.05382, periodSiderealDays: 2.52066919, refPoleRaDec: [77.311, 15.175], nodalPeriodDays: -21459.39, apsidalPeriodDays: -1050993.4 }, meta: { color: '#c0bcb0', radiusKm: 578.9 } },
+      { name: 'Umbriel', elements: { aKm: 265981.0, e: 0.003813, iDeg: -0.06524, OmDeg0: 7.35501, wDeg0: 334.5663, M0Deg: 264.33421, periodSiderealDays: 4.14456849, refPoleRaDec: [77.311, 15.175], nodalPeriodDays: 36716.78, apsidalPeriodDays: 19991.6 }, meta: { color: '#706860', radiusKm: 584.7 } },
+      { name: 'Titania', elements: { aKm: 436281.0, e: 0.001879, iDeg: 0.08724, OmDeg0: 346.45074, wDeg0: 234.28999, M0Deg: 55.79789, periodSiderealDays: 8.70663399, refPoleRaDec: [77.311, 15.175], nodalPeriodDays: 1461059.44, apsidalPeriodDays: 92813.38 }, meta: { color: '#a89888', radiusKm: 788.9 } },
+      { name: 'Oberon', elements: { aKm: 583442.8, e: 0.0011, iDeg: 0.1851, OmDeg0: 35.44337, wDeg0: 142.76515, M0Deg: 169.31644, periodSiderealDays: 13.46357911, refPoleRaDec: [77.311, 15.175], nodalPeriodDays: 195945.52, apsidalPeriodDays: 143184.29 }, meta: { color: '#887870', radiusKm: 761.4 } },
     ],
     Neptune: [
-      // Triton: retrograde (i=130.8°), captured KBO. Period is the sidereal period
-      // magnitude; the inclination > 90° encodes the retrograde direction.
-      // i=130.8° is the ecliptic-frame value; 157° is the equatorial-frame value (wrong frame here).
-      { name: 'Triton', elements: { aKm: 354759, e: 0.000016, iDeg: 130.8, OmDeg0: 131.7, wDeg0: 264.8, M0Deg: 352, periodSiderealDays: 5.8769 }, meta: { color: '#b8c8c0', radiusKm: 1353.4 } },
+      // Fitted 2026-11-27 to JPL Horizons over 1980-2030 (tools/fit_moon_elements.py).
+      // Triton (retrograde) in the frame of Neptune's mean pole (IAU 2015,
+      // RA 299.36, Dec 43.46): max error 62 km, 35 km at the Voyager 2
+      // encounter (1989-08-22..28). Nereid (e = 0.75, solar-perturbed) in the
+      // ecliptic frame: max 230,000 km on a 5.5-million-km orbit, 69,000 km at
+      // the encounter (Voyager 2 imaged it from 4.7 million km).
+      { name: 'Triton', elements: { aKm: 354759.1, e: 0.000127, iDeg: 156.82797, OmDeg0: 153.34319, wDeg0: 77.12008, M0Deg: 341.52042, periodSiderealDays: 5.87696122, refPoleRaDec: [299.36, 43.46], nodalPeriodDays: -250954.04, apsidalPeriodDays: 141273.97 }, meta: { color: '#b8c8c0', radiusKm: 1353.4 } },
+      { name: 'Nereid', elements: { aKm: 5513771.4, e: 0.749314, iDeg: 5.05465, OmDeg0: 319.69089, wDeg0: 296.6721, M0Deg: 216.18219, periodSiderealDays: 360.11511201, nodalPeriodDays: 7756426.37, apsidalPeriodDays: 9760580.74 }, meta: { color: '#9a948c', radiusKm: 170 } },
     ],
   };
 
@@ -8272,12 +8286,33 @@
      info panel or a touring flight's panel; Escape or the back button exits
      and restores the Solar System camera.
   ========================================================================= */
-  const SYSTEM_VIEW_PRIMARIES = ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Pluto"];
+  const SYSTEM_VIEW_PRIMARIES = ["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
   // Starting half-width of the view (km) where the outermost moon would make
-  // the planet a speck (Saturn's Iapetus) or there are no moons at all.
-  const SYSTEM_DEFAULT_EXTENT_KM = { Mercury: 16000, Venus: 90000, Mars: 26000, Saturn: 1.45e6, Pluto: 60000 };
+  // the planet a speck (Saturn's Iapetus, Neptune's Nereid at up to 9.6
+  // million km) or there are no moons at all.
+  const SYSTEM_DEFAULT_EXTENT_KM = { Mercury: 16000, Venus: 90000, Mars: 26000, Saturn: 1.45e6, Uranus: 650000, Neptune: 420000, Pluto: 60000 };
   // Default playback speed (days per second) on entering each system.
-  const SYSTEM_DEFAULT_SPEED = { Mercury: 0.0417, Venus: 0.25, Mars: 0.0417, Jupiter: 0.25, Saturn: 0.25, Pluto: 0.0417 };
+  const SYSTEM_DEFAULT_SPEED = { Mercury: 0.0417, Venus: 0.25, Mars: 0.0417, Jupiter: 0.25, Saturn: 0.25, Uranus: 0.25, Neptune: 0.25, Pluto: 0.0417 };
+  // Narrow rings drawn as thin lines (km from the planet's centre), in the
+  // planet's equatorial plane. NASA NSSDCA Uranian and Neptunian Rings Fact
+  // Sheets (nssdc.gsfc.nasa.gov/planetary/factsheet/uranringfact.html,
+  // nepringfact.html). Uranus: rings 6, 5, 4, alpha, beta, eta, gamma,
+  // delta, lambda, epsilon (the widest, 20-96 km, and brightest). Neptune:
+  // Galle, Le Verrier, Lassell (a faint ~4,000 km sheet, drawn as its outer
+  // edge at Arago), Adams (with the Liberte/Egalite/Fraternite arcs, not
+  // drawn separately). alpha is a relative brightness for drawing only.
+  const NARROW_RINGS = {
+    Uranus: { pole: [257.311, -15.175], rings: [
+      { r: 41837, alpha: 0.18 }, { r: 42234, alpha: 0.22 }, { r: 42571, alpha: 0.18 },
+      { r: 44718, alpha: 0.24 }, { r: 45661, alpha: 0.2 }, { r: 47176, alpha: 0.14 },
+      { r: 47627, alpha: 0.2 }, { r: 48300, alpha: 0.24 }, { r: 50024, alpha: 0.1 },
+      { r: 51149, alpha: 0.4, w: 2 },
+    ] },
+    Neptune: { pole: [299.36, 43.46], rings: [
+      { r: 41900, alpha: 0.08 }, { r: 53200, alpha: 0.16 }, { r: 57200, alpha: 0.07 },
+      { r: 62933, alpha: 0.24 },
+    ] },
+  };
   // Saturn's main rings (km from center): C, B, Cassini Division, A.
   const SATURN_RINGS = [
     { r0: 74658, r1: 91975, alpha: 0.16 }, { r0: 91975, r1: 117507, alpha: 0.42 },
@@ -8344,7 +8379,7 @@
   const _systemPrimaryCache = {};
   function systemPrimary(primary) {
     if (_systemPrimaryCache[primary]) return _systemPrimaryCache[primary];
-    const units = { Mercury: "R☿", Venus: "R♀", Mars: "R♂", Jupiter: "RJ", Saturn: "RS", Pluto: "RP" };
+    const units = { Mercury: "R☿", Venus: "R♀", Mars: "R♂", Jupiter: "RJ", Saturn: "RS", Uranus: "RU", Neptune: "RN", Pluto: "RP" };
     let info;
     if (primary === "Pluto") {
       const sb = SMALL_BODIES.pluto;
@@ -9168,6 +9203,27 @@
             for (let j = 1; j < 4; j++) ctx.lineTo(q[j][0], q[j][1]);
             ctx.closePath();
             ctx.fillStyle = fill; ctx.fill();
+          } });
+        }
+      });
+    }
+
+    // Uranus's and Neptune's narrow rings: thin, faint lines in the equatorial
+    // plane, in short segments so each sorts in depth against the planet.
+    if (NARROW_RINGS[primary]) {
+      const def = NARROW_RINGS[primary];
+      const B = refPoleBasis(def._poleEl || (def._poleEl = { refPoleRaDec: def.pole }));
+      const N = 160;
+      const ringW = (r, th) => [0, 1, 2].map((k) => r * (Math.cos(th) * B[0][k] + Math.sin(th) * B[1][k]));
+      def.rings.forEach((ring) => {
+        const q = [];
+        for (let k = 0; k <= N; k++) q.push(svProject(ringW(ring.r, (k / N) * 2 * Math.PI)));
+        const style = `rgba(200,205,215,${ring.alpha})`;
+        for (let k = 0; k < N; k++) {
+          const a = q[k], b = q[k + 1];
+          items.push({ rz: (a[2] + b[2]) / 2, draw: () => {
+            ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
+            ctx.strokeStyle = style; ctx.lineWidth = ring.w || 1; ctx.stroke();
           } });
         }
       });
