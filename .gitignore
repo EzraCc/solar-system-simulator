@@ -29,3 +29,6 @@ tools/.texture_cache/
 __pycache__/
 tools/.image_audit_cache/
 tools/.helios_cache/
+
+# Fetched source pages (tools/check_nssdca.py)
+tools/.cache/
