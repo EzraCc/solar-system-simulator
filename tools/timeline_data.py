@@ -167,6 +167,21 @@ T = {
             ev("Moon", "flyby", "1983-12-22", "Lunar flyby 5 at 119.4 km: escape from the Earth–Moon system"),
             ev("giacobini_zinner", "flyby", "1985-09-11", "Through the tail, 7,862 km from the nucleus: first comet flyby"),
             ev("Moon", "flyby", "2014-08-10", "ISEE-3 Reboot Project: flyby at 16,663 km (couldn't fire its engines)")],
+  # ---- 1975 (chunk E): NSSDCA records 1975-075A/C, 1975-083A/C; Venera from
+  # NSSDCA's Venus chronology + Wikipedia (NSSDCA catalog records unreachable) ----
+  "venera_9": [bar("Venus", "orbit", "1975-10-22", "1976-03-22", "Orbit (first spacecraft to orbit Venus)"),
+               ev("Venus", "landing", "1975-10-22T05:13:00Z", "Lander touched down near Beta Regio"),
+               bar("Venus", "ground", "1975-10-22T05:13:00Z", "1975-10-22T06:06:00Z", "53 min on the surface; first images from another planet's surface")],
+  "venera_10": [bar("Venus", "orbit", "1975-10-25", "1976-03-17", "Orbit (end date approximate)"),
+                ev("Venus", "landing", "1975-10-25", "Lander touched down near Beta Regio"),
+                bar("Venus", "ground", "1975-10-25", "1975-10-25", "65 min on the surface")],
+  "viking_1": [bar("Mars", "orbit", "1976-06-19", "1980-08-17", "Orbiter (1,485 orbits)"),
+               ev("Mars", "landing", "1976-07-20T11:53:06Z", "Lander touched down in Chryse Planitia"),
+               bar("Mars", "ground", "1976-07-20T11:53:06Z", "1982-11-13", "Lander (Thomas Mutch Memorial Station)"),
+               ev("Mars", "lost", "1982-11-13", "Lander contact lost")],
+  "viking_2": [bar("Mars", "orbit", "1976-08-07", "1978-07-25", "Orbiter (706 orbits)"),
+               ev("Mars", "landing", "1976-09-03T22:58:20Z", "Lander touched down in Utopia Planitia"),
+               bar("Mars", "ground", "1976-09-03T22:58:20Z", "1980-04-11", "Lander (1,281 sols)")],
 }
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")

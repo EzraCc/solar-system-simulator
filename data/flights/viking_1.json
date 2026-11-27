@@ -1,0 +1,69 @@
+{
+  "key": "viking_1",
+  "name": "Viking 1",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1975-08-20",
+  "arrival": "1976-06-19",
+  "rocket": "Titan IIIE / Centaur",
+  "payload": "Mars orbiter + lander (3,527 kg fueled pair)",
+  "status": "Success",
+  "significance": "Viking 1 made the first fully successful landing on Mars and was the first mission built to look for life on another world. Its lander's biology experiments returned puzzling results, chemical activity in the soil but no organic molecules, which most scientists read as no life and which shaped Mars exploration for decades. Its cameras showed a red, rock-strewn plain under a pinkish sky, and its weather station logged Martian seasons for over six years. Overhead, its orbiter mapped the planet and photographed dry river channels and flood plains, the first strong evidence that water once flowed on Mars.",
+  "statusNote": "Launched 1975-08-20 on a Titan IIIE/Centaur. Mars orbit insertion 1976-06-19, trimmed to a 1,513 × 33,000 km, 24.66 h site-certification orbit on 06-21. The lander separated 1976-07-20 08:51 UT and touched down in western Chryse Planitia (22.27°N, 312.05°E) at 11:53:06 UT per NSSDCA's lander record (its orbiter record says 11:56:06). Orbiter periapsis lowered to 300 km in March 1977; orbit raised to 320 × 56,000 km on 1980-08-07 to delay impact, and operations ended 1980-08-17 after 1,485 orbits. The lander (renamed the Thomas Mutch Memorial Station in 1981) operated until contact was lost on 1982-11-13. No Horizons ephemeris, so the orbiter isn't drawn in the Mars view. Source: NSSDCA records 1975-075A (orbiter) and 1975-075C (lander).",
+  "dataSources": [
+    {
+      "title": "Earth→Mars arc between the real launch and arrival dates (no JPL Horizons ephemeris exists for this spacecraft)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1975-075A",
+      "note": "endpoints are known; the transfer orbit between them is physics, so it's drawn solid"
+    },
+    {
+      "title": "NSSDCA: Viking 1 Lander (1975-075C)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1975-075C"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Viking orbiter and lander",
+      "infoUrl": "https://en.wikipedia.org/wiki/Viking_1",
+      "localImage": "images/missions/viking/spacecraft.jpg"
+    },
+    "lander": {
+      "title": "Viking lander",
+      "infoUrl": "https://en.wikipedia.org/wiki/Viking_lander_biological_experiments",
+      "localImage": "images/missions/viking/lander.jpg"
+    },
+    "rocket": {
+      "title": "Titan IIIE / Centaur",
+      "infoUrl": "https://en.wikipedia.org/wiki/Titan_IIIE",
+      "localImage": "images/rockets/titan_iiie.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "1976-06-19",
+      "end": "1980-08-17",
+      "label": "Orbiter (1,485 orbits)"
+    },
+    {
+      "body": "Mars",
+      "kind": "landing",
+      "start": "1976-07-20T11:53:06Z",
+      "label": "Lander touched down in Chryse Planitia"
+    },
+    {
+      "body": "Mars",
+      "kind": "ground",
+      "start": "1976-07-20T11:53:06Z",
+      "end": "1982-11-13",
+      "label": "Lander (Thomas Mutch Memorial Station)"
+    },
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "1982-11-13",
+      "label": "Lander contact lost"
+    }
+  ]
+}

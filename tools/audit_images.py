@@ -131,6 +131,13 @@ MANUAL = {
     "images/missions/helios_2/spacecraft.jpg": {"file": "Helios spacecraft 2.jpg", "credit": "NASA/KSC (KSC-74P-0222)"},
     "images/missions/helios_1/rocket.jpg": {"file": "Titan 3E Centaur with Helios 1.jpg", "credit": "NASA/KSC (KSC-74P-0298)"},
     "images/missions/helios_2/rocket.jpg": {"file": "Helios B launch.jpg"},
+    # 1975 chunk (Venera 9/10, Viking 1/2), 2026-11-27.
+    "images/missions/viking/spacecraft.jpg": {"file": "Viking spacecraft.jpg"},
+    "images/missions/viking/lander.jpg": {"nasa_id": "PIA09703"},
+    "images/rockets/titan_iiie.jpg": {"file": "Viking 1 launch on a Titan IIIE Centaur.jpeg"},
+    "images/missions/venera_9/spacecraft.jpg": {"file": "1984 CPA 5560.jpg"},
+    "images/missions/venera_9/lander.jpg": {"file": "Foto de Venera 9 (cropped).png"},
+    "images/missions/venera_10/lander.jpg": {"file": "Venera10surface.gif"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},
