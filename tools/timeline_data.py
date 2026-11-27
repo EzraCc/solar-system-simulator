@@ -210,6 +210,13 @@ T = {
   "mariner_4": [ev("Mars", "flyby", "1965-07-15T01:00:57Z", "Flyby at 9,846 km: first close-up images of another planet")],
   "zond_2": [ev("Mars", "lost", "1964-12-14", "Last reported activity (plasma-thruster test); contact lost soon after"),
              ev("Mars", "flyby", "1965-08-06", "Silent flyby at about 650,000 km")],
+  # ---- 1965-1967 (Siddiqi, Beyond Earth; NSSDCA for Mariner 5) ----
+  "zond_3": [ev("Moon", "flyby", "1965-07-20", "Flyby at 9,220 km: 25 photos and 3 UV images of the unseen far side")],
+  "venera_2": [ev("Venus", "flyby", "1966-02-27T02:52:00Z", "Flyby at ~24,000 km; contact never regained, no data returned")],
+  "venera_3": [ev("Venus", "lost", "1966-02-16", "Contact lost two weeks before arrival"),
+               ev("Venus", "impact", "1966-03-01T06:56:26Z", "Capsule struck Venus: first human-made object to reach another planet")],
+  "venera_4": [ev("Venus", "entry", "1967-10-18T04:34:00Z", "Capsule entered the atmosphere; 93 min of data during the descent")],
+  "mariner_5": [ev("Venus", "flyby", "1967-10-19T17:34:56Z", "Flyby at 4,094 km; radio occultation measured the atmosphere")],
 }
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
