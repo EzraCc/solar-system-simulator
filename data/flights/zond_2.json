@@ -1,0 +1,44 @@
+{
+  "key": "zond_2",
+  "name": "Zond 2",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1964-11-30T13:25:00Z",
+  "arrival": "1965-08-06",
+  "estimate": true,
+  "rocket": "Molniya (8K78)",
+  "payload": "Mars test probe (3MV-4A, 996 kg)",
+  "status": "Lost in cruise",
+  "significance": "Zond 2 was a Soviet test probe aimed to fly into Mars. One of its solar panels failed to unfold after launch, starving it of power, and contact was lost within weeks. Before that it made the first use of electric (plasma) thrusters in deep space, firing six of them to hold its orientation, technology that powers many spacecraft today. It passed Mars, silent, in August 1965, three weeks after Mariner 4.",
+  "statusNote": "Launched 1964-11-30 13:25 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). A solar panel did not deploy until 1964-12-15, too late for the first mid-course correction. On 1964-12-14, at 5.37 million km, it fired six plasma thrusters; contact was lost soon after. Some Western sources say contact lasted until early May 1965, which Siddiqi calls highly unlikely. The inert craft passed Mars at about 650,000 km on 1965-08-06 (Siddiqi). Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed.",
+  "assets": {
+    "rocket": {
+      "title": "Molniya launch vehicle (later Molniya-M version)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya_(rocket)",
+      "localImage": "images/rockets/molniya.jpg"
+    },
+    "spacecraft": {
+      "title": "Zond 2 (Soviet image; not redistributed here)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Zond_2",
+      "imagePage": "https://commons.wikimedia.org/wiki/File:Zond_2.jpg",
+      "imageCredit": "Soviet image, via NASA's archive; licensing unclear"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "1964-12-14",
+      "label": "Last reported activity (plasma-thruster test); contact lost soon after"
+    },
+    {
+      "body": "Mars",
+      "kind": "flyby",
+      "start": "1965-08-06",
+      "label": "Silent flyby at about 650,000 km"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Zond 2”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=63", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
+  ]
+}

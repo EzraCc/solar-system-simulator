@@ -1,0 +1,37 @@
+{
+  "key": "mariner_2",
+  "name": "Mariner 2",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1962-08-27T06:53:14Z",
+  "arrival": "1962-12-14T19:59:28Z",
+  "estimate": true,
+  "rocket": "Atlas-Agena B",
+  "payload": "Venus flyby spacecraft (203.6 kg)",
+  "status": "Success",
+  "significance": "Mariner 2 made the first successful visit to another planet. Flying past Venus in December 1962, its microwave radiometer found that the surface was searingly hot, hundreds of degrees, ending hopes that Earth's 'twin' might be a mild, swampy world under its clouds. It detected no magnetic field, and on the way it showed that the solar wind blows continuously from the Sun, confirming a prediction made only a few years earlier.",
+  "statusNote": "Launched 1962-08-27 06:53:14 UT on an Atlas-Agena B from Cape Canaveral, 36 days after Mariner 1 was destroyed at launch. One mid-course correction on 09-04. Flew past Venus at 19:59:28 UT on 1962-12-14, at 34,854 km per Siddiqi or 34,773 km per NSSDCA, then continued into solar orbit; last contact 1963-01-03 07:00 UT at 86.68 million km (Siddiqi, Beyond Earth; NASA NSSDCA, which gives the same encounter time). Path calculated: a two-body transfer between the real launch and arrival dates; no measured trajectory exists, so it is drawn dashed. For comparison, arcs drawn this way for modern direct flights fall within ~0.002 AU of their real JPL Horizons trajectories.",
+  "assets": {
+    "rocket": {
+      "title": "Atlas-Agena B on the pad (Ranger 5 launch, 1962)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas-Agena",
+      "localImage": "images/missions/mariner_2/rocket.jpg"
+    },
+    "spacecraft": {
+      "title": "Mariner 1, Mariner 2's identical twin, at JPL in 1962",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mariner_2",
+      "localImage": "images/missions/mariner_2/spacecraft.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "flyby",
+      "start": "1962-12-14T19:59:28Z",
+      "label": "Flyby at about 34,800 km: first successful planetary flyby"
+    }
+  ],
+  "dataSources": [
+    {"title": "NASA NSSDCA Master Catalog: Mariner 2 (1962-041A)", "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1962-041A", "note": "launch date, vehicle and mission events checked against this record"}
+  ]
+}

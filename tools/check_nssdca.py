@@ -58,6 +58,9 @@ NSSDCA_IDS = {
     "sakigake": ["1985-001A"],
     "giotto": ["1985-056A"],
     "suisei": ["1985-073A"],
+    "mariner_2": ["1962-041A"],
+    "mariner_3": ["1964-073A"],
+    "mariner_4": ["1964-077A"],
 }
 
 MONTHS = {m: i for i, m in enumerate(

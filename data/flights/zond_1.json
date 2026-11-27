@@ -1,0 +1,38 @@
+{
+  "key": "zond_1",
+  "name": "Zond 1",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1964-04-02T02:42:40Z",
+  "arrival": "1964-07-19",
+  "estimate": true,
+  "rocket": "Molniya (8K78)",
+  "payload": "Venus probe with descent module (3MV-1, 948 kg)",
+  "status": "Lost in cruise",
+  "significance": "Zond 1 was a Soviet attempt to drop a probe into the atmosphere of Venus. A cracked sensor window let the main compartment lose its air, and the radio had to be run through the descent capsule. Controllers still made the first course corrections ever performed on a Soviet interplanetary craft before contact ended in May 1964. The Soviets named it 'Zond' ('probe') rather than Venera, which hid that it was a failed Venus mission.",
+  "statusNote": "Launched 1964-04-02 02:42:40 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). Two course corrections were made (at 560,000 km and 13-14 million km); the second gave 20 m/s too little, so the craft would miss Venus. Last contact 1964-05-25; the inert craft passed Venus at about 110,000 km on 1964-07-19 (Siddiqi). Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed.",
+  "assets": {
+    "rocket": {
+      "title": "Molniya launch vehicle (later Molniya-M version)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya_(rocket)",
+      "localImage": "images/rockets/molniya.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "lost",
+      "start": "1964-05-25",
+      "label": "Last contact"
+    },
+    {
+      "body": "Venus",
+      "kind": "flyby",
+      "start": "1964-07-19",
+      "label": "Silent flyby at about 110,000 km"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Zond 1 [Venera]”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=59", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
+  ]
+}

@@ -1324,6 +1324,116 @@
    "magellan"
   ]
  },
+ "images/missions/mariner_2/rocket.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/62P-165",
+  "sourceTitle": "62P-165",
+  "credit": "NASA/KSC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Atlas-Agena B on the pad (Ranger 5 launch, 1962)",
+  "usedBy": [
+   "mariner_2"
+  ]
+ },
+ "images/missions/mariner_2/spacecraft.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA23310",
+  "sourceTitle": "Mariner 1 in JPL's Spacecraft Assembly Facility",
+  "credit": "NASA/JPL-Caltech",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Mariner 1, Mariner 2's identical twin, at JPL in 1962",
+  "usedBy": [
+   "mariner_2"
+  ]
+ },
+ "images/missions/mariner_3/rocket.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mariner_3_on_the_launchpad.jpg",
+  "sourceTitle": "Mariner 3 on the launchpad.jpg",
+  "credit": "NASA",
+  "creditDetail": "[1]",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Atlas-Agena D with Mariner 3 on the launch pad",
+  "usedBy": [
+   "mariner_3"
+  ]
+ },
+ "images/missions/mariner_4/image.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA14032",
+  "sourceTitle": "First TV Image of Mars",
+  "credit": "NASA/JPL-Caltech/Dan Goods",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "The first close-up image of Mars, frame 1, 15 July 1965",
+  "usedBy": [
+   "mariner_4"
+  ]
+ },
+ "images/missions/mariner_4/rocket.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mariner_4_launch.jpg",
+  "sourceTitle": "Mariner 4 launch.jpg",
+  "credit": "NASA",
+  "creditDetail": "",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Atlas-Agena D launching Mariner 4, 28 November 1964",
+  "usedBy": [
+   "mariner_4"
+  ]
+ },
+ "images/missions/mariner_4/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mariner-4-1304_1964novembemariner4-cropped.jpg",
+  "sourceTitle": "Mariner-4-1304 1964novembemariner4-cropped.jpg",
+  "credit": "NASA",
+  "creditDetail": "https://solarsystem.nasa.gov/missions/mariner-04/in-depth/",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Mariner C spacecraft (Mariner 3 and 4 were identical)",
+  "usedBy": [
+   "mariner_3",
+   "mariner_4"
+  ]
+ },
+ "images/missions/mars_1/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:The_Soviet_Union_1964_CPA_3013_stamp_(Space_Exploration._Mars_1_spacecraft).jpg",
+  "sourceTitle": "The Soviet Union 1964 CPA 3013 stamp (Space Exploration. Mars 1 spacecraft).jpg",
+  "credit": "Post of the Soviet Union (E. D. Aniskin).",
+  "creditDetail": "Scanned 600 dpi by User Matsievsky from personal collection",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Mars 1 on a 1964 Soviet stamp",
+  "usedBy": [
+   "mars_1"
+  ]
+ },
  "images/missions/mars_climate_orbiter/spacecraft.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars_Climate_Orbiter_2.jpg",
   "sourceTitle": "Mars Climate Orbiter 2.jpg",
@@ -1705,6 +1815,38 @@
    "phoenix"
   ]
  },
+ "images/missions/pioneer_5/rocket.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Thor-Able_IV_Pioneer_5_2.jpg",
+  "sourceTitle": "Thor-Able IV Pioneer 5 2.jpg",
+  "credit": "NASA/USAF",
+  "creditDetail": "",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Thor-Able IV lifting off with Pioneer 5, 1960",
+  "usedBy": [
+   "pioneer_5"
+  ]
+ },
+ "images/missions/pioneer_5/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Pioneer-5.jpg",
+  "sourceTitle": "Pioneer-5.jpg",
+  "credit": "NASA",
+  "creditDetail": "Source site: http://ntrs.nasa.gov/search.jsp?R=769588&id=1&qs=Ntt=C-1960-53081 Source URL: http://grcimagenet.grc.nasa.gov/GRCDigitalImages/1960/1960_53081L.jpg",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Pioneer 5 with its four solar paddles",
+  "usedBy": [
+   "pioneer_5"
+  ]
+ },
  "images/missions/pioneer_venus_1/spacecraft.jpg": {
   "sourcePage": "https://images.nasa.gov/details/ARC-1977-AC77-0475-11",
   "sourceTitle": "ARC-1977-AC77-0475-11",
@@ -1941,6 +2083,22 @@
   "title": "Ulysses (spacecraft)",
   "usedBy": [
    "ulysses"
+  ]
+ },
+ "images/missions/venera_1/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Venera_1_(a)_(Memorial_Museum_of_Astronautics).JPG",
+  "sourceTitle": "Venera 1 (a) (Memorial Museum of Astronautics).JPG",
+  "credit": "Armael",
+  "creditDetail": "Own work",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Full-size model of Venera 1, Memorial Museum of Astronautics, Moscow",
+  "usedBy": [
+   "venera_1"
   ]
  },
  "images/missions/venera_10/lander.jpg": {
@@ -2359,6 +2517,25 @@
   "usedBy": [
    "hayabusa",
    "nozomi"
+  ]
+ },
+ "images/rockets/molniya.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Molniya_launch_vehicle_-_panoramio.jpg",
+  "sourceTitle": "Molniya launch vehicle - panoramio.jpg",
+  "credit": "Matveev Michail",
+  "creditDetail": "https://web.archive.org/web/20161010103345/http://www.panoramio.com/photo/6890296",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Molniya launch vehicle (later Molniya-M version)",
+  "usedBy": [
+   "mars_1",
+   "venera_1",
+   "zond_1",
+   "zond_2"
   ]
  },
  "images/rockets/mu_3sii.jpg": {

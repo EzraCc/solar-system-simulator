@@ -1,0 +1,43 @@
+{
+  "key": "mars_1",
+  "name": "Mars 1",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1962-11-01T16:14:06Z",
+  "arrival": "1963-06-19",
+  "estimate": true,
+  "rocket": "Molniya (8K78)",
+  "payload": "Mars flyby probe with camera (2MV-4, 893.5 kg)",
+  "status": "Lost in cruise",
+  "significance": "Mars 1 was the first spacecraft sent to fly past Mars. It carried a camera meant to photograph the surface from close range, but a leaking valve emptied its attitude-control gas soon after launch. Controllers kept it working for nearly five months, and it set a distance record while measuring cosmic rays, the solar wind and meteoroids out to 1.24 AU, showing that cosmic radiation is nearly constant once past Earth's radiation belts. Contact was lost in March 1963, three months before it silently passed Mars.",
+  "statusNote": "Launched 1962-11-01 16:14:06 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). A valve failure drained the attitude-control nitrogen, so no course corrections were possible. Contact was kept until 1963-03-21 at 106 million km from Earth; the inert craft passed Mars at about 197,000 km on 1963-06-19 (Siddiqi). Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed.",
+  "assets": {
+    "rocket": {
+      "title": "Molniya launch vehicle (later Molniya-M version)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya_(rocket)",
+      "localImage": "images/rockets/molniya.jpg"
+    },
+    "spacecraft": {
+      "title": "Mars 1 on a 1964 Soviet stamp",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_1",
+      "localImage": "images/missions/mars_1/spacecraft.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "1963-03-21",
+      "label": "Contact lost 106 million km from Earth"
+    },
+    {
+      "body": "Mars",
+      "kind": "flyby",
+      "start": "1963-06-19",
+      "label": "Silent flyby at about 197,000 km"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mars 1”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=51", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
+  ]
+}

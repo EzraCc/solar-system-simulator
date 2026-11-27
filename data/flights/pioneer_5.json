@@ -1,0 +1,250 @@
+{
+  "key": "pioneer_5",
+  "name": "Pioneer 5",
+  "rocket": "Thor-Able IV",
+  "payload": "Spin-stabilized interplanetary probe (43 kg)",
+  "status": "Success",
+  "significance": "Pioneer 5 was the first spacecraft built to work in deep space between the planets. Launched in March 1960 into an orbit around the Sun between Earth and Venus, it radioed back from a record 36.4 million km, the first proof that a probe could keep in touch with Earth across interplanetary distances. Its instruments confirmed a weak magnetic field filling the space between the planets, until then only suspected, and it carried the first digital telemetry system used on an American spacecraft, the ancestor of how every later probe sends its data home.",
+  "statusNote": "Launched 1960-03-11 13:00:07 UT on a Thor-Able IV from Cape Canaveral (Siddiqi, Beyond Earth; NASA). Originally meant for Venus, it was sent directly into solar orbit instead. Contact was kept until 11:31 UT on 1960-06-26, at a record 36.4 million km from Earth. Path calculated (estimate, drawn dashed): no trajectory data survives, only published orbit figures. Built with tools/build_solar_orbit.py: an orbit of the published size, starting at Earth's position at launch (JPL Horizons) and propagated two-body. Its size and shape follow the published figures; its orientation is an assumption (the launch point is taken as the ascending node). Orbit used: 0.806 x 0.995 AU, inclination 3.35 deg (Wikipedia; not found in a NASA source). A second set of figures in circulation, 0.706 x 0.993 AU, is inconsistent with the published 311.6-day period (it would give about 286 days), while 0.806 x 0.995 AU gives 312 days; the orbit built from it puts the craft 39.8 million km from Earth at last contact, against the published 36.4 million. The path is drawn to last contact.",
+  "assets": {
+    "rocket": {
+      "title": "Thor-Able IV lifting off with Pioneer 5, 1960",
+      "infoUrl": "https://en.wikipedia.org/wiki/Thor-Able",
+      "localImage": "images/missions/pioneer_5/rocket.jpg"
+    },
+    "spacecraft": {
+      "title": "Pioneer 5 with its four solar paddles",
+      "infoUrl": "https://en.wikipedia.org/wiki/Pioneer_5",
+      "localImage": "images/missions/pioneer_5/spacecraft.jpg"
+    }
+  },
+  "dataSources": [
+    {
+      "title": "NASA Science: Pioneer 5",
+      "url": "https://science.nasa.gov/mission/pioneer-5/",
+      "note": "launch time and last contact (1960-06-26 11:31 UT, 36.4 million km)"
+    },
+    {
+      "title": "Wikipedia: Pioneer 5",
+      "url": "https://en.wikipedia.org/wiki/Pioneer_5",
+      "note": "orbit figures (0.806 x 0.995 AU, 3.35 deg, 311.6 days); no NASA source for these was found"
+    },
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Pioneer V”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=37", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
+  ],
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": {
+        "fixedPos": [
+          -0.9894824,
+          -0.0079608,
+          0.0089887
+        ]
+      },
+      "departDate": "1960-03-11T13:00:07Z",
+      "arrivalDate": "1960-03-21",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.9894824,
+          -0.0079608,
+          0.0089887
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.9671549,
+          -0.1707229,
+          0.0182198
+        ]
+      },
+      "departDate": "1960-03-21",
+      "arrivalDate": "1960-03-31",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.9671549,
+          -0.1707229,
+          0.0182198
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.9146903,
+          -0.328142,
+          0.0268818
+        ]
+      },
+      "departDate": "1960-03-31",
+      "arrivalDate": "1960-04-10",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.9146903,
+          -0.328142,
+          0.0268818
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.8328325,
+          -0.4749828,
+          0.034678
+        ]
+      },
+      "departDate": "1960-04-10",
+      "arrivalDate": "1960-04-20",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.8328325,
+          -0.4749828,
+          0.034678
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7231447,
+          -0.6059042,
+          0.0413126
+        ]
+      },
+      "departDate": "1960-04-20",
+      "arrivalDate": "1960-04-30",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7231447,
+          -0.6059042,
+          0.0413126
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5881375,
+          -0.7155443,
+          0.0464969
+        ]
+      },
+      "departDate": "1960-04-30",
+      "arrivalDate": "1960-05-10",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5881375,
+          -0.7155443,
+          0.0464969
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.4314143,
+          -0.798667,
+          0.0499588
+        ]
+      },
+      "departDate": "1960-05-10",
+      "arrivalDate": "1960-05-20",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.4314143,
+          -0.798667,
+          0.0499588
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.257813,
+          -0.8503917,
+          0.0514573
+        ]
+      },
+      "departDate": "1960-05-20",
+      "arrivalDate": "1960-05-30",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.257813,
+          -0.8503917,
+          0.0514573
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.0735072,
+          -0.8665265,
+          0.0508031
+        ]
+      },
+      "departDate": "1960-05-30",
+      "arrivalDate": "1960-06-09",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.0735072,
+          -0.8665265,
+          0.0508031
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.1139881,
+          -0.8440102,
+          0.0478835
+        ]
+      },
+      "departDate": "1960-06-09",
+      "arrivalDate": "1960-06-19",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.1139881,
+          -0.8440102,
+          0.0478835
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2511472,
+          -0.8009827,
+          0.0442102
+        ]
+      },
+      "departDate": "1960-06-19",
+      "arrivalDate": "1960-06-26T11:31:00Z",
+      "estimate": true
+    }
+  ]
+}
