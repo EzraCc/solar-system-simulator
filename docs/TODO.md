@@ -90,12 +90,17 @@ In the app: lightweight previews only, linking to the full-quality data.
 
 - [ ] **Missions before 1988.** 55 can be mapped (`docs/pre-1988-missions.md`),
   added newest first in chunks (1978–1985 in progress, 2026-11-27).
-  - Verify their dates against NSSDCA (`tools/check_nssdca.py`). Done
-    2026-11-27 for the 5 records NSSDCA serves (Viking 1/2, Pioneer
-    Venus 1/2, ISEE-3): all launch and event dates match. NSSDCA returns
-    its error page for the other 17 (Helios, the Veneras, Vega,
-    Sakigake, Giotto, Suisei); the script lists them. Save each from a
-    browser to `tools/.cache/nssdca/<ID>.html` and rerun with `--cite`.
+  - Dates checked 2026-11-27. NSSDCA (`tools/check_nssdca.py`) served
+    5 records (Viking 1/2, Pioneer Venus 1/2, ISEE-3), all matching. Its
+    catalog no longer has the other 17 (Helios, Venera 9–16, Vega,
+    Sakigake, Giotto, Suisei; even its own search finds no Giotto), so
+    those were checked against Siddiqi's *Beyond Earth*
+    (`tools/check_siddiqi.py`). Fixed: Helios 1/2 launch times, Giotto's
+    Grigg–Skjellerup time. At each data pull, rerun `check_nssdca.py` to
+    see whether the missing records are back.
+  - [ ] **Venera 16 orbit insertion:** 1983-10-11 (PDS/NSSDCA text, with a
+    copy error) or 1983-10-14 06:22 UT (Siddiqi). Needs a primary source
+    (Lavochkin, IKI).
   - Halley's Comet is added with the 1985 chunk.
 - [ ] **Beyond Pluto and grand tours:** plan in `docs/outer-missions-plan.md`.
   - [ ] Heliosphere zoom layer above the Sol view; craft past Pluto's

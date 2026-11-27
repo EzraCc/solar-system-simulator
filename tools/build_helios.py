@@ -162,6 +162,13 @@ def iso(days):
     return t.strftime("%Y-%m-%dT%H:%M:%SZ") if (t.hour or t.minute) else t.strftime("%Y-%m-%d")
 
 
+# Launch times (UTC). The orbit files start shortly after launch, so their
+# first row is not the launch time. Helios 1: NASA, "50 Years Ago: Launch of
+# Helios 1" (2:11 a.m. EST) and Siddiqi, Beyond Earth (07:11:02 UT, misprinted
+# there as 10 November). Helios 2: Siddiqi, Beyond Earth (05:34:00 UT).
+LAUNCH = {1: "1974-12-10T07:11:02Z", 2: "1976-01-15T05:34:00Z"}
+
+
 def build(n, step, end_contact):
     data = load(n)
     legs = []
@@ -172,7 +179,7 @@ def build(n, step, end_contact):
     for t, p in picks[1:]:
         legs.append({"type": "lambert", "fromBody": prev_body,
                      "toBody": {"fixedPos": [round(float(c), 7) for c in p]},
-                     "departDate": iso(picks[picks.index((t, p)) - 1][0]) if legs else iso(data[0][0]),
+                     "departDate": iso(picks[picks.index((t, p)) - 1][0]) if legs else LAUNCH[n],
                      "arrivalDate": iso(t)})
         prev_body = {"fixedPos": [round(float(c), 7) for c in p]}
     info = {"data_start": iso(data[0][0]), "data_end": iso(data[-1][0]), "n": len(data)}
