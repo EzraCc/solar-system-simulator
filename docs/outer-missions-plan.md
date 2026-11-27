@@ -47,6 +47,16 @@ Uranus's tilted magnetic field (Voyager 2, 1986), Triton's geysers
   rocket/spacecraft/lander tiles. Images follow the same rules as now:
   NASA Image Library first, credit under each tile, link-only tile when
   nothing is freely licensed.
+- **One image per body in the app; the full galleries link out**
+  (maintainer, 2026-11-27). The carousel carries a single image for each
+  body passed. Below it, a "More images" line links to the mission's own
+  galleries off the app, for example NASA's Voyager galleries
+  (https://science.nasa.gov/mission/voyager/galleries-overview/, with
+  per-planet galleries) and the JPL Photojournal
+  (https://photojournal.jpl.nasa.gov/mission/Voyager) for full-resolution
+  files. Proposed field: `assets.galleryLinks: [{ title, url }]` on the
+  flight; usable by any mission with a NASA or agency gallery, not just
+  grand tours.
 
 ## 3. Estimated paths drawn dashed
 
