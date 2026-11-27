@@ -12388,6 +12388,13 @@
       "arrivalDate": "2034-09-03T00:00:00Z"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -159 (Europa Clipper)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-159%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Europa Clipper",

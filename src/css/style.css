@@ -1385,3 +1385,8 @@
   #system-size-row { display: flex; align-items: flex-end; gap: 10px; min-height: 70px; overflow-x: auto; padding-top: 4px; }
   body.mobile #system-info-panel { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 50vh; border-radius: 0; }
   body.mobile #system-size-panel { max-width: calc(100vw - 32px); }
+
+  /* Trajectory data sources in the flight panel (trajectorySourcesHtml). */
+  .lp-sources { margin: 0; padding-left: 16px; }
+  .lp-sources li { margin: 2px 0; }
+  .lp-dim { color: var(--text-dim); font-size: 11px; }

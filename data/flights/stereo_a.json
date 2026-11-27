@@ -45,6 +45,13 @@
       "_comment": "2009-09-15: real recorded heliocentric position (JPL Horizons, target -234) -- flight shown ending here, see statusNote"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -234 (STEREO-A)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-234%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "STEREO",

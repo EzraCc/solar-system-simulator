@@ -239,6 +239,13 @@
       "arrivalDate": "2018-06-27"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -37 (Hayabusa2)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-37%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Hayabusa2",

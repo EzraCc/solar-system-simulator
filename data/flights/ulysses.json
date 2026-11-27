@@ -97,6 +97,13 @@
       "_comment": "2007-02-07: third south solar polar pass (real JPL Horizons position) -- flight shown ending here, see statusNote"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -55 (Ulysses)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-55%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Ulysses (spacecraft)",

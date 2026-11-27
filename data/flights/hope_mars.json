@@ -10,6 +10,13 @@
   "status": "Success",
   "significance": "The Hope probe was launched to build a first-of-its-kind, holistic picture of the Martian atmosphere across all local times of day and all seasons, filling gaps left by prior polar-orbiting missions, while also establishing the UAE's space science capability. It made the UAE the first Arab and Islamic nation to reach Mars, succeeding on its first attempt, and its wide elliptical orbit made it the first mission designed to observe the full atmosphere's diurnal cycle rather than fixed local times. It discovered previously unknown discrete \"sinuous\" and patchy proton auroras on Mars' nightside, revealing new detail on solar wind-atmosphere interactions, mapped atmospheric temperature, dust, and composition through complete day-night and seasonal cycles, and imaged the moon Deimos, feeding new data on its origin. Hope has released more than 10 terabytes of open data used by over 200 research institutions worldwide.",
   "statusNote": null,
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -62 (Hope)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-62%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Emirates Mars Mission",

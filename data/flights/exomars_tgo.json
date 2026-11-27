@@ -10,6 +10,13 @@
   "status": "Partial Success",
   "significance": "The Trace Gas Orbiter was launched to resolve whether Mars' atmosphere contains methane, a gas that could indicate current biological or geological activity, and to precisely track other trace gases as indicators of ongoing Martian processes. It carries instruments sensitive to parts-per-trillion concentrations, far more precise than any prior Mars mission, and it produced the most detailed global maps yet of subsurface water-ice and hydrated minerals. TGO detected essentially no atmospheric methane, with an upper limit 10 to 100 times lower than earlier ground-based and rover measurements, creating an unresolved \"methane mystery\" over why surface detections don't match orbital data and suggesting an unknown process removes methane from the lower atmosphere before it can spread globally. It also set new strict upper limits on other potential biosignature gases, including ethane, ethylene, and phosphine.",
   "statusNote": "TGO fully successful, still operating. Schiaparelli lander crashed on descent due to IMU saturation causing premature parachute release.",
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -143 (ExoMars Trace Gas Orbiter)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-143%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Trace Gas Orbiter",

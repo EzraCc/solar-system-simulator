@@ -43,6 +43,13 @@
       "arrivalDate": "2004-01-02"
     }
   ],
+  "dataSources": [
+    {
+      "title": "JPL Horizons, spacecraft -29 (Stardust)",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-29%27",
+      "note": "trajectory record; legs, tours and fitted orbits are built from and checked against this ephemeris"
+    }
+  ],
   "assets": {
     "spacecraft": {
       "title": "Stardust (spacecraft)",

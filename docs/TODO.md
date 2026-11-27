@@ -86,10 +86,21 @@ In the app: lightweight previews only, linking to the full-quality data.
 
 ## 5. Catalog and views
 
-- [ ] **Missions before 1988.** 55 can be mapped (`docs/pre-1988-missions.md`):
+- [ ] **Missions before 1988.** 55 can be mapped (`docs/pre-1988-missions.md`),
+  added newest first in chunks (1978–1985 in progress, 2026-11-27).
   - Verify their dates against NSSDCA.
-  - They need Halley's Comet as a target, and Uranus and Neptune system
-    views (for Voyager 2).
+  - Halley's Comet is added with the 1985 chunk.
+- [ ] **Beyond Pluto and grand tours:** plan in `docs/outer-missions-plan.md`.
+  - [ ] Heliosphere zoom layer above the Sol view; craft past Pluto's
+    orbit hand over to it.
+  - [ ] Uranus and Neptune planet views (Voyager 2).
+  - [ ] Voyager 1/2 and Pioneer 10/11: every flyby, with planet-view tours.
+  - [ ] Per-flyby image galleries, with discoveries as understood at
+    the time.
+  - [ ] A "coast" leg for craft that continue after their encounter
+    (Venera buses, the Voyagers), drawn dashed when it's an estimate.
+  - [ ] ISEE-3/ICE (L1 pause, lunar flybys, comets) and Helios 1/2
+    (SPDF trajectory data).
 - [ ] **Earth system view.** Deferred because of the Lagrange-point
   missions.
 - [ ] **System view polish:**
@@ -98,3 +109,16 @@ In the app: lightweight previews only, linking to the full-quality data.
   - JUICE needs a Ganymede orbit phase.
 - [ ] **`#bottom-right-controls`:** this wrapper blocks canvas clicks
   behind it.
+
+## 6. Story view (plan only)
+
+The app reads like an encyclopedia of facts so far. Keep that, and add a
+**story view**: what would this look like with a master storyteller
+guiding someone who doesn't know much about space, and getting them
+excited? Facts alone don't do that.
+- Narrated journeys: a mission or discovery told as a story, with the
+  camera, clock and panels driven by the narrative.
+- Audio narration comes later (audio files); write for the ear from the
+  start.
+- Needs its own plan doc before any build: audience, tone, structure of
+  a story, and how it drives the existing views.

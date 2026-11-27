@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "50";
+  const BUILD_VERSION = "51";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -2939,6 +2939,7 @@
   // "show me the whole thing"). opts.alphaScale multiplies the whole
   // leg-fade opacity, used to keep an unselected, merely-in-transit
   // flight's path visually quieter than the one the user actually clicked.
+  const ESTIMATE_DASH = [6, 5];
   function drawMultiLegArcs(flightKey, opts) {
     opts = opts || {};
     const { windowStart, windowEnd, alphaScale = 1 } = opts;
@@ -3007,7 +3008,12 @@
       }
 
       ctx.globalAlpha = Math.max(0.4, 1.0 - seqIndex * 0.15) * alphaScale;
+      // A leg flagged "estimate" is a projection with no data behind it
+      // (see docs/outer-missions-plan.md §3): drawn dashed so it reads as
+      // a guess. Legs pinned by known endpoints and physics stay solid.
+      if (leg.estimate) ctx.setLineDash(ESTIMATE_DASH);
       const pts = drawFn(drawStart, drawEnd);
+      if (leg.estimate) ctx.setLineDash([]);
       ctx.globalAlpha = 1.0;
       if (pts && pts.length) segments.push(pts);
     });
@@ -6153,6 +6159,22 @@
   // .lp-section CSS comment for why this exists separately from addRow's
   // two-column key/value layout (which wastes its whole key column on
   // every wrapped line of a long paragraph).
+  // "Trajectory data": where a flight's path comes from (raw.dataSources:
+  // [{ title, url, note? }]), linked so viewers can compare our path with
+  // the original, the way image credits link to the original image. Also
+  // explains dashed stretches when the flight has estimated legs.
+  function trajectorySourcesHtml(raw) {
+    const src = raw.dataSources || [];
+    const hasEstimate = !!raw.estimate || (raw.legs || []).some((l) => l.estimate);
+    if (!src.length && !hasEstimate) return "";
+    const items = src.map((d) =>
+      `<li><a href="${escapeHtml(d.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(d.title)}</a>` +
+      (d.note ? ` <span class="lp-dim">${escapeHtml(d.note)}</span>` : "") + `</li>`).join("");
+    const dashed = hasEstimate
+      ? `<p class="lp-dim">Dashed parts of the path are estimates: projections with no data behind them.</p>` : "";
+    return lpSectionHtml("Trajectory data", (items ? `<ul class="lp-sources">${items}</ul>` : "") + dashed);
+  }
+
   function lpSectionHtml(heading, bodyHtml) {
     return `<div class="lp-section"><div class="lp-section-heading">${heading}</div><div class="lp-section-body">${bodyHtml}</div></div>`;
   }
@@ -7287,6 +7309,7 @@
       sections += flightProfileHtml(b.flightKey);
       sections += flightDestinationsHtml(b.flightKey);
       if (raw.statusNote) sections += lpSectionHtml("Notes", raw.statusNote);
+      sections += trajectorySourcesHtml(raw);
       lockedPanelBody.innerHTML = rows + jumpBtn + learnMoreHtml(raw.assets) + sections + assetGalleryHtml(raw.assets);
       return;
     }
@@ -9553,6 +9576,8 @@
         }
       } else {
         const flight = getSolvedFlight(key);
+        const estimate = !!FLIGHTS_RAW[key].estimate; // whole arc is a projection (see ESTIMATE_DASH)
+        if (estimate) ctx.setLineDash(ESTIMATE_DASH);
         if (selected) {
           ctx.globalAlpha = 1;
           segments = [drawFlightArc(flight)];
@@ -9563,6 +9588,7 @@
           segments = [drawFlightArc(flight, ws, we)];
           ctx.globalAlpha = 1;
         }
+        if (estimate) ctx.setLineDash([]);
       }
       renderedPaths.push({ name: FLIGHTS_RAW[key].name, flightKey: key, color: flightColor(key), segments: segments || [] });
     });
