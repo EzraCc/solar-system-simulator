@@ -14,7 +14,7 @@ the derived flyby.
 
     python3 tools/timeline_data.py    # rewrite every listed flight
 """
-import json, os, sys
+import json, os, re, sys
 
 def bar(body, kind, start, end=None, label="", ongoing=False):
     e = {"body": body, "kind": kind, "start": start}
@@ -182,6 +182,17 @@ T = {
   "viking_2": [bar("Mars", "orbit", "1976-08-07", "1978-07-25", "Orbiter (706 orbits)"),
                ev("Mars", "landing", "1976-09-03T22:58:20Z", "Lander touched down in Utopia Planitia"),
                bar("Mars", "ground", "1976-09-03T22:58:20Z", "1980-04-11", "Lander (1,281 sols)")],
+  # ---- 1960-1964 (Siddiqi, Beyond Earth; NASA NSSDCA for the Mariners) ----
+  "venera_1": [ev("Venus", "lost", "1961-02-22", "Contact lost in cruise (last session 1961-02-17)"),
+               ev("Venus", "flyby", "1961-05-19", "Silent flyby at about 100,000 km (19-20 May)")],
+  "mariner_2": [ev("Venus", "flyby", "1962-12-14T19:59:28Z", "Flyby at about 34,800 km: first successful planetary flyby")],
+  "mars_1": [ev("Mars", "lost", "1963-03-21", "Contact lost 106 million km from Earth"),
+             ev("Mars", "flyby", "1963-06-19", "Silent flyby at about 197,000 km")],
+  "zond_1": [ev("Venus", "lost", "1964-05-25", "Last contact"),
+             ev("Venus", "flyby", "1964-07-19", "Silent flyby at about 110,000 km")],
+  "mariner_4": [ev("Mars", "flyby", "1965-07-15T01:00:57Z", "Flyby at 9,846 km: first close-up images of another planet")],
+  "zond_2": [ev("Mars", "lost", "1964-12-14", "Last reported activity (plasma-thruster test); contact lost soon after"),
+             ev("Mars", "flyby", "1965-08-06", "Silent flyby at about 650,000 km")],
 }
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -192,16 +203,17 @@ for key, entries in T.items():
     # is left byte-for-byte alone.
     block = json.dumps(entries, indent=2).replace("\n", "\n  ")
     if "timeline" in d:
-        start = src.index('"timeline"')
-        body = src[:start].rstrip()
-        body = body[:-1] if body.endswith(",") else body
-        tail = "\n}" + ("\n" if src.endswith("\n") else "")
+        # Replace just the existing array: keys after it (e.g. dataSources
+        # appended by check_siddiqi.py --cite) are kept.
+        m = re.search(r'"timeline"\s*:\s*', src)
+        _, end = json.JSONDecoder().raw_decode(src, m.end())
+        out = src[:m.end()] + block + src[end:]
     else:
         body = src.rstrip()
         assert body.endswith("}")
         body = body[:-1].rstrip()
         tail = "\n}" + ("\n" if src.endswith("\n") else "")
-    out = body + ',\n  "timeline": ' + block + tail
+        out = body + ',\n  "timeline": ' + block + tail
     d["timeline"] = entries
     assert json.loads(out) == d, key
     open(p, "w").write(out)

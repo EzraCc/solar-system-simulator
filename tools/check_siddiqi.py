@@ -41,6 +41,9 @@ ENTRIES = {
     "venera_13": "Venera 13", "venera_14": "Venera 14", "venera_15": "Venera 15",
     "venera_16": "Venera 16", "vega_1": "Vega 1", "vega_2": "Vega 2",
     "sakigake": "Sakigake", "giotto": "Giotto", "suisei": "Suisei",
+    "pioneer_5": "Pioneer V", "venera_1": "[Venera 1]", "mariner_2": "Mariner II",
+    "mars_1": "Mars 1", "zond_1": "Zond 1 [Venera]", "mariner_3": "Mariner III",
+    "mariner_4": "Mariner IV", "zond_2": "Zond 2",
 }
 
 

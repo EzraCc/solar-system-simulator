@@ -1,0 +1,42 @@
+{
+  "key": "mariner_4",
+  "name": "Mariner 4",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1964-11-28T14:22:01Z",
+  "arrival": "1965-07-15T01:00:57Z",
+  "estimate": true,
+  "rocket": "Atlas-Agena D",
+  "payload": "Mars flyby spacecraft with TV camera (Mariner C, 260.8 kg)",
+  "status": "Success",
+  "significance": "Mariner 4 took the first close-up pictures of another planet. Its 21 grainy images of Mars, returned in July 1965, showed a cratered, Moon-like surface instead of the canals and vegetation people had long imagined. As it passed behind the planet, its radio signal revealed an atmosphere far thinner than expected, about 1% of Earth's, and it found no magnetic field. Together these results ended the idea of Mars as a living, Earth-like world and set the agenda for every Mars mission since.",
+  "statusNote": "Launched 1964-11-28 14:22:01 UT on an Atlas-Agena D from Cape Kennedy, with a new all-metal shroud. One mid-course correction on 1964-12-05. Closest approach 9,846 km at 01:00:57 UT on 1965-07-15; 21 images plus part of a 22nd were taken, and a radio occultation measured a surface pressure of about 4-7 mb. Contact until 1965-10-01 at 309 million km; reactivated in 1967 for engineering tests; final contact 1967-12-21 per NSSDCA, 1967-12-31 per Siddiqi (Siddiqi, Beyond Earth; NASA NSSDCA). Path calculated: a two-body transfer between the real launch and arrival dates; no measured trajectory exists, so it is drawn dashed. For comparison, arcs drawn this way for modern direct flights fall within ~0.002 AU of their real JPL Horizons trajectories.",
+  "assets": {
+    "rocket": {
+      "title": "Atlas-Agena D launching Mariner 4, 28 November 1964",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mariner_4",
+      "localImage": "images/missions/mariner_4/rocket.jpg"
+    },
+    "spacecraft": {
+      "title": "Mariner 4 at JPL before launch",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mariner_4",
+      "localImage": "images/missions/mariner_4/spacecraft.jpg"
+    },
+    "image": {
+      "title": "The first close-up image of Mars, frame 1, 15 July 1965",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mariner_4",
+      "localImage": "images/missions/mariner_4/image.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "flyby",
+      "start": "1965-07-15T01:00:57Z",
+      "label": "Flyby at 9,846 km: first close-up images of another planet"
+    }
+  ],
+  "dataSources": [
+    {"title": "NASA NSSDCA Master Catalog: Mariner 4 (1964-077A)", "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1964-077A", "note": "launch date, vehicle and mission events checked against this record"}
+  ]
+}

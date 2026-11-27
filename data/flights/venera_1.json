@@ -1,0 +1,43 @@
+{
+  "key": "venera_1",
+  "name": "Venera 1",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1961-02-12T00:34:38Z",
+  "arrival": "1961-05-19",
+  "estimate": true,
+  "rocket": "Molniya (8K78)",
+  "payload": "Venus impact probe (1VA, 643.5 kg)",
+  "status": "Lost in cruise",
+  "significance": "Venera 1 was humanity's first attempt to reach another planet. Launched by the Soviet Union in February 1961 to strike Venus, it became the first craft to leave Earth on a path to another world. Its radio fell silent after a week, when its Sun-pointing system failed, but before then it returned measurements of the solar wind and interplanetary magnetic field from 1.9 million km out. It drifted past Venus, silent, in May 1961.",
+  "statusNote": "Launched 1961-02-12 00:34:38 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). The last good communications session was on 1961-02-17 at 1.9 million km; contact could not be regained on 02-22, after the Sun-orientation system failed. The inert craft passed Venus on 19-20 May 1961 at about 100,000 km and went into solar orbit (Siddiqi). The arrival used here is 1961-05-19. Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed.",
+  "assets": {
+    "rocket": {
+      "title": "Molniya launch vehicle (later Molniya-M version)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya_(rocket)",
+      "localImage": "images/rockets/molniya.jpg"
+    },
+    "spacecraft": {
+      "title": "Full-size model of Venera 1, Memorial Museum of Astronautics, Moscow",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_1",
+      "localImage": "images/missions/venera_1/spacecraft.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "lost",
+      "start": "1961-02-22",
+      "label": "Contact lost in cruise (last session 1961-02-17)"
+    },
+    {
+      "body": "Venus",
+      "kind": "flyby",
+      "start": "1961-05-19",
+      "label": "Silent flyby at about 100,000 km (19-20 May)"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “[Venera 1]”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=41", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
+  ]
+}

@@ -112,6 +112,21 @@ MANUAL = {
     # use a map made from their radar altimetry (PDS Geosciences data).
     "images/missions/venera_13/spacecraft.jpg": {"file": "1982 CPA 5278.jpg"},
     "images/missions/venera_15/spacecraft.jpg": {"file": "VenusTopoVenera.jpg"},
+    # 1960-1964 flights (added 2026-11-27). NASA Image Library where it has
+    # the picture; otherwise NASA photos on Commons (Pioneer 5, Mariner 3/4
+    # spacecraft and launches aren't in the library) and, for the Soviet
+    # craft, a CC0 museum model, a Soviet stamp and a CC BY rocket photo.
+    "images/missions/pioneer_5/spacecraft.jpg": {"file": "Pioneer-5.jpg"},
+    "images/missions/pioneer_5/rocket.jpg": {"file": "Thor-Able IV Pioneer 5 2.jpg"},
+    "images/missions/venera_1/spacecraft.jpg": {"file": "Venera 1 (a) (Memorial Museum of Astronautics).JPG"},
+    "images/rockets/molniya.jpg": {"file": "Molniya launch vehicle - panoramio.jpg"},
+    "images/missions/mariner_2/spacecraft.jpg": {"nasa_id": "PIA23310"},
+    "images/missions/mariner_2/rocket.jpg": {"nasa_id": "62P-165"},
+    "images/missions/mars_1/spacecraft.jpg": {"file": "The Soviet Union 1964 CPA 3013 stamp (Space Exploration. Mars 1 spacecraft).jpg"},
+    "images/missions/mariner_4/spacecraft.jpg": {"file": "Mariner-4-1304 1964novembemariner4-cropped.jpg"},
+    "images/missions/mariner_3/rocket.jpg": {"file": "Mariner 3 on the launchpad.jpg"},
+    "images/missions/mariner_4/rocket.jpg": {"file": "Mariner 4 launch.jpg"},
+    "images/missions/mariner_4/image.jpg": {"nasa_id": "PIA14032"},
     # ISEE-3 / ICE (added 2026-11-27). NASA's library has no ISEE-3 spacecraft
     # or Delta 2914 photo, so these are NASA images on Commons.
     "images/missions/isee3/spacecraft.jpg": {"file": "ISEE-C (ISEE 3) in dynamic test chamber.jpg"},

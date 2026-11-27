@@ -1,0 +1,625 @@
+{
+  "key": "mariner_3",
+  "name": "Mariner 3",
+  "rocket": "Atlas-Agena D",
+  "payload": "Mars flyby spacecraft (Mariner C, 260.8 kg)",
+  "status": "Failure (shroud did not separate)",
+  "significance": "Mariner 3 was the first of NASA's two 1964 Mars probes. The protective shroud over the spacecraft failed to come off during launch, so its solar panels never opened and its battery ran down within about nine hours. The extra weight also left it short of the speed it needed for Mars, and it went into an orbit around the Sun instead. Engineers traced the fault to the shroud's fiberglass layers coming apart, built an all-metal shroud, and launched its twin, Mariner 4, three weeks later.",
+  "statusNote": "Launched 1964-11-05 19:22:05 UT on an Atlas-Agena D from Cape Kennedy (Siddiqi, Beyond Earth; NASA NSSDCA). The payload shroud did not separate; battery power dropped to zero at T+8 h 43 min and the solar panels apparently never deployed. It ended in a heliocentric orbit of 0.983 x 1.311 AU (Siddiqi; NASA). Path calculated (estimate, drawn dashed): no trajectory data survives, only published orbit figures. Built with tools/build_solar_orbit.py: an orbit of the published size, starting at Earth's position at launch (JPL Horizons) and propagated two-body. Its size and shape follow the published figures; its orientation is an assumption (the launch point is taken as the ascending node). The orbit's inclination isn't published, so it is drawn in the plane of Earth's orbit; one full orbit (about 449 days) is shown.",
+  "assets": {
+    "rocket": {
+      "title": "Atlas-Agena D with Mariner 3 on the launch pad",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mariner_3",
+      "localImage": "images/missions/mariner_3/rocket.jpg"
+    },
+    "spacecraft": {
+      "title": "Mariner C spacecraft (Mariner 3 and 4 were identical)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mariner_3",
+      "localImage": "images/missions/mariner_4/spacecraft.jpg"
+    }
+  },
+  "dataSources": [
+    {
+      "title": "NASA Science: Mariner 3",
+      "url": "https://science.nasa.gov/mission/mariner-3/",
+      "note": "heliocentric orbit 0.983 x 1.311 AU"
+    },
+    {"title": "NASA NSSDCA Master Catalog: Mariner 3 (1964-073A)", "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1964-073A", "note": "launch date, vehicle and mission events checked against this record"}
+  ],
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": {
+        "fixedPos": [
+          0.52164,
+          0.8611292,
+          0.0
+        ]
+      },
+      "departDate": "1964-11-05T19:22:05Z",
+      "arrivalDate": "1964-11-20",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.52164,
+          0.8611292,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2856009,
+          0.9902978,
+          0.0
+        ]
+      },
+      "departDate": "1964-11-20",
+      "arrivalDate": "1964-12-05",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2856009,
+          0.9902978,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0320986,
+          1.0596667,
+          0.0
+        ]
+      },
+      "departDate": "1964-12-05",
+      "arrivalDate": "1964-12-20",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0320986,
+          1.0596667,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2234006,
+          1.070129,
+          0.0
+        ]
+      },
+      "departDate": "1964-12-20",
+      "arrivalDate": "1965-01-04",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2234006,
+          1.070129,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.467755,
+          1.0262398,
+          0.0
+        ]
+      },
+      "departDate": "1965-01-04",
+      "arrivalDate": "1965-01-19",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.467755,
+          1.0262398,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6906297,
+          0.9348088,
+          0.0
+        ]
+      },
+      "departDate": "1965-01-19",
+      "arrivalDate": "1965-02-03",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6906297,
+          0.9348088,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.8844141,
+          0.803759,
+          0.0
+        ]
+      },
+      "departDate": "1965-02-03",
+      "arrivalDate": "1965-02-18",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.8844141,
+          0.803759,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.0438587,
+          0.6413419,
+          0.0
+        ]
+      },
+      "departDate": "1965-02-18",
+      "arrivalDate": "1965-03-05",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.0438587,
+          0.6413419,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.1656332,
+          0.455671,
+          0.0
+        ]
+      },
+      "departDate": "1965-03-05",
+      "arrivalDate": "1965-03-20",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.1656332,
+          0.455671,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.2479149,
+          0.2544842,
+          0.0
+        ]
+      },
+      "departDate": "1965-03-20",
+      "arrivalDate": "1965-04-04",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.2479149,
+          0.2544842,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.2900535,
+          0.0450565,
+          0.0
+        ]
+      },
+      "departDate": "1965-04-04",
+      "arrivalDate": "1965-04-19",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.2900535,
+          0.0450565,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.2923205,
+          -0.1658011,
+          0.0
+        ]
+      },
+      "departDate": "1965-04-19",
+      "arrivalDate": "1965-05-04",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.2923205,
+          -0.1658011,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.2557394,
+          -0.3716976,
+          0.0
+        ]
+      },
+      "departDate": "1965-05-04",
+      "arrivalDate": "1965-05-19",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.2557394,
+          -0.3716976,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.1819834,
+          -0.5666001,
+          0.0
+        ]
+      },
+      "departDate": "1965-05-19",
+      "arrivalDate": "1965-06-03",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.1819834,
+          -0.5666001,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.0733341,
+          -0.7447718,
+          0.0
+        ]
+      },
+      "departDate": "1965-06-03",
+      "arrivalDate": "1965-06-18",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.0733341,
+          -0.7447718,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.93269,
+          -0.9007221,
+          -0.0
+        ]
+      },
+      "departDate": "1965-06-18",
+      "arrivalDate": "1965-07-03",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.93269,
+          -0.9007221,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7636225,
+          -1.0291802,
+          -0.0
+        ]
+      },
+      "departDate": "1965-07-03",
+      "arrivalDate": "1965-07-18",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7636225,
+          -1.0291802,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5704738,
+          -1.1251047,
+          -0.0
+        ]
+      },
+      "departDate": "1965-07-18",
+      "arrivalDate": "1965-08-02",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5704738,
+          -1.1251047,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.358493,
+          -1.1837468,
+          -0.0
+        ]
+      },
+      "departDate": "1965-08-02",
+      "arrivalDate": "1965-08-17",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.358493,
+          -1.1837468,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.1340015,
+          -1.2007891,
+          -0.0
+        ]
+      },
+      "departDate": "1965-08-17",
+      "arrivalDate": "1965-09-01",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.1340015,
+          -1.2007891,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0954308,
+          -1.1725921,
+          -0.0
+        ]
+      },
+      "departDate": "1965-09-01",
+      "arrivalDate": "1965-09-16",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0954308,
+          -1.1725921,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.3208386,
+          -1.096583,
+          -0.0
+        ]
+      },
+      "departDate": "1965-09-16",
+      "arrivalDate": "1965-10-01",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.3208386,
+          -1.096583,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5318144,
+          -0.97182,
+          -0.0
+        ]
+      },
+      "departDate": "1965-10-01",
+      "arrivalDate": "1965-10-16",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5318144,
+          -0.97182,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.7166805,
+          -0.7997357,
+          -0.0
+        ]
+      },
+      "departDate": "1965-10-16",
+      "arrivalDate": "1965-10-31",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.7166805,
+          -0.7997357,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.8630396,
+          -0.5849933,
+          -0.0
+        ]
+      },
+      "departDate": "1965-10-31",
+      "arrivalDate": "1965-11-15",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.8630396,
+          -0.5849933,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9588658,
+          -0.3362558,
+          -0.0
+        ]
+      },
+      "departDate": "1965-11-15",
+      "arrivalDate": "1965-11-30",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9588658,
+          -0.3362558,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9941822,
+          -0.0665039,
+          -0.0
+        ]
+      },
+      "departDate": "1965-11-30",
+      "arrivalDate": "1965-12-15",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9941822,
+          -0.0665039,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9630842,
+          0.2075476,
+          -0.0
+        ]
+      },
+      "departDate": "1965-12-15",
+      "arrivalDate": "1965-12-30",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9630842,
+          0.2075476,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.8654893,
+          0.4672045,
+          -0.0
+        ]
+      },
+      "departDate": "1965-12-30",
+      "arrivalDate": "1966-01-14",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.8654893,
+          0.4672045,
+          -0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.7199764,
+          0.6806392,
+          -0.0
+        ]
+      },
+      "departDate": "1966-01-14",
+      "arrivalDate": "1966-01-28",
+      "estimate": true
+    }
+  ]
+}
