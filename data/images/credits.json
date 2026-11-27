@@ -1324,6 +1324,22 @@
    "magellan"
   ]
  },
+ "images/missions/mariner_5/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mariner_5_diagram.png",
+  "sourceTitle": "Mariner 5 diagram.png",
+  "credit": "NASA",
+  "creditDetail": "Mariner Venus 1967 Final Report",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Mariner 5 (NASA/JPL diagram, Mariner Venus 1967 final report)",
+  "usedBy": [
+   "mariner_5"
+  ]
+ },
  "images/missions/mars_climate_orbiter/spacecraft.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars_Climate_Orbiter_2.jpg",
   "sourceTitle": "Mars Climate Orbiter 2.jpg",
@@ -1705,6 +1721,39 @@
    "phoenix"
   ]
  },
+ "images/missions/pioneer_6/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Artist-_T_Howard_Interplanetary_Pioneer_6_Spacecraft_launched_in_1965_to_study_the_sun_(ARC-1964-A-33228).jpg",
+  "sourceTitle": "Artist- T Howard Interplanetary Pioneer 6 Spacecraft launched in 1965 to study the sun (ARC-1964-A-33228).jpg",
+  "credit": "NASA Ames Research Center",
+  "creditDetail": "This image or video was catalogued by Ames Research Center of the United States National Aeronautics and Space Administration (NASA) under Photo ID: ARC-1964-A-33228.",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Pioneer 6 (NASA Ames artwork, 1964)",
+  "usedBy": [
+   "pioneer_6"
+  ]
+ },
+ "images/missions/pioneer_7/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Pioneer_6,_7,_8,_9_and_E_spacecraft_in_space.png",
+  "sourceTitle": "Pioneer 6, 7, 8, 9 and E spacecraft in space.png",
+  "credit": "NASA/William R. Corliss",
+  "creditDetail": "The Interplanetary Pioneers Volume I: Summary. page 29. NASA SP-278. https://ntrs.nasa.gov/api/citations/19730006137/downloads/19730006137.pdf",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Pioneer 6-9 spacecraft design (NASA, The Interplanetary Pioneers)",
+  "usedBy": [
+   "pioneer_7",
+   "pioneer_8"
+  ]
+ },
  "images/missions/pioneer_venus_1/spacecraft.jpg": {
   "sourcePage": "https://images.nasa.gov/details/ARC-1977-AC77-0475-11",
   "sourceTitle": "ARC-1977-AC77-0475-11",
@@ -2010,6 +2059,22 @@
    "venera_16"
   ]
  },
+ "images/missions/venera_4/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Venera_4_(MMA_2011)_(1).JPG",
+  "sourceTitle": "Venera 4 (MMA 2011) (1).JPG",
+  "credit": "Armael",
+  "creditDetail": "Own work",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Venera 4 spacecraft and descent capsule (museum example)",
+  "usedBy": [
+   "venera_4"
+  ]
+ },
  "images/missions/venera_9/lander.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Foto_de_Venera_9_(cropped).png",
   "sourceTitle": "Foto de Venera 9 (cropped).png",
@@ -2092,6 +2157,24 @@
    "viking_2"
   ]
  },
+ "images/missions/zond_3/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Zond_3_Space_Probe_01.jpg",
+  "sourceTitle": "Zond 3 Space Probe 01.jpg",
+  "credit": "Stolbovsky",
+  "creditDetail": "Own work",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Zond 3, the same 3MV-4 design as Venera 2 (museum example)",
+  "usedBy": [
+   "venera_2",
+   "venera_3",
+   "zond_3"
+  ]
+ },
  "images/rockets/ariane_1.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Ariane_1_Le_Bourget_FRA_001.jpg",
   "sourceTitle": "Ariane 1 Le Bourget FRA 001.jpg",
@@ -2124,6 +2207,21 @@
    "bepicolombo",
    "juice",
    "rosetta"
+  ]
+ },
+ "images/rockets/atlas_agena_d.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/6757466",
+  "sourceTitle": "Launch Vehicles",
+  "credit": "NASA/MSFC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Atlas-Agena D with Mariner 5 on the pad, 14 June 1967",
+  "usedBy": [
+   "mariner_5"
   ]
  },
  "images/rockets/atlas_centaur.jpg": {
@@ -2180,6 +2278,24 @@
   "title": "Delta 2914 (launching IUE, 1978)",
   "usedBy": [
    "isee3"
+  ]
+ },
+ "images/rockets/delta_e.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Delta-E_launching_Pioneer-6.jpg",
+  "sourceTitle": "Delta-E launching Pioneer-6.jpg",
+  "credit": "NASA/KSC",
+  "creditDetail": "NASA Kennedy Space Center photo KSC-65C-8960",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Delta E launching Pioneer 6, 1965",
+  "usedBy": [
+   "pioneer_6",
+   "pioneer_7",
+   "pioneer_8"
   ]
  },
  "images/rockets/delta_ii.jpg": {
@@ -2359,6 +2475,25 @@
   "usedBy": [
    "hayabusa",
    "nozomi"
+  ]
+ },
+ "images/rockets/molniya.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Molniya_launch_vehicle_-_panoramio.jpg",
+  "sourceTitle": "Molniya launch vehicle - panoramio.jpg",
+  "credit": "Matveev Michail",
+  "creditDetail": "https://web.archive.org/web/20161010103345/http://www.panoramio.com/photo/6890296",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Molniya-family rocket (museum display)",
+  "usedBy": [
+   "venera_2",
+   "venera_3",
+   "venera_4",
+   "zond_3"
   ]
  },
  "images/rockets/mu_3sii.jpg": {

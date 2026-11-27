@@ -1,0 +1,37 @@
+{
+  "key": "venera_4",
+  "name": "Venera 4",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1967-06-12T02:39:45Z",
+  "arrival": "1967-10-18T04:34:00Z",
+  "estimate": true,
+  "rocket": "Molniya-M (8K78M)",
+  "payload": "V-67 bus with a 383 kg descent capsule",
+  "status": "Success",
+  "significance": "Venera 4 was the first spacecraft to send back measurements from inside another planet's atmosphere. On 18 October 1967 its capsule parachuted into Venus and radioed temperature, pressure and composition for 93 minutes, finding an atmosphere of 90-95% carbon dioxide with almost no nitrogen, which overturned the long-held expectation of a nitrogen-rich air. At the time Soviet scientists announced that the probe had transmitted until it touched the surface; comparison with Mariner 5's measurements the next day soon showed it had stopped working high above the ground, damaged by an atmosphere far denser and hotter than it had been built for.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): there is no ephemeris for this flight, so the arc is a two-body transfer solved between the real launch and arrival dates and the planets' positions on those dates. For modern direct flights checked against JPL Horizons, such date-to-date arcs fall within about 0.002 AU (300,000 km) of the real trajectory, so the shape is close; course corrections aren't modelled. Launched 1967-06-12 02:39:45 UT; mid-course correction 1967-07-29. The bus released the capsule at 04:34 UT on 1967-10-18 (where the arc ends); the bus burned up in the atmosphere. The capsule's 93 minutes of data ended at about 28 km altitude (later analysis); its inert remains came down near 19 N, 36 E. Source: Siddiqi, Beyond Earth; NSSDCA's catalog record (1967-058A) returns its error page.",
+  "assets": {
+    "spacecraft": {
+      "title": "Venera 4 spacecraft and descent capsule (museum example)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_4",
+      "localImage": "images/missions/venera_4/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Molniya-family rocket (museum display)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya-M",
+      "localImage": "images/rockets/molniya.jpg"
+    }
+  },
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Venera 4”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=88", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
+  ],
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1967-10-18T04:34:00Z",
+      "label": "Capsule entered the atmosphere; 93 min of data during the descent"
+    }
+  ]
+}

@@ -1,6 +1,14 @@
 {
   "_comment": "Ordered list of flight keys. Each key must have a corresponding flights/<key>.json file. This is the ONLY place flight inclusion is declared -- app.js has no hardcoded flight list.",
   "order": [
+    "zond_3",
+    "venera_2",
+    "venera_3",
+    "pioneer_6",
+    "pioneer_7",
+    "venera_4",
+    "mariner_5",
+    "pioneer_8",
     "helios_1",
     "venera_9",
     "venera_10",

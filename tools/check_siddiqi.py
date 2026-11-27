@@ -34,6 +34,9 @@ CITE = "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958
 
 # flight key -> entry heading in the book
 ENTRIES = {
+    "zond_3": "Zond 3", "venera_2": "Venera 2", "venera_3": "Venera 3",
+    "pioneer_6": "Pioneer VI", "pioneer_7": "Pioneer VII", "venera_4": "Venera 4",
+    "mariner_5": "Mariner V", "pioneer_8": "Pioneer VIII",
     "helios_1": "Helios 1", "venera_9": "Venera 9", "venera_10": "Venera 10",
     "viking_1": "Viking 1", "viking_2": "Viking 2", "helios_2": "Helios 2",
     "pioneer_venus_1": "Pioneer Venus 1", "pioneer_venus_2": "Pioneer Venus 2",

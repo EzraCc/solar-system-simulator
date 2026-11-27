@@ -107,6 +107,20 @@ MANUAL = {
     "images/missions/giotto/spacecraft.jpg": {"file": "Giotto Whipple shield ESA239195.jpg"},
     "images/rockets/ariane_1.jpg": {"file": "Ariane 1 Le Bourget FRA 001.jpg"},
     "images/rockets/mu_3sii.jpg": {"file": "M-3SII exhibition model.jpg"},
+    # 1965-1967 flights (added 2026-11-27). The NASA library has Mariner 5 on
+    # its pad but no Pioneer 6-8 or Delta E photo; those are NASA images on
+    # Commons. Soviet craft: museum photos on Commons (Zond 3, shown for its
+    # 3MV sisters Venera 2 and 3 too; Venera 4).
+    "images/missions/pioneer_6/spacecraft.jpg": {"file": "Artist- T Howard Interplanetary Pioneer 6 Spacecraft launched in 1965 to study the sun (ARC-1964-A-33228).jpg"},
+    "images/missions/pioneer_7/spacecraft.png": {"file": "Pioneer 6, 7, 8, 9 and E spacecraft in space.png"},
+    # The Commons file has no author field; its NASA-image tag gives KSC-65C-8960.
+    "images/rockets/delta_e.jpg": {"file": "Delta-E launching Pioneer-6.jpg",
+                                   "credit": "NASA/KSC", "creditDetail": "NASA Kennedy Space Center photo KSC-65C-8960"},
+    "images/rockets/atlas_agena_d.jpg": {"nasa_id": "6757466"},
+    "images/missions/mariner_5/spacecraft.png": {"file": "Mariner 5 diagram.png"},
+    "images/missions/venera_4/spacecraft.jpg": {"file": "Venera 4 (MMA 2011) (1).JPG"},
+    "images/missions/zond_3/spacecraft.jpg": {"file": "Zond 3 Space Probe 01.jpg"},
+    "images/rockets/molniya.jpg": {"file": "Molniya launch vehicle - panoramio.jpg"},
     # Pre-1988 Veneras (added 2026-11-26). No free photo of either spacecraft
     # type was found: the 1982 USSR stamp shows Venera 13/14; Venera 15/16
     # use a map made from their radar altimetry (PDS Geosciences data).

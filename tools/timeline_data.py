@@ -159,6 +159,13 @@ T = {
   # ISEE-3 / ICE: lunar flyby distances from 12-minute NASA SPDF SSCWeb
   # positions (approximate), except the last (119.4 km, JPL Horizons -111
   # record). 2014: ISEE-3 Reboot Project, Horizons solution s45.
+  # ---- 1965-1967 (Siddiqi, Beyond Earth; NSSDCA for Mariner 5) ----
+  "zond_3": [ev("Moon", "flyby", "1965-07-20", "Flyby at 9,220 km: 25 photos and 3 UV images of the unseen far side")],
+  "venera_2": [ev("Venus", "flyby", "1966-02-27T02:52:00Z", "Flyby at ~24,000 km; contact never regained, no data returned")],
+  "venera_3": [ev("Venus", "lost", "1966-02-16", "Contact lost two weeks before arrival"),
+               ev("Venus", "impact", "1966-03-01T06:56:26Z", "Capsule struck Venus: first human-made object to reach another planet")],
+  "venera_4": [ev("Venus", "entry", "1967-10-18T04:34:00Z", "Capsule entered the atmosphere; 93 min of data during the descent")],
+  "mariner_5": [ev("Venus", "flyby", "1967-10-19T17:34:56Z", "Flyby at 4,094 km; radio occultation measured the atmosphere")],
   "isee3": [bar("Earth", "orbit", "1978-11-20", "1982-06-10", "Halo orbit about Sun–Earth L1 (first libration-point orbit)"),
             ev("Moon", "flyby", "1983-03-30", "Lunar flyby 1 (~19,500 km altitude)"),
             ev("Moon", "flyby", "1983-04-23", "Lunar flyby 2 (~21,100 km)"),
@@ -192,16 +199,18 @@ for key, entries in T.items():
     # is left byte-for-byte alone.
     block = json.dumps(entries, indent=2).replace("\n", "\n  ")
     if "timeline" in d:
+        # Replace the existing block where it is: other keys (dataSources
+        # added by check_nssdca.py / check_siddiqi.py --cite) may follow it.
         start = src.index('"timeline"')
-        body = src[:start].rstrip()
-        body = body[:-1] if body.endswith(",") else body
-        tail = "\n}" + ("\n" if src.endswith("\n") else "")
+        vstart = src.index("[", start)
+        _, vend = json.JSONDecoder().raw_decode(src, vstart)
+        out = src[:start] + '"timeline": ' + block + src[vend:]
     else:
         body = src.rstrip()
         assert body.endswith("}")
         body = body[:-1].rstrip()
         tail = "\n}" + ("\n" if src.endswith("\n") else "")
-    out = body + ',\n  "timeline": ' + block + tail
+        out = body + ',\n  "timeline": ' + block + tail
     d["timeline"] = entries
     assert json.loads(out) == d, key
     open(p, "w").write(out)

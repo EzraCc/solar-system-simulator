@@ -1,0 +1,43 @@
+{
+  "key": "venera_3",
+  "name": "Venera 3",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1965-11-16T04:13:00Z",
+  "arrival": "1966-03-01T06:56:26Z",
+  "estimate": true,
+  "rocket": "Molniya (8K78)",
+  "payload": "3MV-3 probe (969 kg) with a 310 kg, 0.9 m landing capsule",
+  "status": "Partial Success",
+  "significance": "Venera 3 was the first human-made object to reach another planet. Its capsule was built to parachute through Venus's atmosphere and radio back pressure, temperature and composition, but the spacecraft fell silent on 16 February 1966, two weeks before arrival, so the capsule struck Venus on 1 March without sending anything. Its cruise data still mattered: 63 communication sessions returned measurements of the solar wind beyond Earth's magnetic field. The Soviet press stressed that the capsule had been sterilised so it couldn't contaminate Venus, a concern raised by American and British scientists.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): there is no ephemeris for this flight, so the arc is a two-body transfer solved between the real launch and arrival dates and the planets' positions on those dates. For modern direct flights checked against JPL Horizons, such date-to-date arcs fall within about 0.002 AU (300,000 km) of the real trajectory, so the shape is close; course corrections aren't modelled. Launched 1965-11-16 04:13 UT; mid-course correction 1965-12-26; contact lost 1966-02-16. The capsule separated automatically and impacted on the night side near the terminator at 06:56:26 UT on 1966-03-01 (somewhere between 20 S and 20 N, 60-80 E), which is where the arc ends. Source: Siddiqi, Beyond Earth; NSSDCA's catalog record (1965-092A) returns its error page.",
+  "assets": {
+    "spacecraft": {
+      "title": "Zond 3, a sister 3MV spacecraft (Venera 3 carried a landing capsule; museum example)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_3",
+      "localImage": "images/missions/zond_3/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Molniya-family rocket (museum display)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya_(rocket)",
+      "localImage": "images/rockets/molniya.jpg"
+    }
+  },
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Venera 3”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=71", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
+  ],
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "lost",
+      "start": "1966-02-16",
+      "label": "Contact lost two weeks before arrival"
+    },
+    {
+      "body": "Venus",
+      "kind": "impact",
+      "start": "1966-03-01T06:56:26Z",
+      "label": "Capsule struck Venus: first human-made object to reach another planet"
+    }
+  ]
+}

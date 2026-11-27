@@ -1,0 +1,38 @@
+{
+  "key": "mariner_5",
+  "name": "Mariner 5",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1967-06-14T06:01:00Z",
+  "arrival": "1967-10-19T17:34:56Z",
+  "estimate": true,
+  "rocket": "Atlas-Agena D",
+  "payload": "Mariner Venus 67 flyby spacecraft (245 kg), rebuilt from the Mariner 4 backup; no camera",
+  "status": "Success",
+  "significance": "Mariner 5 flew past Venus the day after Venera 4 arrived, and its radio signal, bent and dimmed as it passed behind the planet, measured the atmosphere. The results put the surface at about 527 C and 75-100 times Earth's pressure, far denser than Venera 4's last readings, which showed the Soviet capsule had not reached the ground. It also found that Venus has no detectable magnetic field yet still deflects the solar wind with a bow shock, and saw a hydrogen glow around the planet. In March 1968 American and Soviet scientists compared the two missions' data at one of the first international planetary conferences.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): there is no ephemeris for this flight, so the arc is a two-body transfer solved between the real launch and arrival dates and the planets' positions on those dates. For modern direct flights checked against JPL Horizons, such date-to-date arcs fall within about 0.002 AU (300,000 km) of the real trajectory, so the shape is close; course corrections aren't modelled. Launched 1967-06-14 06:01:00 UT from Cape Kennedy; mid-course correction 1967-06-19. Closest approach 17:34:56 UT on 1967-10-19 at 4,094 km (Siddiqi; NSSDCA), closer than planned because of the course correction; the arc ends there. Venus's gravity bent it into a solar orbit of 0.579 x 0.735 AU (not drawn); contact was lost on 1967-12-04, briefly regained on 1968-10-14, and attempts ended on 1968-11-05.",
+  "assets": {
+    "spacecraft": {
+      "title": "Mariner 5 (NASA/JPL diagram, Mariner Venus 1967 final report)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mariner_5",
+      "localImage": "images/missions/mariner_5/spacecraft.png"
+    },
+    "rocket": {
+      "title": "Atlas-Agena D with Mariner 5 on the pad, 14 June 1967",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas-Agena",
+      "localImage": "images/rockets/atlas_agena_d.jpg"
+    }
+  },
+  "dataSources": [
+    {"title": "NASA NSSDCA Master Catalog: Mariner 5 (1967-060A)", "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1967-060A", "note": "launch date, vehicle and mission events checked against this record"},
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mariner V”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=90", "note": "launch date and time and mission events checked against this entry"}
+  ],
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "flyby",
+      "start": "1967-10-19T17:34:56Z",
+      "label": "Flyby at 4,094 km; radio occultation measured the atmosphere"
+    }
+  ]
+}
