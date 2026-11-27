@@ -1434,6 +1434,99 @@
    "mariner_5"
   ]
  },
+ "images/missions/mariner_6/rocket.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/69PC-23",
+  "sourceTitle": "69PC-23",
+  "credit": "NASA/KSC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Atlas-Centaur launching Mariner 6, 24 February 1969 (local time)",
+  "usedBy": [
+   "mariner_6"
+  ]
+ },
+ "images/missions/mariner_6/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mariner_6-7.png",
+  "sourceTitle": "Mariner 6-7.png",
+  "credit": "NASA",
+  "creditDetail": "[1]",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Mariner 6 and 7 spacecraft",
+  "usedBy": [
+   "mariner_6",
+   "mariner_7"
+  ]
+ },
+ "images/missions/mariner_7/mars.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA02981",
+  "sourceTitle": "Mars full disk approach view from Mariner 7",
+  "credit": "NASA/JPL",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Mars on approach, from Mariner 7 (1969)",
+  "usedBy": [
+   "mariner_7"
+  ]
+ },
+ "images/missions/mariner_7/rocket.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/101-KSC-69P-223",
+  "sourceTitle": "KSC-69p-223",
+  "credit": "NASA or National Aeronautics and Space Administration",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Atlas-Centaur launching Mariner 7, 27 March 1969 (local time)",
+  "usedBy": [
+   "mariner_7"
+  ]
+ },
+ "images/missions/mariner_9/olympus_mons.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA02999",
+  "sourceTitle": "Mariner 9 views Olympus Mons standing above the Martian Dust Storm",
+  "credit": "NASA/JPL",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Olympus Mons above the dust storm (Mariner 9, 1971)",
+  "usedBy": [
+   "mariner_9"
+  ]
+ },
+ "images/missions/mariner_9/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mariner8%269_schematics.jpg",
+  "sourceTitle": "Mariner8&9 schematics.jpg",
+  "credit": "NASA (per the Commons licence tag; no source given)",
+  "creditDetail": "",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Mariner 8 and 9 spacecraft (schematic)",
+  "usedBy": [
+   "mariner_9"
+  ]
+ },
  "images/missions/mars_1/spacecraft.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:The_Soviet_Union_1964_CPA_3013_stamp_(Space_Exploration._Mars_1_spacecraft).jpg",
   "sourceTitle": "The Soviet Union 1964 CPA 3013 stamp (Space Exploration. Mars 1 spacecraft).jpg",
@@ -1448,6 +1541,23 @@
   "title": "Mars 1 on a 1964 Soviet stamp",
   "usedBy": [
    "mars_1"
+  ]
+ },
+ "images/missions/mars_3/lander.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mars3_lander2_vsm.jpg",
+  "sourceTitle": "Mars3 lander2 vsm.jpg",
+  "credit": "NASA",
+  "creditDetail": "http://nssdc.gsfc.nasa.gov/image/spacecraft/mars3_lander2_vsm.jpg",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Mars 2/3 lander (museum display)",
+  "usedBy": [
+   "mars_2",
+   "mars_3"
   ]
  },
  "images/missions/mars_climate_orbiter/spacecraft.jpg": {
@@ -1896,6 +2006,22 @@
    "pioneer_8"
   ]
  },
+ "images/missions/pioneer_9/spacecraft.png": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Pioneer_6,_7,_8,_9_and_E_spacecraft_in_space.png",
+  "sourceTitle": "Pioneer 6, 7, 8, 9 and E spacecraft in space.png",
+  "credit": "NASA/William R. Corliss",
+  "creditDetail": "The Interplanetary Pioneers Volume I: Summary. page 29. NASA SP-278. https://ntrs.nasa.gov/api/citations/19730006137/downloads/19730006137.pdf",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Pioneer 6–9 spacecraft (NASA drawing)",
+  "usedBy": [
+   "pioneer_9"
+  ]
+ },
  "images/missions/pioneer_venus_1/spacecraft.jpg": {
   "sourcePage": "https://images.nasa.gov/details/ARC-1977-AC77-0475-11",
   "sourceTitle": "ARC-1977-AC77-0475-11",
@@ -2231,6 +2357,39 @@
   "title": "Venera 4 spacecraft and descent capsule (museum example)",
   "usedBy": [
    "venera_4"
+  ]
+ },
+ "images/missions/venera_5/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:The_Soviet_Union_1969_CPA_3821_stamp_(Space_Probe,_Space_Capsule_and_Orbits).jpg",
+  "sourceTitle": "The Soviet Union 1969 CPA 3821 stamp (Space Probe, Space Capsule and Orbits).jpg",
+  "credit": "USSR Post",
+  "creditDetail": "Scanned 600 dpi by User Matsievsky from personal collection",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Venera 5 and 6 at Venus (1969 Soviet stamp)",
+  "usedBy": [
+   "venera_5",
+   "venera_6"
+  ]
+ },
+ "images/missions/venera_7/lander.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Venera-7_spuskaemiy_apparat.jpg",
+  "sourceTitle": "Venera-7 spuskaemiy apparat.jpg",
+  "credit": "Emerezhko",
+  "creditDetail": "Own work",
+  "license": "CC BY-SA 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Venera 7 descent capsule (museum display)",
+  "usedBy": [
+   "venera_7"
   ]
  },
  "images/missions/venera_9/lander.jpg": {
@@ -2656,6 +2815,24 @@
    "zond_1",
    "zond_2",
    "zond_3"
+  ]
+ },
+ "images/rockets/molniya_m.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Molniya_launch_vehicle_-_panoramio.jpg",
+  "sourceTitle": "Molniya launch vehicle - panoramio.jpg",
+  "credit": "Matveev Michail",
+  "creditDetail": "https://web.archive.org/web/20161010103345/http://www.panoramio.com/photo/6890296",
+  "license": "CC BY 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+  "attributionRequired": true,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Molniya-M (8K78M) on display",
+  "usedBy": [
+   "venera_5",
+   "venera_6",
+   "venera_7"
   ]
  },
  "images/rockets/mu_3sii.jpg": {

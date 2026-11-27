@@ -169,6 +169,23 @@ T = {
             ev("Moon", "flyby", "2014-08-10", "ISEE-3 Reboot Project: flyby at 16,663 km (couldn't fire its engines)")],
   # ---- 1975 (chunk E): NSSDCA records 1975-075A/C, 1975-083A/C; Venera from
   # NSSDCA's Venus chronology + Wikipedia (NSSDCA catalog records unreachable) ----
+  # ---- 1968-1971 (chunk I) ----
+  "venera_5": [ev("Venus", "entry", "1969-05-16T06:02:00Z", "Probe entered the night-side atmosphere"),
+               ev("Venus", "lost", "1969-05-16", "Data stopped after 52.5 min, about 18 km up (crushed at ~27 atm)")],
+  "venera_6": [ev("Venus", "entry", "1969-05-17T06:05:00Z", "Probe entered the atmosphere"),
+               ev("Venus", "lost", "1969-05-17", "Data stopped after 51 min, at ~27 atm")],
+  "mariner_6": [ev("Mars", "flyby", "1969-07-31T05:19:07Z", "Flyby at 3,429 km; 24 close-up images")],
+  "mariner_7": [ev("Mars", "flyby", "1969-08-05T05:00:49Z", "Flyby at 3,430 km; 33 close-up images")],
+  "venera_7": [ev("Venus", "entry", "1970-12-15T04:58:38Z", "Capsule entered the atmosphere"),
+               ev("Venus", "landing", "1970-12-15T05:34:10Z", "First landing on another planet"),
+               bar("Venus", "ground", "1970-12-15T05:34:10Z", "1970-12-15T05:57:08Z", "23 min of faint signal from the surface")],
+  "mars_2": [ev("Mars", "impact", "1971-11-27", "Lander crashed: first human-made object on Mars"),
+             bar("Mars", "orbit", "1971-11-27T20:19:00Z", "1972-08-23", "Orbiter (contact lost about July 1972; end announced 1972-08-23)")],
+  "mars_3": [ev("Mars", "landing", "1971-12-02T13:47:00Z", "First soft landing on Mars"),
+             bar("Mars", "ground", "1971-12-02T13:50:35Z", "1971-12-02T13:50:50Z", "Signal for 14.5 s, then silence"),
+             bar("Mars", "orbit", "1971-12-02", "1972-08-23", "Orbiter (contact lost about July 1972; end announced 1972-08-23)")],
+  "mariner_9": [bar("Mars", "orbit", "1971-11-14T00:18:00Z", "1972-10-27T22:32:00Z", "First spacecraft to orbit another planet"),
+                ev("Mars", "lost", "1972-10-27T22:32:00Z", "Last contact (attitude-control gas exhausted)")],
   "venera_9": [bar("Venus", "orbit", "1975-10-22", "1976-03-22", "Orbit (first spacecraft to orbit Venus)"),
                ev("Venus", "landing", "1975-10-22T05:13:00Z", "Lander touched down near Beta Regio"),
                bar("Venus", "ground", "1975-10-22T05:13:00Z", "1975-10-22T06:06:00Z", "53 min on the surface; first images from another planet's surface")],

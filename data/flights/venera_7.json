@@ -1,0 +1,54 @@
+{
+  "key": "venera_7",
+  "name": "Venera 7",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1970-08-17T05:38:22Z",
+  "arrival": "1970-12-15T05:34:10Z",
+  "estimate": true,
+  "rocket": "Molniya-M / Blok NVL",
+  "payload": "Flight bus and landing capsule (1,180 kg; capsule 490 kg)",
+  "status": "Success",
+  "significance": "Venera 7 made the first landing on another planet and sent the first signals from its surface. Its capsule was rebuilt to withstand 150 to 180 atmospheres and 540 °C after Veneras 4 to 6 were crushed on the way down. On 15 December 1970 it descended on a parachute that probably tore, hit the ground at about 17 m/s and seemed to fall silent. Only when Soviet scientists processed the recordings did they find a faint signal lasting 23 minutes from the surface, probably from the capsule lying on its side. It measured 475 °C and about 90 atmospheres, confirming that the surface of Venus is hot enough to melt lead under a crushing atmosphere.",
+  "statusNote": "Launched 1970-08-17 05:38:22 UT on a Molniya-M from Tyuratam (Siddiqi). Mid-course corrections on 1970-10-02 and 1970-11-17. The capsule separated and entered the atmosphere at 04:58:38 UT on 1970-12-15 and touched down at 05:34:10 UT on the night side, at 5 S, 351 E; 22 min 58 s of signal from the surface were recovered afterwards. The arc ends at the landing. TRAJECTORY (calculated, drawn dashed): no measured trajectory for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer orbit calculated between Earth at the published launch time and Venus at the published arrival time. For modern direct flights checked against Horizons, arcs calculated this way fall within about 0.002 AU (300,000 km) of the real trajectory, but this one can't be checked against data, so it's drawn dashed.",
+  "dataSources": [
+    {
+      "title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Venera 7”",
+      "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=113",
+      "note": "launch and arrival times used for the calculated path, and mission events"
+    }
+  ],
+  "assets": {
+    "lander": {
+      "title": "Venera 7 descent capsule (museum display)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_7",
+      "localImage": "images/missions/venera_7/lander.jpg"
+    },
+    "rocket": {
+      "title": "Molniya-M (8K78M) on display",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya-M",
+      "localImage": "images/rockets/molniya_m.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1970-12-15T04:58:38Z",
+      "label": "Capsule entered the atmosphere"
+    },
+    {
+      "body": "Venus",
+      "kind": "landing",
+      "start": "1970-12-15T05:34:10Z",
+      "label": "First landing on another planet"
+    },
+    {
+      "body": "Venus",
+      "kind": "ground",
+      "start": "1970-12-15T05:34:10Z",
+      "end": "1970-12-15T05:57:08Z",
+      "label": "23 min of faint signal from the surface"
+    }
+  ]
+}

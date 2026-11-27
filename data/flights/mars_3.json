@@ -1,0 +1,55 @@
+{
+  "key": "mars_3",
+  "name": "Mars 3",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1971-05-28T15:26:30Z",
+  "arrival": "1971-12-02T13:47:00Z",
+  "estimate": true,
+  "rocket": "Proton-K / Blok D",
+  "payload": "Mars orbiter and lander with PrOP-M mini-rover (4,650 kg)",
+  "status": "Partial Success",
+  "significance": "Mars 3's lander made the first soft landing on Mars on 2 December 1971. About three and a half minutes after touchdown it began sending a television image, but the signal stopped after 14.5 seconds and never returned; the fragment showed only a grey, featureless field. A planet-wide dust storm was raging, and controllers suspected electrical discharges in the dusty air. The orbiter reached a far more stretched orbit than planned and, like Mars 2's, photographed a planet hidden by dust, but it measured the storm, the surface and the atmosphere's water for months. In 2013 NASA's Mars Reconnaissance Orbiter may have spotted the lander's parachute and hardware.",
+  "statusNote": "Launched 1971-05-28 15:26:30 UT on a Proton-K/Blok D from Tyuratam (Siddiqi). Mid-course corrections 1971-06-08, 1971-11-14 and 1971-12-02. The lander separated at 09:14 UT on 1971-12-02 and touched down at 13:47 UT at 44.90 S, 160.08 W; it transmitted from 13:50:35 UT for 14.5 s (20 s in some sources). The orbiter entered a 1,530 x 214,500 km, 60 deg orbit the same day. Contact with both 1971 orbiters was lost in July 1972 (Lavochkin); TASS announced the end on 1972-08-23. The orbit's size and tilt are published but not its orientation (node and argument of periapsis), so it isn't drawn in the Mars view; the orbit period is on the timeline. The arc ends at the landing. TRAJECTORY (calculated, drawn dashed): no measured trajectory for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer orbit calculated between Earth at the published launch time and Mars at the published arrival time. For modern direct flights checked against Horizons, arcs calculated this way fall within about 0.002 AU (300,000 km) of the real trajectory, but this one can't be checked against data, so it's drawn dashed.",
+  "dataSources": [
+    {
+      "title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mars 3”",
+      "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=121",
+      "note": "launch and arrival times used for the calculated path, and mission events"
+    }
+  ],
+  "assets": {
+    "lander": {
+      "title": "Mars 3 lander (museum display)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_3",
+      "localImage": "images/missions/mars_3/lander.jpg"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "landing",
+      "start": "1971-12-02T13:47:00Z",
+      "label": "First soft landing on Mars"
+    },
+    {
+      "body": "Mars",
+      "kind": "ground",
+      "start": "1971-12-02T13:50:35Z",
+      "end": "1971-12-02T13:50:50Z",
+      "label": "Signal for 14.5 s, then silence"
+    },
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "1971-12-02",
+      "end": "1972-08-23",
+      "label": "Orbiter (contact lost about July 1972; end announced 1972-08-23)"
+    }
+  ]
+}

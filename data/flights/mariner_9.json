@@ -1,0 +1,54 @@
+{
+  "key": "mariner_9",
+  "name": "Mariner 9",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1971-05-30T22:23:04Z",
+  "arrival": "1971-11-14T00:18:00Z",
+  "estimate": true,
+  "rocket": "Atlas-Centaur (AC-23)",
+  "payload": "Mars orbiter, TV cameras and spectrometers (998 kg)",
+  "status": "Success",
+  "significance": "Mariner 9 became the first spacecraft to orbit another planet on 14 November 1971, two weeks ahead of the Soviet Mars 2 and 3. It arrived during a global dust storm, but unlike the Soviet orbiters it could wait. As the dust cleared from January 1972, dark spots poking above the haze turned out to be giant volcanoes, among them Olympus Mons (then Nix Olympica), far larger than any on Earth, along with a canyon system more than 4,000 km long, later named Valles Marineris for the spacecraft, and winding channels that hinted at water in the past. After the cratered Mars of Mariners 4, 6 and 7, it showed a planet that had been geologically alive. By its last contact in October 1972 it had mapped 85% of Mars in 7,329 images, including about 80 of the moons Phobos and Deimos.",
+  "statusNote": "Launched 1971-05-30 22:23:04 UT on an Atlas-Centaur from Cape Kennedy (Siddiqi; NSSDCA). Mid-course correction 1971-06-05. The orbit-insertion burn began at 00:18 UT on 1971-11-14 and lasted 915.6 s; initial orbit 1,398 x 17,916 km, 64.3 deg, trimmed to 1,394 x 17,144 km. Last contact 22:32 UT on 1972-10-27, when its attitude-control gas ran out. The orbit's size and tilt are published but not its orientation (node and argument of periapsis), so it isn't drawn in the Mars view; the orbit period is on the timeline. TRAJECTORY (calculated, drawn dashed): no measured trajectory for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer orbit calculated between Earth at the published launch time and Mars at the published arrival time. For modern direct flights checked against Horizons, arcs calculated this way fall within about 0.002 AU (300,000 km) of the real trajectory, but this one can't be checked against data, so it's drawn dashed.",
+  "dataSources": [
+    {
+      "title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mariner 9”",
+      "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=123",
+      "note": "launch and arrival times used for the calculated path, and mission events"
+    },
+    {"title": "NASA NSSDCA Master Catalog: Mariner 9 (1971-051A)", "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1971-051A", "note": "launch date, vehicle and mission events checked against this record"}
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Mariner 8 and 9 spacecraft (schematic)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mariner_9",
+      "localImage": "images/missions/mariner_9/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Atlas-Centaur",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas-Centaur",
+      "localImage": "images/rockets/atlas_centaur.jpg"
+    },
+    "image": {
+      "title": "Olympus Mons above the dust storm (Mariner 9, 1971)",
+      "infoUrl": "https://images.nasa.gov/details/PIA02999",
+      "localImage": "images/missions/mariner_9/olympus_mons.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "1971-11-14T00:18:00Z",
+      "end": "1972-10-27T22:32:00Z",
+      "label": "First spacecraft to orbit another planet"
+    },
+    {
+      "body": "Mars",
+      "kind": "lost",
+      "start": "1972-10-27T22:32:00Z",
+      "label": "Last contact (attitude-control gas exhausted)"
+    }
+  ]
+}
