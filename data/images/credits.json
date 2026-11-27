@@ -250,6 +250,22 @@
    "Ganymede"
   ]
  },
+ "images/bodies/giacobini_zinner.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Comet_21P_Giacobini-Zinner.jpg",
+  "sourceTitle": "Comet 21P Giacobini-Zinner.jpg",
+  "credit": "NASA/JPL",
+  "creditDetail": "NASA/JSC/ARES/Exploring Meteorite Mysteries: Slides 12",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Comet 21P/Giacobini-Zinner",
+  "usedBy": [
+   "Giacobini–Zinner (21P)"
+  ]
+ },
  "images/bodies/grigg_skjellerup.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Grigg-Skjellerup_19920710.jpg",
   "sourceTitle": "Grigg-Skjellerup 19920710.jpg",
@@ -1149,6 +1165,22 @@
    "insight"
   ]
  },
+ "images/missions/isee3/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:ISEE-C_(ISEE_3)_in_dynamic_test_chamber.jpg",
+  "sourceTitle": "ISEE-C (ISEE 3) in dynamic test chamber.jpg",
+  "credit": "NASA",
+  "creditDetail": "Great Images in NASA Description",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "ISEE-3 in a dynamic test chamber before launch (as ISEE-C)",
+  "usedBy": [
+   "isee3"
+  ]
+ },
  "images/missions/juice/spacecraft.png": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Juice_launch_kit_cover_close-up.png",
   "sourceTitle": "Juice launch kit cover close-up.png",
@@ -1923,6 +1955,22 @@
    "osiris_rex",
    "perseverance",
    "solar_orbiter"
+  ]
+ },
+ "images/rockets/delta_2914.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Delta_2914_launching_IUE_spacecraft.jpg",
+  "sourceTitle": "Delta 2914 launching IUE spacecraft.jpg",
+  "credit": "NASA Kennedy Space Center (NASA-KSC)",
+  "creditDetail": "KSC-78PC-0004",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Delta 2914 (launching IUE, 1978)",
+  "usedBy": [
+   "isee3"
   ]
  },
  "images/rockets/delta_ii.jpg": {

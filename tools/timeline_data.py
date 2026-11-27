@@ -144,6 +144,17 @@ T = {
   "suisei": [ev("halley", "flyby", "1986-03-08", "Flyby at 151,000 km; ultraviolet images of the hydrogen cloud")],
   "giotto": [ev("halley", "flyby", "1986-03-14", "Flyby at 596 km: the closest look at Halley's nucleus"),
              ev("grigg_skjellerup", "flyby", "1992-07-10", "Flyby at ~200 km: first spacecraft to visit two comets")],
+  # ISEE-3 / ICE: lunar flyby distances from 12-minute NASA SPDF SSCWeb
+  # positions (approximate), except the last (119.4 km, JPL Horizons -111
+  # record). 2014: ISEE-3 Reboot Project, Horizons solution s45.
+  "isee3": [bar("Earth", "orbit", "1978-11-20", "1982-06-10", "Halo orbit about Sun–Earth L1 (first libration-point orbit)"),
+            ev("Moon", "flyby", "1983-03-30", "Lunar flyby 1 (~19,500 km altitude)"),
+            ev("Moon", "flyby", "1983-04-23", "Lunar flyby 2 (~21,100 km)"),
+            ev("Moon", "flyby", "1983-09-27", "Lunar flyby 3 (~22,400 km)"),
+            ev("Moon", "flyby", "1983-10-21", "Lunar flyby 4 (~17,500 km)"),
+            ev("Moon", "flyby", "1983-12-22", "Lunar flyby 5 at 119.4 km: escape from the Earth–Moon system"),
+            ev("giacobini_zinner", "flyby", "1985-09-11", "Through the tail, 7,862 km from the nucleus: first comet flyby"),
+            ev("Moon", "flyby", "2014-08-10", "ISEE-3 Reboot Project: flyby at 16,663 km (couldn't fire its engines)")],
 }
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")

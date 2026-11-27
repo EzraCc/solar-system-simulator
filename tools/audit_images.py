@@ -112,6 +112,11 @@ MANUAL = {
     # use a map made from their radar altimetry (PDS Geosciences data).
     "images/missions/venera_13/spacecraft.jpg": {"file": "1982 CPA 5278.jpg"},
     "images/missions/venera_15/spacecraft.jpg": {"file": "VenusTopoVenera.jpg"},
+    # ISEE-3 / ICE (added 2026-11-27). NASA's library has no ISEE-3 spacecraft
+    # or Delta 2914 photo, so these are NASA images on Commons.
+    "images/missions/isee3/spacecraft.jpg": {"file": "ISEE-C (ISEE 3) in dynamic test chamber.jpg"},
+    "images/rockets/delta_2914.jpg": {"file": "Delta 2914 launching IUE spacecraft.jpg"},
+    "images/bodies/giacobini_zinner.jpg": {"file": "Comet 21P Giacobini-Zinner.jpg"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},

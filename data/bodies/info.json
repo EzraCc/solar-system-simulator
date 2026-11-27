@@ -499,5 +499,15 @@
         "localImage": "images/bodies/patroclus.jpg"
       }
     }
+  },
+  "Giacobini–Zinner (21P)": {
+    "significance": "21P/Giacobini-Zinner is a Jupiter-family comet with a period of about 6.6 years, discovered by Michel Giacobini in 1900 and recovered by Ernst Zinner in 1913. Its nucleus, about 2 km across, has never been imaged. In September 1985 it became the first comet visited by a spacecraft, when the International Cometary Explorer flew through its plasma tail 7,862 km downstream of the nucleus. The crossing showed a narrow tail of ionised water and other molecules, threaded by magnetic field lines draped around the comet by the solar wind, much as theory predicted. It is also the parent of the Draconid meteor shower, which produced intense outbursts in 1933 and 1946.",
+    "assets": {
+      "image": {
+        "title": "Comet 21P/Giacobini-Zinner",
+        "infoUrl": "https://en.wikipedia.org/wiki/21P/Giacobini%E2%80%93Zinner",
+        "localImage": "images/bodies/giacobini_zinner.jpg"
+      }
+    }
   }
 }
