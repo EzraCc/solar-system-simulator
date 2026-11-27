@@ -1,0 +1,3609 @@
+{
+  "key": "pioneer_9",
+  "name": "Pioneer 9",
+  "rocket": "Thor-Delta E-1",
+  "payload": "Solar-wind and interplanetary-field probe (65 kg per Siddiqi; NSSDCA lists 147 kg)",
+  "status": "Success",
+  "significance": "Pioneer 9 was the last of four small, spinning NASA probes (Pioneers 6 to 9) sent into orbit around the Sun to sample the solar wind, magnetic fields and cosmic rays from widely separated points, so that scientists could watch the same solar storms sweep past different places in space. Pioneer 9 circled inside Earth's orbit, between 0.75 and 0.99 AU from the Sun. By May 1969 NASA reported that it had met all its goals and returned more than 6 billion bits of data, and it kept working for 14 years. Together the Pioneers turned the solar wind from a theory into something measured continuously, the first network of space-weather stations.",
+  "statusNote": "Launched 1968-11-08 09:46:29 UT on a Thor-Delta E-1 from Cape Kennedy (Siddiqi). Solar orbit 0.75 x 0.99 AU, period 297.60 days, inclination 0.086 deg (NSSDCA trajectory record). NASA kept in contact until 1983-05-19; an attempt to reach it with SETI equipment on 1987-03-03 failed and it was declared inactive. TRAJECTORY (calculated, drawn dashed): JPL Horizons has no Pioneer 9 ephemeris and no measured trajectory is publicly archived, so the path is built from the published orbit (tools/build_solar_orbit_i.py): it starts at Earth's position at launch, where an inward-bound probe like Pioneer 9 is at its farthest from the Sun, and follows a two-body orbit with the published period until contact ended. The orbit's shape is right, but its exact orientation and the craft's place along it are approximate and drift over 14 years (planetary pulls are ignored), so the whole path is dashed. The 0.086 deg tilt is too small to see and is left out.",
+  "dataSources": [
+    {
+      "title": "NASA NSSDCA trajectory record: Pioneer 9 (1968-100A)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/displayTrajectory.action?id=1968-100A",
+      "note": "perihelion, aphelion, period and inclination used to build the estimated orbit"
+    },
+    {
+      "title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Pioneer IX”",
+      "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=100",
+      "note": "launch time, orbit and end of contact"
+    },
+    {
+      "title": "NASA NSSDCA Master Catalog: Pioneer 9 (1968-100A)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1968-100A",
+      "note": "launch date, vehicle and mission events checked against this record"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Pioneer 6–9 spacecraft (NASA drawing)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Pioneer_6,_7,_8,_and_9",
+      "localImage": "images/missions/pioneer_9/spacecraft.png"
+    }
+  },
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1968-11-08T09:46:29Z",
+      "arrivalDate": "1968-12-08T04:00:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1968-12-08T04:00:53Z",
+      "arrivalDate": "1969-01-06T22:15:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1969-01-06T22:15:17Z",
+      "arrivalDate": "1969-02-05T16:29:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1969-02-05T16:29:41Z",
+      "arrivalDate": "1969-03-07T10:44:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1969-03-07T10:44:05Z",
+      "arrivalDate": "1969-04-06T04:58:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1969-04-06T04:58:29Z",
+      "arrivalDate": "1969-05-05T23:12:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1969-05-05T23:12:53Z",
+      "arrivalDate": "1969-06-04T17:27:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1969-06-04T17:27:17Z",
+      "arrivalDate": "1969-07-04T11:41:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1969-07-04T11:41:41Z",
+      "arrivalDate": "1969-08-03T05:56:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1969-08-03T05:56:05Z",
+      "arrivalDate": "1969-09-02T00:10:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1969-09-02T00:10:29Z",
+      "arrivalDate": "1969-10-01T18:24:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1969-10-01T18:24:53Z",
+      "arrivalDate": "1969-10-31T12:39:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1969-10-31T12:39:17Z",
+      "arrivalDate": "1969-11-30T06:53:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1969-11-30T06:53:41Z",
+      "arrivalDate": "1969-12-30T01:08:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1969-12-30T01:08:05Z",
+      "arrivalDate": "1970-01-28T19:22:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1970-01-28T19:22:29Z",
+      "arrivalDate": "1970-02-27T13:36:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1970-02-27T13:36:53Z",
+      "arrivalDate": "1970-03-29T07:51:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1970-03-29T07:51:17Z",
+      "arrivalDate": "1970-04-28T02:05:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1970-04-28T02:05:41Z",
+      "arrivalDate": "1970-05-27T20:20:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1970-05-27T20:20:05Z",
+      "arrivalDate": "1970-06-26T14:34:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1970-06-26T14:34:29Z",
+      "arrivalDate": "1970-07-26T08:48:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1970-07-26T08:48:53Z",
+      "arrivalDate": "1970-08-25T03:03:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1970-08-25T03:03:17Z",
+      "arrivalDate": "1970-09-23T21:17:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1970-09-23T21:17:41Z",
+      "arrivalDate": "1970-10-23T15:32:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1970-10-23T15:32:05Z",
+      "arrivalDate": "1970-11-22T09:46:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1970-11-22T09:46:29Z",
+      "arrivalDate": "1970-12-22T04:00:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1970-12-22T04:00:53Z",
+      "arrivalDate": "1971-01-20T22:15:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1971-01-20T22:15:17Z",
+      "arrivalDate": "1971-02-19T16:29:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1971-02-19T16:29:41Z",
+      "arrivalDate": "1971-03-21T10:44:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1971-03-21T10:44:05Z",
+      "arrivalDate": "1971-04-20T04:58:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1971-04-20T04:58:29Z",
+      "arrivalDate": "1971-05-19T23:12:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1971-05-19T23:12:53Z",
+      "arrivalDate": "1971-06-18T17:27:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1971-06-18T17:27:17Z",
+      "arrivalDate": "1971-07-18T11:41:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1971-07-18T11:41:41Z",
+      "arrivalDate": "1971-08-17T05:56:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1971-08-17T05:56:05Z",
+      "arrivalDate": "1971-09-16T00:10:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1971-09-16T00:10:29Z",
+      "arrivalDate": "1971-10-15T18:24:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1971-10-15T18:24:53Z",
+      "arrivalDate": "1971-11-14T12:39:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1971-11-14T12:39:17Z",
+      "arrivalDate": "1971-12-14T06:53:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1971-12-14T06:53:41Z",
+      "arrivalDate": "1972-01-13T01:08:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1972-01-13T01:08:05Z",
+      "arrivalDate": "1972-02-11T19:22:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1972-02-11T19:22:29Z",
+      "arrivalDate": "1972-03-12T13:36:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1972-03-12T13:36:53Z",
+      "arrivalDate": "1972-04-11T07:51:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1972-04-11T07:51:17Z",
+      "arrivalDate": "1972-05-11T02:05:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1972-05-11T02:05:41Z",
+      "arrivalDate": "1972-06-09T20:20:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1972-06-09T20:20:05Z",
+      "arrivalDate": "1972-07-09T14:34:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1972-07-09T14:34:29Z",
+      "arrivalDate": "1972-08-08T08:48:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1972-08-08T08:48:53Z",
+      "arrivalDate": "1972-09-07T03:03:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1972-09-07T03:03:17Z",
+      "arrivalDate": "1972-10-06T21:17:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1972-10-06T21:17:41Z",
+      "arrivalDate": "1972-11-05T15:32:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1972-11-05T15:32:05Z",
+      "arrivalDate": "1972-12-05T09:46:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1972-12-05T09:46:29Z",
+      "arrivalDate": "1973-01-04T04:00:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1973-01-04T04:00:53Z",
+      "arrivalDate": "1973-02-02T22:15:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1973-02-02T22:15:17Z",
+      "arrivalDate": "1973-03-04T16:29:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1973-03-04T16:29:41Z",
+      "arrivalDate": "1973-04-03T10:44:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1973-04-03T10:44:05Z",
+      "arrivalDate": "1973-05-03T04:58:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1973-05-03T04:58:29Z",
+      "arrivalDate": "1973-06-01T23:12:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1973-06-01T23:12:53Z",
+      "arrivalDate": "1973-07-01T17:27:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1973-07-01T17:27:17Z",
+      "arrivalDate": "1973-07-31T11:41:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1973-07-31T11:41:41Z",
+      "arrivalDate": "1973-08-30T05:56:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1973-08-30T05:56:05Z",
+      "arrivalDate": "1973-09-29T00:10:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1973-09-29T00:10:29Z",
+      "arrivalDate": "1973-10-28T18:24:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1973-10-28T18:24:53Z",
+      "arrivalDate": "1973-11-27T12:39:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1973-11-27T12:39:17Z",
+      "arrivalDate": "1973-12-27T06:53:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1973-12-27T06:53:41Z",
+      "arrivalDate": "1974-01-26T01:08:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1974-01-26T01:08:05Z",
+      "arrivalDate": "1974-02-24T19:22:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1974-02-24T19:22:29Z",
+      "arrivalDate": "1974-03-26T13:36:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1974-03-26T13:36:53Z",
+      "arrivalDate": "1974-04-25T07:51:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1974-04-25T07:51:17Z",
+      "arrivalDate": "1974-05-25T02:05:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1974-05-25T02:05:41Z",
+      "arrivalDate": "1974-06-23T20:20:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1974-06-23T20:20:05Z",
+      "arrivalDate": "1974-07-23T14:34:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1974-07-23T14:34:29Z",
+      "arrivalDate": "1974-08-22T08:48:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1974-08-22T08:48:53Z",
+      "arrivalDate": "1974-09-21T03:03:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1974-09-21T03:03:17Z",
+      "arrivalDate": "1974-10-20T21:17:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1974-10-20T21:17:41Z",
+      "arrivalDate": "1974-11-19T15:32:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1974-11-19T15:32:05Z",
+      "arrivalDate": "1974-12-19T09:46:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1974-12-19T09:46:29Z",
+      "arrivalDate": "1975-01-18T04:00:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1975-01-18T04:00:53Z",
+      "arrivalDate": "1975-02-16T22:15:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1975-02-16T22:15:17Z",
+      "arrivalDate": "1975-03-18T16:29:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1975-03-18T16:29:41Z",
+      "arrivalDate": "1975-04-17T10:44:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1975-04-17T10:44:05Z",
+      "arrivalDate": "1975-05-17T04:58:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1975-05-17T04:58:29Z",
+      "arrivalDate": "1975-06-15T23:12:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1975-06-15T23:12:53Z",
+      "arrivalDate": "1975-07-15T17:27:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1975-07-15T17:27:17Z",
+      "arrivalDate": "1975-08-14T11:41:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1975-08-14T11:41:41Z",
+      "arrivalDate": "1975-09-13T05:56:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1975-09-13T05:56:05Z",
+      "arrivalDate": "1975-10-13T00:10:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1975-10-13T00:10:29Z",
+      "arrivalDate": "1975-11-11T18:24:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1975-11-11T18:24:53Z",
+      "arrivalDate": "1975-12-11T12:39:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1975-12-11T12:39:17Z",
+      "arrivalDate": "1976-01-10T06:53:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1976-01-10T06:53:41Z",
+      "arrivalDate": "1976-02-09T01:08:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1976-02-09T01:08:05Z",
+      "arrivalDate": "1976-03-09T19:22:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1976-03-09T19:22:29Z",
+      "arrivalDate": "1976-04-08T13:36:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1976-04-08T13:36:53Z",
+      "arrivalDate": "1976-05-08T07:51:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1976-05-08T07:51:17Z",
+      "arrivalDate": "1976-06-07T02:05:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1976-06-07T02:05:41Z",
+      "arrivalDate": "1976-07-06T20:20:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1976-07-06T20:20:05Z",
+      "arrivalDate": "1976-08-05T14:34:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1976-08-05T14:34:29Z",
+      "arrivalDate": "1976-09-04T08:48:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1976-09-04T08:48:53Z",
+      "arrivalDate": "1976-10-04T03:03:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1976-10-04T03:03:17Z",
+      "arrivalDate": "1976-11-02T21:17:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1976-11-02T21:17:41Z",
+      "arrivalDate": "1976-12-02T15:32:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1976-12-02T15:32:05Z",
+      "arrivalDate": "1977-01-01T09:46:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1977-01-01T09:46:29Z",
+      "arrivalDate": "1977-01-31T04:00:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1977-01-31T04:00:53Z",
+      "arrivalDate": "1977-03-01T22:15:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1977-03-01T22:15:17Z",
+      "arrivalDate": "1977-03-31T16:29:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1977-03-31T16:29:41Z",
+      "arrivalDate": "1977-04-30T10:44:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1977-04-30T10:44:05Z",
+      "arrivalDate": "1977-05-30T04:58:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1977-05-30T04:58:29Z",
+      "arrivalDate": "1977-06-28T23:12:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1977-06-28T23:12:53Z",
+      "arrivalDate": "1977-07-28T17:27:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1977-07-28T17:27:17Z",
+      "arrivalDate": "1977-08-27T11:41:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1977-08-27T11:41:41Z",
+      "arrivalDate": "1977-09-26T05:56:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1977-09-26T05:56:05Z",
+      "arrivalDate": "1977-10-26T00:10:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1977-10-26T00:10:29Z",
+      "arrivalDate": "1977-11-24T18:24:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1977-11-24T18:24:53Z",
+      "arrivalDate": "1977-12-24T12:39:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1977-12-24T12:39:17Z",
+      "arrivalDate": "1978-01-23T06:53:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1978-01-23T06:53:41Z",
+      "arrivalDate": "1978-02-22T01:08:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1978-02-22T01:08:05Z",
+      "arrivalDate": "1978-03-23T19:22:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1978-03-23T19:22:29Z",
+      "arrivalDate": "1978-04-22T13:36:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1978-04-22T13:36:53Z",
+      "arrivalDate": "1978-05-22T07:51:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1978-05-22T07:51:17Z",
+      "arrivalDate": "1978-06-21T02:05:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1978-06-21T02:05:41Z",
+      "arrivalDate": "1978-07-20T20:20:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1978-07-20T20:20:05Z",
+      "arrivalDate": "1978-08-19T14:34:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1978-08-19T14:34:29Z",
+      "arrivalDate": "1978-09-18T08:48:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1978-09-18T08:48:53Z",
+      "arrivalDate": "1978-10-18T03:03:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1978-10-18T03:03:17Z",
+      "arrivalDate": "1978-11-16T21:17:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1978-11-16T21:17:41Z",
+      "arrivalDate": "1978-12-16T15:32:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1978-12-16T15:32:05Z",
+      "arrivalDate": "1979-01-15T09:46:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1979-01-15T09:46:29Z",
+      "arrivalDate": "1979-02-14T04:00:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1979-02-14T04:00:53Z",
+      "arrivalDate": "1979-03-15T22:15:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1979-03-15T22:15:17Z",
+      "arrivalDate": "1979-04-14T16:29:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1979-04-14T16:29:41Z",
+      "arrivalDate": "1979-05-14T10:44:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1979-05-14T10:44:05Z",
+      "arrivalDate": "1979-06-13T04:58:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1979-06-13T04:58:29Z",
+      "arrivalDate": "1979-07-12T23:12:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1979-07-12T23:12:53Z",
+      "arrivalDate": "1979-08-11T17:27:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1979-08-11T17:27:17Z",
+      "arrivalDate": "1979-09-10T11:41:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1979-09-10T11:41:41Z",
+      "arrivalDate": "1979-10-10T05:56:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1979-10-10T05:56:05Z",
+      "arrivalDate": "1979-11-09T00:10:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1979-11-09T00:10:29Z",
+      "arrivalDate": "1979-12-08T18:24:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1979-12-08T18:24:53Z",
+      "arrivalDate": "1980-01-07T12:39:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1980-01-07T12:39:17Z",
+      "arrivalDate": "1980-02-06T06:53:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1980-02-06T06:53:41Z",
+      "arrivalDate": "1980-03-07T01:08:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1980-03-07T01:08:05Z",
+      "arrivalDate": "1980-04-05T19:22:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1980-04-05T19:22:29Z",
+      "arrivalDate": "1980-05-05T13:36:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1980-05-05T13:36:53Z",
+      "arrivalDate": "1980-06-04T07:51:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1980-06-04T07:51:17Z",
+      "arrivalDate": "1980-07-04T02:05:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1980-07-04T02:05:41Z",
+      "arrivalDate": "1980-08-02T20:20:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1980-08-02T20:20:05Z",
+      "arrivalDate": "1980-09-01T14:34:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1980-09-01T14:34:29Z",
+      "arrivalDate": "1980-10-01T08:48:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1980-10-01T08:48:53Z",
+      "arrivalDate": "1980-10-31T03:03:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1980-10-31T03:03:17Z",
+      "arrivalDate": "1980-11-29T21:17:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1980-11-29T21:17:41Z",
+      "arrivalDate": "1980-12-29T15:32:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1980-12-29T15:32:05Z",
+      "arrivalDate": "1981-01-28T09:46:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1981-01-28T09:46:29Z",
+      "arrivalDate": "1981-02-27T04:00:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1981-02-27T04:00:53Z",
+      "arrivalDate": "1981-03-28T22:15:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1981-03-28T22:15:17Z",
+      "arrivalDate": "1981-04-27T16:29:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1981-04-27T16:29:41Z",
+      "arrivalDate": "1981-05-27T10:44:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1981-05-27T10:44:05Z",
+      "arrivalDate": "1981-06-26T04:58:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1981-06-26T04:58:29Z",
+      "arrivalDate": "1981-07-25T23:12:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1981-07-25T23:12:53Z",
+      "arrivalDate": "1981-08-24T17:27:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1981-08-24T17:27:17Z",
+      "arrivalDate": "1981-09-23T11:41:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1981-09-23T11:41:41Z",
+      "arrivalDate": "1981-10-23T05:56:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1981-10-23T05:56:05Z",
+      "arrivalDate": "1981-11-22T00:10:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1981-11-22T00:10:29Z",
+      "arrivalDate": "1981-12-21T18:24:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1981-12-21T18:24:53Z",
+      "arrivalDate": "1982-01-20T12:39:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1982-01-20T12:39:17Z",
+      "arrivalDate": "1982-02-19T06:53:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1982-02-19T06:53:41Z",
+      "arrivalDate": "1982-03-21T01:08:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1982-03-21T01:08:05Z",
+      "arrivalDate": "1982-04-19T19:22:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1982-04-19T19:22:29Z",
+      "arrivalDate": "1982-05-19T13:36:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1982-05-19T13:36:53Z",
+      "arrivalDate": "1982-06-18T07:51:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1982-06-18T07:51:17Z",
+      "arrivalDate": "1982-07-18T02:05:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "departDate": "1982-07-18T02:05:41Z",
+      "arrivalDate": "1982-08-16T20:20:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9224276,
+          0.3085102,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "departDate": "1982-08-16T20:20:05Z",
+      "arrivalDate": "1982-09-15T14:34:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.6818226,
+          0.7184687,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "departDate": "1982-09-15T14:34:29Z",
+      "arrivalDate": "1982-10-15T08:48:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.2598404,
+          0.9373015,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "departDate": "1982-10-15T08:48:53Z",
+      "arrivalDate": "1982-11-14T03:03:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.2326531,
+          0.892512,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "departDate": "1982-11-14T03:03:17Z",
+      "arrivalDate": "1982-12-13T21:17:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.6434353,
+          0.5570824,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "departDate": "1982-12-13T21:17:41Z",
+      "arrivalDate": "1983-01-12T15:32:05Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.7833185,
+          -2e-07,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "departDate": "1983-01-12T15:32:05Z",
+      "arrivalDate": "1983-02-11T09:46:29Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.5191663,
+          -0.54707,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "departDate": "1983-02-11T09:46:29Z",
+      "arrivalDate": "1983-03-13T04:00:53Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.0409712,
+          -0.7822463,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "departDate": "1983-03-13T04:00:53Z",
+      "arrivalDate": "1983-04-11T22:15:17Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.5899747,
+          -0.6134164,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "departDate": "1983-04-11T22:15:17Z",
+      "arrivalDate": "1983-05-11T16:29:41Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9034592,
+          -0.1856519,
+          0.0
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.935095,
+          -0.0637273,
+          0.0
+        ]
+      },
+      "departDate": "1983-05-11T16:29:41Z",
+      "arrivalDate": "1983-05-19",
+      "estimate": true
+    }
+  ]
+}

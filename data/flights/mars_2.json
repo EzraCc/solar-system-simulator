@@ -1,0 +1,53 @@
+{
+  "key": "mars_2",
+  "name": "Mars 2",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1971-05-19T16:22:49Z",
+  "arrival": "1971-11-27T20:19:00Z",
+  "estimate": true,
+  "rocket": "Proton-K / Blok D",
+  "payload": "Mars orbiter and lander with PrOP-M mini-rover (4,650 kg)",
+  "status": "Partial Success",
+  "significance": "Mars 2 was the first of two Soviet orbiter-lander pairs sent to Mars in 1971. Its lander became the first human-made object to reach the surface of Mars, but it crashed: after a very accurate final course correction, the onboard computer applied a correction it didn't need, the entry angle was far too steep, and the parachute never opened. The orbiter entered orbit on 27 November 1971, just as a planet-wide dust storm hid the surface, so its photographs showed little. Its instruments still returned months of data on the storm, the atmosphere's water and the surface until contact was lost in mid-1972.",
+  "statusNote": "Launched 1971-05-19 16:22:49 UT on a Proton-K/Blok D from Tyuratam (Siddiqi). Mid-course corrections 1971-06-17 and 1971-11-20, a final one on 1971-11-27, after which the lander separated and crashed at 4 N, 47 W. The orbiter entered Mars orbit at 20:19 UT on 1971-11-27: 1,380 x 25,000 km, 48.9 deg, 1,080 min. Both 1971 orbiters lost contact almost together in July 1972 (Lavochkin) and TASS announced the end of their missions on 1972-08-23. The orbit's size and tilt are published but not its orientation (node and argument of periapsis), so it isn't drawn in the Mars view; the orbit period is on the timeline. TRAJECTORY (calculated, drawn dashed): no measured trajectory for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer orbit calculated between Earth at the published launch time and Mars at the published arrival time. For modern direct flights checked against Horizons, arcs calculated this way fall within about 0.002 AU (300,000 km) of the real trajectory, but this one can't be checked against data, so it's drawn dashed.",
+  "dataSources": [
+    {
+      "title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mars 2”",
+      "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=120",
+      "note": "launch and arrival times used for the calculated path, and mission events"
+    },
+    {
+      "title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mars 3”",
+      "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=121",
+      "note": "end of the Mars 2 and Mars 3 orbiter missions"
+    }
+  ],
+  "assets": {
+    "lander": {
+      "title": "Mars 2/3 lander (museum display)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_2",
+      "localImage": "images/missions/mars_3/lander.jpg"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "impact",
+      "start": "1971-11-27",
+      "label": "Lander crashed: first human-made object on Mars"
+    },
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "1971-11-27T20:19:00Z",
+      "end": "1972-08-23",
+      "label": "Orbiter (contact lost about July 1972; end announced 1972-08-23)"
+    }
+  ]
+}

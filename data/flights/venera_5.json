@@ -1,0 +1,47 @@
+{
+  "key": "venera_5",
+  "name": "Venera 5",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1969-01-05T06:28:08Z",
+  "arrival": "1969-05-16T06:02:00Z",
+  "estimate": true,
+  "rocket": "Molniya-M / Blok VL",
+  "payload": "Flight bus and atmospheric probe (1,130 kg; probe 410 kg)",
+  "status": "Success",
+  "significance": "Venera 5 and its twin Venera 6 were built after Venera 4 showed in 1967 that Venus' atmosphere was far denser and hotter than expected. Their probes were strengthened to survive 25 atmospheres and 320 °C and given smaller parachutes to fall faster, so they would get deeper before being crushed. On 16 May 1969 Venera 5's probe sent 52.5 minutes of data on pressure, temperature and composition as it descended through the night-side atmosphere, until it failed about 18 km above the ground at 27 atmospheres. Extrapolating its readings downward, Soviet scientists estimated the surface at around 140 atmospheres and 530 °C, and the twin probes confirmed an atmosphere almost entirely of carbon dioxide.",
+  "statusNote": "Launched 1969-01-05 06:28:08 UT on a Molniya-M from Tyuratam (Siddiqi). One mid-course correction (Siddiqi misprints its date as 14 March 1966). The probe separated on approach and entered the night-side atmosphere at 06:02 UT on 1969-05-16 at 11.17 km/s; it returned 52.5 min of descent data until contact was lost about 18 km up, at 3 S, 18 E. TRAJECTORY (calculated, drawn dashed): no measured trajectory for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer orbit calculated between Earth at the published launch time and Venus at the published arrival time. For modern direct flights checked against Horizons, arcs calculated this way fall within about 0.002 AU (300,000 km) of the real trajectory, but this one can't be checked against data, so it's drawn dashed.",
+  "dataSources": [
+    {
+      "title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Venera 5”",
+      "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=103",
+      "note": "launch and arrival times used for the calculated path, and mission events"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Venera 5 and 6 at Venus (1969 Soviet stamp)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_5",
+      "localImage": "images/missions/venera_5/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Molniya-M (8K78M) on display",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya-M",
+      "localImage": "images/rockets/molniya_m.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1969-05-16T06:02:00Z",
+      "label": "Probe entered the night-side atmosphere"
+    },
+    {
+      "body": "Venus",
+      "kind": "lost",
+      "start": "1969-05-16",
+      "label": "Data stopped after 52.5 min, about 18 km up (crushed at ~27 atm)"
+    }
+  ]
+}

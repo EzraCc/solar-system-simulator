@@ -112,6 +112,22 @@ MANUAL = {
     # use a map made from their radar altimetry (PDS Geosciences data).
     "images/missions/venera_13/spacecraft.jpg": {"file": "1982 CPA 5278.jpg"},
     "images/missions/venera_15/spacecraft.jpg": {"file": "VenusTopoVenera.jpg"},
+    # 1968-1971 flights (added 2026-11-27). NASA library for the Mariner launch
+    # photos and planet images; it has no Pioneer 6-9 or Mariner 6/7/9
+    # spacecraft pictures, so those are NASA works on Commons. Soviet craft:
+    # the 1969 USSR stamp (Venera 5/6), museum displays (Venera 7, Mars 2/3).
+    "images/missions/pioneer_9/spacecraft.png": {"file": "Pioneer 6, 7, 8, 9 and E spacecraft in space.png"},
+    "images/missions/mariner_6/spacecraft.jpg": {"file": "Mariner 6-7.png"},
+    "images/missions/mariner_6/rocket.jpg": {"nasa_id": "69PC-23"},
+    "images/missions/mariner_7/rocket.jpg": {"nasa_id": "101-KSC-69P-223"},
+    "images/missions/mariner_7/mars.jpg": {"nasa_id": "PIA02981"},
+    "images/missions/mariner_9/spacecraft.jpg": {"file": "Mariner8&9 schematics.jpg",
+        "credit": "NASA (per the Commons licence tag; no source given)"},
+    "images/missions/mariner_9/olympus_mons.jpg": {"nasa_id": "PIA02999"},
+    "images/missions/venera_5/spacecraft.jpg": {"file": "The Soviet Union 1969 CPA 3821 stamp (Space Probe, Space Capsule and Orbits).jpg"},
+    "images/missions/venera_7/lander.jpg": {"file": "Venera-7 spuskaemiy apparat.jpg"},
+    "images/rockets/molniya_m.jpg": {"file": "Molniya launch vehicle - panoramio.jpg"},
+    "images/missions/mars_3/lander.jpg": {"file": "Mars3 lander2 vsm.jpg"},
     # ISEE-3 / ICE (added 2026-11-27). NASA's library has no ISEE-3 spacecraft
     # or Delta 2914 photo, so these are NASA images on Commons.
     "images/missions/isee3/spacecraft.jpg": {"file": "ISEE-C (ISEE 3) in dynamic test chamber.jpg"},
