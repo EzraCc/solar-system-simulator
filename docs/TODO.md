@@ -55,7 +55,7 @@ Still open:
   one about every 11 months.
 
 <!-- pulls:start -->
-**Last data pull: 2026-11-25** (0 days ago; log: `docs/data-pulls.md`).
+**Last data pull: 2026-11-25** (2 days ago; log: `docs/data-pulls.md`).
 Next pull due after 2026-12-05.
 <!-- pulls:end -->
 
@@ -119,6 +119,10 @@ In the app: lightweight previews only, linking to the full-quality data.
   - Mars' spacecraft labels crowd each other.
   - The velocity dashboard doesn't support planetocentric legs.
   - JUICE needs a Ganymede orbit phase.
+- [ ] **Flight list: search, filtering and ordering.** At 78 flights and
+  growing, the left-hand list needs a search box and filters (agency,
+  destination, decade, status) plus other orderings. Alphabetical stays
+  the default (maintainer, 2026-11-27).
 - [ ] **`#bottom-right-controls`:** this wrapper blocks canvas clicks
   behind it.
 
