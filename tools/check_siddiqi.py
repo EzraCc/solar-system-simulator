@@ -40,6 +40,8 @@ ENTRIES = {
     "pioneer_9": "Pioneer IX", "venera_5": "Venera 5", "venera_6": "Venera 6",
     "mariner_6": "Mariner VI", "mariner_7": "Mariner VII", "venera_7": "Venera 7",
     "mars_2": "Mars 2", "mars_3": "Mars 3", "mariner_9": "Mariner 9",
+    "venera_8": "Venera 8", "mars_4": "Mars 4", "mars_5": "Mars 5", "mars_6": "Mars 6",
+    "mars_7": "Mars 7", "mariner_10": "Mariner 10",
     "helios_1": "Helios 1", "venera_9": "Venera 9", "venera_10": "Venera 10",
     "viking_1": "Viking 1", "viking_2": "Viking 2", "helios_2": "Helios 2",
     "pioneer_venus_1": "Pioneer Venus 1", "pioneer_venus_2": "Pioneer Venus 2",

@@ -1,0 +1,50 @@
+{
+  "key": "mars_6",
+  "name": "Mars 6",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1973-08-05",
+  "arrival": "1974-03-12",
+  "rocket": "Proton-K / Blok D",
+  "payload": "Flyby bus and descent lander (3MP)",
+  "status": "Partial success",
+  "estimate": true,
+  "significance": "Mars 6's lander made the first direct measurements of Mars's atmosphere on the way down, on 12 March 1974. Its signal was weak and hard to decode, and the capsule swung under its parachute far more than expected, but it returned temperature and pressure and, from a mass spectrometer, a hint that argon made up about a third of the atmosphere, a puzzling result at the time. Contact was lost about two seconds before touchdown, just after the landing rockets fired, and the cause was never pinned down. The bus collected data as it flew past and went on around the Sun.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): JPL Horizons has no ephemeris for this spacecraft, so the path is a two-body arc between the launch and arrival dates, solved by the app. For comparison, arcs drawn the same way for modern direct flights (MAVEN, Mars Odyssey, Mars Express, MRO, Venus Express) fall within about 0.002 AU of their real Horizons trajectories, so the shape and timing are close, but no tracking data stands behind it. Launched 1973-08-05 17:45:48 UT. A telemetry failure on 1973-09-03 left only playback data from the bus. The lander separated at 05:01:56 UT on 1974-03-12, 46,000 km from Mars; entered the atmosphere at 09:05:53 UT at 5.6 km/s; parachute at 09:08:32; contact lost at about 09:11:05 UT, at 23.9° S, 19.5° W. The bus passed about 1,600 km from the surface. Times are signal reception times (Siddiqi). The path ends at the encounter; the bus's later solar orbit isn't drawn. Source: Siddiqi, Beyond Earth (NSSDCA's catalog record returned an error page on 2026-11-27).",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars 6 (3MP flyby bus and lander)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_6",
+      "imagePage": "https://en.wikipedia.org/wiki/Mars_6"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "entry",
+      "start": "1974-03-12T09:05:53Z",
+      "label": "Lander entered the atmosphere; first direct atmosphere data"
+    },
+    {
+      "body": "Mars",
+      "kind": "landing",
+      "start": "1974-03-12T09:11:05Z",
+      "label": "Contact lost seconds before touchdown"
+    },
+    {
+      "body": "Mars",
+      "kind": "flyby",
+      "start": "1974-03-12",
+      "label": "Bus flew past (~1,600 km)"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mars 6”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=139", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"},
+    {"title": "NASA NSSDCA: Chronology of Mars exploration", "url": "https://nssdc.gsfc.nasa.gov/planetary/chronology_mars.html", "note": "launch date"}
+  ]
+}

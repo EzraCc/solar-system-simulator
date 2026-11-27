@@ -105,6 +105,12 @@ MANUAL = {
     "images/bodies/halley.jpg": {"file": "Lspn comet halley (cropped).jpg"},
     "images/bodies/grigg_skjellerup.jpg": {"file": "Grigg-Skjellerup 19920710.jpg"},
     "images/missions/giotto/spacecraft.jpg": {"file": "Giotto Whipple shield ESA239195.jpg"},
+    # 1972-73 flights. The NASA Image Library has Mariner 10's Mercury and
+    # Venus images but no photo of the spacecraft; the Smithsonian's CC0
+    # photo of the flight spare is used. Venera 8 and Mars 4-7 use link-only
+    # tiles (no freely licensed photo found).
+    "images/missions/mariner_10/mercury.jpg": {"nasa_id": "PIA03101"},
+    "images/missions/mariner_10/spacecraft.jpg": {"file": "Mariner 10 flight spare.jpg"},
     "images/rockets/ariane_1.jpg": {"file": "Ariane 1 Le Bourget FRA 001.jpg"},
     "images/rockets/mu_3sii.jpg": {"file": "M-3SII exhibition model.jpg"},
     # 1965-1967 flights (added 2026-11-27). The NASA library has Mariner 5 on

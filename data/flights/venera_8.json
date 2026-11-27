@@ -1,0 +1,51 @@
+{
+  "key": "venera_8",
+  "name": "Venera 8",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1972-03-27",
+  "arrival": "1972-07-22",
+  "rocket": "Molniya-M / Blok NVL",
+  "payload": "Flyby bus and descent lander (495 kg)",
+  "status": "Success",
+  "estimate": true,
+  "significance": "Venera 8 made the first landing on the sunlit side of Venus, on 22 July 1972, and sent data from the surface for 50 minutes. Its predecessor, Venera 7, had landed in darkness and barely got a signal out, so Venera 8 carried a strengthened capsule and a light meter. It measured about 470 °C and 90 Earth atmospheres at the ground, confirming that Venus is a furnace on its day side as well as its night side, and showed that some sunlight reaches the surface through the clouds, enough for pictures to be taken there. That finding is why the next Veneras carried cameras. Its gamma-ray spectrometer also gave the first hint of what the surface rock is made of.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): JPL Horizons has no ephemeris for this spacecraft, so the path is a two-body arc between the launch and landing dates, solved by the app. For comparison, arcs drawn the same way for modern direct flights (MAVEN, Mars Odyssey, Mars Express, MRO, Venus Express) fall within about 0.002 AU of their real Horizons trajectories, so the shape and timing are close, but no tracking data stands behind it. Launched 1972-03-27 04:15:06 UT. One mid-course correction (1972-04-06). The lander separated at 07:40 UT on 1972-07-22, entered the atmosphere 57 minutes later at 11.6 km/s, and landed at 09:29 UT at about 10.7° S, 335.25° E, roughly 500 km from the morning terminator; it transmitted for 50 min 11 s. Source: Siddiqi, Beyond Earth (NASA's NSSDCA catalog record for Venera 8 returned an error page on 2026-11-27); launch date also on NSSDCA's Venus chronology. No free photograph of the spacecraft was found.",
+  "assets": {
+    "spacecraft": {
+      "title": "Venera 8",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_8",
+      "imagePage": "https://en.wikipedia.org/wiki/Venera_8"
+    },
+    "rocket": {
+      "title": "Molniya-M",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya-M",
+      "imagePage": "https://en.wikipedia.org/wiki/Molniya-M"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1972-07-22T08:37:00Z",
+      "label": "Lander entered the atmosphere at 11.6 km/s"
+    },
+    {
+      "body": "Venus",
+      "kind": "landing",
+      "start": "1972-07-22T09:29:00Z",
+      "label": "First landing on Venus's day side"
+    },
+    {
+      "body": "Venus",
+      "kind": "ground",
+      "start": "1972-07-22T09:29:00Z",
+      "end": "1972-07-22T10:19:00Z",
+      "label": "Lander on the surface (50 min)"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Venera 8”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=130", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"},
+    {"title": "NASA NSSDCA: Chronology of Venus exploration", "url": "https://nssdc.gsfc.nasa.gov/planetary/chronology_venus.html", "note": "launch date"}
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "key": "mars_5",
+  "name": "Mars 5",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1973-07-25",
+  "arrival": "1974-02-12",
+  "rocket": "Proton-K / Blok D",
+  "payload": "Orbiter (3MS)",
+  "status": "Partial success",
+  "estimate": true,
+  "significance": "Mars 5 was the only one of the four 1973 Soviet Mars craft to work as planned, and only for about two weeks. Soon after it entered orbit in February 1974 its instrument compartment began slowly losing air, probably from a particle impact, so controllers crammed the science into five imaging sessions. Its 43 usable photographs, some as sharp as Mariner 9's, showed features that looked carved by flowing water, and its instruments returned what Soviet scientists called the first average data on the chemical makeup of Martian rock. It was meant to relay data from the Mars 6 and 7 landers but failed before they arrived.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): JPL Horizons has no ephemeris for this spacecraft, so the path is a two-body arc between the launch and orbit insertion dates, solved by the app. For comparison, arcs drawn the same way for modern direct flights (MAVEN, Mars Odyssey, Mars Express, MRO, Venus Express) fall within about 0.002 AU of their real Horizons trajectories, so the shape and timing are close, but no tracking data stands behind it. Launched 1973-07-25 18:55:48 UT. Mid-course corrections 1973-08-03 and 1974-02-02. Entered Mars orbit on 1974-02-12 (date: Wikipedia, citing NSSDCA; Siddiqi gives the burn time, 15:44:25 UT, but not the day) in a 1,760 x 32,586 km orbit inclined 35.3° (Siddiqi; NASA HEASARC gives 1,760 x 32,560 km and a 24 h 53 min period). Imaging sessions 17-26 February; last contact 1974-02-28. The orbit isn't shown in the Mars view: its size and inclination are published but not its orientation (node and periapsis direction), so it can't be placed. Sources: Siddiqi, Beyond Earth (NSSDCA's catalog record returned an error page on 2026-11-27); NASA HEASARC.",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars 5 (3MS orbiter)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_5",
+      "imagePage": "https://en.wikipedia.org/wiki/Mars_5"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "1974-02-12T15:44:00Z",
+      "end": "1974-02-28",
+      "label": "In Mars orbit until it lost pressure; 43 usable images"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mars 5”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=138", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"},
+    {"title": "NASA HEASARC: Mars 4 and Mars 5", "url": "https://heasarc.gsfc.nasa.gov/docs/heasarc/missions/mars45.html", "note": "orbit size, inclination and period"},
+    {"title": "Wikipedia: Mars 5", "url": "https://en.wikipedia.org/wiki/Mars_5", "note": "orbit insertion date, 1974-02-12 (Siddiqi gives only the time)"},
+    {"title": "NASA NSSDCA: Chronology of Mars exploration", "url": "https://nssdc.gsfc.nasa.gov/planetary/chronology_mars.html", "note": "launch date"}
+  ]
+}

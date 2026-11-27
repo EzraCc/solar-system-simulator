@@ -1,0 +1,39 @@
+{
+  "key": "mars_4",
+  "name": "Mars 4",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1973-07-21",
+  "arrival": "1974-02-10",
+  "rocket": "Proton-K / Blok D",
+  "payload": "Orbiter (3MS)",
+  "status": "Orbit insertion failed",
+  "estimate": true,
+  "significance": "Mars 4 was the first of four Soviet craft sent to Mars in 1973, two orbiters and two landers, launched in a hurry to get ahead of NASA's Vikings. Before launch, engineers found that a transistor used in all four craft tended to fail after about a year and a half in space, and the missions flew anyway. On Mars 4 the fault knocked out the onboard computer, so it couldn't fire its engine to enter orbit. It flew past Mars at about 1,800 km on 10 February 1974, taking 12 pictures and two scanner panoramas on the way past, and went on into orbit around the Sun.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): JPL Horizons has no ephemeris for this spacecraft, so the path is a two-body arc between the launch and flyby dates, solved by the app. For comparison, arcs drawn the same way for modern direct flights (MAVEN, Mars Odyssey, Mars Express, MRO, Venus Express) fall within about 0.002 AU of their real Horizons trajectories, so the shape and timing are close, but no tracking data stands behind it. Launched 1973-07-21 19:30:59 UT. One mid-course correction (1973-07-30); two of the computer's three channels then failed, so the second correction and Mars orbit insertion couldn't be made. Flew past Mars at 15:34 UT on 1974-02-10 at 1,844 km, imaging from 15:32:41. The path ends at the flyby; its heliocentric orbit afterwards isn't drawn. Sources: Siddiqi, Beyond Earth (NSSDCA's catalog record returned an error page on 2026-11-27); NASA HEASARC's Mars 4/5 page.",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars 4 (3MS orbiter)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_4",
+      "imagePage": "https://en.wikipedia.org/wiki/Mars_4"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "flyby",
+      "start": "1974-02-10T15:34:00Z",
+      "label": "Flew past at 1,844 km (orbit insertion failed); 12 images"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mars 4”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=137", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"},
+    {"title": "NASA HEASARC: Mars 4 and Mars 5", "url": "https://heasarc.gsfc.nasa.gov/docs/heasarc/missions/mars45.html", "note": "flyby date; failed orbit insertion"},
+    {"title": "NASA NSSDCA: Chronology of Mars exploration", "url": "https://nssdc.gsfc.nasa.gov/planetary/chronology_mars.html", "note": "launch date"}
+  ]
+}

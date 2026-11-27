@@ -143,6 +143,21 @@ T = {
   "deep_space_1": [ev("braille", "flyby", "1999-07-29", "Flyby"),
                    ev("borrelly", "flyby", "2001-09-22", "Flyby")],
   "lucy": [ev("patroclus", "flyby", "2033-03-03", "Flyby of the Patroclus–Menoetius binary (planned)")],
+  # ---- 1972-1973 (chunk J). Times: Siddiqi, Beyond Earth (NASA SP-2018-4041);
+  # Mars 6 times are signal-reception times. Mars 5 orbit date: Wikipedia/NSSDCA.
+  "venera_8": [ev("Venus", "entry", "1972-07-22T08:37:00Z", "Lander entered the atmosphere at 11.6 km/s"),
+               ev("Venus", "landing", "1972-07-22T09:29:00Z", "First landing on Venus's day side"),
+               bar("Venus", "ground", "1972-07-22T09:29:00Z", "1972-07-22T10:19:00Z", "Lander on the surface (50 min)")],
+  "mars_4": [ev("Mars", "flyby", "1974-02-10T15:34:00Z", "Flew past at 1,844 km (orbit insertion failed); 12 images")],
+  "mars_5": [bar("Mars", "orbit", "1974-02-12T15:44:00Z", "1974-02-28", "In Mars orbit until it lost pressure; 43 usable images")],
+  "mars_6": [ev("Mars", "entry", "1974-03-12T09:05:53Z", "Lander entered the atmosphere; first direct atmosphere data"),
+             ev("Mars", "landing", "1974-03-12T09:11:05Z", "Contact lost seconds before touchdown"),
+             ev("Mars", "flyby", "1974-03-12", "Bus flew past (~1,600 km)")],
+  "mars_7": [ev("Mars", "flyby", "1974-03-09", "Lander missed Mars by ~1,300 km; bus flew past")],
+  "mariner_10": [ev("Venus", "flyby", "1974-02-05T17:01:00Z", "Flyby at 5,768 km: first gravity assist"),
+                 ev("Mercury", "flyby", "1974-03-29T20:47:00Z", "Mercury I at 703 km: first close look at Mercury"),
+                 ev("Mercury", "flyby", "1974-09-21T20:59:00Z", "Mercury II at 48,069 km: southern polar region"),
+                 ev("Mercury", "flyby", "1975-03-16T22:39:00Z", "Mercury III at 327 km: the closest pass")],
   # ---- Halley Armada (1984-86) ----
   "vega_1": [ev("Venus", "entry", "1985-06-11", "Descent module entered; balloon floated in the clouds ~46 h"),
              ev("Venus", "landing", "1985-06-11", "Lander touched down north of Aphrodite Terra"),

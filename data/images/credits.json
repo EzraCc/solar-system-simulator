@@ -1324,6 +1324,37 @@
    "magellan"
   ]
  },
+ "images/missions/mariner_10/mercury.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA03101",
+  "sourceTitle": "Mercury Southern Hemisphere",
+  "credit": "NASA/JPL",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Mercury's southern hemisphere, Mariner 10 mosaic (1974)",
+  "usedBy": [
+   "mariner_10"
+  ]
+ },
+ "images/missions/mariner_10/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mariner_10_flight_spare.jpg",
+  "sourceTitle": "Mariner 10 flight spare.jpg",
+  "credit": "Smithsonian Institution",
+  "creditDetail": "https://www.si.edu/object/nasm_A19830006000",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.999,
+  "title": "Mariner 10 flight spare (Smithsonian National Air and Space Museum)",
+  "usedBy": [
+   "mariner_10"
+  ]
+ },
  "images/missions/mariner_2/rocket.jpg": {
   "sourcePage": "https://images.nasa.gov/details/62P-165",
   "sourceTitle": "62P-165",

@@ -1,0 +1,391 @@
+{
+  "key": "mariner_10",
+  "name": "Mariner 10",
+  "rocket": "Atlas-Centaur (AC-34)",
+  "payload": "Flyby spacecraft (503 kg), two TV cameras and five other instruments",
+  "status": "Success",
+  "significance": "Mariner 10 was the first spacecraft to visit Mercury and the first to use one planet's gravity to reach another: it swung past Venus in February 1974 and was bent onto a path to Mercury. Its pictures showed a world that looked like the Moon, covered in craters, with long cliffs and a huge impact scar, the Caloris basin. Its biggest surprise was a magnetic field, weak but real, which nobody expected from a small, slowly turning planet; it found no real atmosphere. Its orbit around the Sun took two Mercury years, so it met Mercury again in September 1974 and March 1975, mapping almost half the planet in all. At Venus it photographed the cloud patterns that show up in ultraviolet light. No spacecraft returned to Mercury for over 30 years.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): JPL Horizons has no ephemeris for Mariner 10, so the path is built from the published encounter times. Earth to Venus and Venus to Mercury are two-body arcs between those dates, solved by the app; arcs drawn this way for modern direct flights fall within about 0.002 AU of their real Horizons trajectories. After the first Mercury flyby the spacecraft was on a 176-day solar orbit (two Mercury years), so each Mercury-to-Mercury leg is a full lap around the Sun, which the app's solver can't draw in one piece; each lap was solved offline as a one-revolution transfer between Mercury's positions at the flybys and split into eight shorter arcs (tools/build_mariner10.py). The modelled lap orbit (0.61 AU semi-major axis, eccentricity 0.245, period 175.95 days) is self-consistent; the second Mercury flyby's turning implies a 38,800 km pass against the published 48,069 km. At the first Mercury flyby, the date-to-date Venus-to-Mercury arc arrives about 0.8 km/s faster (relative to Mercury) than the lap leaves, a velocity mismatch that a real flyby could not produce; it reflects the uncertainty of that arc and does not visibly change the drawn path. Events: launch 1973-11-03 05:45 UT; Venus flyby 17:01 UT 1974-02-05 at 5,768 km; Mercury flybys 20:47 UT 1974-03-29 at 703 km, 20:59 UT 1974-09-21 at 48,069 km and 22:39 UT 1975-03-16 at 327 km; last contact 12:21 UT 1975-03-24, when its attitude-control gas ran out. The path ends at the third Mercury flyby. Sources: Siddiqi, Beyond Earth; NASA NSSDCA record 1973-085A.",
+  "assets": {
+    "spacecraft": {
+      "title": "Mariner 10 flight spare (Smithsonian National Air and Space Museum)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mariner_10",
+      "localImage": "images/missions/mariner_10/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Atlas-Centaur",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas-Centaur",
+      "localImage": "images/rockets/atlas_centaur.jpg"
+    },
+    "image": {
+      "title": "Mercury's southern hemisphere, Mariner 10 mosaic (1974)",
+      "infoUrl": "https://images.nasa.gov/details/PIA03101",
+      "localImage": "images/missions/mariner_10/mercury.jpg"
+    }
+  },
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Venus",
+      "departDate": "1973-11-03T05:45:00Z",
+      "arrivalDate": "1974-02-05T17:01:00Z",
+      "estimate": true
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Venus",
+      "date": "1974-02-05T17:01:00Z",
+      "periapsisKm": 5768,
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Venus",
+      "toBody": "Mercury",
+      "departDate": "1974-02-05T17:01:00Z",
+      "arrivalDate": "1974-03-29T20:47:00Z",
+      "estimate": true
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "1974-03-29T20:47:00Z",
+      "periapsisKm": 703,
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": {
+        "fixedPos": [
+          0.472718345,
+          -0.200573066,
+          -0.059898729
+        ]
+      },
+      "departDate": "1974-03-29T20:47:00Z",
+      "arrivalDate": "1974-04-20T20:48:30Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.472718345,
+          -0.200573066,
+          -0.059898729
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.563629803,
+          0.291049095,
+          -0.028115407
+        ]
+      },
+      "departDate": "1974-04-20T20:48:30Z",
+      "arrivalDate": "1974-05-12T20:50:00Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.563629803,
+          0.291049095,
+          -0.028115407
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.336883786,
+          0.643609559,
+          0.021553038
+        ]
+      },
+      "departDate": "1974-05-12T20:50:00Z",
+      "arrivalDate": "1974-06-03T20:51:30Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.336883786,
+          0.643609559,
+          0.021553038
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.020487588,
+          0.761421948,
+          0.064073877
+        ]
+      },
+      "departDate": "1974-06-03T20:51:30Z",
+      "arrivalDate": "1974-06-25T20:53:00Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.020487588,
+          0.761421948,
+          0.064073877
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.371987662,
+          0.636909643,
+          0.086262762
+        ]
+      },
+      "departDate": "1974-06-25T20:53:00Z",
+      "arrivalDate": "1974-07-17T20:54:30Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.371987662,
+          0.636909643,
+          0.086262762
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.590361493,
+          0.293951845,
+          0.078355215
+        ]
+      },
+      "departDate": "1974-07-17T20:54:30Z",
+      "arrivalDate": "1974-08-08T20:56:00Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.590361493,
+          0.293951845,
+          0.078355215
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.517606971,
+          -0.175467517,
+          0.033318589
+        ]
+      },
+      "departDate": "1974-08-08T20:56:00Z",
+      "arrivalDate": "1974-08-30T20:57:30Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.517606971,
+          -0.175467517,
+          0.033318589
+        ]
+      },
+      "toBody": "Mercury",
+      "departDate": "1974-08-30T20:57:30Z",
+      "arrivalDate": "1974-09-21T20:59:00Z",
+      "estimate": true
+    },
+    {
+      "type": "gravity_assist",
+      "body": "Mercury",
+      "date": "1974-09-21T20:59:00Z",
+      "periapsisKm": 48069,
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": "Mercury",
+      "toBody": {
+        "fixedPos": [
+          0.473312027,
+          -0.197474246,
+          -0.059652354
+        ]
+      },
+      "departDate": "1974-09-21T20:59:00Z",
+      "arrivalDate": "1974-10-13T21:11:30Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.473312027,
+          -0.197474246,
+          -0.059652354
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.56082694,
+          0.295407658,
+          -0.027448981
+        ]
+      },
+      "departDate": "1974-10-13T21:11:30Z",
+      "arrivalDate": "1974-11-04T21:24:00Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.56082694,
+          0.295407658,
+          -0.027448981
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.331078612,
+          0.646446413,
+          0.022346188
+        ]
+      },
+      "departDate": "1974-11-04T21:24:00Z",
+      "arrivalDate": "1974-11-26T21:36:30Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.331078612,
+          0.646446413,
+          0.022346188
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.027374563,
+          0.761361853,
+          0.064693994
+        ]
+      },
+      "departDate": "1974-11-26T21:36:30Z",
+      "arrivalDate": "1974-12-18T21:49:00Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.027374563,
+          0.761361853,
+          0.064693994
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.37778911,
+          0.633987265,
+          0.086515948
+        ]
+      },
+      "departDate": "1974-12-18T21:49:00Z",
+      "arrivalDate": "1975-01-09T22:01:30Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.37778911,
+          0.633987265,
+          0.086515948
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.593255174,
+          0.289445126,
+          0.07819309
+        ]
+      },
+      "departDate": "1975-01-09T22:01:30Z",
+      "arrivalDate": "1975-01-31T22:14:00Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.593255174,
+          0.289445126,
+          0.07819309
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.516849853,
+          -0.1791358,
+          0.032900207
+        ]
+      },
+      "departDate": "1975-01-31T22:14:00Z",
+      "arrivalDate": "1975-02-22T22:26:30Z",
+      "estimate": true
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.516849853,
+          -0.1791358,
+          0.032900207
+        ]
+      },
+      "toBody": "Mercury",
+      "departDate": "1975-02-22T22:26:30Z",
+      "arrivalDate": "1975-03-16T22:39:00Z",
+      "estimate": true
+    }
+  ],
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "flyby",
+      "start": "1974-02-05T17:01:00Z",
+      "label": "Flyby at 5,768 km: first gravity assist"
+    },
+    {
+      "body": "Mercury",
+      "kind": "flyby",
+      "start": "1974-03-29T20:47:00Z",
+      "label": "Mercury I at 703 km: first close look at Mercury"
+    },
+    {
+      "body": "Mercury",
+      "kind": "flyby",
+      "start": "1974-09-21T20:59:00Z",
+      "label": "Mercury II at 48,069 km: southern polar region"
+    },
+    {
+      "body": "Mercury",
+      "kind": "flyby",
+      "start": "1975-03-16T22:39:00Z",
+      "label": "Mercury III at 327 km: the closest pass"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mariner 10”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=141", "note": "launch date and encounter times checked against this entry; agrees with NSSDCA except Mercury I at 20:47 UT (NSSDCA: 20:46)"},
+    {"title": "NASA NSSDCA Master Catalog: Mariner 10 (1973-085A)", "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1973-085A", "note": "launch date, vehicle and mission events checked against this record"}
+  ]
+}
