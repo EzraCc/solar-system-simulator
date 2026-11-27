@@ -1299,8 +1299,12 @@
     }
     const lambertLegs = raw.legs.filter(l => l.type === 'lambert');
     const first = lambertLegs[0], last = lambertLegs[lambertLegs.length - 1];
+    // Launch date is the very first leg's departure, whatever its type: a
+    // geocentric_orbit phase (Aditya-L1's orbit raising) comes before the
+    // first transfer leg, same as getFlightDates' window.
+    const firstLeg = raw.legs.find((l) => l.departDate) || first;
     return {
-      launchBody: first.fromBody, launchDate: first.departDate,
+      launchBody: first.fromBody, launchDate: firstLeg.departDate,
       destinationBody: last.toBody, arrival: last.arrivalDate
     };
   }
@@ -7254,15 +7258,23 @@
       const ep  = flightEndpoints(raw);
       let rows = "";
       const addRow = (k, v) => { rows += `<div class="lp-row"><span class="lp-key">${k}</span><span class="lp-val">${v}</span></div>`; };
+      // Dates: a plain day, plus the UTC time only when the data has one
+      // (some legs carry full timestamps like "2023-09-18T22:15:12Z").
+      const fmtDate = (d) => (typeof d === "string" && d.length > 10)
+        ? `${d.slice(0, 10)} ${d.slice(11, 16)} UTC` : d;
+      // A path that ends at a recorded waypoint (a solar orbit with no
+      // destination body: Helios, STEREO-A) has no "destination" to name;
+      // raw.destinationLabel can describe it more precisely.
+      const endsInSpace = !!(ep.destinationBody && typeof ep.destinationBody === "object" && ep.destinationBody.fixedPos);
       addRow("Mission", raw.name);
       addRow("Launch from", ep.launchBody);
-      addRow("Launch date", ep.launchDate);
-      addRow("Destination", describeLegBody(ep.destinationBody).name);
+      addRow("Launch date", fmtDate(ep.launchDate));
+      addRow("Destination", raw.destinationLabel || (endsInSpace ? "Solar orbit" : describeLegBody(ep.destinationBody).name));
       // "arrival" is always the intended arrival date the trajectory was
       // flying toward (see FLIGHTS_RAW comment) -- label it plainly for a
       // success, or as "intended" when the mission didn't reach it, so
       // the same single field reads correctly either way.
-      addRow(raw.status === "Success" ? "Arrival" : "Arrival (intended)", ep.arrival);
+      addRow(endsInSpace ? "Path ends" : raw.status === "Success" ? "Arrival" : "Arrival (intended)", fmtDate(ep.arrival));
       addRow("Rocket", raw.rocket);
       addRow("Payload", raw.payload);
       addRow("Status", raw.status);

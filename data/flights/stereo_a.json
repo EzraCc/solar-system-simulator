@@ -5,7 +5,7 @@
   "payload": "STEREO-A observatory (620 kg at launch, incl. propellant)",
   "status": "En Route",
   "significance": "Solar flares and coronal mass ejections had only ever been photographed from Earth's own single vantage point, making it impossible to judge a CME's true 3D shape, speed, or whether it was actually headed for Earth until it arrived. STEREO solved this by launching two nearly identical observatories on a shared trajectory, then using a lunar gravity assist to split them into two different heliocentric orbits -- one drifting ahead of Earth, one trailing behind -- so their combined imagery could be triangulated into genuine stereoscopic, 3D views of solar activity, the same principle behind human binocular vision applied to the whole Sun. STEREO-A, the leading spacecraft, has spent nearly two decades pulling steadily further ahead of Earth, at one point reaching the far side of the Sun and providing full 360-degree solar coverage in combination with Earth-based observatories. Its data has been used operationally to give advance warning of Earth-directed space weather, and it directly imaged the entire Sun-to-Earth journey of a CME for the first time.",
-  "statusNote": "NASA mission, launched together with the identical STEREO-B (modeled as a separate flight here, since the two spacecraft diverged onto different real trajectories from the same launch). A shared multi-week Earth-orbit phasing sequence preceded the actual lunar encounter (on the fifth Earth orbit for STEREO-A) -- simplified here as a direct Earth-to-Moon lambert leg, the same approximation this catalog already uses for Nozomi's own lunar flybys, since the spacecraft's physical distance from Earth during that phasing was utterly negligible at the AU scale being modeled. The lunar flyby's exact periapsis altitude isn't published in the sources checked; 5,000 km is a round estimate, matching the same placeholder value used for Nozomi's lunar flybys. STEREO-A's real heliocentric drift orbit (semi-major axis ~0.966 AU, ~347-day period, leading Earth by ~21.65 degrees/year) is anchored through real recorded positions (JPL Horizons, target -234) roughly one orbit apart each -- close enough together that a single Lambert solve between them can't mistake the real multi-orbit drift for a short, wrong-shaped hop, the same technique used throughout this catalog for other long coasts. The mission has continued drifting steadily further ahead of Earth in essentially this same orbit for over a decade beyond where this flight is shown ending (2009-09-15) and remains operational; not modeled leg-by-leg for its full ongoing duration.",
+  "statusNote": "NASA mission, launched together with the identical STEREO-B (modeled as a separate flight here, since the two spacecraft diverged onto different real trajectories from the same launch). A shared multi-week Earth-orbit phasing sequence preceded the actual lunar encounter (on the fifth Earth orbit for STEREO-A) -- simplified here as a direct Earth-to-Moon lambert leg, the same approximation this catalog already uses for Nozomi's own lunar flybys, since the spacecraft's physical distance from Earth during that phasing was utterly negligible at the AU scale being modeled. The lunar flyby's exact periapsis altitude isn't published in the sources checked; 5,000 km is a round estimate, matching the same placeholder value used for Nozomi's lunar flybys. STEREO-A's real heliocentric drift orbit (semi-major axis ~0.966 AU, ~347-day period, leading Earth by ~21.65 degrees/year) is anchored through real recorded positions (JPL Horizons, target -234) roughly one orbit apart each -- close enough together that a single Lambert solve between them can't mistake the real multi-orbit drift for a short, wrong-shaped hop, the same technique used throughout this catalog for other long coasts. The mission has kept drifting ahead of Earth in essentially this same orbit and remains operational; the path continues through real recorded positions about every 11 months (JPL Horizons, target -234) to 2026-11-20.",
   "legs": [
     {
       "type": "lambert",
@@ -42,7 +42,159 @@
       "toBody": { "fixedPos": [0.582706421731497, 0.7678290125666183, -0.0006713360303625115] },
       "departDate": "2008-10-15",
       "arrivalDate": "2009-09-15",
-      "_comment": "2009-09-15: real recorded heliocentric position (JPL Horizons, target -234) -- flight shown ending here, see statusNote"
+      "_comment": "2009-09-15: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.582706421731497, 0.7678290125666183, -0.0006713360303625115] },
+      "toBody": { "fixedPos": [0.70244100761405, 0.6576929349944008, -0.0003328855227734653] },
+      "departDate": "2009-09-15",
+      "arrivalDate": "2010-08-16T12:00:00Z",
+      "_comment": "2010-08-16 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.70244100761405, 0.6576929349944008, -0.0003328855227734653] },
+      "toBody": { "fixedPos": [0.8046573155693113, 0.525949611151171, 2.874487975257046e-05] },
+      "departDate": "2010-08-16T12:00:00Z",
+      "arrivalDate": "2011-07-17T12:00:00Z",
+      "_comment": "2011-07-17 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.8046573155693113, 0.525949611151171, 2.874487975257046e-05] },
+      "toBody": { "fixedPos": [0.8828085701803523, 0.3781095996243608, 0.0003944043785775748] },
+      "departDate": "2011-07-17T12:00:00Z",
+      "arrivalDate": "2012-06-16T12:00:00Z",
+      "_comment": "2012-06-16 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.8828085701803523, 0.3781095996243608, 0.0003944043785775748] },
+      "toBody": { "fixedPos": [0.93420165228797, 0.2187573032072758, 0.0007476626770390259] },
+      "departDate": "2012-06-16T12:00:00Z",
+      "arrivalDate": "2013-05-17T12:00:00Z",
+      "_comment": "2013-05-17 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.93420165228797, 0.2187573032072758, 0.0007476626770390259] },
+      "toBody": { "fixedPos": [0.9571922565867363, 0.05244789744142426, 0.001074077790335151] },
+      "departDate": "2013-05-17T12:00:00Z",
+      "arrivalDate": "2014-04-17T12:00:00Z",
+      "_comment": "2014-04-17 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.9571922565867363, 0.05244789744142426, 0.001074077790335151] },
+      "toBody": { "fixedPos": [0.9508882639877225, -0.1154294596683675, 0.001373273687163798] },
+      "departDate": "2014-04-17T12:00:00Z",
+      "arrivalDate": "2015-03-18T12:00:00Z",
+      "_comment": "2015-03-18 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.9508882639877225, -0.1154294596683675, 0.001373273687163798] },
+      "toBody": { "fixedPos": [0.9153825119739586, -0.2799212461951881, 0.001635754912939405] },
+      "departDate": "2015-03-18T12:00:00Z",
+      "arrivalDate": "2016-02-16T12:00:00Z",
+      "_comment": "2016-02-16 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.9153825119739586, -0.2799212461951881, 0.001635754912939405] },
+      "toBody": { "fixedPos": [0.8518012512396547, -0.4356581626485797, 0.001844431120911282] },
+      "departDate": "2016-02-16T12:00:00Z",
+      "arrivalDate": "2017-01-16T12:00:00Z",
+      "_comment": "2017-01-16 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.8518012512396547, -0.4356581626485797, 0.001844431120911282] },
+      "toBody": { "fixedPos": [0.7620118922085258, -0.5779733141648216, 0.0019957177920526] },
+      "departDate": "2017-01-16T12:00:00Z",
+      "arrivalDate": "2017-12-17T12:00:00Z",
+      "_comment": "2017-12-17 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.7620118922085258, -0.5779733141648216, 0.0019957177920526] },
+      "toBody": { "fixedPos": [0.6489959251035906, -0.7022857592283408, 0.002086107314241975] },
+      "departDate": "2017-12-17T12:00:00Z",
+      "arrivalDate": "2018-11-17T12:00:00Z",
+      "_comment": "2018-11-17 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.6489959251035906, -0.7022857592283408, 0.002086107314241975] },
+      "toBody": { "fixedPos": [0.516116692780428, -0.8049726878154781, 0.002112963515695053] },
+      "departDate": "2018-11-17T12:00:00Z",
+      "arrivalDate": "2019-10-18T12:00:00Z",
+      "_comment": "2019-10-18 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.516116692780428, -0.8049726878154781, 0.002112963515695053] },
+      "toBody": { "fixedPos": [0.3676585816820874, -0.8829120876952014, 0.002076635607623544] },
+      "departDate": "2019-10-18T12:00:00Z",
+      "arrivalDate": "2020-09-17T12:00:00Z",
+      "_comment": "2020-09-17 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.3676585816820874, -0.8829120876952014, 0.002076635607623544] },
+      "toBody": { "fixedPos": [0.2078651703195652, -0.9339004976948947, 0.001975396760204961] },
+      "departDate": "2020-09-17T12:00:00Z",
+      "arrivalDate": "2021-08-18T12:00:00Z",
+      "_comment": "2021-08-18 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.2078651703195652, -0.9339004976948947, 0.001975396760204961] },
+      "toBody": { "fixedPos": [0.04141750761298975, -0.956457845242238, 0.001819428922296068] },
+      "departDate": "2021-08-18T12:00:00Z",
+      "arrivalDate": "2022-07-19T12:00:00Z",
+      "_comment": "2022-07-19 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [0.04141750761298975, -0.956457845242238, 0.001819428922296068] },
+      "toBody": { "fixedPos": [-0.1288119917595815, -0.949909655186187, 0.00160100234974233] },
+      "departDate": "2022-07-19T12:00:00Z",
+      "arrivalDate": "2023-06-19T12:00:00Z",
+      "_comment": "2023-06-19 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.1288119917595815, -0.949909655186187, 0.00160100234974233] },
+      "toBody": { "fixedPos": [-0.2938837898796369, -0.9094642428470833, 0.001362625593674141] },
+      "departDate": "2023-06-19T12:00:00Z",
+      "arrivalDate": "2024-05-19T12:00:00Z",
+      "_comment": "2024-05-19 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.2938837898796369, -0.9094642428470833, 0.001362625593674141] },
+      "toBody": { "fixedPos": [-0.4407500336467161, -0.8487227198614806, 0.001072970365450174] },
+      "departDate": "2024-05-19T12:00:00Z",
+      "arrivalDate": "2025-04-19T12:00:00Z",
+      "_comment": "2025-04-19 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.4407500336467161, -0.8487227198614806, 0.001072970365450174] },
+      "toBody": { "fixedPos": [-0.5749223636220068, -0.765292958462083, 0.0007576319869625749] },
+      "departDate": "2025-04-19T12:00:00Z",
+      "arrivalDate": "2026-03-20T12:00:00Z",
+      "_comment": "2026-03-20 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234)"
+    },
+    {
+      "type": "lambert",
+      "fromBody": { "fixedPos": [-0.5749223636220068, -0.765292958462083, 0.0007576319869625749] },
+      "toBody": { "fixedPos": [-0.6200831959898773, 0.741829610939384, -0.00214056342479597] },
+      "departDate": "2026-03-20T12:00:00Z",
+      "arrivalDate": "2026-11-20T12:00:00Z",
+      "_comment": "2026-11-20 12:00 UTC: real recorded heliocentric position (JPL Horizons, target -234); extend at the next data pull"
     }
   ],
   "assets": {
