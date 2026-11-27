@@ -63,10 +63,30 @@
       "arrivalDate": "2023-09-18T22:15:12Z"
     },
     {
+      "_comment": "Split through 1 real JPL Horizons waypoint(s) (target -156, fetched 2026-11-27 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2023-09-18T22:15:12Z -> 2024-01-06 leg's real path sweeps ~109 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth_L1",
+      "toBody": {
+        "fixedPos": [
+          0.07544490437378035,
+          0.9730560075859267,
+          -0.0005647443781773964
+        ]
+      },
       "departDate": "2023-09-18T22:15:12Z",
+      "arrivalDate": "2023-12-17T22:15:12Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.07544490437378035,
+          0.9730560075859267,
+          -0.0005647443781773964
+        ]
+      },
+      "toBody": "Earth_L1",
+      "departDate": "2023-12-17T22:15:12Z",
       "arrivalDate": "2024-01-06"
     }
   ],
@@ -81,5 +101,8 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Polar_Satellite_Launch_Vehicle",
       "localImage": "images/rockets/polar_satellite_launch_vehicle.png"
     }
-  }
+  },
+  "dataSources": [
+    {"title": "JPL Horizons, spacecraft -156 (Aditya-L1)", "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-156%27", "note": "trajectory record; the path is checked against this ephemeris (within about 0.02 AU) and pinned to it where a leg drifted"}
+  ]
 }

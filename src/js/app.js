@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "53";
+  const BUILD_VERSION = "54";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -524,9 +524,13 @@
     },
     tempel1: {
       name: 'Tempel 1 (9P)', types: ['comet'],
-      elements: { a: 3.146133758958915, e: 0.5097028326964878, iDeg: 10.4734281543904,
-                  OmDeg: 68.75357468050096, wDeg: 179.1972753698572, M0Deg: 336.5854438553629,
-                  epochDays: 5925.5 },
+      // Elements for the 2005 apparition (JPL Horizons, DES=9P;CAP<2006,
+      // osculating at 2005-07-04 TDB), not today's: Jupiter has shifted the
+      // orbit since, and 2016 elements put the comet 0.5 AU from where Deep
+      // Impact actually met it.
+      elements: { a: 3.1215438305567256, e: 0.5174933097834304, iDeg: 10.53014632799368,
+                  OmDeg: 68.93812685849794, wDeg: 178.8379967334463, M0Deg: 359.7650911257398,
+                  epochDays: 2010.5 },
       // dimensionsKm: Deep Impact-era estimate of the elongated nucleus
       // (length x width) -- comet nuclei are routinely this irregular;
       // Tempel 1 has no well-published 3rd (short) axis, hence only 2
@@ -3062,7 +3066,10 @@
       const pts = drawFn(drawStart, drawEnd);
       if (leg.estimate) ctx.setLineDash([]);
       ctx.globalAlpha = 1.0;
-      if (pts && pts.length) segments.push(pts);
+      if (pts && pts.length) {
+        if (leg.estimate) pts.estimate = true; // the hover glow dashes it too
+        segments.push(pts);
+      }
     });
 
     // Loiter legs (a stay at a moving Lagrange point) aren't in
@@ -6220,7 +6227,7 @@
       `<li><a href="${escapeHtml(d.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(d.title)}</a>` +
       (d.note ? ` <span class="lp-dim">${escapeHtml(d.note)}</span>` : "") + `</li>`).join("");
     const dashed = hasEstimate
-      ? `<p class="lp-dim">Dashed parts of the path are estimates: projections with no data behind them.</p>` : "";
+      ? `<p class="lp-dim">Dashed parts of the path are calculated, not measured: no tracking data is available for them, so they're two-body paths between published times and positions. Arcs calculated this way for flights that can be checked fall within about 0.002 AU of the measured path.</p>` : "";
     return lpSectionHtml("Trajectory data", (items ? `<ul class="lp-sources">${items}</ul>` : "") + dashed);
   }
 
@@ -7341,7 +7348,14 @@
       // flying toward (see FLIGHTS_RAW comment) -- label it plainly for a
       // success, or as "intended" when the mission didn't reach it, so
       // the same single field reads correctly either way.
-      addRow(endsInSpace ? "Path ends" : raw.status === "Success" ? "Arrival" : "Arrival (intended)", fmtDate(ep.arrival));
+      // "Arrival" when the craft got there (including partial successes and
+      // failed landings or orbit insertions, which still reached the
+      // planet); "planned" for flights still en route; "intended" only when
+      // it never arrived.
+      const reached = /^(success|partial success|landing failed|orbit insertion failed|lost near)/i.test(raw.status || "");
+      addRow(endsInSpace ? "Path ends"
+        : reached ? "Arrival"
+        : raw.status === "En Route" ? "Arrival (planned)" : "Arrival (intended)", fmtDate(ep.arrival));
       addRow("Rocket", raw.rocket);
       addRow("Payload", raw.payload);
       addRow("Status", raw.status);
@@ -9645,7 +9659,10 @@
           segments = [drawFlightArc(flight, ws, we)];
           ctx.globalAlpha = 1;
         }
-        if (estimate) ctx.setLineDash([]);
+        if (estimate) {
+          ctx.setLineDash([]);
+          segments.forEach((pts) => { if (pts) pts.estimate = true; });
+        }
       }
       renderedPaths.push({ name: FLIGHTS_RAW[key].name, flightKey: key, color: flightColor(key), segments: segments || [] });
     });
@@ -9677,6 +9694,10 @@
         ctx.strokeStyle = hexWithAlpha(liveEntry.color, 0.35);
         ctx.lineWidth = 6;
         for (const seg of liveEntry.segments) {
+          if (!seg) continue;
+          // A calculated (dashed) path glows dashed too, so hovering doesn't
+          // make an estimate look like a measured path.
+          ctx.setLineDash(seg.estimate ? [12, 9] : []);
           ctx.beginPath();
           seg.forEach(([x, y], k) => { if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
           ctx.stroke();

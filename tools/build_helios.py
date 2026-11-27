@@ -192,9 +192,14 @@ def build(n, step, end_contact):
         # Check: back-propagate over the previous orbits to see the drift.
         older = [s for s in data if last - 1200 <= s[0] < last - 380]
         info["backcheck_max_au"] = max(np.linalg.norm(propagate(x[:3], x[3:], t - t0) - p) for t, p in older)
+        # Legs a tenth of the fitted period long, so the projected laps line
+        # up and their dashes coincide instead of filling each other's gaps.
+        rr, vv = np.linalg.norm(x[:3]), np.linalg.norm(x[3:])
+        sma = 1 / (2 / rr - vv * vv / MU_SUN)
+        est_step = 2 * math.pi * math.sqrt(sma ** 3 / MU_SUN) / 10
         t = last
         while t < t_end - 1e-6:
-            t1 = min(t + step, t_end)
+            t1 = min(t + est_step, t_end)
             p = propagate(x[:3], x[3:], t1 - t0)
             legs.append({"type": "lambert", "fromBody": prev_body,
                          "toBody": {"fixedPos": [round(float(c), 7) for c in p]},

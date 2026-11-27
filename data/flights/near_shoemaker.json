@@ -11,20 +11,44 @@
       "_comment": "Real NEAR Shoemaker trajectory (JPL Horizons, target -93, checked 2026-07) sweeps ~317 degrees around the Sun during this first Earth->Earth loop, reaching ~2.1 AU (past Mars) near 1997-04 -- close enough to a full lap, combined with a long duration, that a plain 2-point Lambert solve across the whole leg misses the real intermediate path by 0.3-0.5 AU even though the endpoints and rough sweep angle look plausible. Split through two real recorded positions so each third stays safely inside the solver's reliable range.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": { "fixedPos": [-0.415156873682885, -1.431254135598242, 0.01912026021826231] },
+      "toBody": {
+        "fixedPos": [
+          -0.415156873682885,
+          -1.431254135598242,
+          0.01912026021826231
+        ]
+      },
       "departDate": "1996-02-17",
       "arrivalDate": "1996-06-19"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [-0.415156873682885, -1.431254135598242, 0.01912026021826231] },
-      "toBody": { "fixedPos": [1.979437117191265, 0.1393937521449606, -0.01535442745200508] },
+      "fromBody": {
+        "fixedPos": [
+          -0.415156873682885,
+          -1.431254135598242,
+          0.01912026021826231
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          1.979437117191265,
+          0.1393937521449606,
+          -0.01535442745200508
+        ]
+      },
       "departDate": "1996-06-19",
       "arrivalDate": "1997-06-29"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [1.979437117191265, 0.1393937521449606, -0.01535442745200508] },
+      "fromBody": {
+        "fixedPos": [
+          1.979437117191265,
+          0.1393937521449606,
+          -0.01535442745200508
+        ]
+      },
       "toBody": "Earth",
       "departDate": "1997-06-29",
       "arrivalDate": "1998-01-23"
@@ -39,22 +63,86 @@
       "_comment": "Real NEAR Shoemaker trajectory (JPL Horizons, target -93, checked 2026-08) sweeps ~467 degrees around the Sun between the Earth flyby and Eros orbit insertion -- more than a full revolution, since NEAR spent over a year in a near-Eros-like orbit working through the 1998-12-20 rendezvous-burn abort and 1999-01-03 recovery burn (see statusNote). A single 2-point Lambert solve across the whole span can't tell that apart from a much shorter, wildly wrong sweep -- it balloons out to ~3.2 AU (past Eros's real ~1.78 AU aphelion) instead of tracking Eros's own orbit. Split through two real recorded positions, same fix as this file's own first leg above.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": { "fixedPos": [0.5336558127331366, -1.633993621121400, -0.07841500956921003] },
+      "toBody": {
+        "fixedPos": [
+          0.5336558127331366,
+          -1.6339936211214,
+          -0.07841500956921003
+        ]
+      },
       "departDate": "1998-01-23",
       "arrivalDate": "1998-09-20"
     },
     {
+      "_comment": "Split through 1 real JPL Horizons waypoint(s) (target -93, fetched 2026-11-27 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 1998-09-20 -> 1999-07-17 leg's real path sweeps ~139 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
-      "fromBody": { "fixedPos": [0.5336558127331366, -1.633993621121400, -0.07841500956921003] },
-      "toBody": { "fixedPos": [0.4639388538419512, 1.122890523271491, 0.1945284236333465] },
+      "fromBody": {
+        "fixedPos": [
+          0.5336558127331366,
+          -1.6339936211214,
+          -0.07841500956921003
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          1.584414818479386,
+          -0.487904726481631,
+          0.195298110389328
+        ]
+      },
       "departDate": "1998-09-20",
-      "arrivalDate": "1999-07-17"
+      "arrivalDate": "1999-02-17"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [0.4639388538419512, 1.122890523271491, 0.1945284236333465] },
-      "toBody": "eros",
+      "fromBody": {
+        "fixedPos": [
+          1.584414818479386,
+          -0.487904726481631,
+          0.195298110389328
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.4639388538419512,
+          1.122890523271491,
+          0.1945284236333465
+        ]
+      },
+      "departDate": "1999-02-17",
+      "arrivalDate": "1999-07-17"
+    },
+    {
+      "_comment": "Split through 1 real JPL Horizons waypoint(s) (target -93, fetched 2026-11-27 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 1999-07-17 -> 2000-02-14 leg's real path sweeps ~163 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.4639388538419512,
+          1.122890523271491,
+          0.1945284236333465
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.068077179478331,
+          0.460451011329845,
+          -0.1181424379798376
+        ]
+      },
       "departDate": "1999-07-17",
+      "arrivalDate": "1999-10-29"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -1.068077179478331,
+          0.460451011329845,
+          -0.1181424379798376
+        ]
+      },
+      "toBody": "eros",
+      "departDate": "1999-10-29",
       "arrivalDate": "2000-02-14"
     }
   ],
@@ -91,5 +179,8 @@
       "end": "2001-02-28",
       "label": "Surface operations"
     }
+  ],
+  "dataSources": [
+    {"title": "JPL Horizons, spacecraft -93 (NEAR)", "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-93%27", "note": "trajectory record; the path is checked against this ephemeris (within about 0.02 AU) and pinned to it where a leg drifted"}
   ]
 }

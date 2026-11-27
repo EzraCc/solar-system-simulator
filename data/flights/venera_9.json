@@ -1,4 +1,5 @@
 {
+  "estimate": true,
   "key": "venera_9",
   "name": "Venera 9",
   "launchBody": "Earth",
@@ -9,7 +10,7 @@
   "payload": "Venus orbiter + descent lander (4,936 kg at launch)",
   "status": "Success",
   "significance": "Venera 9 did two things no spacecraft had done before. Its orbiter became the first to circle Venus, relaying data and studying the clouds from above, and its lander sent back the first pictures ever taken from the surface of another planet. Those black-and-white panoramas showed a rocky, sharp-edged landscape lit about as brightly as a cloudy day on Earth, overturning guesses that the surface might be dark and dusty under the thick clouds. The lander survived 53 minutes at around 485 °C and 90 times Earth's air pressure before its relay orbiter moved out of range, proving that a machine could be built to work, briefly, in conditions that destroy almost anything.",
-  "statusNote": "Launched 1975-06-08 on a Proton-K/Blok D. The lander separated on 1975-10-20; the orbiter entered Venus orbit and the lander touched down near Beta Regio (31.01°N, 291.64°E) on 1975-10-22, landing at 05:13 UTC and transmitting for 53 minutes until the orbiter passed out of radio range. Orbit: about 1,500 × 112,000 km, 48.3 h, inclination 29.5° (Wikipedia); its orientation (node, argument of periapsis) isn't published, so the orbit isn't drawn in the Venus view. The orbiter's primary mission ended 1976-03-22. Sources: NSSDCA Venus chronology (the NSSDCA catalog records 1975-050A/D return errors to scripts); Wikipedia 'Venera 9' (orbit, landing time and site).",
+  "statusNote": "Launched 1975-06-08 on a Proton-K/Blok D. The lander separated on 1975-10-20; the orbiter entered Venus orbit and the lander touched down near Beta Regio (31.01°N, 291.64°E) on 1975-10-22, landing at 05:13 UTC and transmitting for 53 minutes until the orbiter passed out of radio range. Orbit: about 1,500 × 112,000 km, 48.3 h, inclination 29.5° (Wikipedia); its orientation (node, argument of periapsis) isn't published, so the orbit isn't drawn in the Venus view. The orbiter's primary mission ended 1976-03-22. Sources: NSSDCA Venus chronology (the NSSDCA catalog records 1975-050A/D return errors to scripts); Wikipedia 'Venera 9' (orbit, landing time and site). Path calculated, not measured (drawn dashed): no tracking data for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer calculated between the published launch, flyby and arrival times. Arcs calculated this way for modern direct flights fall within about 0.002 AU of their real Horizons trajectories.",
   "dataSources": [
     {
       "title": "Earth→Venus arc between the real launch and arrival dates (no JPL Horizons ephemeris exists for this spacecraft)",

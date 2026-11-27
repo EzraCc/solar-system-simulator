@@ -36,5 +36,8 @@
       "end": "2010-03-22",
       "label": "Spirit rover (last contact)"
     }
+  ],
+  "dataSources": [
+    {"title": "JPL Horizons, spacecraft -254 (Spirit)", "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-254%27", "note": "trajectory record; the path is checked against this ephemeris (within about 0.02 AU) and pinned to it where a leg drifted"}
   ]
 }

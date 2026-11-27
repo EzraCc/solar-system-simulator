@@ -115,5 +115,46 @@
   "isee3": {
     "id": "-111",
     "note": "ICE: Horizons ephemeris covers 2014 only (ISEE-3 Reboot); 1978-1984 positions come from NASA SPDF SSCWeb (isee3)"
+  },
+  "mars_pathfinder": {
+    "id": "-530"
+  },
+  "curiosity": {
+    "id": "-76"
+  },
+  "perseverance": {
+    "id": "-168"
+  },
+  "insight": {
+    "id": "-189"
+  },
+  "phoenix": {
+    "id": "-84"
+  },
+  "near_shoemaker": {
+    "id": "-93"
+  },
+  "deep_space_1": {
+    "id": "-30"
+  },
+  "tianwen1": {
+    "id": "-9901491"
+  },
+  "aditya_l1": {
+    "id": "-156"
+  },
+  "genesis": {
+    "id": "-47",
+    "note": "Bus; the sample return capsule is -47900"
+  },
+  "spirit_mer_a": {
+    "id": "-254"
+  },
+  "opportunity_mer_b": {
+    "id": "-253"
+  },
+  "deep_impact": {
+    "id": "-140",
+    "note": "Flyby spacecraft (later EPOXI); the impactor is -70"
   }
 }

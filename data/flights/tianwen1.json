@@ -1,4 +1,5 @@
 {
+  "estimate": true,
   "key": "tianwen1",
   "name": "Tianwen-1",
   "launchBody": "Earth",
@@ -9,7 +10,7 @@
   "payload": "Tianwen-1 orbiter + Zhurong lander/rover (~5,000 kg combined)",
   "status": "Success",
   "significance": "Tianwen-1 was launched as China's first independent Mars mission, aiming to orbit, land, and rove the planet in a single attempt to study surface geology, subsurface ice, and atmosphere while proving China's deep-space landing technology. It was the first mission by any nation to combine an orbiter, lander, and rover in one launch and succeed on the first try, and its Zhurong rover carried the first magnetometer ever flown on a Mars rover; the landing made China the second country to operate a rover on Mars. Zhurong's ground-penetrating radar detected layered subsurface structures at Utopia Planitia consistent with past water or ice activity, while the orbiter produced a global map of Mars using roughly 940 gigabytes of returned data before the rover unexpectedly lost contact during hibernation in 2022.",
-  "statusNote": "China's first independent interplanetary mission. Zhurong rover landed 2021-05-14; contact lost 2022-05 after entering hibernation.",
+  "statusNote": "China's first independent interplanetary mission. Zhurong rover landed 2021-05-14; contact lost 2022-05 after entering hibernation. Path calculated, not measured (drawn dashed): a two-body transfer between the published launch and Mars-arrival times. JPL Horizons carries only an unofficial Tianwen-1 trajectory (-9901491), fitted by volunteers to ground observations in 2020 and without the later course corrections; this path lies within about 0.02 AU of it.",
   "assets": {
     "spacecraft": {
       "title": "Tianwen-1",
@@ -48,5 +49,8 @@
       "end": "2022-05-20",
       "label": "Zhurong rover (hibernated, never woke)"
     }
+  ],
+  "dataSources": [
+    {"title": "JPL Horizons, spacecraft -9901491 (Tianwen-1, unofficial)", "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-9901491%27", "note": "volunteer-fitted trajectory (2020) without later course corrections; used only as a cross-check, so the path stays dashed"}
   ]
 }

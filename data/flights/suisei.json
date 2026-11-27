@@ -5,10 +5,11 @@
   "payload": "Ultraviolet imager and solar-wind instrument (139.5 kg)",
   "status": "Success",
   "significance": "Suisei (\"comet\") was Japan's main Halley probe. From 151,000 km it imaged the comet's huge cloud of hydrogen in ultraviolet light and watched it breathe in and out, revealing that the nucleus rotated in about 2.2 days, one of the first direct measurements of a comet's spin. Together with its sister Sakigake it made Japan one of only four space agencies in the international Halley Armada.",
-  "statusNote": "ISAS (Japan), launched 1985-08-18 on an M-3SII from Uchinoura. Passed Halley at 151,000 km on 1986-03-08 at 13:06 UT (sunward side; time per Nature 321, 299 (1986), which misprints the date as 6 March, and The Space Review), imaging its hydrogen corona in ultraviolet. A planned 1998 Giacobini–Zinner/Tempel-Tuttle extension was abandoned when propellant ran out in 1991; operations ended 1991-02-22. Modeled as one Lambert arc from launch to Halley; no JPL Horizons ephemeris exists. Sources: NASA NSSDCA (COSPAR 1985-073A; nssdc.gsfc.nasa.gov/planetary/planets/cometpage.html), the mission's Wikipedia article and its cited references (Siddiqi 2018, Beyond Earth, NASA SP-2018-4041), and agency pages.",
+  "statusNote": "ISAS (Japan), launched 1985-08-18 on an M-3SII from Uchinoura. Passed Halley at 151,000 km on 1986-03-08 at 13:06 UT (sunward side; time per Nature 321, 299 (1986), which misprints the date as 6 March, and The Space Review), imaging its hydrogen corona in ultraviolet. A planned 1998 Giacobini–Zinner/Tempel-Tuttle extension was abandoned when propellant ran out in 1991; operations ended 1991-02-22. Modeled as one Lambert arc from launch to Halley; no JPL Horizons ephemeris exists. Sources: NASA NSSDCA (COSPAR 1985-073A; nssdc.gsfc.nasa.gov/planetary/planets/cometpage.html), the mission's Wikipedia article and its cited references (Siddiqi 2018, Beyond Earth, NASA SP-2018-4041), and agency pages. Path calculated, not measured (drawn dashed): no tracking data for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer calculated between the published launch, flyby and arrival times. Arcs calculated this way for modern direct flights fall within about 0.002 AU of their real Horizons trajectories.",
   "legs": [
     {
       "type": "lambert",
+      "estimate": true,
       "fromBody": "Earth",
       "toBody": "halley",
       "departDate": "1985-08-18",

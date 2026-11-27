@@ -8,10 +8,30 @@
   "statusNote": "Solar wind sample collection, stationed in a halo orbit around Sun-Earth L1 -- the first mission trajectory designed using modern dynamical-systems theory, giving it a genuinely low-energy, near-direct path to L1 rather than the multi-week Earth-orbit-raising phase Aditya-L1 used. Modeled as a single direct Earth->L1 transfer, matching the real trajectory's actual shape. Return trip and Earth reentry (2004-09-08, sample capsule landed hard due to a parachute failure, but most samples were still recovered and analyzed) are not modeled -- this flight is shown as remaining at L1 after arrival.",
   "legs": [
     {
+      "_comment": "Split through 1 real JPL Horizons waypoint(s) (target -47, fetched 2026-11-27 by tools/split_leg_horizons.py, max 90 deg / 50 d per piece): the original single 2001-08-08 -> 2001-11-16 leg's real path sweeps ~95 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": "Earth_L1",
+      "toBody": {
+        "fixedPos": [
+          0.9826511741283424,
+          0.1344010347728214,
+          0.0008669723407839829
+        ]
+      },
       "departDate": "2001-08-08",
+      "arrivalDate": "2001-09-30T16:05:00Z"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          0.9826511741283424,
+          0.1344010347728214,
+          0.0008669723407839829
+        ]
+      },
+      "toBody": "Earth_L1",
+      "departDate": "2001-09-30T16:05:00Z",
       "arrivalDate": "2001-11-16"
     }
   ],
@@ -26,5 +46,8 @@
       "infoUrl": "https://en.wikipedia.org/wiki/Delta_II",
       "localImage": "images/rockets/delta_ii.jpg"
     }
-  }
+  },
+  "dataSources": [
+    {"title": "JPL Horizons, spacecraft -47 (Genesis bus)", "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-47%27", "note": "trajectory record; the path is checked against this ephemeris (within about 0.02 AU) and pinned to it where a leg drifted"}
+  ]
 }

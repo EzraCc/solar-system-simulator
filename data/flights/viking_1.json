@@ -1,4 +1,5 @@
 {
+  "estimate": true,
   "key": "viking_1",
   "name": "Viking 1",
   "launchBody": "Earth",
@@ -9,7 +10,7 @@
   "payload": "Mars orbiter + lander (3,527 kg fueled pair)",
   "status": "Success",
   "significance": "Viking 1 made the first fully successful landing on Mars and was the first mission built to look for life on another world. Its lander's biology experiments returned puzzling results, chemical activity in the soil but no organic molecules, which most scientists read as no life and which shaped Mars exploration for decades. Its cameras showed a red, rock-strewn plain under a pinkish sky, and its weather station logged Martian seasons for over six years. Overhead, its orbiter mapped the planet and photographed dry river channels and flood plains, the first strong evidence that water once flowed on Mars.",
-  "statusNote": "Launched 1975-08-20 on a Titan IIIE/Centaur. Mars orbit insertion 1976-06-19, trimmed to a 1,513 × 33,000 km, 24.66 h site-certification orbit on 06-21. The lander separated 1976-07-20 08:51 UT and touched down in western Chryse Planitia (22.27°N, 312.05°E) at 11:53:06 UT per NSSDCA's lander record (its orbiter record says 11:56:06). Orbiter periapsis lowered to 300 km in March 1977; orbit raised to 320 × 56,000 km on 1980-08-07 to delay impact, and operations ended 1980-08-17 after 1,485 orbits. The lander (renamed the Thomas Mutch Memorial Station in 1981) operated until contact was lost on 1982-11-13. No Horizons ephemeris, so the orbiter isn't drawn in the Mars view. Source: NSSDCA records 1975-075A (orbiter) and 1975-075C (lander).",
+  "statusNote": "Launched 1975-08-20 on a Titan IIIE/Centaur. Mars orbit insertion 1976-06-19, trimmed to a 1,513 × 33,000 km, 24.66 h site-certification orbit on 06-21. The lander separated 1976-07-20 08:51 UT and touched down in western Chryse Planitia (22.27°N, 312.05°E) at 11:53:06 UT per NSSDCA's lander record (its orbiter record says 11:56:06). Orbiter periapsis lowered to 300 km in March 1977; orbit raised to 320 × 56,000 km on 1980-08-07 to delay impact, and operations ended 1980-08-17 after 1,485 orbits. The lander (renamed the Thomas Mutch Memorial Station in 1981) operated until contact was lost on 1982-11-13. No Horizons ephemeris, so the orbiter isn't drawn in the Mars view. Source: NSSDCA records 1975-075A (orbiter) and 1975-075C (lander). Path calculated, not measured (drawn dashed): no tracking data for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer calculated between the published launch, flyby and arrival times. Arcs calculated this way for modern direct flights fall within about 0.002 AU of their real Horizons trajectories.",
   "dataSources": [
     {
       "title": "Earth→Mars arc between the real launch and arrival dates (no JPL Horizons ephemeris exists for this spacecraft)",

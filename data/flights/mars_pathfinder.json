@@ -36,5 +36,8 @@
       "end": "1997-09-27",
       "label": "Lander and Sojourner rover"
     }
+  ],
+  "dataSources": [
+    {"title": "JPL Horizons, spacecraft -530 (Mars Pathfinder)", "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-530%27", "note": "trajectory record; the path is checked against this ephemeris (within about 0.02 AU) and pinned to it where a leg drifted"}
   ]
 }

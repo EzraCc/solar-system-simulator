@@ -19,7 +19,7 @@ This tool turns that into a path:
   - Plane: inclined by the published inclination, with the node at the
     start point (the inclinations are 0.06-0.5 deg, so this barely matters).
   - Two-body propagation (no planetary perturbations), sampled every
-    STEP days as fixedPos waypoints, every leg "estimate": true (dashed).
+    period/10 days as fixedPos waypoints, every leg "estimate": true (dashed).
 
 The orientation of each orbit therefore rests on an assumption (tangential
 departure at the start point), so these are estimates. CHECKS lists dated
@@ -46,7 +46,10 @@ from build_helios import propagate, MU_SUN, J2000  # noqa: E402
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 CACHE = os.path.join(ROOT, "tools", ".cache", "solar_orbit")
 UA = "solar-simulator-orbit-build/1.0"
-STEP = 30  # days between waypoints
+LEGS_PER_ORBIT = 10  # waypoints are exactly period/10 apart, starting at launch, so the
+                     # laps line up and their dashes coincide (with arbitrary leg
+                     # boundaries each lap restarts the dash pattern somewhere else
+                     # and the overlapping laps fill each other's gaps)
 AU_KM = 1.495978707e8
 
 # Published orbit figures. Sources are cited in each flight's dataSources.
@@ -153,7 +156,8 @@ def initial_state(cfg):
 def path(cfg):
     t0, r0, v0, shape = initial_state(cfg)
     t_end = days(cfg["end"])
-    ts = [t0 + STEP * i for i in range(1, int((t_end - t0) // STEP) + 1)]
+    step = 2 * math.pi * math.sqrt(shape[2] ** 3 / MU_SUN) / LEGS_PER_ORBIT
+    ts = [t0 + step * i for i in range(1, int((t_end - t0) // step) + 1)]
     if not ts or t_end - ts[-1] > 1:
         ts.append(t_end)
     return t0, r0, v0, shape, [(t, propagate(r0, v0, t - t0)) for t in ts]
