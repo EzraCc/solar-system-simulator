@@ -5,7 +5,7 @@
   "payload": "Helios-A solar probe (371 kg), 10 instruments",
   "status": "Success",
   "significance": "Helios 1, built by West Germany and launched by NASA, was sent where no spacecraft had been: deep inside Mercury's orbit, swinging to within about 0.31 AU of the Sun every 190 days. Spinning like a top to spread the heat, it sampled the solar wind, magnetic fields, cosmic rays and interplanetary dust at a range of distances from the Sun, showing how the wind and its embedded magnetic field change as they stream outward. Its decade of measurements became the baseline that Parker Solar Probe and Solar Orbiter were designed to go beyond.",
-  "statusNote": "West German (DFVLR) and NASA mission, launched 1974-12-10 from Cape Canaveral on a Titan IIIE-Centaur. Trajectory from the mission's own daily orbit file at NASA SPDF (helorb1.asc, distance plus B1950 ecliptic longitude and latitude, converted here to ecliptic J2000; tools/build_helios.py). The file runs 1974-12-10 to 1981-09-30; that stretch is drawn from real positions every 15 days. Contact lasted until 1986-02-10 (Wikipedia; NSSDCA's record page could not be read), so 1981-10 to 1986-02 is projected from an orbit fitted to the last two orbits of data and drawn dashed as an estimate (fit residual 0.00005 AU; the same fit stays within 0.004 AU when run back over the previous two years). Closest point to the Sun in the data: 0.3095 AU. JPL Horizons has no Helios ephemeris.",
+  "statusNote": "West German (DFVLR) and NASA mission, launched 1974-12-10 at 07:11 UTC (NASA: 2:11 a.m. EST; Siddiqi, Beyond Earth, gives 07:11:02 UT but misprints the month as November) from Cape Canaveral on a Titan IIIE-Centaur. Trajectory from the mission's own daily orbit file at NASA SPDF (helorb1.asc, distance plus B1950 ecliptic longitude and latitude, converted here to ecliptic J2000; tools/build_helios.py). The file runs 1974-12-10 to 1981-09-30; that stretch is drawn from real positions every 15 days. Contact lasted until 1986-02-10 (Wikipedia; NSSDCA's record page could not be read), so 1981-10 to 1986-02 is projected from an orbit fitted to the last two orbits of data and drawn dashed as an estimate (fit residual 0.00005 AU; the same fit stays within 0.004 AU when run back over the previous two years). Closest point to the Sun in the data: 0.3095 AU. JPL Horizons has no Helios ephemeris.",
   "legs": [
     {
       "type": "lambert",
@@ -17,7 +17,7 @@
           0.0001268
         ]
       },
-      "departDate": "1974-12-10T07:54:00Z",
+      "departDate": "1974-12-10T07:11:02Z",
       "arrivalDate": "1974-12-25"
     },
     {
@@ -5310,7 +5310,9 @@
       "title": "Helios (spacecraft), Wikipedia: launch and last-contact dates",
       "url": "https://en.wikipedia.org/wiki/Helios_(spacecraft)",
       "note": "used for the 1981-1986 span, which the SPDF file doesn't cover"
-    }
+    },
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Helios 1”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=144", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"},
+    {"title": "NASA, “50 Years Ago: Launch of Helios 1 to Explore the Sun” (J. Uri, 2024)", "url": "https://www.nasa.gov/history/50-years-ago-launch-of-helios-1-to-explore-the-sun/", "note": "launch time, 2:11 a.m. EST (07:11 UTC) on 1974-12-10"}
   ],
   "assets": {
     "spacecraft": {

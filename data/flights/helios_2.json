@@ -5,7 +5,7 @@
   "payload": "Helios-B solar probe (374 kg), 10 instruments",
   "status": "Success",
   "significance": "Helios 2 followed its twin on an even tighter orbit. On 17 April 1976 it passed 0.29 AU from the Sun, closer than any spacecraft before it, moving faster relative to the Sun than any human-made object had. Flying alongside Helios 1, the pair could compare the solar wind at two places at once, an early step toward studying the Sun's influence in three dimensions. Its closest-approach and speed records stood for more than four decades, until Parker Solar Probe.",
-  "statusNote": "West German (DFVLR) and NASA mission, launched 1976-01-15 from Cape Canaveral on a Titan IIIE-Centaur. Trajectory from the mission's own daily orbit file at NASA SPDF (helorb2.asc, distance plus B1950 ecliptic longitude and latitude, converted here to ecliptic J2000; tools/build_helios.py), drawn from real positions every 15 days for the whole span, 1976-01-15 to 1980-03-09. Last contact 1980-03-03 (Wikipedia; NSSDCA's record page could not be read). Closest point to the Sun in the data: 0.2903 AU on 1976-04-17. JPL Horizons has no Helios ephemeris.",
+  "statusNote": "West German (DFVLR) and NASA mission, launched 1976-01-15 at 05:34 UTC (Siddiqi, Beyond Earth) from Cape Canaveral on a Titan IIIE-Centaur. Trajectory from the mission's own daily orbit file at NASA SPDF (helorb2.asc, distance plus B1950 ecliptic longitude and latitude, converted here to ecliptic J2000; tools/build_helios.py), drawn from real positions every 15 days for the whole span, 1976-01-15 to 1980-03-09. Last contact 1980-03-03 (Wikipedia; NSSDCA's record page could not be read). Closest point to the Sun in the data: 0.2903 AU on 1976-04-17. JPL Horizons has no Helios ephemeris.",
   "legs": [
     {
       "type": "lambert",
@@ -17,7 +17,7 @@
           0.0001869
         ]
       },
-      "departDate": "1976-01-15T06:24:00Z",
+      "departDate": "1976-01-15T05:34:00Z",
       "arrivalDate": "1976-01-30"
     },
     {
@@ -1934,7 +1934,8 @@
     {
       "title": "Helios (spacecraft), Wikipedia: launch and last-contact dates",
       "url": "https://en.wikipedia.org/wiki/Helios_(spacecraft)"
-    }
+    },
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Helios 2”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=155", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
   ],
   "assets": {
     "spacecraft": {

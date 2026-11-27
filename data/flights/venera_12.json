@@ -42,5 +42,8 @@
       "start": "1978-12-21T05:30:00Z",
       "label": "Bus flew past, into solar orbit"
     }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Venera 12”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=172", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
   ]
 }

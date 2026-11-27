@@ -48,7 +48,8 @@
     {
       "title": "No JPL Horizons ephemeris exists for this spacecraft; legs are Lambert arcs between the published launch and encounter dates",
       "url": "https://en.wikipedia.org/wiki/Suisei_(spacecraft)"
-    }
+    },
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Suisei”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=186", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
   ],
   "timeline": [
     {

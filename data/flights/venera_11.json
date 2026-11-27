@@ -9,7 +9,7 @@
   "payload": "Flyby bus (flight platform) and descent lander",
   "status": "Success",
   "significance": "Venera 11 and its twin Venera 12 were the Soviet Union's 1978 return to the surface of Venus, each pairing a lander with a flyby bus that relayed the lander's signal to Earth. Venera 11's lander came down on Christmas Day 1978 and kept working for 95 minutes in heat around 450 C and pressure roughly 90 times Earth's. It measured the composition of the lower atmosphere and saw what may have been lightning in its radio data, but its cameras returned nothing because their lens covers never came off. The flyby bus carried gamma-ray burst detectors that, with Venera 12 and other spacecraft, built the first catalog of these mysterious cosmic explosions by timing each burst at widely separated points in space.",
-  "statusNote": "Direct Earth->Venus transfer, no gravity assists; the arc ends at the lander's touchdown. The lander separated 1978-12-23 and touched down 1978-12-25 03:24 UT (14 S, 299 E), returning data via the bus for 95 min until the bus flew out of range. The bus passed Venus at ~35,000 km and continued into solar orbit (its post-flyby heliocentric path isn't drawn); its last reported gamma-ray burst was 1980-01-27. No JPL Horizons ephemeris. Sources: NASA NSSDCA Venus chronology (its Venera 11 catalog records, 1978-084A and -084D, returned a database error on 2026-11-26) and the standard mission record (Wikipedia, citing NSSDCA).",
+  "statusNote": "Direct Earth->Venus transfer, no gravity assists; the arc ends at the lander's touchdown. The lander separated 1978-12-23 and touched down 1978-12-25 03:24 UT (Siddiqi, Beyond Earth, misprints the landing as 15 December, after its own 23 December separation) (14 S, 299 E), returning data via the bus for 95 min until the bus flew out of range. The bus passed Venus at ~35,000 km and continued into solar orbit (its post-flyby heliocentric path isn't drawn); its last reported gamma-ray burst was 1980-01-27. No JPL Horizons ephemeris. Sources: NASA NSSDCA Venus chronology (its Venera 11 catalog records, 1978-084A and -084D, returned a database error on 2026-11-26) and the standard mission record (Wikipedia, citing NSSDCA).",
   "assets": {
     "lander": {
       "title": "Venera 11/12 lander (identical design; cut-away model)",
@@ -42,5 +42,8 @@
       "start": "1978-12-25T05:00:00Z",
       "label": "Bus flew past (~35,000 km), into solar orbit"
     }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Venera 11”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=170", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
   ]
 }
