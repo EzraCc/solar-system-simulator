@@ -78,9 +78,15 @@ full-resolution original.
   or whose source was a fair-use (non-free) Wikipedia file (ExoMars TGO,
   Hope, Tianwen-1). Each local copy is a rendition of at most 800 px of
   the named original.
-- **No image:** 469219 Kamoʻoalewa. The only close-up is CNSA's
-  Tianwen-2 image, which isn't freely licensed; its tile is a labelled
-  link until a free image exists.
+- **Link-only tiles:** when the only good image of something isn't
+  freely licensed, the app doesn't carry a copy. Its gallery tile shows
+  no picture and links straight to where the image is published,
+  credited, with the asset fields `imagePage` and `imageCredit` instead
+  of `localImage`. In use for 469219 Kamoʻoalewa: the only close-up is
+  CNSA/Xinhua's Tianwen-2 image (2 July 2026), which has no open licence.
+  Open-access papers from the mission team may later publish one under
+  CC BY, the way the Tianwen-1 image here was; that's checked during
+  each data pull (`docs/data-pulls.md`).
 
 Corrections the visual matcher can't make go in `MANUAL` at the top of
 `tools/audit_images.py`.

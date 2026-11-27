@@ -62,8 +62,6 @@ Next pull due after 2026-12-05.
 Done 2026-11-25: all 130 gallery images verified, with creator and
 licence under each tile (`tools/audit_images.py`, `docs/CREDITS.md`).
 
-- [ ] **Kamoʻoalewa** has no image: add one when a freely licensed
-  Tianwen-2 image appears.
 - [ ] When adding images, prefer the NASA Image and Video Library for
   NASA material and record the source in `MANUAL` (`nasa_id` or `file`).
 

@@ -403,8 +403,10 @@
     "significance": "469219 Kamo'oalewa is a tiny near-Earth asteroid, on the order of a few tens of meters across, that occupies a quasi-satellite orbit around Earth -- a 1:1 mean-motion resonance that makes it appear to loop around Earth without being gravitationally bound. It is the most dynamically stable of Earth's known quasi-satellites, with models indicating it has occupied this configuration for centuries and could remain there for roughly a million years, and it is also a remarkably fast rotator, completing one spin in about 28 minutes. Telescopic spectra obtained before 2025 showed an unusually reddened signature closely matching space-weathered lunar samples returned by Chang'e-5, leading to the hypothesis that Kamo'oalewa is a fragment ejected from the Moon rather than an ordinary asteroid; newer data show a less-reddened spectrum more typical of ordinary silicate asteroids, complicating that lunar-origin picture. Its small size, fast spin, and unusual orbit make it an exceptionally difficult object to characterize from Earth.",
     "assets": {
       "image": {
-        "title": "469219 Kamoʻoalewa (no freely licensed image yet)",
-        "infoUrl": "https://en.wikipedia.org/wiki/469219_Kamo%CA%BBoalewa"
+        "title": "469219 Kamoʻoalewa (Tianwen-2 close-up, 2 July 2026)",
+        "infoUrl": "https://en.wikipedia.org/wiki/469219_Kamo%CA%BBoalewa",
+        "imagePage": "https://en.wikipedia.org/wiki/File:First_look_at_Kamo%CA%BBoalewa_from_Tianwen-2.jpg",
+        "imageCredit": "CNSA/Xinhua"
       }
     }
   },

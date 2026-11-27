@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "49";
+  const BUILD_VERSION = "50";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -6091,9 +6091,16 @@
         // all until now, so a browser could keep serving stale image bytes at
         // an unchanged path indefinitely even after the real file on disk was
         // replaced (found while swapping Akatsuki's spacecraft photo).
+        // Link-only tile: a real image exists but its licence doesn't let us
+        // redistribute it (e.g. an agency photo with no open licence). We
+        // don't copy it; the tile links straight to where it's published.
+        // Fields: imagePage (URL showing the image), imageCredit.
+        const linkOnly = !a.localImage && a.imagePage;
         const img = a.localImage
           ? `<img src="data/${a.localImage}?v=${BUILD_VERSION}" alt="${a.title}">`
-          : `<div class="lp-asset-noimg">${a.title}</div>`;
+          : linkOnly
+            ? `<div class="lp-asset-noimg lp-asset-linkonly">View image<br>(not licensed<br>for reuse here) ↗</div>`
+            : `<div class="lp-asset-noimg">${a.title}</div>`;
         // Caption (the asset's real title) and a visible attribution/
         // source line are both always-on text, not just an invisible
         // click target on the thumbnail -- the whole tile still links out
@@ -6105,6 +6112,9 @@
         // main one (links can't nest).
         const cr = a.localImage ? IMAGE_CREDITS[a.localImage] : null;
         let credit = "";
+        if (linkOnly) {
+          credit = `<span class="lp-asset-credit" title="Opens the original; this image isn't freely licensed, so the app doesn't carry a copy">Image: ${escapeHtml(a.imageCredit || "see source")}</span>`;
+        }
         if (cr && cr.status === "verified") {
           const who = cr.credit || "Unknown creator";
           const lic = cr.license || "licence not stated";
@@ -6116,7 +6126,8 @@
             : "The creator and licence of this image haven't been confirmed yet (docs/CREDITS.md)";
           credit = `<span class="lp-asset-credit unverified" title="${why}">Credit not yet verified</span>`;
         }
-        return `<div class="lp-asset"><a class="lp-asset-link" href="${a.infoUrl}" target="_blank" rel="noopener noreferrer">${img}<span class="lp-asset-caption">${a.title}</span><span class="lp-asset-source">${sourceLabel(a.infoUrl)} ↗</span></a>${credit}</div>`;
+        const href = linkOnly ? a.imagePage : a.infoUrl;
+        return `<div class="lp-asset"><a class="lp-asset-link" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${img}<span class="lp-asset-caption">${a.title}</span><span class="lp-asset-source">${sourceLabel(href)} ↗</span></a>${credit}</div>`;
       });
     if (tiles.length === 0) return "";
     return `<div class="lp-assets">${tiles.join("")}</div>`;
