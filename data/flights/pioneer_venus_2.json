@@ -1,0 +1,52 @@
+{
+  "key": "pioneer_venus_2",
+  "name": "Pioneer Venus 2 (Multiprobe)",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1978-08-08",
+  "arrival": "1978-12-09",
+  "rocket": "Atlas-Centaur",
+  "payload": "Multiprobe bus with one large and three small entry probes (875 kg at launch)",
+  "status": "Success",
+  "significance": "Pioneer Venus 2 sent five spacecraft into Venus's atmosphere at once: a large probe, three small probes aimed at day side, night side and high northern latitudes, and the bus that carried them. Dropping through widely separated points on the same day, they measured the atmosphere's temperature, pressure, winds, cloud layers and chemistry from the top down to the surface. The probes found that the clouds form distinct layers of sulfuric-acid droplets, that the deep atmosphere is remarkably uniform from place to place, and that Venus has far more primordial argon and neon than Earth, a clue to how differently the two planets formed. None was designed to survive impact, but the Day probe kept transmitting from the surface for more than an hour.",
+  "statusNote": "Direct Earth->Venus transfer, no gravity assists (one midcourse correction on 1978-08-16 isn't modeled); the 123-day cruise ends here at the Large probe's atmospheric entry. The Large probe separated 1978-11-16 and the three Small probes 1978-11-20. On 1978-12-09 (spacecraft time): Large probe entry 18:45:32 UT, impact 19:39:55 UT (4.4 N, 304 E); North probe landed 19:42:40 UT (59.3 N, 4.8 E); Day probe landed 19:47:59 UT (31.3 S, 317 E) and transmitted from the surface for 67 min 37 s; Night probe landed 19:52:05 UT (28.7 S, 56.7 E); the bus entered at 20:21:52 UT and returned data down to ~110 km before burning up. No JPL Horizons ephemeris. Sources: NASA NSSDCA (1978-078A, -078D, -078E, -078F, -078G).",
+  "assets": {
+    "spacecraft": {
+      "title": "Pioneer Venus Multiprobe (art by Paul Hudson)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Pioneer_Venus_Multiprobe",
+      "localImage": "images/missions/pioneer_venus_2/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Atlas-Centaur",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas-Centaur",
+      "localImage": "images/rockets/atlas_centaur.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1978-12-09T18:45:32Z",
+      "label": "Large probe and three small probes entered"
+    },
+    {
+      "body": "Venus",
+      "kind": "landing",
+      "start": "1978-12-09T19:47:59Z",
+      "label": "Day probe reached the surface"
+    },
+    {
+      "body": "Venus",
+      "kind": "ground",
+      "start": "1978-12-09T19:47:59Z",
+      "end": "1978-12-09T20:55:36Z",
+      "label": "Day probe: 67 min of signal from the surface"
+    },
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1978-12-09T20:21:52Z",
+      "label": "Bus burned up in the upper atmosphere"
+    }
+  ]
+}

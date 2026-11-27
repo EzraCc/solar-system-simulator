@@ -1,0 +1,40 @@
+{
+  "key": "pioneer_venus_1",
+  "name": "Pioneer Venus 1 (Orbiter)",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1978-05-20",
+  "arrival": "1978-12-04",
+  "rocket": "Atlas-Centaur",
+  "payload": "Pioneer Venus Orbiter (374 kg in orbit, per NSSDCA)",
+  "status": "Success",
+  "significance": "Pioneer Venus 1 was NASA's first Venus orbiter, and it stayed for almost fourteen years. Its radar altimeter, peering through the permanent cloud deck, produced the first global map of Venus's surface: rolling plains, two continent-sized highlands (later named Ishtar and Aphrodite Terra) and the towering Maxwell Montes. From orbit it watched the top of the atmosphere and the ionosphere respond to the solar wind, showing that Venus, with no magnetic field of its own, lets the solar wind strip its upper atmosphere directly. Its long record of sulfur dioxide above the clouds, which fell steadily through the 1980s, was an early hint that Venus might still be volcanically active. The orbiter also turned its ultraviolet instrument on passing comets, including Halley in 1986, and ended its mission by entering the atmosphere in 1992 once its fuel ran out.",
+  "statusNote": "Direct Earth->Venus transfer, no gravity assists (a Type II trajectory; small corrections on 1978-06-01 and 1978-11-02 aren't modeled). Venus orbit insertion 1978-12-04 15:58 UT into a 24-hour, highly elliptical orbit (periapsis ~150-250 km, apoapsis ~66,900 km, inclination ~105 deg). It isn't drawn in the Venus system view: JPL Horizons carries no ephemeris for it, so there is no fitted orbit. Last signal 1992-10-08 19:22 UT as the orbit decayed into the atmosphere. Sources: NASA NSSDCA (1978-051A); Colin & Hunten, Space Sci. Rev. 20, 451 (1977).",
+  "assets": {
+    "spacecraft": {
+      "title": "Pioneer Venus Orbiter (art by Don Davis)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Pioneer_Venus_Orbiter",
+      "localImage": "images/missions/pioneer_venus_1/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Atlas-Centaur",
+      "infoUrl": "https://en.wikipedia.org/wiki/Atlas-Centaur",
+      "localImage": "images/rockets/atlas_centaur.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "orbit",
+      "start": "1978-12-04",
+      "end": "1992-10-08",
+      "label": "Orbit (radar mapping, upper atmosphere)"
+    },
+    {
+      "body": "Venus",
+      "kind": "entry",
+      "start": "1992-10-08",
+      "label": "Fuel exhausted; burned up in the atmosphere"
+    }
+  ]
+}
