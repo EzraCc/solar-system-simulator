@@ -1,0 +1,38 @@
+{
+  "key": "mars_7",
+  "name": "Mars 7",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1973-08-09",
+  "arrival": "1974-03-09",
+  "rocket": "Proton-K / Blok D",
+  "payload": "Flyby bus and descent lander (3MP)",
+  "status": "Landing failed",
+  "estimate": true,
+  "significance": "Mars 7 was the last of the four 1973 Soviet Mars craft to launch but the first to arrive. On 9 March 1974 the bus released its lander, but the lander's rocket never fired to steer it into the atmosphere, so it sailed past Mars about 1,300 km away and into orbit around the Sun, probably another victim of the faulty transistors. The bus returned data during its flyby, and its cosmic-ray measurements from the trip out were still being analysed in 2003.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): JPL Horizons has no ephemeris for this spacecraft, so the path is a two-body arc between the launch and arrival dates, solved by the app. For comparison, arcs drawn the same way for modern direct flights (MAVEN, Mars Odyssey, Mars Express, MRO, Venus Express) fall within about 0.002 AU of their real Horizons trajectories, so the shape and timing are close, but no tracking data stands behind it. Launched 1973-08-09 17:00:17 UT. One mid-course correction, 20:00 UT on 1973-08-16. Lander separated 1974-03-09 but its engine failed to fire, so it missed Mars by about 1,300 km; contact with the bus lasted until 1974-03-25. The path ends at the encounter. Source: Siddiqi, Beyond Earth (NSSDCA's catalog record returned an error page on 2026-11-27).",
+  "assets": {
+    "spacecraft": {
+      "title": "Mars 7 (3MP flyby bus and lander)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Mars_7",
+      "imagePage": "https://en.wikipedia.org/wiki/Mars_7"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "flyby",
+      "start": "1974-03-09",
+      "label": "Lander missed Mars by ~1,300 km; bus flew past"
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Mars 7”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=140", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"},
+    {"title": "NASA NSSDCA: Chronology of Mars exploration", "url": "https://nssdc.gsfc.nasa.gov/planetary/chronology_mars.html", "note": "launch date"}
+  ]
+}
