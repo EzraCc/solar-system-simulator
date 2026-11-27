@@ -1,0 +1,43 @@
+{
+  "key": "zond_3",
+  "name": "Zond 3",
+  "rocket": "Molniya (8K78)",
+  "payload": "3MV-4 probe (950 kg) with a film camera and scanner, ultraviolet and infrared spectrometers, particle and field instruments",
+  "status": "Success",
+  "destinationLabel": "Moon (flyby), then solar orbit",
+  "significance": "Zond 3 was built for Mars but missed the 1964 launch window, so it was sent past the Moon instead to test the new 3MV design on the way into deep space. During its flyby on 20 July 1965 it photographed the part of the Moon's far side that Luna 3 had not seen in 1959: 25 pictures and 3 ultraviolet images, taken from about 9,200 km. Nine days later it sent them home from 2.2 million km away, and in October it sent them again from 31.5 million km, proving that a Soviet probe could return pictures from interplanetary distances. Together with Luna 3's photos they gave the first nearly complete view of the far side, a cratered highland with few of the dark 'seas' that cover the near side.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): there is no ephemeris for this flight, so the arc is a two-body transfer solved between launch and the lunar flyby, from Earth's and the Moon's positions. For modern direct flights checked against JPL Horizons, such date-to-date arcs fall within about 0.002 AU (300,000 km) of the real trajectory, so the shape is close; course corrections aren't modelled. Launched 1965-07-18 14:32 UT on a Molniya from Tyuratam; reached the Moon after a 33-hour flight and began imaging at 01:24 on 20 July (Siddiqi doesn't give the time zone) from 11,600 km, closest approach 9,220 km. The path ends at the flyby. Zond 3 then entered solar orbit and was heard until early March 1966, 153.5 million km from Earth (Siddiqi). That solar orbit isn't drawn: the only published figures (Wikipedia: 0.9 x 1.56 AU) don't match the Earth distances in the mission record (2.2 million km on 1965-07-29, 31.5 million km on 1965-10-23, 153.5 million km in March 1966) under any departure direction, so drawing them would be a guess. NSSDCA's catalog record (1965-056A) returns its error page.",
+  "assets": {
+    "spacecraft": {
+      "title": "Zond 3 (museum example)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Zond_3",
+      "localImage": "images/missions/zond_3/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Molniya-family rocket (museum display)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya_(rocket)",
+      "localImage": "images/rockets/molniya.jpg"
+    }
+  },
+  "legs": [
+    {
+      "type": "lambert",
+      "fromBody": "Earth",
+      "toBody": "Moon",
+      "departDate": "1965-07-18T14:32:00Z",
+      "arrivalDate": "1965-07-20",
+      "estimate": true
+    }
+  ],
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Zond 3”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=68", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
+  ],
+  "timeline": [
+    {
+      "body": "Moon",
+      "kind": "flyby",
+      "start": "1965-07-20",
+      "label": "Flyby at 9,220 km: 25 photos and 3 UV images of the unseen far side"
+    }
+  ]
+}

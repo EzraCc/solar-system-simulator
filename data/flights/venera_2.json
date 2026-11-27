@@ -1,0 +1,37 @@
+{
+  "key": "venera_2",
+  "name": "Venera 2",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1965-11-12T04:46:00Z",
+  "arrival": "1966-02-27T02:52:00Z",
+  "estimate": true,
+  "rocket": "Molniya-M (8K78M)",
+  "payload": "3MV-4 flyby probe (963 kg) with a camera and particle and field instruments",
+  "status": "Lost near Venus",
+  "significance": "Venera 2 was meant to photograph Venus's sunlit side from close range, one of three spacecraft left over from the 1964 Mars attempts and re-equipped for Venus. It passed the planet on 27 February 1966 at about 24,000 km, but it had been overheating for weeks and never answered after the flyby, so whatever its instruments recorded was lost. The failure was later traced to faulty thermal radiators, which let the spacecraft's interior and solar panels overheat.",
+  "statusNote": "PATH IS CALCULATED, NOT MEASURED (drawn dashed): there is no ephemeris for this flight, so the arc is a two-body transfer solved between the real launch and arrival dates and the planets' positions on those dates. For modern direct flights checked against JPL Horizons, such date-to-date arcs fall within about 0.002 AU (300,000 km) of the real trajectory, so the shape is close; course corrections aren't modelled. Launched 1965-11-12 04:46 UT. Communications were poor throughout the cruise; contact was not regained after closest approach at 02:52 UT on 1966-02-27 (about 24,000 km), and controllers gave up on 1966-03-04. Because contact was lost, the arrival is the predicted closest approach the mission record gives, and the arc ends there; the probe went on into solar orbit (not drawn). Source: Siddiqi, Beyond Earth; NSSDCA's catalog record (1965-091A) returns its error page.",
+  "assets": {
+    "spacecraft": {
+      "title": "Zond 3, the same 3MV-4 design as Venera 2 (museum example)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_2",
+      "localImage": "images/missions/zond_3/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Molniya-family rocket (museum display)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Molniya-M",
+      "localImage": "images/rockets/molniya.jpg"
+    }
+  },
+  "dataSources": [
+    {"title": "A. A. Siddiqi, Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016 (NASA SP-2018-4041), entry “Venera 2”", "url": "https://www.nasa.gov/sites/default/files/atoms/files/beyond-earth-tagged.pdf#page=70", "note": "launch date and mission events checked against this entry (NSSDCA's catalog record is unavailable)"}
+  ],
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "flyby",
+      "start": "1966-02-27T02:52:00Z",
+      "label": "Flyby at ~24,000 km; contact never regained, no data returned"
+    }
+  ]
+}
