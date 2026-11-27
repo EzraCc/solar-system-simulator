@@ -11,56 +11,167 @@
       "_comment": "Continuous ion thrust (not a coast) makes this leg's real shape a gradual curve rather than a single conic -- real DS1 trajectory (JPL Horizons, target -30, checked 2026-07) sweeps ~207 degrees around the Sun on the way to Braille. A plain 2-point Lambert solve across the whole leg misses the real intermediate path by ~0.3-0.5 AU. Split through a real recorded position, the same technique used for this catalog's other ion-thrust legs (Dawn, Hayabusa, BepiColombo).",
       "type": "lambert",
       "fromBody": "Earth",
-      "toBody": { "fixedPos": [-0.8316786108366429, 0.8154326377169138, 0.007651017945812404] },
+      "toBody": {
+        "fixedPos": [
+          -0.8316786108366429,
+          0.8154326377169138,
+          0.007651017945812404
+        ]
+      },
       "departDate": "1998-10-24",
       "arrivalDate": "1999-02-12"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [-0.8316786108366429, 0.8154326377169138, 0.007651017945812404] },
-      "toBody": { "fixedPos": [-1.282947840411515, 0.05478969746950337, 0.0058588961925603] },
+      "fromBody": {
+        "fixedPos": [
+          -0.8316786108366429,
+          0.8154326377169138,
+          0.007651017945812404
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.282947840411515,
+          0.05478969746950337,
+          0.0058588961925603
+        ]
+      },
       "departDate": "1999-02-12",
       "arrivalDate": "1999-04-13"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [-1.282947840411515, 0.05478969746950337, 0.0058588961925603] },
+      "fromBody": {
+        "fixedPos": [
+          -1.282947840411515,
+          0.05478969746950337,
+          0.0058588961925603
+        ]
+      },
       "toBody": "braille",
       "departDate": "1999-04-13",
       "arrivalDate": "1999-07-29"
     },
     {
-      "_comment": "Real DS1 trajectory sweeps ~549 degrees around the Sun on the way to Borrelly (more than one and a half heliocentric revolutions) -- a plain 2-point Lambert solve across the whole leg misread this as a ~246-degree short hop, missing the real path by 2-4 AU. Split through four real recorded positions.",
+      "_comment": "Real DS1 trajectory sweeps ~549 degrees around the Sun on the way to Borrelly (more than one and a half heliocentric revolutions) -- a plain 2-point Lambert solve across the whole leg misread this as a ~246-degree short hop, missing the real path by 2-4 AU. Split through four real recorded positions. | Split through 1 real JPL Horizons waypoint(s) (target -30, fetched 2026-11-27 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 1999-07-29 -> 2000-01-26 leg's real path sweeps ~135 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
       "fromBody": "braille",
-      "toBody": { "fixedPos": [1.046137886380307, 0.3304661262412302, -0.003411237828055691] },
+      "toBody": {
+        "fixedPos": [
+          1.016393436268664,
+          -0.5307813102736476,
+          -0.003342439046494102
+        ]
+      },
       "departDate": "1999-07-29",
+      "arrivalDate": "1999-12-05"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          1.016393436268664,
+          -0.5307813102736476,
+          -0.003342439046494102
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          1.046137886380307,
+          0.3304661262412302,
+          -0.003411237828055691
+        ]
+      },
+      "departDate": "1999-12-05",
       "arrivalDate": "2000-01-26"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [1.046137886380307, 0.3304661262412302, -0.003411237828055691] },
-      "toBody": { "fixedPos": [-1.226065338046351, 0.4095552317208841, 0.00395449272698036] },
+      "fromBody": {
+        "fixedPos": [
+          1.046137886380307,
+          0.3304661262412302,
+          -0.003411237828055691
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -1.226065338046351,
+          0.4095552317208841,
+          0.00395449272698036
+        ]
+      },
       "departDate": "2000-01-26",
       "arrivalDate": "2000-07-24"
     },
     {
+      "_comment": "Split through 1 real JPL Horizons waypoint(s) (target -30, fetched 2026-11-27 by tools/split_leg_horizons.py, max 90 deg / 150 d per piece): the original single 2000-07-24 -> 2001-02-19 leg's real path sweeps ~129 deg around the Sun, and its rendered shape strayed far from Horizons (tools/check_horizons.py). Each piece stays well under 180 deg so the app's zero-revolution Lambert solver can't pick the wrong orbit.",
       "type": "lambert",
-      "fromBody": { "fixedPos": [-1.226065338046351, 0.4095552317208841, 0.00395449272698036] },
-      "toBody": { "fixedPos": [0.4717697035490297, -1.245759061744675, 0.0024301223935257] },
+      "fromBody": {
+        "fixedPos": [
+          -1.226065338046351,
+          0.4095552317208841,
+          0.00395449272698036
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          -0.4302190826826827,
+          -1.291951443568065,
+          0.003064230746652426
+        ]
+      },
       "departDate": "2000-07-24",
+      "arrivalDate": "2000-12-18"
+    },
+    {
+      "type": "lambert",
+      "fromBody": {
+        "fixedPos": [
+          -0.4302190826826827,
+          -1.291951443568065,
+          0.003064230746652426
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          0.4717697035490297,
+          -1.245759061744675,
+          0.0024301223935257
+        ]
+      },
+      "departDate": "2000-12-18",
       "arrivalDate": "2001-02-19"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [0.4717697035490297, -1.245759061744675, 0.0024301223935257] },
-      "toBody": { "fixedPos": [1.292787553571091, 0.03436351121624211, -0.001672989841758999] },
+      "fromBody": {
+        "fixedPos": [
+          0.4717697035490297,
+          -1.245759061744675,
+          0.0024301223935257
+        ]
+      },
+      "toBody": {
+        "fixedPos": [
+          1.292787553571091,
+          0.03436351121624211,
+          -0.001672989841758999
+        ]
+      },
       "departDate": "2001-02-19",
       "arrivalDate": "2001-06-04"
     },
     {
       "type": "lambert",
-      "fromBody": { "fixedPos": [1.292787553571091, 0.03436351121624211, -0.001672989841758999] },
+      "fromBody": {
+        "fixedPos": [
+          1.292787553571091,
+          0.03436351121624211,
+          -0.001672989841758999
+        ]
+      },
       "toBody": "borrelly",
       "departDate": "2001-06-04",
       "arrivalDate": "2001-09-22"
@@ -91,5 +202,8 @@
       "start": "2001-09-22",
       "label": "Flyby"
     }
+  ],
+  "dataSources": [
+    {"title": "JPL Horizons, spacecraft -30 (Deep Space 1)", "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-30%27", "note": "trajectory record; the path is checked against this ephemeris (within about 0.02 AU) and pinned to it where a leg drifted"}
   ]
 }

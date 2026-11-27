@@ -1,4 +1,5 @@
 {
+  "estimate": true,
   "key": "venera_10",
   "name": "Venera 10",
   "launchBody": "Earth",
@@ -9,7 +10,7 @@
   "payload": "Venus orbiter + descent lander (5,033 kg at launch)",
   "status": "Success",
   "significance": "Venera 10 arrived three days after its twin and showed that Venera 9's first look at the Venusian surface wasn't a one-off. Its lander touched down about 2,200 km away and worked for 65 minutes, photographing smooth, slab-like rock rather than Venera 9's jumble of boulders: the first hint that Venus's surface is varied, shaped by volcanism and weathering. It also measured the rock's natural radioactivity, which pointed to basalt like Earth's ocean floors. Its orbiter joined Venera 9 as the second spacecraft ever to orbit Venus.",
-  "statusNote": "Launched 1975-06-14 on a Proton-K/Blok D. The lander separated on 1975-10-23; the orbiter entered Venus orbit and the lander touched down near Beta Regio (15.42°N, 291.51°E) on 1975-10-25, transmitting for 65 minutes (the landing clock time differs between sources, so it isn't given here). Orbit: about 1,600 × 114,000 km, 49.4 h, inclination 29.5° (Wikipedia); orientation unpublished, so not drawn in the Venus view. The orbiter's end date is uncertain: Wikipedia gives 144 days of orbiter operations (to about 1976-03) but also 'data until at least June 1976'. Sources: NSSDCA Venus chronology (catalog records 1975-054A/D return errors to scripts); Wikipedia 'Venera 10'.",
+  "statusNote": "Launched 1975-06-14 on a Proton-K/Blok D. The lander separated on 1975-10-23; the orbiter entered Venus orbit and the lander touched down near Beta Regio (15.42°N, 291.51°E) on 1975-10-25, transmitting for 65 minutes (the landing clock time differs between sources, so it isn't given here). Orbit: about 1,600 × 114,000 km, 49.4 h, inclination 29.5° (Wikipedia); orientation unpublished, so not drawn in the Venus view. The orbiter's end date is uncertain: Wikipedia gives 144 days of orbiter operations (to about 1976-03) but also 'data until at least June 1976'. Sources: NSSDCA Venus chronology (catalog records 1975-054A/D return errors to scripts); Wikipedia 'Venera 10'. Path calculated, not measured (drawn dashed): no tracking data for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer calculated between the published launch, flyby and arrival times. Arcs calculated this way for modern direct flights fall within about 0.002 AU of their real Horizons trajectories.",
   "dataSources": [
     {
       "title": "Earth→Venus arc between the real launch and arrival dates (no JPL Horizons ephemeris exists for this spacecraft)",

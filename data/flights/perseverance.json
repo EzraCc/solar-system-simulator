@@ -36,5 +36,8 @@
       "ongoing": true,
       "label": "Perseverance rover (and Ingenuity)"
     }
+  ],
+  "dataSources": [
+    {"title": "JPL Horizons, spacecraft -168 (Mars 2020)", "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-168%27", "note": "trajectory record; the path is checked against this ephemeris (within about 0.02 AU) and pinned to it where a leg drifted"}
   ]
 }

@@ -1,4 +1,5 @@
 {
+  "estimate": true,
   "key": "venera_12",
   "name": "Venera 12",
   "launchBody": "Earth",
@@ -9,7 +10,7 @@
   "payload": "Flyby bus (flight platform) and descent lander",
   "status": "Success",
   "significance": "Venera 12, launched five days after its twin Venera 11, arrived first: its lander touched down on 21 December 1978 and transmitted from the surface for about 110 minutes, the longer of the pair. Like Venera 11 it sampled the chemistry of the deep atmosphere and found an unexpectedly high abundance of primordial argon, but its cameras were defeated by lens covers that failed to release. Its flyby bus outlived the landing by more than a year, contributing to the first catalog of gamma-ray bursts and, in early 1980, studying Comet Bradfield with its ultraviolet spectrometer.",
-  "statusNote": "Direct Earth->Venus transfer, no gravity assists; the arc ends at the lander's touchdown. The lander separated 1978-12-19 and touched down 1978-12-21 03:30 UT (7 S, 294 E), transmitting via the bus for ~110 min until the bus flew out of range. The bus continued past Venus into solar orbit (its post-flyby path isn't drawn); it observed Comet Bradfield (C/1979 Y1) on 1980-02-13 and its last gamma-ray burst was reported 1980-01-05. No JPL Horizons ephemeris. Sources: NASA NSSDCA Venus chronology (its Venera 12 catalog records, 1978-086A and -086C, returned a database error on 2026-11-26) and the standard mission record (Wikipedia, citing NSSDCA).",
+  "statusNote": "Direct Earth->Venus transfer, no gravity assists; the arc ends at the lander's touchdown. The lander separated 1978-12-19 and touched down 1978-12-21 03:30 UT (7 S, 294 E), transmitting via the bus for ~110 min until the bus flew out of range. The bus continued past Venus into solar orbit (its post-flyby path isn't drawn); it observed Comet Bradfield (C/1979 Y1) on 1980-02-13 and its last gamma-ray burst was reported 1980-01-05. No JPL Horizons ephemeris. Sources: NASA NSSDCA Venus chronology (its Venera 12 catalog records, 1978-086A and -086C, returned a database error on 2026-11-26) and the standard mission record (Wikipedia, citing NSSDCA). Path calculated, not measured (drawn dashed): no tracking data for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer calculated between the published launch, flyby and arrival times. Arcs calculated this way for modern direct flights fall within about 0.002 AU of their real Horizons trajectories.",
   "assets": {
     "lander": {
       "title": "Venera 11/12 lander (identical design; cut-away model)",

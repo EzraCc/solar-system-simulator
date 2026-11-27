@@ -36,5 +36,8 @@
       "ongoing": true,
       "label": "Curiosity rover"
     }
+  ],
+  "dataSources": [
+    {"title": "JPL Horizons, spacecraft -76 (Mars Science Laboratory)", "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&MAKE_EPHEM=NO&OBJ_DATA=YES&COMMAND=%27-76%27", "note": "trajectory record; the path is checked against this ephemeris (within about 0.02 AU) and pinned to it where a leg drifted"}
   ]
 }

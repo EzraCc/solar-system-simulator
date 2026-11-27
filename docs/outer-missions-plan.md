@@ -58,20 +58,30 @@ Uranus's tilted magnetic field (Voyager 2, 1986), Triton's geysers
   flight; usable by any mission with a NASA or agency gallery, not just
   grand tours.
 
-## 3. Estimated paths drawn dashed
+## 3. Calculated paths drawn dashed
 
-Where a stretch of a trajectory is a projection without data, draw it
-dashed rather than solid, so viewers can tell an estimate from a
-measured path.
+**Rule (maintainer, 2026-11-27; applies to every flight):** a path is
+solid only when measured trajectory data stands behind it; otherwise it's
+dashed. "If we need to add a different path type to signify another
+state, we'll do so."
 
-- **Solid:** Horizons ephemeris; published waypoints; or a leg pinned at
-  both ends by known positions and times, with physics between them
-  (a Lambert arc between a known launch and a known encounter is high
-  confidence, so it stays solid).
-- **Dashed:** a leg flagged `"estimate": true`. This is a projection
-  with no data behind it: a lost spacecraft drifting on after contact
-  ended, an assumed post-mission orbit, or a destination date that's
-  itself a guess.
+- **Solid:** built from measured positions (JPL Horizons ephemeris, NASA
+  SPDF/SSCWeb data, published tracking waypoints), or calculated and then
+  checked against such data and found within about 0.02 AU (pinned to it
+  with `tools/split_leg_horizons.py` where a leg drifts).
+- **Dashed (`"estimate": true`, on a single-arc flight or on each leg):**
+  calculated with no measured data to check it against. That covers
+  two-body arcs between published launch, flyby and arrival times (most
+  pre-1988 and Soviet, Japanese and Chinese missions), orbits built from
+  published elements, projections after contact ended, and unofficial
+  trajectories (Tianwen-1's volunteer-fitted Horizons record). For
+  reference, arcs calculated this way for modern direct flights fall within
+  about 0.002 AU of their Horizons trajectories.
+- The flight panel's "Trajectory data" section explains the dashes, and
+  each flight's note says which parts are calculated.
+- Dashed paths that lap the same orbit many times need legs that are an
+  exact fraction of the period, or the laps' dashes fill each other's gaps
+  (`build_solar_orbit_i.py`, `build_solar_orbit_h.py`, `build_helios.py`).
 
 ## 4. Trajectory data sources, cited like images
 

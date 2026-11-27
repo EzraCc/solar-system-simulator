@@ -5,7 +5,7 @@
   "payload": "ISEE-3 (479 kg at launch; 13 instruments for the solar wind, energetic particles, plasma waves and magnetic fields)",
   "status": "Success",
   "significance": "ISEE-3 was the first spacecraft ever parked at a Lagrange point. From a halo orbit around Sun-Earth L1, about 1.5 million km sunward of Earth, it watched the solar wind roughly an hour before it reached Earth, proving the upstream-monitor idea that SOHO, ACE, DSCOVR and Aditya-L1 still use. In 1982 its controllers, led by trajectory designer Robert Farquhar, sent it on a year and a half of looping orbits through Earth's magnetic tail and used five close passes of the Moon to fling it out of the Earth-Moon system. Renamed the International Cometary Explorer, it became the first spacecraft to meet a comet, crossing the tail of Giacobini-Zinner on 11 September 1985, six months before the international fleet reached Halley. Its particle and field measurements showed what a comet's tail is made of and how the solar wind wraps around it. It then sampled the solar wind upstream of Halley in March 1986 and kept working in solar orbit until NASA ended operations in 1997.",
-  "statusNote": "Launched 1978-08-12 15:12 UTC on a Delta 2914 from Cape Canaveral. Halo-orbit insertion at Sun-Earth L1 on 1978-11-20 (first libration-point orbit); left L1 on 1982-06-10 for geotail passes and five lunar flybys (1983-03-30, 1983-04-23, 1983-09-27, 1983-10-21 and 1983-12-22, the last at 119.4 km altitude near the Apollo 11 site), which put it on a heliocentric escape orbit. Renamed ICE; passed through the plasma tail of comet 21P/Giacobini-Zinner 7,862 km from the nucleus at 20.7 km/s on 1985-09-11 (first comet encounter); crossed between the Sun and comet Halley on 1986-03-28, about 31 million km from it. Heliospheric mission from 1991; NASA ended operations on 1997-05-05. In 2014 the volunteer ISEE-3 Reboot Project re-contacted it and recorded a lunar flyby on 2014-08-10 (18,401 km from the Moon's centre), but could not fire its engines to return it to an Earth orbit. Sources: JPL Horizons record for ICE (-111), whose header carries the mission history and the 2014 encounter solution; NASA SPDF SSCWeb positions for 1978-1984. TRAJECTORY: 1978-1984 follows measured positions (SSCWeb); the L1 period is drawn as a stay at L1. No ephemeris exists for 1984-02 to 1985-09, so the cruise to Giacobini-Zinner is a two-body propagation of the last measured state, adjusted to meet the comet (within about 0.05 AU of a pure propagation). The leg on to the Halley pass is a projection with no data and is drawn dashed. Lunar flyby distances other than the last are from 12-minute SSCWeb samples (approximate). The Halley pass is the end of the dashed leg, placed at the published distance of about 31 million km from the comet.",
+  "statusNote": "Launched 1978-08-12 15:12 UTC on a Delta 2914 from Cape Canaveral. Halo-orbit insertion at Sun-Earth L1 on 1978-11-20 (first libration-point orbit); left L1 on 1982-06-10 for geotail passes and five lunar flybys (1983-03-30, 1983-04-23, 1983-09-27, 1983-10-21 and 1983-12-22, the last at 119.4 km altitude near the Apollo 11 site), which put it on a heliocentric escape orbit. Renamed ICE; passed through the plasma tail of comet 21P/Giacobini-Zinner 7,862 km from the nucleus at 20.7 km/s on 1985-09-11 (first comet encounter); crossed between the Sun and comet Halley on 1986-03-28, about 31 million km from it. Heliospheric mission from 1991; NASA ended operations on 1997-05-05. In 2014 the volunteer ISEE-3 Reboot Project re-contacted it and recorded a lunar flyby on 2014-08-10 (18,401 km from the Moon's centre), but could not fire its engines to return it to an Earth orbit. Sources: JPL Horizons record for ICE (-111), whose header carries the mission history and the 2014 encounter solution; NASA SPDF SSCWeb positions for 1978-1984. TRAJECTORY: 1978-1984 follows measured positions (SSCWeb); the L1 period is drawn as a stay at L1. No ephemeris exists for 1984-02 to 1985-09, so the cruise to Giacobini-Zinner is a two-body propagation of the last measured state, adjusted to meet the comet (within about 0.05 AU of a pure propagation); it is calculated, not measured, so it is drawn dashed too. The leg on to the Halley pass is a projection with no data and is drawn dashed. Lunar flyby distances other than the last are from 12-minute SSCWeb samples (approximate). The Halley pass is the end of the dashed leg, placed at the published distance of about 31 million km from the comet.",
   "dataSources": [
     {
       "title": "NASA SPDF SSCWeb: ISEE-3 positions, 1978-08-16 to 1984-01-31",
@@ -6230,6 +6230,7 @@
           0.001997264
         ]
       },
+      "estimate": true,
       "departDate": "1984-01-31T22:07:00Z",
       "arrivalDate": "1984-03-31T22:07:00Z",
       "_comment": "1984-01-31 to 1985-09-11: no published ephemeris (Horizons -111 covers only 2014; SSCWeb ends 1984-01-31). Waypoints are a two-body propagation of the last measured state, with the 0.05 AU difference from the comet's position at the encounter spread evenly along the cruise. Pinned at both ends by measurement and the encounter, so drawn solid."
@@ -6250,6 +6251,7 @@
           -0.00034909
         ]
       },
+      "estimate": true,
       "departDate": "1984-03-31T22:07:00Z",
       "arrivalDate": "1984-05-30T22:07:00Z"
     },
@@ -6269,6 +6271,7 @@
           -0.002377313
         ]
       },
+      "estimate": true,
       "departDate": "1984-05-30T22:07:00Z",
       "arrivalDate": "1984-07-29T22:07:00Z"
     },
@@ -6288,6 +6291,7 @@
           -0.002149626
         ]
       },
+      "estimate": true,
       "departDate": "1984-07-29T22:07:00Z",
       "arrivalDate": "1984-09-27T22:07:00Z"
     },
@@ -6307,6 +6311,7 @@
           0.000114848
         ]
       },
+      "estimate": true,
       "departDate": "1984-09-27T22:07:00Z",
       "arrivalDate": "1984-11-26T22:07:00Z"
     },
@@ -6326,6 +6331,7 @@
           0.002236126
         ]
       },
+      "estimate": true,
       "departDate": "1984-11-26T22:07:00Z",
       "arrivalDate": "1985-01-25T22:07:00Z"
     },
@@ -6345,6 +6351,7 @@
           0.001856791
         ]
       },
+      "estimate": true,
       "departDate": "1985-01-25T22:07:00Z",
       "arrivalDate": "1985-03-26T22:07:00Z"
     },
@@ -6364,6 +6371,7 @@
           -0.000592555
         ]
       },
+      "estimate": true,
       "departDate": "1985-03-26T22:07:00Z",
       "arrivalDate": "1985-05-25T22:07:00Z"
     },
@@ -6383,6 +6391,7 @@
           -0.002440134
         ]
       },
+      "estimate": true,
       "departDate": "1985-05-25T22:07:00Z",
       "arrivalDate": "1985-07-24T22:07:00Z"
     },
@@ -6396,6 +6405,7 @@
         ]
       },
       "toBody": "giacobini_zinner",
+      "estimate": true,
       "departDate": "1985-07-24T22:07:00Z",
       "arrivalDate": "1985-09-11T11:02:00Z",
       "_comment": "Through the tail of 21P/Giacobini-Zinner, 7,862 km from the nucleus, 1985-09-11 ~11:02 UT (first comet flyby)."

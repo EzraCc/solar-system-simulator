@@ -1,4 +1,5 @@
 {
+  "estimate": true,
   "key": "venera_15",
   "name": "Venera 15",
   "launchBody": "Earth",
@@ -9,7 +10,7 @@
   "payload": "Venera 15 radar-mapping orbiter (4V-2)",
   "status": "Success",
   "significance": "Venera 15 and its twin Venera 16 were the first spacecraft to map Venus with synthetic aperture radar from orbit, looking through the planet's unbroken clouds to the ground beneath. Over about eight months of mapping they covered the northern quarter of the planet, poleward of about 30°N, at 1–2 km resolution, along with a radar altimeter's height profile. Their images revealed features unknown on any other planet, such as tesserae (crumpled, criss-crossed highlands) and coronae (large ring-shaped volcanic structures), and set the stage for NASA's near-global Magellan map in the 1990s. They also carried an infrared spectrometer that mapped the temperature structure of the upper atmosphere.",
-  "statusNote": "Direct Earth->Venus transfer; drawn as a single arc ending at orbit insertion. Launched 1983-06-02 02:38:39 UTC; Venus orbit insertion 1983-10-10. Orbit: periapsis radius 7,080 km, apoapsis radius 72,080 km (about 1,000 km by 66,000 km altitude), periapsis at 62°N, period about 24 h, near-polar. The orbit isn't drawn in the Venus system view: its orientation (node and argument of periapsis in space) isn't published in the sources found, and isn't invented here. Operated about a year (end date approximate in the timeline). Sources: NASA PDS PPI mission catalog V15_V16_MISSION.CAT (text from NSSDCA); launch date also NSSDCA's Venus chronology. No JPL Horizons ephemeris exists for Venera 15.",
+  "statusNote": "Direct Earth->Venus transfer; drawn as a single arc ending at orbit insertion. Launched 1983-06-02 02:38:39 UTC; Venus orbit insertion 1983-10-10. Orbit: periapsis radius 7,080 km, apoapsis radius 72,080 km (about 1,000 km by 66,000 km altitude), periapsis at 62°N, period about 24 h, near-polar. The orbit isn't drawn in the Venus system view: its orientation (node and argument of periapsis in space) isn't published in the sources found, and isn't invented here. Operated about a year (end date approximate in the timeline). Sources: NASA PDS PPI mission catalog V15_V16_MISSION.CAT (text from NSSDCA); launch date also NSSDCA's Venus chronology. No JPL Horizons ephemeris exists for Venera 15. Path calculated, not measured (drawn dashed): no tracking data for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer calculated between the published launch, flyby and arrival times. Arcs calculated this way for modern direct flights fall within about 0.002 AU of their real Horizons trajectories.",
   "assets": {
     "spacecraft": {
       "title": "Venus topography from Venera 15/16 radar altimetry",

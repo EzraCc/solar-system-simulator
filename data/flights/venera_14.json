@@ -1,4 +1,5 @@
 {
+  "estimate": true,
   "key": "venera_14",
   "name": "Venera 14",
   "launchBody": "Earth",
@@ -9,7 +10,7 @@
   "payload": "Venera 14 flyby bus and descent lander (4V-1)",
   "status": "Success",
   "significance": "Venera 14 was the twin of Venera 13 and landed about 950 km away, on a plain of flat, basalt-like rock with almost no loose soil. It survived about an hour on the surface, took panoramic pictures, and analysed a drilled sample, which came out closer to the tholeiitic basalts of Earth's ocean floors than Venera 13's site did, a hint that Venus's plains formed from different kinds of volcanism. A small mishap became famous: a lens cap ejected by the lander came to rest exactly where its soil-compressibility probe touched down, so that instrument measured the cap instead of the ground. The bus relayed the lander's data during its flyby and continued into solar orbit.",
-  "statusNote": "Direct Earth->Venus transfer; drawn as a single arc ending at Venus on the landing date. The lander touched down on 1982-03-05 (about 07:00 UTC; Siddiqi, Beyond Earth, gives 07:00:11 UT but misprints the day as 3 March, the separation date) at 13°S, 310°E and survived 60 min according to NSSDCA (other sources give 57 min). The bus flew past Venus at the same time, relaying lander data, then continued into solar orbit (not drawn). Launch date and lander duration and location: NSSDCA (Venus chronology, https://nssdc.gsfc.nasa.gov/planetary/chronology_venus.html; lander image catalog pages YG06847/YG06848). Landing clock time from secondary sources (Wikipedia). No JPL Horizons ephemeris exists for Venera 14.",
+  "statusNote": "Direct Earth->Venus transfer; drawn as a single arc ending at Venus on the landing date. The lander touched down on 1982-03-05 (about 07:00 UTC; Siddiqi, Beyond Earth, gives 07:00:11 UT but misprints the day as 3 March, the separation date) at 13°S, 310°E and survived 60 min according to NSSDCA (other sources give 57 min). The bus flew past Venus at the same time, relaying lander data, then continued into solar orbit (not drawn). Launch date and lander duration and location: NSSDCA (Venus chronology, https://nssdc.gsfc.nasa.gov/planetary/chronology_venus.html; lander image catalog pages YG06847/YG06848). Landing clock time from secondary sources (Wikipedia). No JPL Horizons ephemeris exists for Venera 14. Path calculated, not measured (drawn dashed): no tracking data for this spacecraft is publicly archived (JPL Horizons has no ephemeris for it), so the path is a two-body transfer calculated between the published launch, flyby and arrival times. Arcs calculated this way for modern direct flights fall within about 0.002 AU of their real Horizons trajectories.",
   "assets": {
     "spacecraft": {
       "title": "Venera 13 and 14 (Soviet stamp, 1982)",
