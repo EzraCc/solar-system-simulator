@@ -97,6 +97,11 @@ MANUAL = {
     "images/rockets/falcon_9.jpg": {"file": "Iridium-1 Launch (32312419215).jpg"},
     "images/rockets/falcon_heavy.jpg": {"nasa_id": "NHQ202310110005"},
     "images/rockets/proton_k.jpg": {"file": "Proton-K-Zarya.jpg"},
+    # Pre-1988 Veneras (added 2026-11-26). No free photo of either spacecraft
+    # type was found: the 1982 USSR stamp shows Venera 13/14; Venera 15/16
+    # use a map made from their radar altimetry (PDS Geosciences data).
+    "images/missions/venera_13/spacecraft.jpg": {"file": "1982 CPA 5278.jpg"},
+    "images/missions/venera_15/spacecraft.jpg": {"file": "VenusTopoVenera.jpg"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},

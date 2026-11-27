@@ -1,0 +1,34 @@
+{
+  "key": "venera_16",
+  "name": "Venera 16",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1983-06-07",
+  "arrival": "1983-10-11",
+  "rocket": "Proton-K / Blok D-1",
+  "payload": "Venera 16 radar-mapping orbiter (4V-2)",
+  "status": "Success",
+  "significance": "Venera 16 was the second of the twin radar mappers that gave the first detailed look at Venus's northern hemisphere through its clouds. Flying an orbit like Venera 15's, offset by a few degrees, it filled in strips its twin missed and repeated others, so the pair could map the region poleward of 30°N in about eight months. Their radar mosaics and altimetry became the first geological maps of Venus, showing mountain belts such as Maxwell Montes, volcanic coronae and tessera highlands. Soviet engineers later used Venera 16 for communication tests ahead of the Vega missions.",
+  "statusNote": "Direct Earth->Venus transfer; drawn as a single arc ending at orbit insertion. Launched 1983-06-07 02:32:00 UTC; Venus orbit insertion 1983-10-11 per the PDS/NSSDCA mission text (some sources give 1983-10-14). Same orbit size as Venera 15 (periapsis radius 7,080 km, apoapsis radius 72,080 km, periapsis at 62°N, about 24 h), with its orbital plane offset by about 4°. Orbit orientation unpublished in the sources found, so it isn't drawn in the Venus system view. Operated about a year (end date approximate in the timeline; Wikipedia reports last data on 1985-06-13, unverified). Sources: NASA PDS PPI mission catalog V15_V16_MISSION.CAT (text from NSSDCA); launch date also NSSDCA's Venus chronology. No JPL Horizons ephemeris exists for Venera 16.",
+  "assets": {
+    "spacecraft": {
+      "title": "Venus topography from Venera 15/16 radar altimetry",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_16",
+      "localImage": "images/missions/venera_15/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "orbit",
+      "start": "1983-10-11",
+      "end": "1984-10-11",
+      "label": "Radar-mapping orbit (about a year; end approximate)"
+    }
+  ]
+}

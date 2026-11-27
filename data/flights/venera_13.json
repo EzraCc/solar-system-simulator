@@ -1,0 +1,46 @@
+{
+  "key": "venera_13",
+  "name": "Venera 13",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1981-10-30",
+  "arrival": "1982-03-01",
+  "rocket": "Proton-K / Blok D-1",
+  "payload": "Venera 13 flyby bus and descent lander (4V-1)",
+  "status": "Success",
+  "significance": "Venera 13 carried a lander that reached the surface of Venus east of Phoebe Regio and kept working for just over two hours under about 89 times Earth's air pressure and a temperature near 457 °C. It returned the first colour pictures of the Venusian surface, showing flat, layered rock and soil, and drilled a surface sample that its onboard X-ray fluorescence spectrometer analysed, finding a composition like Earth's alkaline basalts. Its flyby bus relayed the lander's data as it passed the planet and then continued into solar orbit, where its gamma-ray instruments kept observing. Together with its twin Venera 14, it set the benchmark for surviving and working on the Venusian surface that no later lander has exceeded.",
+  "statusNote": "Direct Earth->Venus transfer; drawn as a single arc ending at Venus on the landing date. The lander touched down on 1982-03-01 (about 03:57 UTC) at 7.5°S, 303°E and survived 2 h 7 min (127 min). The bus flew past Venus at the same time, relaying lander data, then continued into solar orbit (not drawn: single-arc flights end at arrival). Launch date and lander duration and location: NSSDCA (Venus chronology, https://nssdc.gsfc.nasa.gov/planetary/chronology_venus.html; lander image catalog pages YG06847/YG06848). Landing clock time from secondary sources (Wikipedia). No JPL Horizons ephemeris exists for Venera 13.",
+  "assets": {
+    "spacecraft": {
+      "title": "Venera 13 and 14 (Soviet stamp, 1982)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_13",
+      "localImage": "images/missions/venera_13/spacecraft.jpg"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "landing",
+      "start": "1982-03-01T03:57:21Z",
+      "label": "Lander touched down east of Phoebe Regio"
+    },
+    {
+      "body": "Venus",
+      "kind": "ground",
+      "start": "1982-03-01T03:57:21Z",
+      "end": "1982-03-01T06:04:21Z",
+      "label": "Lander worked 127 minutes; first colour surface images"
+    },
+    {
+      "body": "Venus",
+      "kind": "flyby",
+      "start": "1982-03-01T03:57:21Z",
+      "label": "Bus flew past, relaying the lander's data"
+    }
+  ]
+}
