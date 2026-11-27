@@ -97,6 +97,13 @@ MANUAL = {
     "images/rockets/falcon_9.jpg": {"file": "Iridium-1 Launch (32312419215).jpg"},
     "images/rockets/falcon_heavy.jpg": {"nasa_id": "NHQ202310110005"},
     "images/rockets/proton_k.jpg": {"file": "Proton-K-Zarya.jpg"},
+    # 1975 chunk (Venera 9/10, Viking 1/2), 2026-11-27.
+    "images/missions/viking/spacecraft.jpg": {"file": "Viking spacecraft.jpg"},
+    "images/missions/viking/lander.jpg": {"nasa_id": "PIA09703"},
+    "images/rockets/titan_iiie.jpg": {"file": "Viking 1 launch on a Titan IIIE Centaur.jpeg"},
+    "images/missions/venera_9/spacecraft.jpg": {"file": "1984 CPA 5560.jpg"},
+    "images/missions/venera_9/lander.jpg": {"file": "Foto de Venera 9 (cropped).png"},
+    "images/missions/venera_10/lander.jpg": {"file": "Venera10surface.gif"},
     # NASA/JPL photojournal image (PIA19664); the Commons page has no licence field.
     "images/missions/insight/spacecraft.jpg": {"license": "Public domain (NASA)",
         "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/"},

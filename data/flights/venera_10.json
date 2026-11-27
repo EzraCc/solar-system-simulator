@@ -1,0 +1,67 @@
+{
+  "key": "venera_10",
+  "name": "Venera 10",
+  "launchBody": "Earth",
+  "destinationBody": "Venus",
+  "launchDate": "1975-06-14",
+  "arrival": "1975-10-25",
+  "rocket": "Proton-K / Blok D",
+  "payload": "Venus orbiter + descent lander (5,033 kg at launch)",
+  "status": "Success",
+  "significance": "Venera 10 arrived three days after its twin and showed that Venera 9's first look at the Venusian surface wasn't a one-off. Its lander touched down about 2,200 km away and worked for 65 minutes, photographing smooth, slab-like rock rather than Venera 9's jumble of boulders: the first hint that Venus's surface is varied, shaped by volcanism and weathering. It also measured the rock's natural radioactivity, which pointed to basalt like Earth's ocean floors. Its orbiter joined Venera 9 as the second spacecraft ever to orbit Venus.",
+  "statusNote": "Launched 1975-06-14 on a Proton-K/Blok D. The lander separated on 1975-10-23; the orbiter entered Venus orbit and the lander touched down near Beta Regio (15.42°N, 291.51°E) on 1975-10-25, transmitting for 65 minutes (the landing clock time differs between sources, so it isn't given here). Orbit: about 1,600 × 114,000 km, 49.4 h, inclination 29.5° (Wikipedia); orientation unpublished, so not drawn in the Venus view. The orbiter's end date is uncertain: Wikipedia gives 144 days of orbiter operations (to about 1976-03) but also 'data until at least June 1976'. Sources: NSSDCA Venus chronology (catalog records 1975-054A/D return errors to scripts); Wikipedia 'Venera 10'.",
+  "dataSources": [
+    {
+      "title": "Earth→Venus arc between the real launch and arrival dates (no JPL Horizons ephemeris exists for this spacecraft)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1975-054A",
+      "note": "endpoints are known; the transfer orbit between them is physics, so it's drawn solid"
+    },
+    {
+      "title": "NSSDCA chronology of Venus exploration",
+      "url": "https://nssdc.gsfc.nasa.gov/planetary/chronology_venus.html"
+    },
+    {
+      "title": "Wikipedia: Venera 10 (orbit and landing details)",
+      "url": "https://en.wikipedia.org/wiki/Venera_10"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Venera 9/10 spacecraft (1984 Soviet stamp)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_10",
+      "localImage": "images/missions/venera_9/spacecraft.jpg"
+    },
+    "lander": {
+      "title": "Surface of Venus from Venera 10 (1975)",
+      "infoUrl": "https://en.wikipedia.org/wiki/Venera_10",
+      "localImage": "images/missions/venera_10/lander.jpg"
+    },
+    "rocket": {
+      "title": "Proton-K",
+      "infoUrl": "https://en.wikipedia.org/wiki/Proton-K",
+      "localImage": "images/rockets/proton_k.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Venus",
+      "kind": "orbit",
+      "start": "1975-10-25",
+      "end": "1976-03-17",
+      "label": "Orbit (end date approximate)"
+    },
+    {
+      "body": "Venus",
+      "kind": "landing",
+      "start": "1975-10-25",
+      "label": "Lander touched down near Beta Regio"
+    },
+    {
+      "body": "Venus",
+      "kind": "ground",
+      "start": "1975-10-25",
+      "end": "1975-10-25",
+      "label": "65 min on the surface"
+    }
+  ]
+}

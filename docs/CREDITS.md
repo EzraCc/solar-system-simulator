@@ -210,7 +210,12 @@ Written by `tools/audit_images.py` from `data/images/credits.json`.
 | `images/missions/tianwen2/spacecraft.png` | [Rendering of Tianwen 2 asteroid mission 03 cropped rotated.png](https://commons.wikimedia.org/wiki/File:Rendering_of_Tianwen_2_asteroid_mission_03_cropped_rotated.png) | 中国新闻社 | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0) |
 | `images/missions/ulysses/rocket.jpg` | [STS-41 launch.jpg](https://commons.wikimedia.org/wiki/File:STS-41_launch.jpg) | NASA | Public domain |
 | `images/missions/ulysses/spacecraft.jpg` | [STS-41 Ulysses deployment.jpg](https://commons.wikimedia.org/wiki/File:STS-41_Ulysses_deployment.jpg) | NASA | Public domain |
+| `images/missions/venera_10/lander.jpg` | [Venera10surface.gif](https://commons.wikimedia.org/wiki/File:Venera10surface.gif) | Академия наук СССР (USSR Academy of Sciences) / powered by NASA National Space Science Data Center | Public domain |
+| `images/missions/venera_9/lander.jpg` | [Foto de Venera 9 (cropped).png](https://commons.wikimedia.org/wiki/File:Foto_de_Venera_9_(cropped).png) | Ted Stryk | Public domain |
+| `images/missions/venera_9/spacecraft.jpg` | [1984 CPA 5560.jpg](https://commons.wikimedia.org/wiki/File:1984_CPA_5560.jpg) | Post of the Soviet Union, designer G. Komlev / Почта СССР, художник Г. Комлев; Original uploader was Михаил Фетисов at ru.wikipedia. | Public domain |
 | `images/missions/venus_express/spacecraft.jpg` | [Venus Express in orbit (crop).jpg](https://commons.wikimedia.org/wiki/File:Venus_Express_in_orbit_(crop).jpg) | Andrzej Mirecki | Public domain |
+| `images/missions/viking/lander.jpg` | [Viking Lander Model](https://images.nasa.gov/details/PIA09703) | NASA/JPL-Caltech/University of Arizona | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
+| `images/missions/viking/spacecraft.jpg` | [Viking spacecraft.jpg](https://commons.wikimedia.org/wiki/File:Viking_spacecraft.jpg) | NASA | Public domain |
 | `images/rockets/ariane_5.jpg` | [Ariane 5 with James Webb Space Telescope Prelaunch (51773093465).jpg](https://commons.wikimedia.org/wiki/File:Ariane_5_with_James_Webb_Space_Telescope_Prelaunch_(51773093465).jpg) | Chris Gunn | Public domain |
 | `images/rockets/atlas_v.jpg` | [MAVEN Atlas V Launch](https://images.nasa.gov/details/201311180001HQ) | NASA/Bill Ingalls | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
 | `images/rockets/delta_ii.jpg` | [Delta II rocket carrying NASA's Dawn spacecraft launches from pa](https://images.nasa.gov/details/KSC-07PD-2590) | NASA\ Tony Gray | [Public domain (NASA)](https://www.nasa.gov/nasa-brand-center/images-and-media/) |
@@ -228,6 +233,7 @@ Written by `tools/audit_images.py` from `data/images/credits.json`.
 | `images/rockets/proton_k.jpg` | [Proton-K-Zarya.jpg](https://commons.wikimedia.org/wiki/File:Proton-K-Zarya.jpg) | NASA | Public domain |
 | `images/rockets/proton_m.jpg` | [Night start of Proton-M rocket with Blagovest satellite 17.08.2017.jpg](https://commons.wikimedia.org/wiki/File:Night_start_of_Proton-M_rocket_with_Blagovest_satellite_17.08.2017.jpg) | Unknown authorUnknown author | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0) |
 | `images/rockets/soyuz_fg.jpg` | [Soyuz TMA-3 launch.jpg](https://commons.wikimedia.org/wiki/File:Soyuz_TMA-3_launch.jpg) | Bill Ingalls | Public domain |
+| `images/rockets/titan_iiie.jpg` | [Viking 1 launch on a Titan IIIE Centaur.jpeg](https://commons.wikimedia.org/wiki/File:Viking_1_launch_on_a_Titan_IIIE_Centaur.jpeg) | NASA | Public domain |
 <!-- gallery:end -->
 
 ## Orbital and physical data 📝

@@ -1769,6 +1769,55 @@
    "ulysses"
   ]
  },
+ "images/missions/venera_10/lander.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Venera10surface.gif",
+  "sourceTitle": "Venera10surface.gif",
+  "credit": "Академия наук СССР (USSR Academy of Sciences) / powered by NASA National Space Science Data Center",
+  "creditDetail": "Venera 10 Descent Craft",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 0.998,
+  "title": "Surface of Venus from Venera 10 (1975)",
+  "usedBy": [
+   "venera_10"
+  ]
+ },
+ "images/missions/venera_9/lander.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Foto_de_Venera_9_(cropped).png",
+  "sourceTitle": "Foto de Venera 9 (cropped).png",
+  "credit": "Ted Stryk",
+  "creditDetail": "planetary.org",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "First image from the surface of Venus (Venera 9, 1975)",
+  "usedBy": [
+   "venera_9"
+  ]
+ },
+ "images/missions/venera_9/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:1984_CPA_5560.jpg",
+  "sourceTitle": "1984 CPA 5560.jpg",
+  "credit": "Post of the Soviet Union, designer G. Komlev / Почта СССР, художник Г. Комлев; Original uploader was Михаил Фетисов at ru.wikipedia.",
+  "creditDetail": "Own collection / Коллекция Николая Федоровича Фетисова",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Venera 9/10 spacecraft (1984 Soviet stamp)",
+  "usedBy": [
+   "venera_10",
+   "venera_9"
+  ]
+ },
  "images/missions/venus_express/spacecraft.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Venus_Express_in_orbit_(crop).jpg",
   "sourceTitle": "Venus Express in orbit (crop).jpg",
@@ -1783,6 +1832,39 @@
   "title": "Venus Express",
   "usedBy": [
    "venus_express"
+  ]
+ },
+ "images/missions/viking/lander.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA09703",
+  "sourceTitle": "Viking Lander Model",
+  "credit": "NASA/JPL-Caltech/University of Arizona",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Viking lander",
+  "usedBy": [
+   "viking_1",
+   "viking_2"
+  ]
+ },
+ "images/missions/viking/spacecraft.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Viking_spacecraft.jpg",
+  "sourceTitle": "Viking spacecraft.jpg",
+  "credit": "NASA",
+  "creditDetail": "NASA website; description,[1] high resolution image.[2] Former version sources[3][4]",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Viking orbiter and lander",
+  "usedBy": [
+   "viking_1",
+   "viking_2"
   ]
  },
  "images/rockets/ariane_5.jpg": {
@@ -2087,6 +2169,23 @@
   "usedBy": [
    "mars_express",
    "venus_express"
+  ]
+ },
+ "images/rockets/titan_iiie.jpg": {
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Viking_1_launch_on_a_Titan_IIIE_Centaur.jpeg",
+  "sourceTitle": "Viking 1 launch on a Titan IIIE Centaur.jpeg",
+  "credit": "NASA",
+  "creditDetail": "http://lisar.larc.nasa.gov/UTILS/info.cgi?id=EL-1996-00220",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: named file",
+  "match": 1.0,
+  "title": "Titan IIIE / Centaur",
+  "usedBy": [
+   "viking_1",
+   "viking_2"
   ]
  }
 }

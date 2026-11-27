@@ -1,0 +1,63 @@
+{
+  "key": "viking_2",
+  "name": "Viking 2",
+  "launchBody": "Earth",
+  "destinationBody": "Mars",
+  "launchDate": "1975-09-09",
+  "arrival": "1976-08-07",
+  "rocket": "Titan IIIE / Centaur",
+  "payload": "Mars orbiter + lander (3,527 kg fueled pair)",
+  "status": "Success",
+  "significance": "Viking 2 landed far to the north of its twin, on the plains of Utopia Planitia, giving scientists a second, independent site to test the soil for life and to watch the weather. It repeated Viking 1's puzzling biology results, and in its first winter it photographed a thin layer of frost on the ground around it, the first frost seen on another planet. Its orbiter flew close to the moon Deimos and, with Viking 1's, built up the global photo map of Mars that planners would use for the next twenty years.",
+  "statusNote": "Launched 1975-09-09 on a Titan IIIE/Centaur. Mars orbit insertion 1976-08-07 (1,500 × 33,000 km, 24.6 h), trimmed on 08-09 to a 27.3 h orbit inclined 55.2°. The lander separated 1976-09-03 19:39:59 UT and touched down in Utopia Planitia (47.67°N, 134.28°E) at 22:58:20 UT per NSSDCA's lander record (its orbiter record says 22:37:50). The orbiter's inclination was raised to 75° and then 80°, it flew close to Deimos in October 1977, and after a propellant leak it was switched off on 1978-07-25 after 706 orbits. The lander operated for 1,281 sols until its batteries failed on 1980-04-11. No Horizons ephemeris, so the orbiter isn't drawn in the Mars view. Source: NSSDCA records 1975-083A (orbiter) and 1975-083C (lander).",
+  "dataSources": [
+    {
+      "title": "Earth→Mars arc between the real launch and arrival dates (no JPL Horizons ephemeris exists for this spacecraft)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1975-083A",
+      "note": "endpoints are known; the transfer orbit between them is physics, so it's drawn solid"
+    },
+    {
+      "title": "NSSDCA: Viking 2 Lander (1975-083C)",
+      "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1975-083C"
+    }
+  ],
+  "assets": {
+    "spacecraft": {
+      "title": "Viking orbiter and lander",
+      "infoUrl": "https://en.wikipedia.org/wiki/Viking_2",
+      "localImage": "images/missions/viking/spacecraft.jpg"
+    },
+    "lander": {
+      "title": "Viking lander",
+      "infoUrl": "https://en.wikipedia.org/wiki/Viking_lander_biological_experiments",
+      "localImage": "images/missions/viking/lander.jpg"
+    },
+    "rocket": {
+      "title": "Titan IIIE / Centaur",
+      "infoUrl": "https://en.wikipedia.org/wiki/Titan_IIIE",
+      "localImage": "images/rockets/titan_iiie.jpg"
+    }
+  },
+  "timeline": [
+    {
+      "body": "Mars",
+      "kind": "orbit",
+      "start": "1976-08-07",
+      "end": "1978-07-25",
+      "label": "Orbiter (706 orbits)"
+    },
+    {
+      "body": "Mars",
+      "kind": "landing",
+      "start": "1976-09-03T22:58:20Z",
+      "label": "Lander touched down in Utopia Planitia"
+    },
+    {
+      "body": "Mars",
+      "kind": "ground",
+      "start": "1976-09-03T22:58:20Z",
+      "end": "1980-04-11",
+      "label": "Lander (1,281 sols)"
+    }
+  ]
+}
