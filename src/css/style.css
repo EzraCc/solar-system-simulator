@@ -1074,6 +1074,13 @@
   }
   a.lp-asset-credit:hover { color: var(--text-primary); text-decoration: underline; }
   .lp-asset-credit.unverified { font-style: italic; opacity: 0.7; }
+  /* Link-only tile (see assetGalleryHtml): a compact box, not an empty square. */
+  .lp-asset-noimg.lp-asset-linkonly {
+    aspect-ratio: auto; height: 84px; max-width: 220px;
+    color: var(--accent); font-size: 12px; line-height: 1.35;
+    border-style: solid; border-color: rgba(120,150,200,0.35);
+  }
+  .lp-asset-link:hover .lp-asset-linkonly { border-color: var(--accent); color: var(--text-primary); }
 
   /* Mobile landscape: the viewport itself is short, and a 1:1 square tile
      sized off a wide flex-item width (esp. when it's the only asset, so
