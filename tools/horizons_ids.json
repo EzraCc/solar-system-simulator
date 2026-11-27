@@ -111,5 +111,9 @@
   },
   "new_horizons": {
     "id": "-98"
+  },
+  "isee3": {
+    "id": "-111",
+    "note": "ICE: Horizons ephemeris covers 2014 only (ISEE-3 Reboot); 1978-1984 positions come from NASA SPDF SSCWeb (isee3)"
   }
 }

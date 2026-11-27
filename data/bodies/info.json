@@ -379,6 +379,16 @@
       }
     }
   },
+  "Giacobini–Zinner (21P)": {
+    "significance": "21P/Giacobini-Zinner is a Jupiter-family comet with a period of about 6.6 years, discovered by Michel Giacobini in 1900 and recovered by Ernst Zinner in 1913. Its nucleus, about 2 km across, has never been imaged. In September 1985 it became the first comet visited by a spacecraft, when the International Cometary Explorer flew through its plasma tail 7,862 km downstream of the nucleus. The crossing showed a narrow tail of ionised water and other molecules, threaded by magnetic field lines draped around the comet by the solar wind, much as theory predicted. It is also the parent of the Draconid meteor shower, which produced intense outbursts in 1933 and 1946.",
+    "assets": {
+      "image": {
+        "title": "Comet 21P/Giacobini-Zinner",
+        "infoUrl": "https://en.wikipedia.org/wiki/21P/Giacobini%E2%80%93Zinner",
+        "localImage": "images/bodies/giacobini_zinner.jpg"
+      }
+    }
+  },
   "Psyche (16)": {
     "significance": "16 Psyche is the largest M-type (metallic) asteroid in the main belt, with a mean diameter of about 226 km and a mass representing close to 1% of the total mass of the asteroid belt. Radar and thermal observations indicate an unusually high metal content -- modeled at roughly 30-60% Fe-Ni metal by volume -- and its radar albedo of 0.42 is among the highest measured for any asteroid. The leading hypothesis holds that Psyche is the exposed iron-nickel core of a shattered protoplanetesimal that lost its rocky mantle and crust in one or more early collisions, though some spectral and density modeling instead favors a differentiated body with localized metal-rich patches rather than a pure core. Its irregular, slightly ellipsoidal shape and heterogeneous surface composition make it a rare natural laboratory for studying planetary interiors that are otherwise inaccessible. No spacecraft has visited Psyche yet -- NASA's Psyche mission is en route, with arrival expected in 2029.",
     "assets": {

@@ -534,6 +534,20 @@
       meta: { color: '#a8a098', radiusKm: 3.0, dimensionsKm: [7.6, 4.9], shapeNote: 'elongated nucleus' },
       targetOfFlights: ['deep_impact'],
     },
+    // 21P/Giacobini–Zinner: ISEE-3/ICE made the first-ever comet flyby
+    // through its tail on 1985-09-11. Elements are JPL Horizons osculating
+    // elements for the 1985 apparition (epoch 1985-09-12 TDB, SAO/1985
+    // solution with non-gravitational terms), not today's: a Jupiter-family
+    // comet's orbit shifts from one return to the next.
+    giacobini_zinner: {
+      name: 'Giacobini–Zinner (21P)', types: ['comet'],
+      elements: { a: 3.51562644238166, e: 0.707515, iDeg: 31.8726,
+                  OmDeg: 195.4089, wDeg: 172.4802, M0Deg: 1.015825570132613,
+                  epochDays: -5224.5 },
+      // radiusKm: ~2 km nucleus diameter (Horizons RAD 1 km).
+      meta: { color: '#a59a8c', radiusKm: 1.0, shapeNote: 'nucleus never imaged' },
+      targetOfFlights: ['isee3'],
+    },
     psyche: {
       name: 'Psyche (16)', types: ['asteroid'],
       elements: { a: 2.925720466462538, e: 0.1349324738201893, iDeg: 3.098749116151128,
@@ -4745,6 +4759,7 @@
   // SMALL_BODIES key. A body missing here just shows its broad kind.
   const SMALL_BODY_GROUP = {
     '67P': "Jupiter-family comet", tempel1: "Jupiter-family comet",
+    giacobini_zinner: "Jupiter-family comet",
     wild2: "Jupiter-family comet", borrelly: "Jupiter-family comet",
     hyakutake: "long-period comet", mcnaught_hartley: "long-period comet",
     mcnaught: "long-period comet",
