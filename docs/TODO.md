@@ -119,6 +119,23 @@ In the app: lightweight previews only, linking to the full-quality data.
   - Mars' spacecraft labels crowd each other.
   - The velocity dashboard doesn't support planetocentric legs.
   - JUICE needs a Ganymede orbit phase.
+- [ ] **Unmodelled close passes that bend trajectories.** A pass near a
+  massive body (Jupiter, Earth, the Moon...) changes a craft's path even
+  when it isn't a planned gravity assist. The app only models the flybys
+  written in as `gravity_assist` legs; everywhere else it draws two-body
+  arcs between waypoints, so paths drift after such a pass. Most at risk:
+  orbits built from published elements and propagated for years
+  (Pioneer 6–9, Helios 1's projected years, Zond 3), date-to-date arcs, and
+  projections after contact ended. Plan (maintainer, 2026-11-27):
+  1. Map where these passes happen: scan each flight's path (Horizons
+     where it exists, our drawn path otherwise) for close approaches to
+     planets and large moons, and estimate how much each one changes the
+     path (e.g. inside the body's sphere of influence, or a velocity change
+     above a threshold).
+  2. Split paths at those points: two-body arcs where the physics holds,
+     and a change-of-path point (a flyby node or a waypoint) at each pass.
+  3. Re-check against Horizons with `tools/check_horizons.py`, and dash
+     whatever stays calculated.
 - [ ] **Flight list: search, filtering and ordering.** At 78 flights and
   growing, the left-hand list needs a search box and filters (agency,
   destination, decade, status) plus other orderings. Alphabetical stays
