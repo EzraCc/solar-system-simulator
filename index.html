@@ -99,6 +99,7 @@
     <span>Hold camera frame</span>
   </label>
   <button type="button" id="glossary-toggle">How do these missions get around?</button>
+  <button type="button" id="helio-open-btn" title="Zoom out past the planets to the edge of the Sun's influence (also: keep zooming out)">Heliosphere view</button>
 </div>
 
 <div class="panel" id="size-compare-panel">
@@ -287,6 +288,20 @@
   <div class="system-section-label">Missions</div>
   <div id="system-mission-rows"></div>
   <div id="system-scale-readout"></div>
+</div>
+
+<!-- Heliosphere layer: the view above the Solar System view (see
+     HELIOSPHERE LAYER in app.js). -->
+<div class="panel" id="helio-panel">
+  <div id="helio-panel-header">
+    <button id="helio-exit-btn" title="Back to the Solar System view">&larr; Solar System</button>
+    <span id="helio-panel-title">Heliosphere</span>
+  </div>
+  <div class="system-section-label">Spacecraft</div>
+  <div id="helio-craft-rows"></div>
+  <div class="system-section-label">Boundaries</div>
+  <div id="helio-key"></div>
+  <div class="sv-sub" id="helio-scale-note">Distances on a square-root scale (rings at 1, 10 and 100 AU), so the inner planets and the far craft both fit.</div>
 </div>
 
 <!-- System view: info card for a clicked body or spacecraft, and the

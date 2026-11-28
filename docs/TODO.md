@@ -103,8 +103,10 @@ In the app: lightweight previews only, linking to the full-quality data.
     (Lavochkin, IKI).
   - Halley's Comet is added with the 1985 chunk.
 - [ ] **Beyond Pluto and grand tours:** plan in `docs/outer-missions-plan.md`.
-  - [ ] Heliosphere zoom layer above the Sol view; craft past Pluto's
-    orbit hand over to it.
+  - [x] Heliosphere zoom layer above the Sol view; craft past Pluto's
+    orbit hand over to it. Done 2026-11-27 (outer-missions plan §1): enter
+    by zooming out past the Solar System view, the "Heliosphere view"
+    button, or `?system=Heliosphere`.
   - [x] Uranus and Neptune planet views (Voyager 2). Done 2026-11-27:
     moons refitted to Horizons (Miranda fitted for the 1986 encounter, so it
     drifts ~13,000 km by 2030), narrow rings, Nereid added. Still plain
@@ -114,10 +116,15 @@ In the app: lightweight previews only, linking to the full-quality data.
     Uranus and Neptune tours to follow the Uranus/Neptune views). Their paths
     stop at 1.1 x Pluto's aphelion (54.514 AU; Voyager 1 on 1994-01-06,
     Voyager 2 on 1998-04-09).
-  - [ ] **The heliosphere layer must resume the Voyagers past that cutoff**
-    (Horizons has both to 2100), and later Pioneer 10/11 and New Horizons;
-    show the termination shock and heliopause crossings there (cited in the
-    Voyager notes).
+  - [x] The heliosphere layer resumes both Voyagers past the cutoff
+    (`heliospherePath`, Horizons, to 2050; solid to 2026-11-27, dashed
+    after), with the four termination shock and heliopause crossings.
+  - [ ] Run `tools/build_heliosphere_path.py` for Pioneer 10 (Horizons -23,
+    measured until its last signal, 2003-01-23), Pioneer 11 (-24, last
+    contact 1995-09-30) and New Horizons (-98, still in contact), starting
+    where each passes 54.514 AU; any flight with the field appears in the
+    layer automatically. Pioneer 10/11 and New Horizons cross the cutoff in
+    their own legs first (end each path there, as for the Voyagers).
   - [ ] Per-flyby image galleries, with discoveries as understood at
     the time.
   - [ ] A "coast" leg for craft that continue after their encounter
