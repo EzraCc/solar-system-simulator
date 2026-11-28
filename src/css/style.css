@@ -244,12 +244,12 @@
   #legend-panel .layer-group.collapsed .chevron { transform: rotate(-45deg); }
   #legend-panel .layer-body {
     overflow: hidden;
-    /* Just a large-enough target for the collapse/expand transition, not a
-       real content cap -- the outer #legend-panel now owns the actual
-       scrolling, so this only needs to comfortably clear the longest
-       realistic list (Flights, 30+ rows and growing) without clipping it. */
-    max-height: 2000px;
-    transition: max-height 0.2s ease, opacity 0.2s ease;
+    /* No height cap while open: the outer #legend-panel owns the scrolling.
+       A fixed cap (2000px, sized for ~30 flights) clipped the Flights list
+       once it grew past it (113 flights, cut off at Vega), so open sections
+       aren't capped at all; only the fade animates now. */
+    max-height: none;
+    transition: opacity 0.2s ease;
     opacity: 1;
   }
   #legend-panel .layer-group.collapsed .layer-body {
