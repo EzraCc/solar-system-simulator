@@ -88,6 +88,13 @@ In the app: lightweight previews only, linking to the full-quality data.
 
 ## 5. Catalog and views
 
+- [ ] **Missions since 1988: completeness check done 2026-11-28**
+  (`docs/post-1988-missions.md`). All 58 app flights confirmed in at least
+  two sources. Decisions needed: add the category A small probes
+  (IKAROS, MarCO, LICIACube, BioSentinel, ...)? Are Sun–Earth L1/L2 and
+  Earth-trailing observatories (SOHO, ACE, Webb, ...) in scope? The app
+  already has Genesis, Aditya-L1, Roman and STEREO. Lunar missions that
+  went to Earth–Moon Lagrange points? Dates and details: audit later.
 - [ ] **Missions before 1988.** 55 can be mapped (`docs/pre-1988-missions.md`),
   added newest first in chunks (1978–1985 in progress, 2026-11-27).
   - Dates checked 2026-11-27. NSSDCA (`tools/check_nssdca.py`) served
