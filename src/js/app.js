@@ -3931,6 +3931,13 @@
       updateURLParams({ date: dateInput.value });
     }
   });
+  // Enter in the date field does what "Go to date" does: confirm the typed
+  // date and jump to it.
+  dateInput.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || dateInput.readOnly) return;
+    e.preventDefault();
+    applyDateBtn.click();
+  });
   document.getElementById("reset-today").addEventListener("click", () => {
     simDate = new Date();
     dateInput.value = dateInputValue(simDate);
