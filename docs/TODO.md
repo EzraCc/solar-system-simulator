@@ -105,7 +105,10 @@ In the app: lightweight previews only, linking to the full-quality data.
 - [ ] **Beyond Pluto and grand tours:** plan in `docs/outer-missions-plan.md`.
   - [ ] Heliosphere zoom layer above the Sol view; craft past Pluto's
     orbit hand over to it.
-  - [ ] Uranus and Neptune planet views (Voyager 2).
+  - [x] Uranus and Neptune planet views (Voyager 2). Done 2026-11-27:
+    moons refitted to Horizons (Miranda fitted for the 1986 encounter, so it
+    drifts ~13,000 km by 2030), narrow rings, Nereid added. Still plain
+    colour spheres (no Uranus/Neptune maps; see §4).
   - [ ] Voyager 1/2 and Pioneer 10/11: every flyby, with planet-view tours.
   - [ ] Per-flyby image galleries, with discoveries as understood at
     the time.
