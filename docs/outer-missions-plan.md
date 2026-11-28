@@ -111,6 +111,28 @@ state, we'll do so."
   exact fraction of the period, or the laps' dashes fill each other's gaps
   (`build_solar_orbit_i.py`, `build_solar_orbit_h.py`, `build_helios.py`).
 
+## 3a. Dead craft are off the map
+
+**Rule (maintainer, 2026-11-27):** "If a craft goes silent and does not
+revive, like Pioneer 11, end it where it was last believed to be at the
+time of last communication. If it comes back online (voyagers sometimes
+glitch out and come back) then we add it when it happens. If it's dead,
+it's off the map."
+
+- A dead craft's flight carries `"lastContact"` (date, time when known) and
+  `"lastContactSource"`. Its path data stops there: the last leg is cut at
+  the craft's position at that moment on its existing path (solid or dashed
+  as before), and nothing is projected beyond it, in the Sol view, the
+  planet views or the heliosphere layer.
+- The app also uses `lastContact` directly: no marker or visibility after
+  it, no heliosphere position after it, and the craft's colour is freed
+  then (history after it, such as Venera 3's silent impact, stays on the
+  timeline and in the notes).
+- The panel reads "Contact lost" with the date when the path ends there, or
+  adds a "Last contact" row otherwise.
+- A craft that comes back is extended when it happens; a craft still in
+  contact has no `lastContact`.
+
 ## 4. Trajectory data sources, cited like images
 
 Every flight lists where its trajectory comes from, with links, so

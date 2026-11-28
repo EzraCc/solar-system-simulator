@@ -1,4 +1,6 @@
 {
+  "lastContact": "1999-12-03",
+  "lastContactSource": "Flight notes: contact lost during entry and descent on 1999-12-03 and never reestablished",
   "estimate": true,
   "key": "mars_polar_lander",
   "name": "Mars Polar Lander",

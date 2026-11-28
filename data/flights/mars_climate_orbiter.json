@@ -1,4 +1,6 @@
 {
+  "lastContact": "1999-09-23T09:04:52Z",
+  "lastContactSource": "Flight notes (NASA MCO Mishap Investigation Board): contact lost 09:04:52 UTC on 1999-09-23 as it passed behind Mars",
   "estimate": true,
   "key": "mars_climate_orbiter",
   "name": "Mars Climate Orbiter",

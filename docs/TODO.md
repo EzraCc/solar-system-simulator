@@ -155,6 +155,15 @@ In the app: lightweight previews only, linking to the full-quality data.
      and a change-of-path point (a flyby node or a waypoint) at each pass.
   3. Re-check against Horizons with `tools/check_horizons.py`, and dash
      whatever stays calculated.
+- [x] **Dead craft end at last contact** (maintainer, 2026-11-27; rule in
+  `docs/outer-missions-plan.md` §3a). Reviewed all flights 2026-11-27: paths
+  cut at last contact for Venera 1, Mars 1, Zond 1, Zond 2, Venera 3, Phobos 1,
+  Mariner 3, Helios 2, Pioneer 11 and Pioneer 10 (heliosphere path);
+  `lastContact` recorded for those and for Pioneer 5, Mars Observer, Mars
+  Climate Orbiter, Mars Polar Lander and Phobos 2, whose paths already ended
+  there. Open: `lastContact` for the remaining dead craft whose paths end
+  before contact did (no effect on the map, but it frees their colours at the
+  right date), and Venera 2's last session before its flyby (unsourced).
 - [ ] **Flight list: search, filtering and ordering.** At 78 flights and
   growing, the left-hand list needs a search box and filters (agency,
   destination, decade, status) plus other orderings. Alphabetical stays

@@ -1,16 +1,15 @@
 {
-  "estimate": true,
+  "lastContact": "1988-08-29",
+  "lastContactSource": "A. A. Siddiqi, Beyond Earth (NASA SP-2018-4041): the erroneous command was sent on 29 August 1988; no answer at the next session, 2 September",
+  "destinationLabel": "Mars (contact lost on the way)",
+  "legs": [{"type": "lambert", "fromBody": "Earth", "toBody": {"fixedPos": [1.0234306, -0.4044146, 0.0202401]}, "departDate": "1988-07-07", "arrivalDate": "1988-08-29", "estimate": true, "_comment": "Ends at last contact (1988-08-29): the point on the calculated Earth->Mars arc (launch 1988-07-07, predicted arrival 1989-01-23) where the craft was at that moment. Same two-body orbit as the full arc, cut short: after contact was lost the craft is off the map."}],
   "key": "phobos_1",
   "name": "Phobos 1",
-  "launchBody": "Earth",
-  "destinationBody": "Mars",
-  "launchDate": "1988-07-07",
-  "arrival": "1989-01-23",
   "rocket": "Proton-K / Blok D-2",
   "payload": "Phobos 1 (6,220 kg fueled)",
   "status": "Lost in cruise",
   "significance": "Phobos 1 was launched as the first of a pair of ambitious Soviet spacecraft designed to orbit Mars and land a hopper directly on its inner moon Phobos, aiming to determine the moon's composition and origin -- a question still debated today -- using an armory of remote-sensing and laser mass-spectrometry instruments. The mission ended just two months into its planned 200-day cruise: a single-character error in an uploaded ground command sequence inadvertently disabled the spacecraft's attitude-control thrusters, causing it to lose its solar lock and drain its batteries, with contact lost on 1988-09-02 and recovery attempts formally abandoned that November. Though it never returned science data, Phobos 1 became a cautionary tale in spaceflight operations about the fragility of command-sequence validation, influencing later ground-segment safeguards. Its sister craft Phobos 2 fared only marginally better -- reaching Mars orbit and returning the first close-up Phobos imagery before its own failure ended the mission weeks before the planned Phobos landing -- leaving the ambitious Phobos program's central goal of surface exploration unfulfilled until Japan's later Martian Moons eXploration (MMX) effort.",
-  "statusNote": "Direct Earth->Mars transfer, no gravity assists; launched 5 days before sister spacecraft Phobos 2. A single erroneous ground command uploaded around 1988-08-28 accidentally disabled the attitude-control thrusters, causing the spacecraft to lose its Sun-lock and drain its batteries; contact was lost 1988-09-02, and recovery attempts were formally abandoned in November 1988. The 'arrival' date shown here is an estimate (no exact planned arrival date is published) derived from the mission's stated ~200-day planned transit. Path calculated, not measured (drawn dashed): JPL Horizons has no ephemeris for this spacecraft and no tracking data is publicly archived, so the path is a two-body transfer calculated between the published launch, flyby and arrival times. Arcs calculated this way for direct flights that Horizons does cover fall within about 0.002 AU of their real trajectories.",
+  "statusNote": "Direct Earth->Mars transfer, no gravity assists; launched 5 days before sister spacecraft Phobos 2. A single erroneous ground command uploaded around 1988-08-28 accidentally disabled the attitude-control thrusters, causing the spacecraft to lose its Sun-lock and drain its batteries; contact was lost 1988-09-02, and recovery attempts were formally abandoned in November 1988. The 'arrival' date shown here is an estimate (no exact planned arrival date is published) derived from the mission's stated ~200-day planned transit. Path calculated, not measured (drawn dashed): JPL Horizons has no ephemeris for this spacecraft and no tracking data is publicly archived, so the path is a two-body transfer calculated between the published launch, flyby and arrival times. Arcs calculated this way for direct flights that Horizons does cover fall within about 0.002 AU of their real trajectories. PATH ENDS AT LAST CONTACT (1988-08-29): after that the craft is off the map (maintainer's rule, 2026-11-27); its silent arrival on 1989-01-23 stays in the timeline and the notes as history.",
   "assets": {
     "spacecraft": {
       "title": "Phobos program",

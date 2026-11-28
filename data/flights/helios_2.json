@@ -1,11 +1,13 @@
 {
+  "lastContact": "1980-03-03",
+  "lastContactSource": "A. A. Siddiqi, Beyond Earth (NASA SP-2018-4041): the downlink transmitter failed on 3 March 1980 and no further usable data was received (shut down 7 January 1981)",
   "key": "helios_2",
   "name": "Helios 2 (Helios-B)",
   "rocket": "Titan IIIE-Centaur",
   "payload": "Helios-B solar probe (374 kg), 10 instruments",
   "status": "Success",
   "significance": "Helios 2 followed its twin on an even tighter orbit. On 17 April 1976 it passed 0.29 AU from the Sun, closer than any spacecraft before it, moving faster relative to the Sun than any human-made object had. Flying alongside Helios 1, the pair could compare the solar wind at two places at once, an early step toward studying the Sun's influence in three dimensions. Its closest-approach and speed records stood for more than four decades, until Parker Solar Probe.",
-  "statusNote": "West German (DFVLR) and NASA mission, launched 1976-01-15 at 05:34 UTC (Siddiqi, Beyond Earth) from Cape Canaveral on a Titan IIIE-Centaur. Trajectory from the mission's own daily orbit file at NASA SPDF (helorb2.asc, distance plus B1950 ecliptic longitude and latitude, converted here to ecliptic J2000; tools/build_helios.py), drawn from real positions every 15 days for the whole span, 1976-01-15 to 1980-03-09. Last contact 1980-03-03 (Wikipedia; NSSDCA's record page could not be read). Closest point to the Sun in the data: 0.2903 AU on 1976-04-17. JPL Horizons has no Helios ephemeris.",
+  "statusNote": "West German (DFVLR) and NASA mission, launched 1976-01-15 at 05:34 UTC (Siddiqi, Beyond Earth) from Cape Canaveral on a Titan IIIE-Centaur. Trajectory from the mission's own daily orbit file at NASA SPDF (helorb2.asc, distance plus B1950 ecliptic longitude and latitude, converted here to ecliptic J2000; tools/build_helios.py), drawn from real positions every 15 days for the whole span, 1976-01-15 to 1980-03-09. Last contact 1980-03-03 (Wikipedia; NSSDCA's record page could not be read). Closest point to the Sun in the data: 0.2903 AU on 1976-04-17. JPL Horizons has no Helios ephemeris. PATH ENDS AT LAST CONTACT (1980-03-03): after that the craft is off the map (maintainer's rule, 2026-11-27).",
   "legs": [
     {
       "type": "lambert",
@@ -1912,13 +1914,14 @@
       },
       "toBody": {
         "fixedPos": [
-          -0.6458989,
-          0.6509111,
-          3.69e-05
+          -0.6084277,
+          0.720013,
+          9.8e-06
         ]
       },
       "departDate": "1980-02-23",
-      "arrivalDate": "1980-03-09"
+      "arrivalDate": "1980-03-03",
+      "_comment": "Ends at last contact (1980-03-03); the craft is off the map after that."
     }
   ],
   "dataSources": [

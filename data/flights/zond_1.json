@@ -1,16 +1,15 @@
 {
+  "lastContact": "1964-05-25",
+  "lastContactSource": "A. A. Siddiqi, Beyond Earth (NASA SP-2018-4041): last contact 25 May 1964",
+  "destinationLabel": "Venus (contact lost on the way)",
+  "legs": [{"type": "lambert", "fromBody": "Earth", "toBody": {"fixedPos": [-0.423625, -0.8139495, -0.0417211]}, "departDate": "1964-04-02T02:42:40Z", "arrivalDate": "1964-05-25", "estimate": true, "_comment": "Ends at last contact (1964-05-25): the point on the calculated Earth->Venus arc (launch 1964-04-02T02:42:40Z, predicted arrival 1964-07-19) where the craft was at that moment. Same two-body orbit as the full arc, cut short: after contact was lost the craft is off the map."}],
   "key": "zond_1",
   "name": "Zond 1",
-  "launchBody": "Earth",
-  "destinationBody": "Venus",
-  "launchDate": "1964-04-02T02:42:40Z",
-  "arrival": "1964-07-19",
-  "estimate": true,
   "rocket": "Molniya (8K78)",
   "payload": "Venus probe with descent module (3MV-1, 948 kg)",
   "status": "Lost in cruise",
   "significance": "Zond 1 was a Soviet attempt to drop a probe into the atmosphere of Venus. A cracked sensor window let the main compartment lose its air, and the radio had to be run through the descent capsule. Controllers still made the first course corrections ever performed on a Soviet interplanetary craft before contact ended in May 1964. The Soviets named it 'Zond' ('probe') rather than Venera, which hid that it was a failed Venus mission.",
-  "statusNote": "Launched 1964-04-02 02:42:40 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). Two course corrections were made (at 560,000 km and 13-14 million km); the second gave 20 m/s too little, so the craft would miss Venus. Last contact 1964-05-25; the inert craft passed Venus at about 110,000 km on 1964-07-19 (Siddiqi). Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed.",
+  "statusNote": "Launched 1964-04-02 02:42:40 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). Two course corrections were made (at 560,000 km and 13-14 million km); the second gave 20 m/s too little, so the craft would miss Venus. Last contact 1964-05-25; the inert craft passed Venus at about 110,000 km on 1964-07-19 (Siddiqi). Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed. PATH ENDS AT LAST CONTACT (1964-05-25): after that the craft is off the map (maintainer's rule, 2026-11-27); its silent arrival on 1964-07-19 stays in the timeline and the notes as history.",
   "assets": {
     "rocket": {
       "title": "Molniya launch vehicle (later Molniya-M version)",
