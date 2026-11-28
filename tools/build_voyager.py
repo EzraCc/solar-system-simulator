@@ -22,8 +22,8 @@ those system views exist) get dense heliocentric waypoints instead.
 The path ends where the craft passes CUTOFF_AU = 1.1 x Pluto's aphelion
 (Pluto's elements in app.js SMALL_BODIES.pluto: a = 39.5886 AU,
 e = 0.25184, aphelion 49.558 AU, so 54.514 AU). Past that it is out of the
-Solar System view until the heliosphere layer exists
-(docs/outer-missions-plan.md section 1).
+Solar System view; the heliosphere layer carries it on (heliospherePath,
+tools/build_heliosphere_path.py; docs/outer-missions-plan.md section 1).
 
 A craft whose contact ended before the cutoff (Pioneer 11, last contact
 1995-09-30) gets a waypoint at its last contact; every leg after it is
@@ -221,8 +221,8 @@ def build(key, cfg, max_sweep, max_days):
         first_est = next(l for l in legs if l.get("estimate"))
         first_est["_comment"] = (f"Contact ended {iso(last_contact)}: from here the path is Horizons' projection "
                                  f"with no tracking behind it, drawn dashed.")
-    legs[-1]["_comment"] = (f"{iso(t_cut)}: crosses {CUTOFF_AU:.3f} AU from the Sun (Horizons, hourly); the path "
-                            f"stops here until the heliosphere layer exists.")
+    legs[-1]["_comment"] = (f"{iso(t_cut)}: crosses {CUTOFF_AU:.3f} AU from the Sun (Horizons, hourly); the "
+                            f"Solar System view stops the path here, and the heliosphere layer carries it on.")
     return legs, t_cut, norm(p_cut)
 
 
