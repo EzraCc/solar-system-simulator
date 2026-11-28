@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "56";
+  const BUILD_VERSION = "57";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -4992,10 +4992,56 @@
   // runs out or starts repeating as more flights are added. Muted
   // saturation/lightness keeps arcs from competing visually with the
   // brighter planet/body colors.
+  // Flight colours come from a fixed palette and are reused once a flight is
+  // over (maintainer, 2026-11-27): each flight holds its colour from launch to
+  // the end of everything it shows (path, orbits, timeline, heliosphere path),
+  // and no two flights active at the same time share one. Long missions (the
+  // Voyagers, ongoing orbiters) simply keep theirs. Assigned greedily in launch
+  // order -- interval colouring -- so the result is the same on every load.
+  // At most 22 flights overlap today (2025-11), so 24 colours suffice; if a
+  // future overlap exceeds the palette, the colour freed longest ago is reused.
+  // The palette is ordered so neighbouring entries contrast strongly: with few
+  // flights active, they get very different colours.
+  const FLIGHT_PALETTE = [
+    "#4dabf7", "#ff922b", "#51cf66", "#f06595", "#fcc419", "#9775fa",
+    "#22b8cf", "#ff6b6b", "#a9e34b", "#e599f7", "#20c997", "#ffc9c9",
+    "#748ffc", "#d9480f", "#8ce99a", "#c2255c", "#ffe8a3", "#4c6ef5",
+    "#ffd8a8", "#66d9e8", "#adb5bd", "#5c940d", "#be4bdb", "#a5d8ff",
+  ];
+  const FLIGHT_COLOR_GAP_DAYS = 30; // a freed colour isn't handed straight to the next launch
+  let _flightColorMap = null;
+  function flightActiveSpan(key) {
+    const raw = FLIGHTS_RAW[key];
+    const d = getFlightDates(key);
+    let end = d.arrivalDays;
+    try {
+      for (const e of getFlightTimeline(key).entries) {
+        if (e.ongoing) return [d.launchDays, Infinity];
+        end = Math.max(end, e.t1 !== null && e.t1 !== undefined ? e.t1 : e.t0);
+      }
+    } catch (err) { /* timeline unavailable: path dates only */ }
+    const hp = raw.heliospherePath;
+    if (hp && hp.points && hp.points.length) {
+      end = Math.max(end, daysSinceJ2000(parseFlightDate(hp.points[hp.points.length - 1][0])));
+    }
+    return [d.launchDays, end];
+  }
+  function buildFlightColorMap() {
+    const spans = FLIGHTS_ORDER.map((k) => [k, ...flightActiveSpan(k)])
+      .sort((a, b) => a[1] - b[1]);
+    const freeAt = FLIGHT_PALETTE.map(() => -Infinity); // day each colour becomes free
+    const map = {};
+    for (const [k, start, end] of spans) {
+      let pick = freeAt.findIndex((t) => t + FLIGHT_COLOR_GAP_DAYS <= start);
+      if (pick < 0) pick = freeAt.indexOf(Math.min(...freeAt)); // palette exhausted
+      map[k] = FLIGHT_PALETTE[pick];
+      freeAt[pick] = end;
+    }
+    return map;
+  }
   function flightColor(key) {
-    const idx = FLIGHTS_ORDER.indexOf(key);
-    const hue = (idx * 137.508) % 360;
-    return hslToHex(hue, 55, 58);
+    if (!_flightColorMap) _flightColorMap = buildFlightColorMap();
+    return _flightColorMap[key] || FLIGHT_PALETTE[0];
   }
 
   function buildFlightsLegend() {
@@ -10549,6 +10595,7 @@
     // has side effects or is reachable without deliberately scripting
     // against the page.
     window.__VERIFY__ = {
+      flightColor, flightActiveSpan, FLIGHT_PALETTE,
       FLIGHTS_RAW, shareableURL, isMultiLeg, getSolvedLeg, getGAChain, getGAEvents,
       daysSinceJ2000, parseFlightDate, computeFlightPosition,
       getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,
