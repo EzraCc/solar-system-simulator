@@ -161,15 +161,31 @@ T = {
   # ---- Voyagers: planet closest approaches from NASA NSSDC's Voyager table
   # (planetary radii x NSSDC's radius, UTC at the spacecraft); moon flybys at
   # Jupiter and Saturn come from the planet tours; Uranus, Miranda, Neptune
-  # and Triton listed here until those tours exist (Siddiqi; Horizons) ----
+  # and Triton are listed explicitly (Siddiqi; Horizons). Every other modelled
+  # moon of each planet passed is listed with its closest approach, computed
+  # from JPL Horizons (-31/-32 relative to each moon, 1-minute steps), so
+  # each moon's mission list includes the Voyager that flew by it ----
   "voyager_2": [ev("Jupiter", "flyby", "1979-07-09T22:29:51Z", "Closest approach at 10.11 RJ (~722,000 km from the centre)"),
                 ev("Saturn", "flyby", "1981-08-26T03:24:57Z", "Closest approach at 2.67 RS (~161,000 km); through the ring plane"),
                 ev("Uranus", "flyby", "1986-01-24T17:59:47Z", "First visit: 4.19 RU (~107,000 km); 10 new moons, tilted magnetic field"),
                 ev("Miranda", "flyby", "1986-01-24T17:03:00Z", "Flyby at 28,260 km: a jumbled patchwork of terrains"),
                 ev("Neptune", "flyby", "1989-08-25T03:56:36Z", "First visit: 1.18 RN (~29,200 km), 4,800 km over the cloud tops"),
-                ev("Triton", "flyby", "1989-08-25T09:10:00Z", "Flyby at ~39,700 km: coldest surface measured, nitrogen plumes")],
+                ev("Triton", "flyby", "1989-08-25T09:10:00Z", "Flyby at ~39,700 km: coldest surface measured, nitrogen plumes"),
+                ev("Io", "flyby", "1979-07-09T23:18:00Z", "Passed at ~1,130,000 km (closest approach, JPL Horizons)"),
+                ev("Dione", "flyby", "1981-08-26T01:05:00Z", "Passed at ~502,000 km (closest approach, JPL Horizons)"),
+                ev("Rhea", "flyby", "1981-08-26T06:29:00Z", "Passed at ~645,000 km (closest approach, JPL Horizons)"),
+                ev("Titan", "flyby", "1981-08-25T09:38:00Z", "Passed at ~666,000 km (closest approach, JPL Horizons)"),
+                ev("Iapetus", "flyby", "1981-08-23T01:28:00Z", "Passed at ~908,000 km (closest approach, JPL Horizons)"),
+                ev("Ariel", "flyby", "1986-01-24T16:20:00Z", "Passed at ~127,000 km (closest approach, JPL Horizons)"),
+                ev("Umbriel", "flyby", "1986-01-24T20:53:00Z", "Passed at ~324,000 km (closest approach, JPL Horizons)"),
+                ev("Titania", "flyby", "1986-01-24T15:09:00Z", "Passed at ~364,000 km (closest approach, JPL Horizons)"),
+                ev("Oberon", "flyby", "1986-01-24T16:12:00Z", "Passed at ~469,000 km (closest approach, JPL Horizons)"),
+                ev("Nereid", "flyby", "1989-08-25T00:07:00Z", "Passed at ~4,650,000 km (closest approach, JPL Horizons)")],
   "voyager_1": [ev("Jupiter", "flyby", "1979-03-05T12:05:26Z", "Closest approach at 4.89 RJ (~349,000 km); Io's volcanoes, a faint ring"),
-                ev("Saturn", "flyby", "1980-11-12T23:46:30Z", "Closest approach at 3.09 RS (~186,000 km); spokes, shepherd moons")],
+                ev("Saturn", "flyby", "1980-11-12T23:46:30Z", "Closest approach at 3.09 RS (~186,000 km); spokes, shepherd moons"),
+                ev("Europa", "flyby", "1979-03-05T17:19:00Z", "Passed at ~733,000 km (closest approach, JPL Horizons)"),
+                ev("Tethys", "flyby", "1980-11-12T22:16:00Z", "Passed at ~415,000 km (closest approach, JPL Horizons)"),
+                ev("Iapetus", "flyby", "1980-11-14T19:13:00Z", "Passed at ~2,480,000 km (closest approach, JPL Horizons)")],
   # ---- Halley Armada (1984-86) ----
   "vega_1": [ev("Venus", "entry", "1985-06-11", "Descent module entered; balloon floated in the clouds ~46 h"),
              ev("Venus", "landing", "1985-06-11", "Lander touched down north of Aphrodite Terra"),
