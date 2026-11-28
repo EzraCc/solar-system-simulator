@@ -180,6 +180,11 @@ MANUAL = {
     "images/missions/venera_12/lander.jpg": {"file": "Cut-away model of a Soviet Venera 12 lander.jpg"},
     # Helios 1/2 (KSC photos and the San Diego Air & Space Museum launch photo).
     "images/missions/helios_1/spacecraft.jpg": {"file": "Helios spacecraft.jpg", "credit": "NASA/KSC (KSC-74P-0223)"},
+    # Voyagers (added 2026-11-27): NASA Image Library archival photos.
+    "images/missions/voyager_2/spacecraft.jpg": {"nasa_id": "PIA21728"},
+    "images/missions/voyager_2/rocket.jpg": {"nasa_id": "PIA21744"},
+    "images/missions/voyager_1/spacecraft.jpg": {"nasa_id": "PIA21741"},
+    "images/missions/voyager_1/rocket.jpg": {"nasa_id": "PIA21746"},
     "images/missions/helios_2/spacecraft.jpg": {"file": "Helios spacecraft 2.jpg", "credit": "NASA/KSC (KSC-74P-0222)"},
     "images/missions/helios_1/rocket.jpg": {"file": "Titan 3E Centaur with Helios 1.jpg", "credit": "NASA/KSC (KSC-74P-0298)"},
     "images/missions/helios_2/rocket.jpg": {"file": "Helios B launch.jpg"},

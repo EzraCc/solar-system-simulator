@@ -1391,4 +1391,5 @@
   .lp-sources li { margin: 2px 0; }
   .lp-sources a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
   .lp-sources a:hover { color: var(--text-primary); }
+  .lp-gallery-links { margin: 6px 0 2px; padding: 0; font-size: 11px; color: var(--text-dim); }
   .lp-dim { color: var(--text-dim); font-size: 11px; }

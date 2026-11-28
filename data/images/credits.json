@@ -2520,6 +2520,66 @@
    "viking_2"
   ]
  },
+ "images/missions/voyager_1/rocket.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA21746",
+  "sourceTitle": "Voyager 1 Launch",
+  "credit": "NASA/JPL-Caltech/KSC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Titan IIIE-Centaur launching Voyager 1, 1977-09-05",
+  "usedBy": [
+   "voyager_1"
+  ]
+ },
+ "images/missions/voyager_1/spacecraft.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA21741",
+  "sourceTitle": "Voyager: Preparing the Golden Record",
+  "credit": "NASA/JPL-Caltech",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Voyager 1's Golden Record being prepared for installation (1977)",
+  "usedBy": [
+   "voyager_1"
+  ]
+ },
+ "images/missions/voyager_2/rocket.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA21744",
+  "sourceTitle": "Voyager 2 Launch",
+  "credit": "NASA/JPL-Caltech",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Titan IIIE-Centaur launching Voyager 2, 1977-08-20",
+  "usedBy": [
+   "voyager_2"
+  ]
+ },
+ "images/missions/voyager_2/spacecraft.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/PIA21728",
+  "sourceTitle": "Voyager 2 Encapsulation",
+  "credit": "NASA/JPL-Caltech",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Voyager 2 being encapsulated for launch (KSC, 1977)",
+  "usedBy": [
+   "voyager_2"
+  ]
+ },
  "images/missions/zond_3/spacecraft.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Zond_3_Space_Probe_01.jpg",
   "sourceTitle": "Zond 3 Space Probe 01.jpg",

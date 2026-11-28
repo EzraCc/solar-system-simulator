@@ -6205,8 +6205,14 @@
         const href = linkOnly ? a.imagePage : a.infoUrl;
         return `<div class="lp-asset"><a class="lp-asset-link" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${img}<span class="lp-asset-caption">${a.title}</span><span class="lp-asset-source">${sourceLabel(href)} ↗</span></a>${credit}</div>`;
       });
-    if (tiles.length === 0) return "";
-    return `<div class="lp-assets">${tiles.join("")}</div>`;
+    // "More images": the mission's own galleries, off the app (one image per
+    // tile here; the full collections stay at the source -- see
+    // docs/outer-missions-plan.md section 2). Field: assets.galleryLinks.
+    const more = (assets.galleryLinks || []).map((g) =>
+      `<a href="${escapeHtml(g.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(g.title)} ↗</a>`).join(" · ");
+    const moreHtml = more ? `<div class="lp-gallery-links lp-sources">More images: ${more}</div>` : "";
+    if (tiles.length === 0) return moreHtml;
+    return `<div class="lp-assets">${tiles.join("")}</div>${moreHtml}`;
   }
 
   // A single prominent outbound link near the top of the panel, distinct
@@ -7673,6 +7679,22 @@
     const el = flight.elements;
     const t0 = tStart !== undefined ? tStart : flight.launchDays;
     const t1 = tEnd !== undefined ? tEnd : flight.arrivalDays;
+    if (el.e >= 1) {
+      // Hyperbolic leg (escaping the Sun, e.g. the Voyagers after Jupiter):
+      // the eccentric-anomaly sweep below is elliptic-only (sqrt(1 - e^2)
+      // is NaN), so sample positions over time instead --
+      // computeFlightPosition handles hyperbolic orbits.
+      const N = 90, pts = [];
+      ctx.beginPath();
+      for (let k = 0; k <= N; k++) {
+        const [X, Y, Z] = computeFlightPosition({ elements: el }, t0 + (k / N) * (t1 - t0));
+        const [sx, sy] = worldToScreen(X, Y, Z);
+        pts.push([sx, sy]);
+        if (k === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      }
+      ctx.stroke();
+      return pts;
+    }
     const Eat = (mAnomaly) => {
       // Eccentric anomaly at a given (unnormalized) mean anomaly, walking
       // forward from M0 rather than solveKepler's normalized [0,2pi)

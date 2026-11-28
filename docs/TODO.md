@@ -110,6 +110,14 @@ In the app: lightweight previews only, linking to the full-quality data.
     drifts ~13,000 km by 2030), narrow rings, Nereid added. Still plain
     colour spheres (no Uranus/Neptune maps; see §4).
   - [ ] Voyager 1/2 and Pioneer 10/11: every flyby, with planet-view tours.
+    Voyager 1 and 2 added 2026-11-27 (Jupiter and Saturn tours; Voyager 2's
+    Uranus and Neptune tours to follow the Uranus/Neptune views). Their paths
+    stop at 1.1 x Pluto's aphelion (54.514 AU; Voyager 1 on 1994-01-06,
+    Voyager 2 on 1998-04-09).
+  - [ ] **The heliosphere layer must resume the Voyagers past that cutoff**
+    (Horizons has both to 2100), and later Pioneer 10/11 and New Horizons;
+    show the termination shock and heliopause crossings there (cited in the
+    Voyager notes).
   - [ ] Per-flyby image galleries, with discoveries as understood at
     the time.
   - [ ] A "coast" leg for craft that continue after their encounter

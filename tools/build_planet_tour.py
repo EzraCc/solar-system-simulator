@@ -139,6 +139,9 @@ def main():
     ap.add_argument("--merge-min", type=float, default=30.0,
                     help="drop a periapsis within this many minutes of a moon flyby (the flyby is the waypoint)")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--legs-out", default=None,
+                    help="write the tour legs to this JSON file instead of into the flight (for flights with\n"
+                         "several tours or legs after the tour, e.g. the Voyagers; see tools/build_voyager.py)")
     args = ap.parse_args()
 
     with open(os.path.join(HERE, "horizons_ids.json")) as f:
@@ -253,6 +256,11 @@ def main():
     for w, _, info in flybys:
         print(f"  {w:%Y-%m-%d %H:%M}  {info['moon']:9s} {info['altKm']:>8,} km altitude")
     if args.dry_run:
+        return 0
+    if args.legs_out:
+        with open(args.legs_out, "w") as f:
+            json.dump(legs, f, indent=2)
+        print(f"wrote {args.legs_out}")
         return 0
 
     path = os.path.join(REPO_ROOT, "data", "flights", args.flight + ".json")
