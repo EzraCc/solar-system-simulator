@@ -55,10 +55,10 @@ CRAFT = {
         "id": "-32",
         "launch": "1977-08-20T14:29:44Z",   # Siddiqi, Beyond Earth; NSSDCA 1977-076A
         "tours": [("Jupiter", "1979-07-06", "1979-07-13", "v2_jupiter.json"),
-                  ("Saturn", "1981-08-22", "1981-08-29", "v2_saturn.json")],
-        # Uranus and Neptune: dense waypoints until their system views and
-        # tours exist (closest approach, Horizons).
-        "encounters": ["1986-01-24T17:59:00", "1989-08-25T03:56:00"],
+                  ("Saturn", "1981-08-22", "1981-08-29", "v2_saturn.json"),
+                  ("Uranus", "1986-01-21", "1986-01-28", "v2_uranus.json"),
+                  ("Neptune", "1989-08-22", "1989-08-29", "v2_neptune.json")],
+        "encounters": [],
     },
 }
 ENC_OFFSETS = [0.25, 0.5, 1, 2, 4, 8, 16]      # days either side of an encounter / tour edge

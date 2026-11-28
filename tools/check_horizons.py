@@ -65,7 +65,7 @@ IDS_PATH = os.path.join(HERE, "horizons_ids.json")
 CACHE_DIR = os.path.join(HERE, ".horizons_cache")
 J2000_JD = 2451545.0
 HORIZONS_URL = "https://ssd.jpl.nasa.gov/api/horizons.api"
-PRIMARY_IDS = {"Mercury": "199", "Venus": "299", "Mars": "499", "Jupiter": "599", "Saturn": "699", "Pluto": "999"}
+PRIMARY_IDS = {"Mercury": "199", "Venus": "299", "Mars": "499", "Jupiter": "599", "Saturn": "699", "Uranus": "799", "Neptune": "899", "Pluto": "999"}
 
 
 def find_free_port():
