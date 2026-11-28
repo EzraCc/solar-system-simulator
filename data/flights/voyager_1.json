@@ -3746,6 +3746,24 @@
       "kind": "flyby",
       "start": "1980-11-12T23:46:30Z",
       "label": "Closest approach at 3.09 RS (~186,000 km); spokes, shepherd moons"
+    },
+    {
+      "body": "Europa",
+      "kind": "flyby",
+      "start": "1979-03-05T17:19:00Z",
+      "label": "Passed at ~733,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Tethys",
+      "kind": "flyby",
+      "start": "1980-11-12T22:16:00Z",
+      "label": "Passed at ~415,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Iapetus",
+      "kind": "flyby",
+      "start": "1980-11-14T19:13:00Z",
+      "label": "Passed at ~2,480,000 km (closest approach, JPL Horizons)"
     }
   ]
 }

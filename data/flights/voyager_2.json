@@ -5120,6 +5120,66 @@
       "kind": "flyby",
       "start": "1989-08-25T09:10:00Z",
       "label": "Flyby at ~39,700 km: coldest surface measured, nitrogen plumes"
+    },
+    {
+      "body": "Io",
+      "kind": "flyby",
+      "start": "1979-07-09T23:18:00Z",
+      "label": "Passed at ~1,130,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Dione",
+      "kind": "flyby",
+      "start": "1981-08-26T01:05:00Z",
+      "label": "Passed at ~502,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Rhea",
+      "kind": "flyby",
+      "start": "1981-08-26T06:29:00Z",
+      "label": "Passed at ~645,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Titan",
+      "kind": "flyby",
+      "start": "1981-08-25T09:38:00Z",
+      "label": "Passed at ~666,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Iapetus",
+      "kind": "flyby",
+      "start": "1981-08-23T01:28:00Z",
+      "label": "Passed at ~908,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Ariel",
+      "kind": "flyby",
+      "start": "1986-01-24T16:20:00Z",
+      "label": "Passed at ~127,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Umbriel",
+      "kind": "flyby",
+      "start": "1986-01-24T20:53:00Z",
+      "label": "Passed at ~324,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Titania",
+      "kind": "flyby",
+      "start": "1986-01-24T15:09:00Z",
+      "label": "Passed at ~364,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Oberon",
+      "kind": "flyby",
+      "start": "1986-01-24T16:12:00Z",
+      "label": "Passed at ~469,000 km (closest approach, JPL Horizons)"
+    },
+    {
+      "body": "Nereid",
+      "kind": "flyby",
+      "start": "1989-08-25T00:07:00Z",
+      "label": "Passed at ~4,650,000 km (closest approach, JPL Horizons)"
     }
   ]
 }
