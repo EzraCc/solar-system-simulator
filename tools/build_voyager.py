@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Builds Voyager 1 and 2's legs from JPL Horizons (-31, -32).
+"""Builds the legs of the craft that leave the Solar System view -- Voyager 1
+and 2 (Horizons -31, -32) and Pioneer 10 and 11 (-23, -24) -- from JPL Horizons.
 
 Heliocentric path: Lambert legs between real Horizons positions
 (ecliptic J2000, Sun-centred, fixedPos waypoints as in stereo_a.json).
@@ -21,10 +22,16 @@ those system views exist) get dense heliocentric waypoints instead.
 The path ends where the craft passes CUTOFF_AU = 1.1 x Pluto's aphelion
 (Pluto's elements in app.js SMALL_BODIES.pluto: a = 39.5886 AU,
 e = 0.25184, aphelion 49.558 AU, so 54.514 AU). Past that it is out of the
-Solar System view until the heliosphere layer exists
-(docs/outer-missions-plan.md section 1).
+Solar System view; the heliosphere layer carries it on (heliospherePath,
+tools/build_heliosphere_path.py; docs/outer-missions-plan.md section 1).
 
-    python3 tools/build_voyager.py            # rewrite both flights' "legs"
+A craft whose contact ended before the cutoff (Pioneer 11, last contact
+1995-09-30) gets a waypoint at its last contact; every leg after it is
+flagged "estimate": true and drawn dashed, since Horizons past the last
+tracking is a projection.
+
+    python3 tools/build_voyager.py            # rewrite every flight's "legs"
+    python3 tools/build_voyager.py pioneer_11 # just one
     python3 tools/build_voyager.py --report   # just print the plan
 """
 import argparse
@@ -59,6 +66,24 @@ CRAFT = {
                   ("Uranus", "1986-01-21", "1986-01-28", "v2_uranus.json"),
                   ("Neptune", "1989-08-22", "1989-08-29", "v2_neptune.json")],
         "encounters": [],
+    },
+    "pioneer_10": {
+        "id": "-23",
+        "launch": "1972-03-03T01:49:04Z",   # Horizons header 01:49:00; Siddiqi 01:49:04 (printed as 2 March, the US date)
+        "tours": [("Jupiter", "1973-12-01", "1973-12-08", "p10_jupiter.json")],
+        "encounters": [],
+        "end_guess": "1995-01-01",
+    },
+    "pioneer_11": {
+        "id": "-24",
+        "launch": "1973-04-06T02:11:00Z",   # Horizons header; Siddiqi 02:11 UT
+        "tours": [("Jupiter", "1974-11-30", "1974-12-06", "p11_jupiter.json"),
+                  ("Saturn", "1979-08-29", "1979-09-04", "p11_saturn.json")],
+        "encounters": [],
+        "end_guess": "2005-01-01",
+        # Last routine contact (NASA Ames; Siddiqi, Beyond Earth; Horizons header:
+        # "Science operations and daily telemetry ceased on September 30, 1995").
+        "last_contact": "1995-09-30T00:00:00",
     },
 }
 ENC_OFFSETS = [0.25, 0.5, 1, 2, 4, 8, 16]      # days either side of an encounter / tour edge
@@ -113,7 +138,7 @@ def angle(a, b):
 def build(key, cfg, max_sweep, max_days):
     launch = parse(cfg["launch"])
     t0 = (launch + dt.timedelta(days=1)).replace(hour=0, minute=0, second=0)
-    end_guess = dt.datetime(1999, 1, 1)
+    end_guess = parse(cfg.get("end_guess", "1999-01-01"))
     daily = horizons(cfg["id"], t0.strftime("%Y-%m-%d"), end_guess.strftime("%Y-%m-%d"), "1d")
     # cutoff crossing: first daily sample beyond CUTOFF_AU, refined hourly
     k = next(i for i, (_, p) in enumerate(daily) if norm(p) >= CUTOFF_AU)
@@ -127,6 +152,9 @@ def build(key, cfg, max_sweep, max_days):
         for d in ENC_OFFSETS:
             forced.add(s - dt.timedelta(days=d))
             forced.add(e + dt.timedelta(days=d))
+    last_contact = parse(cfg["last_contact"]) if cfg.get("last_contact") else None
+    if last_contact:
+        forced.add(last_contact)
     for enc in cfg["encounters"]:
         c = parse(enc)
         forced.add(c)
@@ -170,8 +198,11 @@ def build(key, cfg, max_sweep, max_days):
         if next_tour and t > next_tour[1]:
             raise RuntimeError("waypoint inside tour")
         fp = {"fixedPos": [round(c, 7) for c in samples[t]]}
-        legs.append({"type": "lambert", "fromBody": prev_body, "toBody": fp,
-                     "departDate": iso(prev_t), "arrivalDate": iso(t)})
+        leg = {"type": "lambert", "fromBody": prev_body, "toBody": fp,
+               "departDate": iso(prev_t), "arrivalDate": iso(t)}
+        if last_contact and prev_t >= last_contact:
+            leg["estimate"] = True
+        legs.append(leg)
         prev_body, prev_t = fp, t
         if next_tour and t == next_tour[1]:
             prim, s, e, f = next_tour
@@ -186,19 +217,26 @@ def build(key, cfg, max_sweep, max_days):
         f"Heliocentric path built {dt.date.today().isoformat()} by tools/build_voyager.py from JPL Horizons "
         f"(target {cfg['id']}): Lambert legs between real positions; planet tours spliced in; ends where the craft "
         f"passes {CUTOFF_AU:.3f} AU (1.1 x Pluto's aphelion), the edge of the Solar System view for now.")
-    legs[-1]["_comment"] = (f"{iso(t_cut)}: crosses {CUTOFF_AU:.3f} AU from the Sun (Horizons, hourly); the path "
-                            f"stops here until the heliosphere layer exists.")
+    if last_contact:
+        first_est = next(l for l in legs if l.get("estimate"))
+        first_est["_comment"] = (f"Contact ended {iso(last_contact)}: from here the path is Horizons' projection "
+                                 f"with no tracking behind it, drawn dashed.")
+    legs[-1]["_comment"] = (f"{iso(t_cut)}: crosses {CUTOFF_AU:.3f} AU from the Sun (Horizons, hourly); the "
+                            f"Solar System view stops the path here, and the heliosphere layer carries it on.")
     return legs, t_cut, norm(p_cut)
 
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("keys", nargs="*", help="flights to build (default: all)")
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--max-sweep", type=float, default=8.0)
     ap.add_argument("--max-days", type=float, default=45.0)
     a = ap.parse_args()
     print(f"cutoff {CUTOFF_AU:.4f} AU (Pluto aphelion {PLUTO_A * (1 + PLUTO_E):.4f} AU)")
     for key, cfg in CRAFT.items():
+        if a.keys and key not in a.keys:
+            continue
         legs, t_cut, r_cut = build(key, cfg, a.max_sweep, a.max_days)
         n_pc = sum(1 for l in legs if l["type"] == "planetocentric")
         print(f"{key}: {len(legs)} legs ({n_pc} planetocentric), crosses cutoff {iso(t_cut)} at {r_cut:.4f} AU")

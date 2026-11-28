@@ -6,31 +6,59 @@ because every flight from here on uses them. Listed in `docs/TODO.md` §5.
 
 ## 1. A heliosphere layer for missions past Pluto
 
+**Status: built 2026-11-27.**
+
 Voyager 1 and 2, Pioneer 10 and 11 and New Horizons travel far beyond
 Pluto. The Solar System view can't zoom out indefinitely to follow them,
 but showing how far out they are is part of their story.
 
-**Idea (maintainer):** a third zoom layer, the way the planet-system view
-sits below the Solar System view:
-
 ```
 planet system  →  Solar System (Sol view)  →  heliosphere
-   (moons)          (planets, out to ~50 AU)    (~1–200 AU, log-ish)
+   (moons)          (planets, out to ~50 AU)    (~1–200 AU)
 ```
 
-- **What it shows:** the Sun, Pluto's orbit as the edge of the familiar
-  Solar System, and the termination shock (~85–95 AU), heliopause
-  (~120 AU, crossed by Voyager 1 in 2012 and Voyager 2 in 2018) and bow
-  region. Most inner planets are hidden or collapsed into the centre,
-  much as the Solar System view hides a planet's moons.
-- **Handover:** a spacecraft that passes Pluto's orbit goes "out of
-  zone" in the Sol view, the same way a craft disappears from the Sol
-  view when it enters orbit inside a planet system. It's drawn in the
-  heliosphere layer instead.
-- **Data:** Horizons has Voyager 1 (−31), Voyager 2 (−32), Pioneer 10
-  (−23), Pioneer 11 (−24) and New Horizons (−98) to the present and
-  beyond. The boundary crossings should cite the papers that reported
-  them.
+- **Entering it:** zoom out past the Solar System view's limit, use the
+  "Heliosphere view" button (top-right toggles), the "Open heliosphere
+  view" button in a far craft's info panel, or `?system=Heliosphere`.
+  Leave with "← Solar System" or Esc. The time flag reads "Heliosphere".
+- **Scale:** square root (a point at r AU sits at sqrt(r / 200) of the
+  layer's radius), with rings at 1, 10 and 100 AU, so the outer planets and
+  craft at 170 AU both read.
+- **What it shows:** the Sun; the orbits of Jupiter to Neptune (the inner
+  planets are left out); Pluto's orbit as the edge of the familiar Solar
+  System; the Sol view's edge for far craft (1.1 × Pluto's aphelion,
+  54.514 AU); the termination shock and heliopause; and every flight with a
+  `heliospherePath`.
+- **Handover:** a craft's Sol-view legs end where it passes 54.514 AU
+  (`tools/build_voyager.py`), and its info panel reads "Continues in the
+  heliosphere view". The layer draws the whole outward path: the inner part
+  sampled from the craft's legs (faint), then `heliospherePath`, solid up to
+  its `measuredUntil` date and dashed after (§3).
+- **`heliospherePath`** (per flight, written by
+  `tools/build_heliosphere_path.py <flight> --id <Horizons id> --start <cutoff
+  crossing> --end 2050-01-01 --measured-until <date>`):
+  `{ source, url, measuredUntil, note, points: [[ISO date, x, y, z], ...] }`,
+  heliocentric ecliptic J2000 AU from JPL Horizons, every 60 days by default.
+  `measuredUntil` is the last contact for a silent craft, or today's date
+  for one still in contact (both Voyagers: 2026-11-27).
+- **Boundaries:** drawn through the four measured crossings, at each craft's
+  own Horizons position on the crossing date:
+
+  | Crossing | Date | Distance | Source |
+  |---|---|---|---|
+  | Voyager 1, termination shock | 2004-12-16 | 94.0 AU | Stone et al. 2005, *Science* 309 |
+  | Voyager 2, termination shock | 2007-08-30 | 83.7 AU | Stone et al. 2008, *Nature* 454 |
+  | Voyager 1, heliopause | 2012-08-25 | 121.6 AU | Stone et al. 2013, *Science* 341, 150 |
+  | Voyager 2, heliopause | 2018-11-05 | 119.0 AU | Stone et al. 2019, *Nature Astronomy*, doi:10.1038/s41550-019-0928-3 |
+
+  The nose points upwind into the interstellar flow, ecliptic longitude
+  255.6°, latitude +5.12° (IBEX; the reverse of the downwind direction
+  75.6° / −5.12° in IBEX Data Release 9). **Away from the crossings the shape
+  is a schematic:** r(θ, φ) = 2 R0(φ) / (1 + cos θ) about the nose axis, with
+  R0 varying in azimuth so the surface passes through both crossings of
+  each boundary. The real heliosphere's tail and flanks aren't measured.
+- **Still to add:** Pioneer 10/11 and New Horizons (run the tool; see
+  TODO §5). The bow wave/shock beyond the heliopause isn't drawn.
 
 ## 2. Flyby galleries and discoveries of their time
 

@@ -103,21 +103,29 @@ In the app: lightweight previews only, linking to the full-quality data.
     (Lavochkin, IKI).
   - Halley's Comet is added with the 1985 chunk.
 - [ ] **Beyond Pluto and grand tours:** plan in `docs/outer-missions-plan.md`.
-  - [ ] Heliosphere zoom layer above the Sol view; craft past Pluto's
-    orbit hand over to it.
+  - [x] Heliosphere zoom layer above the Sol view; craft past Pluto's
+    orbit hand over to it. Done 2026-11-27 (outer-missions plan §1): enter
+    by zooming out past the Solar System view, the "Heliosphere view"
+    button, or `?system=Heliosphere`.
   - [x] Uranus and Neptune planet views (Voyager 2). Done 2026-11-27:
     moons refitted to Horizons (Miranda fitted for the 1986 encounter, so it
     drifts ~13,000 km by 2030), narrow rings, Nereid added. Still plain
     colour spheres (no Uranus/Neptune maps; see §4).
-  - [ ] Voyager 1/2 and Pioneer 10/11: every flyby, with planet-view tours.
-    Voyager 1 and 2 added 2026-11-27 (Jupiter and Saturn tours; Voyager 2's
-    Uranus and Neptune tours to follow the Uranus/Neptune views). Their paths
-    stop at 1.1 x Pluto's aphelion (54.514 AU; Voyager 1 on 1994-01-06,
-    Voyager 2 on 1998-04-09).
-  - [ ] **The heliosphere layer must resume the Voyagers past that cutoff**
-    (Horizons has both to 2100), and later Pioneer 10/11 and New Horizons;
-    show the termination shock and heliopause crossings there (cited in the
-    Voyager notes).
+  - [x] Voyager 1/2 and Pioneer 10/11: every flyby, with planet-view tours.
+    Done 2026-11-27: Voyager 1 and 2 (Jupiter, Saturn, Uranus, Neptune
+    tours), Pioneer 10 (Jupiter) and Pioneer 11 (Jupiter, Saturn), with every
+    passed moon listed (tools/moon_passes.py). Paths stop at 1.1 x Pluto's
+    aphelion (54.514 AU): Voyager 1 on 1994-01-06, Voyager 2 on 1998-04-09,
+    Pioneer 10 on 1992-06-07, Pioneer 11 on 2000-01-07 (dashed after its
+    last contact, 1995-09-30).
+  - [x] The heliosphere layer resumes the Voyagers and Pioneers past the
+    cutoff (`heliospherePath`, Horizons, to 2050), with the four termination
+    shock and heliopause crossings. Solid to the last tracking (Voyagers:
+    2026-11-27, still in contact; Pioneer 10: last signal 2003-01-22;
+    Pioneer 11: all dashed, contact ended before the cutoff).
+  - [ ] New Horizons: end its Sol-view path where it passes 54.514 AU, then
+    run `tools/build_heliosphere_path.py new_horizons --id -98 ...` (still in
+    contact).
   - [ ] Per-flyby image galleries, with discoveries as understood at
     the time.
   - [ ] A "coast" leg for craft that continue after their encounter

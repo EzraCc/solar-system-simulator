@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "55";
+  const BUILD_VERSION = "56";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -3721,6 +3721,11 @@
   canvas.addEventListener("mousedown", (e) => {
     dragStartX = e.clientX; dragStartY = e.clientY;
     if (dragButtonIsPan(e)) {
+      if (helioView) {
+        isPanning = true;
+        camStartX = helioView.panX; camStartY = helioView.panY;
+        return;
+      }
       if (systemView) {
         if (systemView.follow) setSystemFollow(null);
         isPanning = true;
@@ -3742,6 +3747,9 @@
       yaw = yawStart + dx * 0.006;
       pitch = pitchStart - dy * 0.006;
       pitch = Math.max(MIN_PITCH, Math.min(MAX_PITCH, pitch));
+    } else if (isPanning && helioView) {
+      helioView.panX = camStartX + (e.clientX - dragStartX);
+      helioView.panY = camStartY + (e.clientY - dragStartY);
     } else if (isPanning && systemView) {
       systemView.panX = camStartX + (e.clientX - dragStartX);
       systemView.panY = camStartY + (e.clientY - dragStartY);
@@ -3749,17 +3757,25 @@
       camX = camStartX + (e.clientX - dragStartX);
       camY = camStartY + (e.clientY - dragStartY);
     }
-    if (!systemView) handleHover(e);
+    if (!systemView && !helioView) handleHover(e);
   });
   window.addEventListener("mouseup", () => { isRotating = false; isPanning = false; });
 
   canvas.addEventListener("wheel", (e) => {
     e.preventDefault();
     const zoomFactor = Math.exp(-e.deltaY * 0.0012);
+    if (helioView) {
+      helioView.scale = Math.max(80, Math.min(20000, helioView.scale * zoomFactor));
+      return;
+    }
     if (systemView) {
       systemView.kmPerPx = Math.max(20, Math.min(2e5, systemView.kmPerPx / zoomFactor));
       return;
     }
+    // Zooming out past the Solar System view's limit moves up a layer,
+    // to the heliosphere (the way clicking a planet moves down to its
+    // system).
+    if (zoomFactor < 1 && pxPerAU <= 2.0001) { openHelioView(); return; }
     pxPerAU *= zoomFactor;
     pxPerAU = Math.max(2, Math.min(pxPerAU, 20000));
   }, { passive: false });
@@ -3799,6 +3815,11 @@
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const dist = Math.hypot(dx, dy);
+      if (helioView) {
+        if (!helioView.touchScale) helioView.touchScale = helioView.scale;
+        helioView.scale = Math.max(80, Math.min(20000, helioView.touchScale * (dist / touchStartDist)));
+        return;
+      }
       if (systemView) {
         if (!systemView.touchKmPerPx) systemView.touchKmPerPx = systemView.kmPerPx;
         systemView.kmPerPx = Math.max(20, Math.min(2e5, systemView.touchKmPerPx / (dist / touchStartDist)));
@@ -3812,7 +3833,7 @@
       camY = camStartY + (midY - touchMidStartY);
     }
   }, { passive: true });
-  canvas.addEventListener("touchend", () => { isRotating = false; isPanning = false; touchStartDist = null; if (systemView) systemView.touchKmPerPx = null; });
+  canvas.addEventListener("touchend", () => { isRotating = false; isPanning = false; touchStartDist = null; if (systemView) systemView.touchKmPerPx = null; if (helioView) helioView.touchScale = null; });
 
   // Rotate a world point (AU, ecliptic frame: x,y in-plane, z out-of-plane)
   // by yaw (about the world Z axis, spinning the system "in place" as seen
@@ -3941,8 +3962,8 @@
   function setTimeScope(primary) {
     const changed = primary !== timeScopePrimary;
     timeScopePrimary = primary;
-    timeScopeFlag.textContent = primary
-      ? `${PLANET_SYMBOL[primary] || ""} ${primary} system`.trim()
+    timeScopeFlag.textContent = primary === "Heliosphere" ? "\u2609 Heliosphere"
+      : primary ? `${PLANET_SYMBOL[primary] || ""} ${primary} system`.trim()
       : "\u2609 Solar System";
     timeScopeFlag.classList.toggle("system", !!primary);
     refreshSpeedField();
@@ -3969,7 +3990,7 @@
   ];
   function daysPerSecFromMult(mult) { return mult * BASE_DAYS_PER_MS * 1000; }
   function speedUnitFor(mult) {
-    if (!timeScopePrimary) return { unit: "yr/min", perUnit: 1 };
+    if (!timeScopePrimary || timeScopePrimary === "Heliosphere") return { unit: "yr/min", perUnit: 1 };
     const dps = Math.abs(daysPerSecFromMult(mult));
     let pick = SV_RATE_UNITS[0];
     for (const u of SV_RATE_UNITS) if (dps >= u.days * 0.999) pick = u;
@@ -4226,7 +4247,9 @@
     p.set("date", simDate.toISOString().slice(0, 16));
     p.set("yaw", (yaw * 180 / Math.PI).toFixed(2));
     p.set("pitch", (pitch * 180 / Math.PI).toFixed(2));
-    if (systemView) {
+    if (helioView) {
+      p.set("system", "Heliosphere");
+    } else if (systemView) {
       p.set("system", systemView.primary);
       p.set("svkm", systemView.kmPerPx.toFixed(1));
       const f = systemView.follow;
@@ -5125,6 +5148,7 @@
     const my = e.clientY - rect.top;
     // The system view draws its own scene; renderedBodies is the (stale)
     // Solar System frame's, so it has its own hit list.
+    if (helioView) { handleHelioClick(mx, my); return; }
     if (systemView) { handleSystemClick(mx, my); return; }
 
     // A mouse pointer is precise; a fingertip isn't -- give touch a much
@@ -5264,6 +5288,7 @@
     if (num("zoom") !== null && num("zoom") > 0) pxPerAU = num("zoom");
     if (freeCameraMode && num("camx") !== null && num("camy") !== null) { camX = num("camx"); camY = num("camy"); }
     const systemParam = params.get("system");
+    if (systemParam === "Heliosphere") setTimeout(openHelioView, 0);
     if (systemParam && SYSTEM_VIEW_PRIMARIES.includes(systemParam)) {
       setTimeout(() => {
         openSystemView(systemParam);
@@ -5945,6 +5970,12 @@
   lockedPanelBody.addEventListener("click", (e) => {
     const tlBtn = e.target.closest("[data-open-timeline]");
     if (tlBtn) { openTimeline(tlBtn.dataset.openTimeline); return; }
+    if (e.target.closest("[data-open-helio]")) {
+      const key = selectedFlightKey;
+      openHelioView();
+      if (key) helioShowFlightPanel(key);
+      return;
+    }
     const sysBtn = e.target.closest("[data-open-system]");
     if (sysBtn) {
       const tourStart = sysBtn.dataset.tourStart;
@@ -7373,7 +7404,7 @@
       // planet); "planned" for flights still en route; "intended" only when
       // it never arrived.
       const reached = /^(success|partial success|landing failed|orbit insertion failed|lost near)/i.test(raw.status || "");
-      addRow(endsInSpace ? "Path ends"
+      addRow(endsInSpace ? (raw.heliospherePath ? "Leaves the Solar System view" : "Path ends")
         : reached ? "Arrival"
         : raw.status === "En Route" ? "Arrival (planned)" : "Arrival (intended)", fmtDate(ep.arrival));
       addRow("Rocket", raw.rocket);
@@ -7394,6 +7425,9 @@
           ? { primaryBody: raw.planetOrbit.primaryBody, departDate: raw.planetOrbit.phases[0].start, orbit: true } : null);
       if (tourLeg) {
         jumpBtn += `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-open-system="${tourLeg.primaryBody}" data-tour-start="${tourLeg.departDate}">View ${tourLeg.primaryBody} ${tourLeg.orbit ? "orbit" : "tour"}</button></div>`;
+      }
+      if (raw.heliospherePath && !helioView) {
+        jumpBtn += `<div class="lp-jump-row"><button type="button" class="lp-jump-btn" data-open-helio="1">Open heliosphere view</button></div>`;
       }
       let sections = "";
       if (raw.significance) sections += lpSectionHtml("Why it matters", raw.significance);
@@ -8638,6 +8672,344 @@
     updateURLParams({ system: null });
   }
 
+  /* =========================================================================
+     HELIOSPHERE LAYER -- the view above the Solar System view, the way a
+     planet-system view sits below it (docs/outer-missions-plan.md §1).
+
+     The Sol view stops far craft at HELIO_CUTOFF_AU (1.1 x Pluto's
+     aphelion; their legs end there, tools/build_voyager.py). Here they go
+     on: any flight with a `heliospherePath` (tools/build_heliosphere_path.py)
+     is drawn from launch out to 2050, solid up to its measuredUntil date
+     and dashed after (dashed = projection, §3). Distances use a
+     square-root scale so 1 AU and 150 AU both read: a point at r AU sits at
+     sqrt(r / 200) of the layer's radius.
+
+     The termination shock and heliopause are drawn through the four places
+     the Voyagers crossed them (published dates and distances, positions
+     from the craft's own Horizons path), with the nose toward the
+     interstellar wind. Away from those crossings the shape is a schematic:
+     r(theta, phi) = 2 R0(phi) / (1 + cos theta) about the nose axis, with
+     R0 varying smoothly in azimuth so the surface passes through both
+     crossings.
+     ========================================================================= */
+  const HELIO_CUTOFF_AU = (() => {
+    const el = SMALL_BODIES.pluto.elements;
+    return 1.1 * el.a * (1 + el.e); // 54.514 AU, as in tools/build_voyager.py
+  })();
+  const HELIO_MAX_AU = 200; // the square-root scale reaches the layer's radius here
+  // Interstellar wind arrives from ecliptic (J2000) longitude 255.6 deg,
+  // latitude +5.12 deg: IBEX Data Release 9 gives the downwind flow
+  // direction 75.6 / -5.12 deg (primary interstellar He, 25.4 km/s); the
+  // heliosphere's nose points upwind, the reverse.
+  const HELIO_NOSE = (() => {
+    const lon = 255.6 * Math.PI / 180, lat = 5.12 * Math.PI / 180;
+    return [Math.cos(lat) * Math.cos(lon), Math.cos(lat) * Math.sin(lon), Math.sin(lat)];
+  })();
+  // Boundary crossings measured by the Voyagers. Distances and dates from
+  // the papers (docs/CREDITS.md); positions taken from each craft's
+  // heliospherePath at that date.
+  const HELIO_CROSSINGS = [
+    { kind: "ts", flight: "voyager_1", date: "2004-12-16", au: 94.0, label: "Termination shock" },
+    { kind: "ts", flight: "voyager_2", date: "2007-08-30", au: 83.7, label: "Termination shock" },
+    { kind: "hp", flight: "voyager_1", date: "2012-08-25", au: 121.6, label: "Heliopause" },
+    { kind: "hp", flight: "voyager_2", date: "2018-11-05", au: 119.0, label: "Heliopause" },
+  ];
+  const HELIO_STYLE = {
+    ts: { color: "#e0a050", name: "Termination shock", desc: "where the solar wind drops below the speed of sound" },
+    hp: { color: "#5ab0ff", name: "Heliopause", desc: "edge of the solar wind; interstellar space beyond" },
+  };
+  let helioView = null; // { scale, panX, panY, saved, hits }
+  const helioPanel = document.getElementById("helio-panel");
+
+  function helioFlights() {
+    return FLIGHTS_ORDER.filter((k) => FLIGHTS_RAW[k] && FLIGHTS_RAW[k].heliospherePath && FLIGHTS_RAW[k].heliospherePath.points.length);
+  }
+  function helioPathPoints(key) {
+    const hp = FLIGHTS_RAW[key].heliospherePath;
+    if (!hp._t) hp._t = hp.points.map((p) => daysSinceJ2000(parseFlightDate(p[0])));
+    return hp;
+  }
+  // Heliocentric position (AU) of a far craft on its heliospherePath at t,
+  // or null outside the path's span.
+  function helioPositionAt(key, t) {
+    const hp = helioPathPoints(key), ts = hp._t, P = hp.points;
+    if (t < ts[0] || t > ts[ts.length - 1]) return null;
+    let lo = 0, hi = ts.length - 1;
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (ts[m] <= t) lo = m; else hi = m; }
+    const f = ts[hi] === ts[lo] ? 0 : (t - ts[lo]) / (ts[hi] - ts[lo]);
+    return [1, 2, 3].map((i) => P[lo][i] + (P[hi][i] - P[lo][i]) * f);
+  }
+  // Inner path (launch to the Sol-view cutoff), sampled once from the
+  // flight's own legs.
+  const _helioInner = {};
+  function helioInnerPath(key) {
+    if (_helioInner[key]) return _helioInner[key];
+    const { launchDays } = getFlightDates(key);
+    const t1 = helioPathPoints(key)._t[0];
+    const pts = [];
+    for (let t = launchDays; t <= t1; t += 10) {
+      const p = isMultiLeg(FLIGHTS_RAW[key]) ? computeMultiLegPosition(key, t) : computeFlightPosition(getSolvedFlight(key), t);
+      if (p && p.every(Number.isFinite)) pts.push([t, p]);
+    }
+    return (_helioInner[key] = pts);
+  }
+
+  function helioRadiusFrac(r) {
+    return Math.sqrt(r / HELIO_MAX_AU);
+  }
+  function helioProject(p) {
+    const r = Math.hypot(p[0], p[1], p[2]);
+    const k = r > 0 ? helioRadiusFrac(r) / r : 0;
+    const [x, y, z] = rotateWorld(p[0] * k, p[1] * k, p[2] * k);
+    return [viewW / 2 + helioView.panX + x * helioView.scale, viewH / 2 + helioView.panY - y * helioView.scale, z];
+  }
+  function helioStroke(points, color, alpha, width, dash) {
+    if (points.length < 2) return;
+    ctx.save();
+    ctx.strokeStyle = hexWithAlpha(color, alpha);
+    ctx.lineWidth = width;
+    ctx.setLineDash(dash || []);
+    ctx.beginPath();
+    points.forEach((p, i) => { const [x, y] = helioProject(p); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+    ctx.stroke();
+    ctx.restore();
+  }
+  function helioLabel(text, p, color, dx = 6, dy = -6) {
+    const [x, y] = helioProject(p);
+    ctx.fillStyle = color;
+    ctx.font = "11px system-ui, sans-serif";
+    ctx.fillText(text, x + dx, y + dy);
+  }
+  function helioCircle(rAU, steps = 180) {
+    const pts = [];
+    for (let i = 0; i <= steps; i++) { const a = 2 * Math.PI * i / steps; pts.push([rAU * Math.cos(a), rAU * Math.sin(a), 0]); }
+    return pts;
+  }
+
+  // Nose-axis frame for the boundary surfaces: n (upwind), e1 (toward
+  // ecliptic north, perpendicular to n), e2 = n x e1.
+  const HELIO_FRAME = (() => {
+    const n = HELIO_NOSE, zN = [0, 0, 1];
+    const d = n[0] * zN[0] + n[1] * zN[1] + n[2] * zN[2];
+    let e1 = [zN[0] - d * n[0], zN[1] - d * n[1], zN[2] - d * n[2]];
+    const l = Math.hypot(...e1); e1 = e1.map((v) => v / l);
+    const e2 = [n[1] * e1[2] - n[2] * e1[1], n[2] * e1[0] - n[0] * e1[2], n[0] * e1[1] - n[1] * e1[0]];
+    return { n, e1, e2 };
+  })();
+  function helioAngles(p) {
+    const { n, e1, e2 } = HELIO_FRAME;
+    const r = Math.hypot(...p);
+    const c = (p[0] * n[0] + p[1] * n[1] + p[2] * n[2]) / r;
+    const phi = Math.atan2(p[0] * e2[0] + p[1] * e2[1] + p[2] * e2[2], p[0] * e1[0] + p[1] * e1[1] + p[2] * e1[2]);
+    return { r, theta: Math.acos(Math.max(-1, Math.min(1, c))), phi };
+  }
+  // R0(phi) = A + B cos(phi - phi1), through the two crossings of a kind.
+  const _helioShape = {};
+  function helioShape(kind) {
+    if (_helioShape[kind] !== undefined) return _helioShape[kind];
+    const cs = HELIO_CROSSINGS.filter((c) => c.kind === kind).map((c) => {
+      const p = FLIGHTS_RAW[c.flight] && FLIGHTS_RAW[c.flight].heliospherePath
+        ? helioPositionAt(c.flight, daysSinceJ2000(parseFlightDate(c.date))) : null;
+      if (!p) return null;
+      const a = helioAngles(p);
+      return { ...c, p, phi: a.phi, R0: a.r * (1 + Math.cos(a.theta)) / 2 };
+    });
+    if (cs.length !== 2 || cs.some((c) => !c)) return (_helioShape[kind] = null);
+    const [c1, c2] = cs;
+    const oneMinusCos = 1 - Math.cos(c2.phi - c1.phi);
+    const B = oneMinusCos > 0.05 ? (c1.R0 - c2.R0) / oneMinusCos : 0;
+    const A = oneMinusCos > 0.05 ? c1.R0 - B : (c1.R0 + c2.R0) / 2;
+    return (_helioShape[kind] = { A, B, phi1: c1.phi, crossings: cs });
+  }
+  function helioSurfacePoint(shape, theta, phi) {
+    const { n, e1, e2 } = HELIO_FRAME;
+    const R0 = shape.A + shape.B * Math.cos(phi - shape.phi1);
+    const r = 2 * R0 / (1 + Math.cos(theta));
+    const s = Math.sin(theta), c = Math.cos(theta), cp = Math.cos(phi), sp = Math.sin(phi);
+    return [0, 1, 2].map((i) => r * (c * n[i] + s * (cp * e1[i] + sp * e2[i])));
+  }
+  function drawHelioBoundary(kind) {
+    const shape = helioShape(kind);
+    if (!shape) return;
+    const color = HELIO_STYLE[kind].color;
+    const RMAX = 260; // stop the open tail here
+    for (let k = 0; k < 6; k++) {           // meridians from the nose back
+      const phi = k * Math.PI / 3, pts = [];
+      for (let th = 0; th <= 1.9; th += 0.04) {
+        const p = helioSurfacePoint(shape, th, phi);
+        if (Math.hypot(...p) > RMAX) break;
+        pts.push(p);
+      }
+      helioStroke(pts, color, 0.14, 1);
+    }
+    [0.5, 1.0, 1.5].forEach((th) => {         // rings around the nose axis
+      const pts = [];
+      for (let i = 0; i <= 96; i++) pts.push(helioSurfacePoint(shape, th, 2 * Math.PI * i / 96));
+      helioStroke(pts, color, 0.22, 1);
+    });
+  }
+
+  function openHelioView() {
+    if (helioView) return;
+    if (systemView) closeSystemView();
+    helioView = {
+      scale: Math.min(viewW, viewH) * 0.40, panX: 0, panY: -20, hits: [],
+      saved: { lockedBodyName, infoPanelVisible },
+    };
+    document.body.classList.add("helio-view");
+    buildHelioPanel();
+    setTimeScope("Heliosphere");
+    updateURLParams({ system: "Heliosphere" });
+  }
+  function closeHelioView() {
+    if (!helioView) return;
+    helioView = null;
+    document.body.classList.remove("helio-view");
+    updateLockedPanelVisibility();
+    setTimeScope(null);
+    updateURLParams({ system: null });
+  }
+  function buildHelioPanel() {
+    const now = daysSinceJ2000(simDate);
+    document.getElementById("helio-craft-rows").innerHTML = helioFlights().map((key) => {
+      const raw = FLIGHTS_RAW[key], hp = raw.heliospherePath;
+      const p = helioPositionAt(key, now);
+      const where = p ? `${Math.hypot(...p).toFixed(1)} AU now` : `${hp.points[0][0].slice(0, 4)}–2050`;
+      return `<div class="sv-row sv-follow" data-helio-flight="${key}" title="Open ${raw.name}'s info">` +
+        `<span class="sv-dot" style="background:${flightColor(key)}"></span>${raw.name}` +
+        `<span class="sv-sub" style="margin-left:auto">${where}</span></div>`;
+    }).join("") || `<div class="sv-sub">No spacecraft past the Solar System view yet.</div>`;
+    document.getElementById("helio-key").innerHTML =
+      ["ts", "hp"].map((k) => `<div class="helio-key-row"><span class="helio-key-swatch" style="border-color:${HELIO_STYLE[k].color}"></span>` +
+        `<span><strong>${HELIO_STYLE[k].name}</strong>: ${HELIO_STYLE[k].desc}</span></div>`).join("") +
+      `<div class="helio-key-row"><span class="helio-key-swatch" style="border-color:#9aa4b8;border-top-style:dotted"></span>` +
+      `<span>Edge of the Solar System view (${HELIO_CUTOFF_AU.toFixed(1)} AU, 1.1 &times; Pluto's farthest distance)</span></div>` +
+      `<div class="sv-sub">The boundaries pass through the four places the Voyagers crossed them; elsewhere their shape is a schematic, nose toward the interstellar wind.</div>`;
+    helioView.panelDay = Math.floor(now / 30);
+  }
+  document.getElementById("helio-exit-btn").addEventListener("click", closeHelioView);
+  document.getElementById("helio-open-btn").addEventListener("click", openHelioView);
+  document.getElementById("helio-craft-rows").addEventListener("click", (e) => {
+    const row = e.target.closest("[data-helio-flight]");
+    if (row) helioShowFlightPanel(row.dataset.helioFlight);
+  });
+
+  // The flight's normal info panel, filled directly: the Sol frame (which
+  // usually feeds it) isn't drawn here, and a craft past its Sol-view path
+  // isn't in that frame anyway.
+  function helioShowFlightPanel(key) {
+    const raw = FLIGHTS_RAW[key];
+    lockedPanelTitle.textContent = raw.name;
+    lockedPanelKind.textContent = bodyClassification(raw.name, { isFlight: true });
+    formatLockedPanelContent({ isFlight: true, flightKey: key, name: raw.name });
+    lockedPanelBody.scrollTop = 0;
+    lockedPanel.style.display = "flex";
+    // The Sol frame normally positions it; here, pin it right, clear of
+    // the heliosphere panel on the left.
+    lockedPanel.style.top = "16px";
+    lockedPanel.style.left = `${Math.max(292, window.innerWidth - lockedPanel.offsetWidth - 16)}px`;
+  }
+  function handleHelioClick(mx, my) {
+    let best = null, bestD = isMobileLayout ? 24 : 12;
+    for (const h of helioView.hits) {
+      const d = Math.hypot(h.x - mx, h.y - my);
+      if (d < bestD) { bestD = d; best = h; }
+    }
+    if (best) helioShowFlightPanel(best.key);
+  }
+
+  function drawHelioFrame(t) {
+    const hv = helioView;
+    hv.hits = [];
+    if (Math.floor(t / 30) !== hv.panelDay) buildHelioPanel();
+    // Distance rings (log scale) in the ecliptic plane.
+    [1, 10, 100].forEach((r) => {
+      helioStroke(helioCircle(r), "#9aa4b8", 0.18, 1);
+      helioLabel(`${r} AU`, [r * Math.cos(-0.5), r * Math.sin(-0.5), 0], "rgba(154,164,184,0.55)", 4, 12);
+    });
+    // Outer planets' orbits; the inner planets sit inside the 1-10 AU
+    // band and are left out.
+    ["Jupiter", "Saturn", "Uranus", "Neptune"].forEach((name) => {
+      const P = 365.25 * Math.pow(PLANET_ELEMENTS[name].a, 1.5), pts = [];
+      for (let i = 0; i <= 180; i++) pts.push(computeStateVector(PLANET_ELEMENTS[name], t + P * i / 180).pos);
+      helioStroke(pts, PLANET_META[name].color, 0.35, 1);
+      const cur = computeStateVector(PLANET_ELEMENTS[name], t).pos;
+      const [x, y] = helioProject(cur);
+      ctx.fillStyle = PLANET_META[name].color;
+      ctx.beginPath(); ctx.arc(x, y, 2.5, 0, 2 * Math.PI); ctx.fill();
+      helioLabel(name, cur, "rgba(200,206,220,0.7)");
+    });
+    // Pluto's orbit: the edge of the familiar Solar System.
+    {
+      const el = SMALL_BODIES.pluto.elements, P = 365.25 * Math.pow(el.a, 1.5), pts = [];
+      for (let i = 0; i <= 240; i++) pts.push(computeSmallBodyState(el, t + P * i / 240).pos);
+      helioStroke(pts, SMALL_BODIES.pluto.meta.color, 0.45, 1);
+      const cur = computeSmallBodyState(el, t).pos;
+      helioLabel("Pluto's orbit", cur, "rgba(200,190,170,0.75)");
+    }
+    // The Sol view's edge for far craft.
+    helioStroke(helioCircle(HELIO_CUTOFF_AU), "#9aa4b8", 0.45, 1, [2, 4]);
+    helioLabel(`Solar System view edge, ${HELIO_CUTOFF_AU.toFixed(1)} AU`, [0, -HELIO_CUTOFF_AU, 0], "rgba(154,164,184,0.7)", 4, 14);
+    drawHelioBoundary("ts");
+    drawHelioBoundary("hp");
+    // Sun.
+    {
+      const [x, y] = helioProject([0, 0, 0]);
+      ctx.fillStyle = "#ffd27a";
+      ctx.beginPath(); ctx.arc(x, y, 4, 0, 2 * Math.PI); ctx.fill();
+    }
+    // Far craft: inner path faint, outer path solid to measuredUntil,
+    // dashed after; marker at the current date.
+    helioFlights().forEach((key) => {
+      const color = flightColor(key), hp = helioPathPoints(key);
+      const inner = helioInnerPath(key).map((x) => x[1]);
+      helioStroke(inner, color, 0.35, 1);
+      const tm = daysSinceJ2000(parseFlightDate(hp.measuredUntil));
+      const solid = [], dashed = [];
+      hp.points.forEach((p, i) => {
+        const q = [p[1], p[2], p[3]];
+        if (hp._t[i] <= tm) solid.push(q);
+        else { if (!dashed.length && solid.length) dashed.push(solid[solid.length - 1]); dashed.push(q); }
+      });
+      if (inner.length && solid.length) solid.unshift(inner[inner.length - 1]);
+      helioStroke(solid, color, 0.95, 1.6);
+      helioStroke(dashed, color, 0.75, 1.4, ESTIMATE_DASH);
+      let p = helioPositionAt(key, t);
+      if (!p && t <= hp._t[0]) {
+        const { launchDays } = getFlightDates(key);
+        if (t >= launchDays) p = isMultiLeg(FLIGHTS_RAW[key]) ? computeMultiLegPosition(key, t) : null;
+      }
+      if (p && p.every(Number.isFinite)) {
+        const [x, y] = helioProject(p);
+        ctx.fillStyle = color;
+        ctx.beginPath(); ctx.arc(x, y, 4, 0, 2 * Math.PI); ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.lineWidth = 1; ctx.stroke();
+        helioLabel(`${FLIGHTS_RAW[key].name}  ${Math.hypot(...p).toFixed(1)} AU`, p, "#e8ecf4", 8, -8);
+        hv.hits.push({ key, x, y });
+      }
+    });
+    // Measured crossings.
+    ["ts", "hp"].forEach((kind) => {
+      const shape = helioShape(kind);
+      if (!shape) return;
+      shape.crossings.forEach((c) => {
+        const [x, y] = helioProject(c.p);
+        ctx.save();
+        ctx.fillStyle = HELIO_STYLE[kind].color;
+        ctx.translate(x, y); ctx.rotate(Math.PI / 4);
+        ctx.fillRect(-3.5, -3.5, 7, 7);
+        ctx.restore();
+        const who = c.flight === "voyager_1" ? "V1" : "V2";
+        // Left of the marker, right-aligned, so it doesn't sit on the
+        // craft's own label (drawn to the right).
+        ctx.save();
+        ctx.textAlign = "right";
+        helioLabel(`${c.label} · ${who} ${c.date} · ${c.au} AU`, c.p, hexWithAlpha(HELIO_STYLE[kind].color, 0.9), -8, 4);
+        ctx.restore();
+      });
+    });
+  }
+
   function svJumpTo(t) {
     simDate = dateFromDaysSinceJ2000(t);
     dateInput.value = dateInputValue(simDate);
@@ -8733,6 +9105,7 @@
   window.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     if (timelineState) { closeTimeline(); return; }
+    if (helioView) { closeHelioView(); return; }
     if (systemView) closeSystemView();
   });
 
@@ -9444,6 +9817,11 @@
     updateSmallBodiesLegendActiveState(daysSinceEpoch);
     updateFlightScrubberPlayhead(daysSinceEpoch);
 
+    if (helioView) {
+      drawHelioFrame(daysSinceEpoch);
+      requestAnimationFrame(frame);
+      return;
+    }
     if (systemView) {
       drawSystemFrame(daysSinceEpoch);
       requestAnimationFrame(frame);

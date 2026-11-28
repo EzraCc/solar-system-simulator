@@ -184,6 +184,11 @@ MANUAL = {
     "images/missions/voyager_2/spacecraft.jpg": {"nasa_id": "PIA21728"},
     "images/missions/voyager_2/rocket.jpg": {"nasa_id": "PIA21744"},
     "images/missions/voyager_1/spacecraft.jpg": {"nasa_id": "PIA21741"},
+    # Pioneer 10/11: NASA Ames (ARC) and MSFC photos, NASA Image Library.
+    "images/missions/pioneer_10/spacecraft.jpg": {"nasa_id": "ARC-1972-AC72-2135"},
+    "images/missions/pioneer_10/rocket.jpg": {"nasa_id": "ARC-1972-AC72-2142"},
+    "images/missions/pioneer_11/spacecraft.jpg": {"nasa_id": "ARC-1972-AC72-1338"},
+    "images/missions/pioneer_11/rocket.jpg": {"nasa_id": "9139575"},
     "images/missions/voyager_1/rocket.jpg": {"nasa_id": "PIA21746"},
     "images/missions/helios_2/spacecraft.jpg": {"file": "Helios spacecraft 2.jpg", "credit": "NASA/KSC (KSC-74P-0222)"},
     "images/missions/helios_1/rocket.jpg": {"file": "Titan 3E Centaur with Helios 1.jpg", "credit": "NASA/KSC (KSC-74P-0298)"},
@@ -404,6 +409,9 @@ def best_in_article(article, local_sig, seen):
     return best
 
 
+NASA_CENTER_CODES = {"ARC", "AFRC", "GRC", "GSFC", "HQ", "JPL", "JSC", "KSC", "LARC", "MSFC", "SSC"}
+
+
 def nasa_library(nasa_id):
     r = json.loads(fetch("https://images-api.nasa.gov/search?nasa_id=" + urllib.parse.quote(nasa_id)))
     items = r["collection"]["items"]
@@ -414,6 +422,9 @@ def nasa_library(nasa_id):
     center = d.get("center", "")
     if not credit:
         credit = f"NASA{('/' + center) if center else ''}"
+    elif credit.strip().upper() in NASA_CENTER_CODES:
+        # A bare NASA centre code as the photographer (e.g. "KSC") is NASA work.
+        credit = "NASA/" + credit.strip().upper()
     # NASA's public-domain status covers work by NASA. Library items credited
     # to someone else (a contractor such as SpaceX, a university without
     # NASA) may carry that party's terms, so they aren't marked verified.
