@@ -13,7 +13,7 @@
   // wasn't landing (rows/Destinations/Notes rendering correctly off
   // whatever fields an old JSON snapshot happened to have, while newer
   // fields like "significance"/"assets" silently no-op'd as absent).
-  const BUILD_VERSION = "57";
+  const BUILD_VERSION = "58";
 
   /* =========================================================================
      PHYSICAL / ORBITAL CONSTANTS
@@ -1382,6 +1382,20 @@
   // departDate field name) -- through the last lambert leg's arrivalDate.
   // Flat schema unchanged.
   const _flightDatesCache = {};
+
+  // A dead craft is off the map after its last communication (maintainer,
+  // 2026-11-27): "If it's dead, it's off the map." Flights carry
+  // "lastContact" (+ "lastContactSource") once contact has ended for good;
+  // their path data already stops there, and this keeps the marker, the
+  // visibility window, the heliosphere view and the colour span from going
+  // past it even if some later data or timeline entry does. A craft that
+  // comes back (the Voyagers' glitches) simply has no lastContact.
+  const _lastContactCache = {};
+  function lastContactDays(key) {
+    if (key in _lastContactCache) return _lastContactCache[key];
+    const lc = FLIGHTS_RAW[key] && FLIGHTS_RAW[key].lastContact;
+    return (_lastContactCache[key] = lc ? daysSinceJ2000(parseFlightDate(lc)) : null);
+  }
   function getFlightDates(key) {
     if (_flightDatesCache[key]) return _flightDatesCache[key];
     const raw = FLIGHTS_RAW[key];
@@ -2903,6 +2917,8 @@
   // time t.  Uses pre-computed leg boundaries (getLegBoundaries) so no date
   // parsing or daysSinceJ2000 calls happen per-frame — only numeric comparisons.
   function computeMultiLegPosition(flightKey, t) {
+    const lc = lastContactDays(flightKey);
+    if (lc !== null && t > lc + 1e-6) return null; // dead: off the map
     const boundaries = getLegBoundaries(flightKey);
     const rawLegs    = FLIGHTS_RAW[flightKey].legs;
     const hasGA      = rawLegs.some(l => l.type === 'gravity_assist');
@@ -5016,7 +5032,7 @@
     let end = d.arrivalDays;
     try {
       for (const e of getFlightTimeline(key).entries) {
-        if (e.ongoing) return [d.launchDays, Infinity];
+        if (e.ongoing && lastContactDays(key) === null) return [d.launchDays, Infinity];
         end = Math.max(end, e.t1 !== null && e.t1 !== undefined ? e.t1 : e.t0);
       }
     } catch (err) { /* timeline unavailable: path dates only */ }
@@ -5024,6 +5040,10 @@
     if (hp && hp.points && hp.points.length) {
       end = Math.max(end, daysSinceJ2000(parseFlightDate(hp.points[hp.points.length - 1][0])));
     }
+    // A dead craft frees its colour at its last contact, even when history
+    // (a silent flyby, an impact) is still on its timeline after that.
+    const lc = lastContactDays(key);
+    if (lc !== null) end = Math.min(end, Math.max(lc, d.launchDays));
     return [d.launchDays, end];
   }
   function buildFlightColorMap() {
@@ -5602,7 +5622,8 @@
     // explicit selection is the only way in.
     if (sceneVisibilityMode === "focused") return false;
     const { launchDays, arrivalDays } = getFlightDates(key);
-    return daysSinceEpoch >= launchDays && daysSinceEpoch <= arrivalDays;
+    const lc = lastContactDays(key);
+    return daysSinceEpoch >= launchDays && daysSinceEpoch <= (lc !== null ? Math.min(arrivalDays, lc) : arrivalDays);
   }
 
   function handleHover(e) {
@@ -7450,9 +7471,13 @@
       // planet); "planned" for flights still en route; "intended" only when
       // it never arrived.
       const reached = /^(success|partial success|landing failed|orbit insertion failed|lost near)/i.test(raw.status || "");
-      addRow(endsInSpace ? (raw.heliospherePath ? "Leaves the Solar System view" : "Path ends")
+      // A path cut at the craft's last contact ends there: say so plainly.
+      const endsAtContact = !!raw.lastContact && endsInSpace && String(ep.arrival).slice(0, 10) === raw.lastContact.slice(0, 10);
+      addRow(endsAtContact ? "Contact lost"
+        : endsInSpace ? (raw.heliospherePath ? "Leaves the Solar System view" : "Path ends")
         : reached ? "Arrival"
-        : raw.status === "En Route" ? "Arrival (planned)" : "Arrival (intended)", fmtDate(ep.arrival));
+        : raw.status === "En Route" ? "Arrival (planned)" : "Arrival (intended)", fmtDate(endsAtContact ? raw.lastContact : ep.arrival));
+      if (raw.lastContact && !endsAtContact) addRow("Last contact", fmtDate(raw.lastContact));
       addRow("Rocket", raw.rocket);
       addRow("Payload", raw.payload);
       addRow("Status", raw.status);
@@ -8779,7 +8804,8 @@
   // or null outside the path's span.
   function helioPositionAt(key, t) {
     const hp = helioPathPoints(key), ts = hp._t, P = hp.points;
-    if (t < ts[0] || t > ts[ts.length - 1]) return null;
+    const lc = lastContactDays(key);
+    if (t < ts[0] || t > ts[ts.length - 1] || (lc !== null && t > lc + 1e-6)) return null;
     let lo = 0, hi = ts.length - 1;
     while (hi - lo > 1) { const m = (lo + hi) >> 1; if (ts[m] <= t) lo = m; else hi = m; }
     const f = ts[hi] === ts[lo] ? 0 : (t - ts[lo]) / (ts[hi] - ts[lo]);
@@ -8920,7 +8946,9 @@
     document.getElementById("helio-craft-rows").innerHTML = helioFlights().map((key) => {
       const raw = FLIGHTS_RAW[key], hp = raw.heliospherePath;
       const p = helioPositionAt(key, now);
-      const where = p ? `${Math.hypot(...p).toFixed(1)} AU now` : `${hp.points[0][0].slice(0, 4)}–2050`;
+      const lastYear = (raw.lastContact || hp.points[hp.points.length - 1][0]).slice(0, 4);
+      const where = p ? `${Math.hypot(...p).toFixed(1)} AU now`
+        : raw.lastContact && now > lastContactDays(key) ? `silent since ${lastYear}` : `${hp.points[0][0].slice(0, 4)}–${lastYear}`;
       return `<div class="sv-row sv-follow" data-helio-flight="${key}" title="Open ${raw.name}'s info">` +
         `<span class="sv-dot" style="background:${flightColor(key)}"></span>${raw.name}` +
         `<span class="sv-sub" style="margin-left:auto">${where}</span></div>`;
@@ -10595,7 +10623,7 @@
     // has side effects or is reachable without deliberately scripting
     // against the page.
     window.__VERIFY__ = {
-      flightColor, flightActiveSpan, FLIGHT_PALETTE,
+      flightColor, flightActiveSpan, FLIGHT_PALETTE, lastContactDays,
       FLIGHTS_RAW, shareableURL, isMultiLeg, getSolvedLeg, getGAChain, getGAEvents,
       daysSinceJ2000, parseFlightDate, computeFlightPosition,
       getBodyPositionAtDays, getLegBoundaries, computeMultiLegPosition,

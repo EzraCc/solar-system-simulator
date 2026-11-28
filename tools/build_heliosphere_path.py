@@ -29,6 +29,7 @@ has gone silent, today's date for one still in contact.
 --dry-run prints the first/last points and distances without writing.
 """
 import argparse
+import datetime as dt
 import hashlib
 import json
 import math
@@ -99,6 +100,12 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     pts = horizons(a.id, a.start.replace("T", " ").rstrip("Z"), a.end, a.step_days)
+    # Always end exactly at --end (e.g. a dead craft's last contact), not at
+    # the last whole step before it.
+    end_iso = a.end if "T" in a.end else a.end + "T00:00:00Z"
+    if pts[-1][0][:10] != end_iso[:10]:
+        stop = (dt.datetime.fromisoformat(end_iso.rstrip("Z")) + dt.timedelta(days=1)).strftime("%Y-%m-%d")
+        pts.append(horizons(a.id, end_iso.replace("T", " ").rstrip("Z"), stop, 1)[0])
     r = lambda p: math.sqrt(p[1] ** 2 + p[2] ** 2 + p[3] ** 2)
     print(f"{a.flight}: {len(pts)} points, {pts[0][0]} at {r(pts[0]):.2f} AU -> {pts[-1][0]} at {r(pts[-1]):.2f} AU")
     if a.dry_run:

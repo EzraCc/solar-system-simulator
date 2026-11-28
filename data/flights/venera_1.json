@@ -1,16 +1,15 @@
 {
+  "lastContact": "1961-02-17",
+  "lastContactSource": "A. A. Siddiqi, Beyond Earth (NASA SP-2018-4041): last communications session on 17 February 1961; contact not regained on 22 February",
+  "destinationLabel": "Venus (contact lost on the way)",
+  "legs": [{"type": "lambert", "fromBody": "Earth", "toBody": {"fixedPos": [-0.8327579, 0.5156085, -0.0004526]}, "departDate": "1961-02-12T00:34:38Z", "arrivalDate": "1961-02-17", "estimate": true, "_comment": "Ends at last contact (1961-02-17): the point on the calculated Earth->Venus arc (launch 1961-02-12T00:34:38Z, predicted arrival 1961-05-19) where the craft was at that moment. Same two-body orbit as the full arc, cut short: after contact was lost the craft is off the map."}],
   "key": "venera_1",
   "name": "Venera 1",
-  "launchBody": "Earth",
-  "destinationBody": "Venus",
-  "launchDate": "1961-02-12T00:34:38Z",
-  "arrival": "1961-05-19",
-  "estimate": true,
   "rocket": "Molniya (8K78)",
   "payload": "Venus impact probe (1VA, 643.5 kg)",
   "status": "Lost in cruise",
   "significance": "Venera 1 was humanity's first attempt to reach another planet. Launched by the Soviet Union in February 1961 to strike Venus, it became the first craft to leave Earth on a path to another world. Its radio fell silent after a week, when its Sun-pointing system failed, but before then it returned measurements of the solar wind and interplanetary magnetic field from 1.9 million km out. It drifted past Venus, silent, in May 1961.",
-  "statusNote": "Launched 1961-02-12 00:34:38 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). The last good communications session was on 1961-02-17 at 1.9 million km; contact could not be regained on 02-22, after the Sun-orientation system failed. The inert craft passed Venus on 19-20 May 1961 at about 100,000 km and went into solar orbit (Siddiqi). The arrival used here is 1961-05-19. Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed.",
+  "statusNote": "Launched 1961-02-12 00:34:38 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). The last good communications session was on 1961-02-17 at 1.9 million km; contact could not be regained on 02-22, after the Sun-orientation system failed. The inert craft passed Venus on 19-20 May 1961 at about 100,000 km and went into solar orbit (Siddiqi). The arrival used here is 1961-05-19. Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed. PATH ENDS AT LAST CONTACT (1961-02-17): after that the craft is off the map (maintainer's rule, 2026-11-27); its silent arrival on 1961-05-19 stays in the timeline and the notes as history.",
   "assets": {
     "rocket": {
       "title": "Molniya launch vehicle (later Molniya-M version)",

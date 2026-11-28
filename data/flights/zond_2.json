@@ -1,16 +1,15 @@
 {
+  "lastContact": "1964-12-14",
+  "lastContactSource": "A. A. Siddiqi, Beyond Earth (NASA SP-2018-4041): plasma-engine tests on 14 December 1964, the last reported activity before contact was lost",
+  "destinationLabel": "Mars (contact lost on the way)",
+  "legs": [{"type": "lambert", "fromBody": "Earth", "toBody": {"fixedPos": [0.1112539, 0.993053, -0.0083778]}, "departDate": "1964-11-30T13:25:00Z", "arrivalDate": "1964-12-14", "estimate": true, "_comment": "Ends at last contact (1964-12-14): the point on the calculated Earth->Mars arc (launch 1964-11-30T13:25:00Z, predicted arrival 1965-08-06) where the craft was at that moment. Same two-body orbit as the full arc, cut short: after contact was lost the craft is off the map."}],
   "key": "zond_2",
   "name": "Zond 2",
-  "launchBody": "Earth",
-  "destinationBody": "Mars",
-  "launchDate": "1964-11-30T13:25:00Z",
-  "arrival": "1965-08-06",
-  "estimate": true,
   "rocket": "Molniya (8K78)",
   "payload": "Mars test probe (3MV-4A, 996 kg)",
   "status": "Lost in cruise",
   "significance": "Zond 2 was a Soviet test probe aimed to fly into Mars. One of its solar panels failed to unfold after launch, starving it of power, and contact was lost within weeks. Before that it made the first use of electric (plasma) thrusters in deep space, firing six of them to hold its orientation, technology that powers many spacecraft today. It passed Mars, silent, in August 1965, three weeks after Mariner 4.",
-  "statusNote": "Launched 1964-11-30 13:25 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). A solar panel did not deploy until 1964-12-15, too late for the first mid-course correction. On 1964-12-14, at 5.37 million km, it fired six plasma thrusters; contact was lost soon after. Some Western sources say contact lasted until early May 1965, which Siddiqi calls highly unlikely. The inert craft passed Mars at about 650,000 km on 1965-08-06 (Siddiqi). Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed.",
+  "statusNote": "Launched 1964-11-30 13:25 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). A solar panel did not deploy until 1964-12-15, too late for the first mid-course correction. On 1964-12-14, at 5.37 million km, it fired six plasma thrusters; contact was lost soon after. Some Western sources say contact lasted until early May 1965, which Siddiqi calls highly unlikely. The inert craft passed Mars at about 650,000 km on 1965-08-06 (Siddiqi). Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed. PATH ENDS AT LAST CONTACT (1964-12-14): after that the craft is off the map (maintainer's rule, 2026-11-27); its silent arrival on 1965-08-06 stays in the timeline and the notes as history.",
   "assets": {
     "rocket": {
       "title": "Molniya launch vehicle (later Molniya-M version)",

@@ -1,16 +1,15 @@
 {
+  "lastContact": "1963-03-21",
+  "lastContactSource": "A. A. Siddiqi, Beyond Earth (NASA SP-2018-4041): contact kept until 21 March 1963",
+  "destinationLabel": "Mars (contact lost on the way)",
+  "legs": [{"type": "lambert", "fromBody": "Earth", "toBody": {"fixedPos": [-1.2728482, 0.6407546, 0.0583215]}, "departDate": "1962-11-01T16:14:06Z", "arrivalDate": "1963-03-21", "estimate": true, "_comment": "Ends at last contact (1963-03-21): the point on the calculated Earth->Mars arc (launch 1962-11-01T16:14:06Z, predicted arrival 1963-06-19) where the craft was at that moment. Same two-body orbit as the full arc, cut short: after contact was lost the craft is off the map."}],
   "key": "mars_1",
   "name": "Mars 1",
-  "launchBody": "Earth",
-  "destinationBody": "Mars",
-  "launchDate": "1962-11-01T16:14:06Z",
-  "arrival": "1963-06-19",
-  "estimate": true,
   "rocket": "Molniya (8K78)",
   "payload": "Mars flyby probe with camera (2MV-4, 893.5 kg)",
   "status": "Lost in cruise",
   "significance": "Mars 1 was the first spacecraft sent to fly past Mars. It carried a camera meant to photograph the surface from close range, but a leaking valve emptied its attitude-control gas soon after launch. Controllers kept it working for nearly five months, and it set a distance record while measuring cosmic rays, the solar wind and meteoroids out to 1.24 AU, showing that cosmic radiation is nearly constant once past Earth's radiation belts. Contact was lost in March 1963, three months before it silently passed Mars.",
-  "statusNote": "Launched 1962-11-01 16:14:06 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). A valve failure drained the attitude-control nitrogen, so no course corrections were possible. Contact was kept until 1963-03-21 at 106 million km from Earth; the inert craft passed Mars at about 197,000 km on 1963-06-19 (Siddiqi). Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed.",
+  "statusNote": "Launched 1962-11-01 16:14:06 UT on a Molniya (8K78) from Tyuratam (Siddiqi, Beyond Earth). A valve failure drained the attitude-control nitrogen, so no course corrections were possible. Contact was kept until 1963-03-21 at 106 million km from Earth; the inert craft passed Mars at about 197,000 km on 1963-06-19 (Siddiqi). Path calculated: a two-body transfer between the real launch date and the published flyby date. Contact was lost before the flyby, and with no further course changes the craft coasted on that path; no measured trajectory exists, so it is drawn dashed. PATH ENDS AT LAST CONTACT (1963-03-21): after that the craft is off the map (maintainer's rule, 2026-11-27); its silent arrival on 1963-06-19 stays in the timeline and the notes as history.",
   "assets": {
     "rocket": {
       "title": "Molniya launch vehicle (later Molniya-M version)",

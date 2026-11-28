@@ -1,4 +1,6 @@
 {
+  "lastContact": "1993-08-21",
+  "lastContactSource": "Flight notes (Mars Observer Mission Failure Investigation Board): contact lost 1993-08-21 during propulsion pressurization, three days before orbit insertion",
   "estimate": true,
   "key": "mars_observer",
   "name": "Mars Observer",
