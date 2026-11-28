@@ -1987,6 +1987,66 @@
    "phoenix"
   ]
  },
+ "images/missions/pioneer_10/rocket.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/ARC-1972-AC72-2142",
+  "sourceTitle": "ARC-1972-AC72-2142",
+  "credit": "NASA/KSC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Atlas-Centaur launching Pioneer 10, 2 March 1972 (8:49 p.m. EST)",
+  "usedBy": [
+   "pioneer_10"
+  ]
+ },
+ "images/missions/pioneer_10/spacecraft.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/ARC-1972-AC72-2135",
+  "sourceTitle": "ARC-1972-AC72-2135",
+  "credit": "NASA/ARC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Pioneer 10 at Cape Kennedy before launch, showing where the plaque is mounted (1972)",
+  "usedBy": [
+   "pioneer_10"
+  ]
+ },
+ "images/missions/pioneer_11/rocket.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/9139575",
+  "sourceTitle": "Launch Vehicles",
+  "credit": "NASA/MSFC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "Atlas-Centaur launching Pioneer 11 (Pioneer G), April 1973",
+  "usedBy": [
+   "pioneer_11"
+  ]
+ },
+ "images/missions/pioneer_11/spacecraft.jpg": {
+  "sourcePage": "https://images.nasa.gov/details/ARC-1972-AC72-1338",
+  "sourceTitle": "ARC-1972-AC72-1338",
+  "credit": "NASA/ARC",
+  "creditDetail": "",
+  "license": "Public domain (NASA)",
+  "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "attributionRequired": false,
+  "status": "verified",
+  "method": "manual: NASA Image Library record",
+  "title": "The plaque carried by Pioneer 10 and 11, designed by Carl Sagan and Frank Drake, drawn by Linda Salzman Sagan",
+  "usedBy": [
+   "pioneer_11"
+  ]
+ },
  "images/missions/pioneer_5/rocket.jpg": {
   "sourcePage": "https://commons.wikimedia.org/wiki/File:Thor-Able_IV_Pioneer_5_2.jpg",
   "sourceTitle": "Thor-Able IV Pioneer 5 2.jpg",

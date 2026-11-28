@@ -164,5 +164,11 @@
   "voyager_2": {
     "id": "-32",
     "note": "Patched-conic mission-design trajectory 1977-08-20 to 1989-08-29, then a 2022 tracking-data refit (Jacobson)"
+  },
+  "pioneer_10": {
+    "id": "-23"
+  },
+  "pioneer_11": {
+    "id": "-24"
   }
 }
