@@ -38,6 +38,8 @@ DELAY = 2.0
 
 # flight key -> NSSDCA/COSPAR IDs (main craft first, then landers/probes).
 NSSDCA_IDS = {
+    "pioneer_10": ["1972-012A"],
+    "pioneer_11": ["1973-019A"],
     "zond_3": ["1965-056A"],
     "venera_2": ["1965-091A"],
     "venera_3": ["1965-092A"],

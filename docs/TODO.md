@@ -109,13 +109,16 @@ In the app: lightweight previews only, linking to the full-quality data.
     moons refitted to Horizons (Miranda fitted for the 1986 encounter, so it
     drifts ~13,000 km by 2030), narrow rings, Nereid added. Still plain
     colour spheres (no Uranus/Neptune maps; see §4).
-  - [ ] Voyager 1/2 and Pioneer 10/11: every flyby, with planet-view tours.
-    Voyager 1 and 2 added 2026-11-27 (Jupiter and Saturn tours; Voyager 2's
-    Uranus and Neptune tours to follow the Uranus/Neptune views). Their paths
-    stop at 1.1 x Pluto's aphelion (54.514 AU; Voyager 1 on 1994-01-06,
-    Voyager 2 on 1998-04-09).
-  - [ ] **The heliosphere layer must resume the Voyagers past that cutoff**
-    (Horizons has both to 2100), and later Pioneer 10/11 and New Horizons;
+  - [x] Voyager 1/2 and Pioneer 10/11: every flyby, with planet-view tours.
+    Done 2026-11-27: Voyager 1 and 2 (Jupiter, Saturn, Uranus, Neptune
+    tours), Pioneer 10 (Jupiter) and Pioneer 11 (Jupiter, Saturn), with every
+    passed moon listed (tools/moon_passes.py). Paths stop at 1.1 x Pluto's
+    aphelion (54.514 AU): Voyager 1 on 1994-01-06, Voyager 2 on 1998-04-09,
+    Pioneer 10 on 1992-06-07, Pioneer 11 on 2000-01-07 (dashed after its
+    last contact, 1995-09-30).
+  - [ ] **The heliosphere layer must resume the Voyagers and Pioneers past
+    that cutoff** (Horizons has the Voyagers to 2100, the Pioneers to 2050),
+    and later New Horizons;
     show the termination shock and heliopause crossings there (cited in the
     Voyager notes).
   - [ ] Per-flyby image galleries, with discoveries as understood at

@@ -158,6 +158,26 @@ T = {
                  ev("Mercury", "flyby", "1974-03-29T20:47:00Z", "Mercury I at 703 km: first close look at Mercury"),
                  ev("Mercury", "flyby", "1974-09-21T20:59:00Z", "Mercury II at 48,069 km: southern polar region"),
                  ev("Mercury", "flyby", "1975-03-16T22:39:00Z", "Mercury III at 327 km: the closest pass")],
+  # ---- Pioneer 10 and 11: planet closest approaches from Siddiqi, Beyond Earth
+  # (UT, distance above the cloud tops); moon passes computed from JPL Horizons
+  # (-23/-24 relative to each moon, tools/moon_passes.py), except moons the
+  # planet tours already supply ----
+  "pioneer_10": [ev("Jupiter", "flyby", "1973-12-04T02:26:00Z", "First Jupiter flyby: 130,354 km above the cloud tops; first close-up images, intense radiation belts"),
+                 ev("Io", "flyby", "1973-12-03T23:06:00Z", "Passed at ~354,000 km (closest approach, JPL Horizons)"),
+                 ev("Europa", "flyby", "1973-12-03T19:47:00Z", "Passed at ~321,000 km (closest approach, JPL Horizons)"),
+                 ev("Ganymede", "flyby", "1973-12-03T14:08:00Z", "Passed at ~447,000 km (closest approach, JPL Horizons)"),
+                 ev("Callisto", "flyby", "1973-12-03T10:03:00Z", "Passed at ~1,410,000 km (closest approach, JPL Horizons)")],
+  "pioneer_11": [ev("Jupiter", "flyby", "1974-12-03T05:22:00Z", "Flyby 42,500 km above the cloud tops; first images of Jupiter's poles"),
+                 ev("Saturn", "flyby", "1979-09-01T16:31:00Z", "First Saturn flyby: 20,900 km above the cloud tops; F ring and a small new moon found"),
+                 ev("Io", "flyby", "1974-12-03T03:08:00Z", "Passed at ~313,000 km (closest approach, JPL Horizons)"),
+                 ev("Europa", "flyby", "1974-12-03T04:19:00Z", "Passed at ~587,000 km (closest approach, JPL Horizons)"),
+                 ev("Ganymede", "flyby", "1974-12-02T22:11:00Z", "Passed at ~690,000 km (closest approach, JPL Horizons)"),
+                 ev("Callisto", "flyby", "1974-12-02T08:18:00Z", "Passed at ~780,000 km (closest approach, JPL Horizons)"),
+                 ev("Tethys", "flyby", "1979-09-01T18:26:00Z", "Passed at ~329,000 km (closest approach, JPL Horizons)"),
+                 ev("Dione", "flyby", "1979-09-01T15:59:00Z", "Passed at ~292,000 km (closest approach, JPL Horizons)"),
+                 ev("Rhea", "flyby", "1979-09-01T22:15:00Z", "Passed at ~345,000 km (closest approach, JPL Horizons)"),
+                 ev("Titan", "flyby", "1979-09-02T18:01:00Z", "Passed at ~363,000 km (closest approach, JPL Horizons)"),
+                 ev("Iapetus", "flyby", "1979-08-29T06:06:00Z", "Passed at ~1,030,000 km (closest approach, JPL Horizons)")],
   # ---- Voyagers: planet closest approaches from NASA NSSDC's Voyager table
   # (planetary radii x NSSDC's radius, UTC at the spacecraft); moon flybys at
   # Jupiter and Saturn come from the planet tours; Uranus, Miranda, Neptune
